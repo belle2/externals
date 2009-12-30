@@ -35,7 +35,7 @@ root: root/config/Makefile.config
 # root build command
 root/config/Makefile.config:
 	@cd root; ./configure --incdir=$(EXTINCDIR)/root --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
-	 --disable-builtin-afterimage --disable-builtin-freetype; make
+	--prefix=$(EXTDIR) --etcdir=$(EXTDIR)/share/etc; make; make install
 
 # dependence for boost build
 boost: boost/project-config.jam
@@ -43,6 +43,7 @@ boost: boost/project-config.jam
 # boost build command
 boost/project-config.jam:
 	@cd boost; ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR); ./bjam install
+	@cd $(EXTDIR); BOOST_LIB_VERSION=`grep '#define BOOST_LIB_VERSION' boost/boost/version.hpp | awk -F\" '{print $$2}'`; cd $(EXTINCDIR); ln -sf boost-$${BOOST_LIB_VERSION}/boost .
 
 # dependence for astyle build
 astyle: astyle/build/gcc/bin/astyle
@@ -50,7 +51,6 @@ astyle: astyle/build/gcc/bin/astyle
 # astyle build command
 astyle/build/gcc/bin/astyle: $(EXTBINDIR)
 	@cd astyle/build/gcc; make
-	@-mkdir -p $(BINDIR)
 	@cp astyle/build/gcc/bin/astyle $(EXTBINDIR)
 
 # dependence for CLHEP build
@@ -67,18 +67,22 @@ CLHEP/config.log: CLHEP/configure
 	@cd CLHEP; ./configure --prefix=$(EXTDIR) \
 	--includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make; make install
 
+# dependence for GEANT4 build
+geant4: geant4/env.sh
+
 # dependence for GEANT4 download
 geant4/Configure:
 	@wget -O - http://geant4.cern.ch/support/source/geant4.9.3.tar.gz | tar xz
 	@mv geant4.9.3 geant4
-	@mkdir geant4/data
-	@cd geant4/data; wget -O - http://geant4.cern.ch/support/source/G4EMLOW.6.9.tar.gz | tar xz
-	@cd geant4/data; wget -O - http://geant4.cern.ch/support/source/G4NDL.3.13.tar.gz | tar xz
+	@mkdir -p share/geant4/data
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4EMLOW.6.9.tar.gz | tar xz
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4NDL.3.13.tar.gz | tar xz
 
-geant4: clhep geant4/Configure
+# GEANT4 build command
+geant4/env.sh: CLHEP/config.log geant4/Configure
 	@cd geant4; ./Configure -build -d -e -s -D d_portable=y -D g4includes_flag=y \
-	-D g4clhep_base_dir=$(EXTDIR)/CLHEP \
+	-D g4data=$(EXTDIR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
 	-D g4clhep_include_dir=$(EXTINCDIR) -D g4clhep_lib_dir=$(EXTLIBDIR)
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure
-	@cd geant4; . env.sh; cd source; G4INCLUDE=$(EXTDIR)/include/geant4 make includes dependencies=""
+	@cd geant4; . ./env.sh; cd source; G4INCLUDE=$(EXTDIR)/include/geant4 make includes dependencies=""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)

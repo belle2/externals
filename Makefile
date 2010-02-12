@@ -7,7 +7,7 @@ export EXTBINDIR := $(EXTDIR)/bin/$(ARCH)
 
 
 # all target
-all: root boost astyle clhep geant4
+all: root boost astyle clhep geant4 libxml
 
 # clean up target
 clean:
@@ -86,3 +86,18 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure
 	@cd geant4; . ./env.sh; cd source; G4INCLUDE=$(EXTDIR)/include/geant4 make includes dependencies=""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
+
+# dependence for libxml build
+libxml: libxml/config.log
+
+# dependence for libxml download
+libxml/configure:
+	@wget -O - ftp://xmlsoft.org/libxml2/libxml2-sources-2.7.6.tar.gz | tar xz
+	@mv libxml2-2.7.6 libxml
+
+# libxml build command
+libxml/config.log: libxml/configure
+	@cd libxml; ./configure --datarootdir=$(EXTDIR)/share \
+	--includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make; make install
+	@mv -f $(EXTINCDIR)/libxml2/libxml $(EXTINCDIR)/
+	@rmdir $(EXTINCDIR)/libxml2

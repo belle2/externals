@@ -43,7 +43,6 @@ boost: boost/project-config.jam
 # boost build command
 boost/project-config.jam:
 	@cd boost; ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR); ./bjam install
-	@cd $(EXTDIR); BOOST_LIB_VERSION=`grep '#define BOOST_LIB_VERSION' boost/boost/version.hpp | awk -F\" '{print $$2}'`; cd $(EXTINCDIR); ln -sf boost-$${BOOST_LIB_VERSION}/boost .
 
 # dependence for astyle build
 astyle: astyle/build/gcc/bin/astyle

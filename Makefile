@@ -35,7 +35,7 @@ root: root/config/Makefile.config
 # root build command
 root/config/Makefile.config:
 	@cd root; ./configure --incdir=$(EXTINCDIR)/root --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
-	--prefix=$(EXTDIR) --etcdir=$(EXTDIR)/share/etc; make; make install
+	--prefix=$(EXTDIR) --etcdir=$(EXTDIR)/share/etc --enable-gsl-shared; make; make install
 
 # dependence for boost build
 boost: boost/project-config.jam

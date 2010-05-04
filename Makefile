@@ -7,7 +7,7 @@ export EXTBINDIR := $(EXTDIR)/bin/$(ARCH)
 
 
 # all target
-all: root boost astyle clhep geant4 libxml
+all: root boost astyle clhep geant4 libxml scons
 
 # clean up target
 clean:
@@ -100,3 +100,13 @@ libxml/config.log: libxml/configure
 	--includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make; make install
 	@mv -f $(EXTINCDIR)/libxml2/libxml $(EXTINCDIR)/
 	@rmdir $(EXTINCDIR)/libxml2
+
+# dependency for scons build
+scons: scons/build
+
+# scons build command
+scons/build:
+	@cd scons; python bootstrap.py build/scons; \
+	cd build/scons; python setup.py install --no-version-script \
+	--install-scripts=$(EXTBINDIR) --install-data=$(EXTDIR)/share --install-lib=$(EXTLIBDIR)
+

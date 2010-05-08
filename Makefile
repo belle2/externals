@@ -7,7 +7,7 @@ export EXTBINDIR := $(EXTDIR)/bin/$(ARCH)
 
 
 # all target
-all: root boost astyle clhep geant4 libxml scons
+all: boost astyle clhep geant4 root scons
 
 # clean up target
 clean:
@@ -35,7 +35,9 @@ root: root/config/Makefile.config
 # root build command
 root/config/Makefile.config:
 	@cd root; ./configure --incdir=$(EXTINCDIR)/root --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
-	--prefix=$(EXTDIR) --etcdir=$(EXTDIR)/share/etc --enable-gsl-shared; make; make install
+	--prefix=$(EXTDIR) --etcdir=$(EXTDIR)/share/etc --enable-gsl-shared \
+	--with-g4-incdir=$(EXTINCDIR)/geant4 --with-g4-libdir=$(EXTLIBDIR) \
+	--with-clhep-incdir=$(EXTINCDIR); make; make install
 
 # dependence for boost build
 boost: boost/project-config.jam
@@ -86,20 +88,6 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@cd geant4; . ./env.sh; cd source; G4INCLUDE=$(EXTDIR)/include/geant4 make includes dependencies=""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
 
-# dependence for libxml build
-libxml: libxml/config.log
-
-# dependence for libxml download
-libxml/configure:
-	@wget -O - ftp://xmlsoft.org/libxml2/libxml2-sources-2.7.6.tar.gz | tar xz
-	@mv libxml2-2.7.6 libxml
-
-# libxml build command
-libxml/config.log: libxml/configure
-	@cd libxml; ./configure --datarootdir=$(EXTDIR)/share \
-	--includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make; make install
-	@mv -f $(EXTINCDIR)/libxml2/libxml $(EXTINCDIR)/
-	@rmdir $(EXTINCDIR)/libxml2
 
 # dependency for scons build
 scons: scons/build

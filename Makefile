@@ -81,7 +81,8 @@ geant4/Configure:
 
 # GEANT4 build command
 geant4/env.sh: CLHEP/config.log geant4/Configure
-	@cd geant4; ./Configure -build -d -e -s -D d_portable=y -D g4includes_flag=y \
+	@cd geant4; rm -f Configure.new; cat Configure | sed "s/g4granular='n'/g4granular='y'/g" | sed "s/g4granular=n/g4granular=y/g" > Configure.new; chmod a+x Configure.new
+	@cd geant4; ./Configure.new -build -d -e -s -D d_portable=y -D g4includes_flag=y \
 	-D g4data=$(EXTDIR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
 	-D g4clhep_include_dir=$(EXTINCDIR) -D g4clhep_lib_dir=$(EXTLIBDIR)
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure

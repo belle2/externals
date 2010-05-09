@@ -78,6 +78,10 @@ geant4/Configure:
 	@mkdir -p share/geant4/data
 	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4EMLOW.6.9.tar.gz | tar xz
 	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4NDL.3.13.tar.gz | tar xz
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/PhotonEvaporation.2.0.tar.gz | tar xz
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4RadioactiveDecay.3.2.tar.gz | tar xz
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4ABLA.3.0.tar.gz | tar xz
+	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/RealSurface.1.0.tar.gz | tar xz
 
 # GEANT4 build command
 geant4/env.sh: CLHEP/config.log geant4/Configure

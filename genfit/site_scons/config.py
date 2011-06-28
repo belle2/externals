@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from SCons.Script import *
-import os, platform
+import os
+import platform
 from distutils import sysconfig
 
 
-def CheckEnvVar(conf, var, text = None):
+def CheckEnvVar(conf, var, text=None):
     """check for the existance of an environment variable"""
 
     if text:
@@ -19,30 +23,30 @@ def CheckConfigTool(conf, tool):
     """check for the existance of a tool"""
 
     conf.Message('Checking for %s...' % tool)
-    result, version = conf.TryAction('%s --version' % tool)
+    (result, version) = conf.TryAction('%s --version' % tool)
     conf.Result(result)
     return result
 
 
-def CheckPackage(conf, package, text = None):
+def CheckPackage(conf, package, text=None):
     """check for the existance of a package via the pkg-config tool"""
 
     if not text:
         text = package
     conf.Message('Checking for %s...' % text)
-    result, output = conf.TryAction('pkg-config --exists %s' % package)
+    (result, output) = conf.TryAction('pkg-config --exists %s' % package)
     conf.Result(result)
     return result
 
 
-def CheckFile(conf, dir, text = None):
+def CheckFile(conf, dir, text=None):
     """check for the existance a file"""
 
     if text:
         conf.Message('Checking for %s...' % text)
     else:
         conf.Message('Checking for directory %s...' % dir)
-    if (conf.env.FindFile(dir, '.') == None):
+    if conf.env.FindFile(dir, '.') == None:
         result = 0
     else:
         result = 1
@@ -59,10 +63,9 @@ def configure_belle2(conf):
         print '-> Source "setup_belle2.sh" (for bash) or "setup_belle2.csh" (for csh).'
         return False
 
-    # local Belle II release setup
-    if not conf.CheckEnvVar('BELLE2_LOCAL_DIR', 'local release setup'):
-        print 'local release is not set up.'
-        print '-> Execute "setuprel" in your local release directory.'
+    # Belle II externals directory
+    if not conf.CheckEnvVar('BELLE2_EXTERNALS_DIR', 'externals directory'):
+        print 'externals directory is not set up.'
         return False
 
     return True
@@ -74,7 +77,7 @@ def configure_externals(conf):
     # root
     conf.env['ROOT_LIBS'] = conf.env['ROOT_GLIBS'] = []
     if conf.CheckConfigTool('root-config'):
-        root_env = Environment(ENV = os.environ)
+        root_env = Environment(ENV=os.environ)
         root_env.ParseConfig('root-config --libs')
         conf.env['ROOT_LIBS'] = root_env['LIBS']
         root_env.ParseConfig('root-config --glibs')
@@ -104,18 +107,21 @@ def check_externals(conf):
     return True
 
 
-
 def configure(env):
     """configure the environment"""
 
-    conf = Configure(env, custom_tests = {'CheckEnvVar' : CheckEnvVar,
-                                          'CheckConfigTool' : CheckConfigTool,
-                                          'CheckPackage' : CheckPackage,
-                                          'CheckFile' : CheckFile})
+    conf = Configure(env, custom_tests={
+        'CheckEnvVar': CheckEnvVar,
+        'CheckConfigTool': CheckConfigTool,
+        'CheckPackage': CheckPackage,
+        'CheckFile': CheckFile,
+        })
 
-    if (not configure_belle2(conf)) or (not configure_externals(conf)):
+    if not configure_belle2(conf) or not configure_externals(conf):
         return False
 
     env = conf.Finish()
 
     return True
+
+

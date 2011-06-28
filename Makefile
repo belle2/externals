@@ -1,5 +1,6 @@
 
 # define directories
+export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
 export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_SUBDIR)
@@ -10,20 +11,46 @@ export EXTINCDIRVAR := $(EXTDIRVAR)/include
 export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_SUBDIR}
 export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_SUBDIR}
 
+export ROOTSYS := $(EXTDIR)/root
 export GENFIT := $(EXTDIRVAR)/genfit
+export PATH := $(ROOTSYS)/bin:$(PATH)
+export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
 
+# set number of parallel jobs to the number of processors
 NPROCESSES=$(shell grep processor /proc/cpuinfo| wc -l)
+
+# set debug or optimization options 
+ifeq ($(BELLE2_OPTION),debug)
+  export BOOST_OPTION=variant=debug
+  export CXXFLAGS=-g
+  export GEANT4_OPTION=-D g4debug=y
+  export ROOTBUILD=debug
+  export EVTGEN_OPTION=--enable-debug
+else
+  export BOOST_OPTION=variant=release
+  export CXXFLAGS=-O3
+  export GEANT4_OPTION=-D g4debug=n
+  export ROOTBUILD=
+  export EVTGEN_OPTION=
+endif 
+
+# check for graphics packages
+GL_EXISTS=$(shell pkg-config --exists gcc; echo $$?)
+ifeq ($(GL_EXISTS),0)
+  GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
+endif
 
 
 # all target
-all: boost clhep geant4 root vgm geant4_vmc genfit evtgen
+all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit evtgen
 
 # clean up target
-clean: boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean evtgen.clean
-	@rm -f make.log
+clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean evtgen.clean
 
 
 # directory creation
+dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
+
 $(EXTINCDIR):
 	@echo "create  $(EXTINCDIR)"
 	@mkdir -p $(EXTINCDIR)
@@ -35,6 +62,27 @@ $(EXTLIBDIR):
 $(EXTBINDIR):
 	@echo "create  $(EXTBINDIR)"
 	@mkdir -p $(EXTBINDIR)
+
+
+# dependence for google test build
+gtest: $(EXTLIBDIR)/libgtest.a
+
+# google test build command
+$(EXTLIBDIR)/libgtest.a:
+	@echo "building gtest"
+	@mkdir -p $(EXTINCDIR)/gtest/internal
+	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
+	@cp -a $(EXTDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
+	g++ -I$(EXTINCDIR) -Igtest -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
+	g++ -I$(EXTINCDIR) -Igtest -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
+	@ar -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
+
+# google test clean command
+gtest.clean:
+	@echo "cleaning gtest"
+	@rm -rf $(EXTINCDIR)/gtest
+	@rm -f gtest/src/*.o
+	@rm -f $(EXTLIBDIR)/libgtest.a
 
 
 # dependence for boost build

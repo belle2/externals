@@ -10,7 +10,7 @@ global_env = Environment(ENV = os.environ,
                          tools = ['default', 'root_dict', 'process_dir'],
                          BUILDERS = {},
                          BUILDDIR = os.path.join('#build', subdir),
-                         EXTDIR = os.path.join(os.environ['BELLE2_LOCAL_DIR'], 'externals'),
+                         EXTDIR = os.environ['BELLE2_EXTERNALS_DIR'],
 #Direct installation into the externals INCDIR makes problems with installation
 #                         INCDIR = os.path.join('$EXTDIR', 'include', 'genfit'),
                          INCDIR = os.path.join('#include', 'genfit'),

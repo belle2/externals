@@ -7,7 +7,7 @@ diff -rup ../9.1/configure ./configure
  
  # CLHEP_PATH
 -: ${CLHEP_PATH:=${PATH_TO_EXTERNAL}/clhep/${CLHEP_VERSION}/${LCGPLATFORM}}  #set PATH if it is not defined
-+: ${CLHEP_PATH:=${BELLE2_LOCAL_DIR}/externals/CLHEP  #set PATH if it is not defined
++: ${CLHEP_PATH:=${BELLE2_EXTERNALS_DIR}/CLHEP  #set PATH if it is not defined
  [ -d ${CLHEP_PATH} ] || { echo "Directory ${CLHEP_PATH} does not exist. Exiting!" ; exit 1; }
  
  echo  "CLHEP_PATH is ${CLHEP_PATH}"
@@ -16,10 +16,10 @@ diff -rup ../9.1/configure ./configure
  #Package-specific:>
  
 -INCLUDE_CLHEP_PATH=${CLHEP_PATH}/include
-+INCLUDE_CLHEP_PATH=${BELLE2_LOCAL_DIR}/externals/include
++INCLUDE_CLHEP_PATH=${BELLE2_EXTERNALS_DIR}/include
  INCLUDE_CLHEP=" -I${INCLUDE_CLHEP_PATH} "
 -LIBS_CLHEP_PATH=${CLHEP_PATH}/lib
-+LIBS_CLHEP_PATH=${BELLE2_LOCAL_DIR}/externals/lib/${BELLE2_SUBDIR}
++LIBS_CLHEP_PATH=${BELLE2_EXTERNALS_DIR}/lib/${BELLE2_SUBDIR}
  LIBS_CLHEP=" -lCLHEP -L${LIBS_CLHEP_PATH} "
  LIBS_CLHEP_STATIC=" ${LIBS_CLHEP_PATH}/libCLHEP.a "
  echo "Assuming libCLHEP* reside in ${LIBS_CLHEP_PATH}"

@@ -35,7 +35,7 @@ else
 endif 
 
 # check for graphics packages
-GL_EXISTS=$(shell pkg-config --exists gcc; echo $$?)
+GL_EXISTS=$(shell pkg-config --exists gl; echo $$?)
 ifeq ($(GL_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif

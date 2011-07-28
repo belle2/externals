@@ -1,6 +1,6 @@
 Index: montecarlo/eg/src/TDatabasePDG.cxx
 ===================================================================
---- montecarlo/eg/src/TDatabasePDG.cxx	(revision 38397)
+--- montecarlo/eg/src/TDatabasePDG.cxx	(revision 39145)
 +++ montecarlo/eg/src/TDatabasePDG.cxx	(working copy)
 @@ -19,6 +19,7 @@
  #include "TDecayChannel.h"
@@ -86,7 +86,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
     //browse data base
 Index: montecarlo/eg/inc/TDatabasePDG.h
 ===================================================================
---- montecarlo/eg/inc/TDatabasePDG.h	(revision 38397)
+--- montecarlo/eg/inc/TDatabasePDG.h	(revision 39145)
 +++ montecarlo/eg/inc/TDatabasePDG.h	(working copy)
 @@ -82,6 +82,8 @@
     virtual void   ReadPDGTable (const char *filename = "");
@@ -97,3 +97,285 @@ Index: montecarlo/eg/inc/TDatabasePDG.h
     ClassDef(TDatabasePDG,2)  // PDG particle database
  
  };
+Index: html/src/TClassDocOutput.cxx
+===================================================================
+--- html/src/TClassDocOutput.cxx	(revision 39145)
++++ html/src/TClassDocOutput.cxx	(working copy)
+@@ -81,7 +81,7 @@
+ 
+    if (!force && !IsModified(fCurrentClass, kSource)
+        && !IsModified(fCurrentClass, kDoc)) {
+-      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
++//      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
+       return;
+    }
+ 
+@@ -93,8 +93,14 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++   printf("  <compound kind=\"class\">\n");
++   printf("    <name>%s</name>\n", TString(fCurrentClass->GetName()).ReplaceAll("&", "&amp;").ReplaceAll("<", "&lt;").ReplaceAll(">", "&gt;").Data());
++   TString tmp;
++   fHtml->GetHtmlFileName(fCurrentClass, tmp);
++   printf("    <filename>%s</filename>\n", tmp.ReplaceAll("./", "").Data());
+ 
++#ifdef DETAILED_DOXYGEN_TAGS
+    // write a HTML header for the classFile file
+    WriteHtmlHeader(classFile, fCurrentClass->GetName(), "", fCurrentClass);
+    WriteClassDocHeader(classFile);
+@@ -112,6 +118,9 @@
+       fParser->GetSourceInfo(TDocParser::kInfoLastUpdate),
+       fParser->GetSourceInfo(TDocParser::kInfoAuthor),
+       fParser->GetSourceInfo(TDocParser::kInfoCopyright));
++#endif
++
++   printf("  </compound>\n");
+ }
+ 
+ //______________________________________________________________________________
+@@ -158,12 +167,21 @@
+       TDocMethodWrapper *methWrap = 0;
+       while ((methWrap = (TDocMethodWrapper*) iMethWrap())) {
+          const TMethod* method = methWrap->GetMethod();
++         printf("    <member kind=\"function\"");
++         if (access != TDocParser::kPublic) {
++           printf(" protection=\"%s\"", accesstxt[access]);
++         }
++         if (kIsStatic & method->Property()) {
++           printf(" static=\"yes\"");
++         }
++         printf(">\n");
+ 
+          // it's a c'tor - Cint stores the class name as return type
+          Bool_t isctor = (!strcmp(method->GetName(), method->GetReturnTypeName()));
+          // it's a d'tor - Cint stores "void" as return type
+          Bool_t isdtor = (!isctor && method->GetName()[0] == '~');
+ 
++         printf("      <type>");
+          classFile << "<tr class=\"func";
+          if (method->GetClass() != fCurrentClass)
+             classFile << "inh";
+@@ -173,16 +191,25 @@
+                classFile << "virtual ";
+             else
+                classFile << " virtual";
++            printf("virtual ");
+          }
+ 
+-         if (kIsStatic & method->Property())
++         if (kIsStatic & method->Property()) {
+             classFile << "static ";
++            printf("static ");
++         }
+ 
+-         if (!isctor && !isdtor)
++         if (!isctor && !isdtor) {
+             fParser->DecorateKeywords(classFile, method->GetReturnTypeName());
++            printf(method->GetReturnTypeName());
++         }
++         printf("</type>\n");
+ 
+          TString mangledM(method->GetClass()->GetName());
+          NameSpace2FileName(mangledM);
++         TString tmp;
++         fHtml->GetHtmlFileName(method->GetClass(), tmp);
++         printf("      <anchorfile>%s</anchorfile>\n", tmp.ReplaceAll("./", "").Data());
+          classFile << "</td><td class=\"funcname\"><a class=\"funcname\" href=\"";
+          if (method->GetClass() != fCurrentClass) {
+             TString htmlFile;
+@@ -191,6 +218,7 @@
+          }
+          classFile << "#" << mangledM;
+          classFile << ":";
++         printf("      <anchor>%s:", mangledM.Data());
+          mangledM = method->GetName();
+          NameSpace2FileName(mangledM);
+          Int_t overloadIdx = methWrap->GetOverloadIdx();
+@@ -199,6 +227,7 @@
+             mangledM += overloadIdx;
+          }
+          classFile << mangledM << "\">";
++         printf("%s</anchor>\n", mangledM.Data());
+          if (method->GetClass() != fCurrentClass) {
+             classFile << "<span class=\"baseclass\">";
+             ReplaceSpecialChars(classFile, method->GetClass()->GetName());
+@@ -206,8 +235,10 @@
+          }
+          ReplaceSpecialChars(classFile, method->GetName());
+          classFile << "</a>";
++         printf("      <name>%s</name>\n", method->GetName());
+ 
+          fParser->DecorateKeywords(classFile, const_cast<TMethod*>(method)->GetSignature());
++         printf("      <arglist>%s</arglist>\n", TString(const_cast<TMethod*>(method)->GetSignature()).ReplaceAll("&", "&amp;").ReplaceAll("\"", "&quot;").Data());
+          bool propSignal = false;
+          bool propMenu   = false;
+          bool propToggle = false;
+@@ -232,6 +263,7 @@
+             }
+          }
+          classFile << "</td></tr>" << endl;
++         printf("    </member>\n");
+       }
+       classFile << endl << "</table></div>" << endl;
+    }
+@@ -283,6 +315,7 @@
+       Bool_t prevIsInh = kTRUE;
+ 
+       while ((member = (TDataMember*) iDM())) {
++         TString anchorfile, anchor;
+          Bool_t haveNewEnum = access > 2 && prevEnumName != member->GetTypeName();
+          if (haveNewEnum) {
+             if (prevEnumName.Length()) {
+@@ -311,6 +344,10 @@
+                classFile << "enum ";
+             else 
+                startClassName = 5;
++            printf("    <member kind=\"enumeration\">\n");
++            if (!enumName.EndsWith("<i>[unnamed]</i>")) {
++              printf("      <name>%s</name>\n", enumName.Data());
++            }
+             
+             Ssiz_t endClassName = enumName.Last(':'); // need template handling here!
+             if (endClassName != kNPOS && endClassName > 0 && enumName[endClassName - 1] == ':') {
+@@ -332,6 +369,8 @@
+ 
+          TString mangledM(member->GetClass()->GetName());
+          NameSpace2FileName(mangledM);
++         fHtml->GetHtmlFileName(member->GetClass(), anchorfile);
++         anchorfile.ReplaceAll("./", "");
+          classFile << "</td><td class=\"dataname\"><a ";
+          if (member->GetClass() != fCurrentClass) {
+             classFile << "href=\"";
+@@ -342,9 +381,12 @@
+             classFile << "name=\"";
+          classFile << mangledM;
+          classFile << ":";
++         anchor = mangledM;
++         anchor += ":";
+          mangledM = member->GetName();
+          NameSpace2FileName(mangledM);
+          classFile << mangledM << "\">";
++         anchor += mangledM;
+          if (member->GetClass() == fCurrentClass)
+             classFile << "</a>";
+          if (access < 3 && member->GetClass() != fCurrentClass) {
+@@ -369,6 +411,29 @@
+             ReplaceSpecialChars(classFile, member->GetTitle());
+          } else classFile << "<td>";
+          classFile << "</td></tr>" << endl;
++
++         if (haveNewEnum) {
++           printf("      <anchor>%s</anchor>\n", anchor.Data());
++           printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
++           printf("    </member>\n");
++         }
++         if (access > 2) {
++           printf("    <member kind=\"enumvalue\">\n");
++         } else {
++           printf("    <member kind=\"variable\"");
++           if (access != TDocParser::kPublic) {
++             printf(" protection=\"%s\"", accesstxt[access]);
++           }
++           if (member->Property() & G__BIT_ISSTATIC) {
++             printf(" static=\"yes\"");
++           }
++           printf(">\n");
++           printf("      <type>%s</type>\n", fHtml->ShortType(member->GetFullTypeName()));
++         }
++         printf("      <name>%s</name>\n", member->GetName());
++         printf("      <anchor>%s</anchor>\n", anchor.Data());
++         printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
++         printf("    </member>\n");
+       } // for members
+ 
+       if (prevEnumName.Length()) {
+@@ -605,8 +670,8 @@
+       gErrorIgnoreLevel = kWarning;
+       psCanvas->SaveAs(filename);
+       gErrorIgnoreLevel = saveErrorIgnoreLevel;
+-   } else
+-      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
++   }// else
++//      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
+ }
+ 
+ //______________________________________________________________________________
+@@ -1153,7 +1218,7 @@
+       return kFALSE;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
+    // write out header
+    WriteHtmlHeader(out, "Class Hierarchy");
+    out << "<h1>Class Hierarchy</h1>" << endl;
+@@ -1303,7 +1368,7 @@
+    if (!htmlFile.Length()) {
+       TString what(fCurrentClass->GetName());
+       what += " (source not found)";
+-      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
++//      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
+       return;
+    }
+ 
+Index: html/src/TDocOutput.cxx
+===================================================================
+--- html/src/TDocOutput.cxx	(revision 39145)
++++ html/src/TDocOutput.cxx	(working copy)
+@@ -646,7 +646,7 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+    // write out header
+    WriteHtmlHeader(out, "Class Hierarchy");
+@@ -700,7 +700,7 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+    // write indexFile header
+    WriteHtmlHeader(indexFile, "Class Index");
+@@ -829,7 +829,7 @@
+          Error("CreateModuleIndex", "Can't open file '%s' !", filename.Data());
+          continue;
+       }
+-      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+       TString htmltitle("Index of ");
+       TString moduletitle(module->GetName());
+@@ -1089,7 +1089,7 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
+    // write out header
+    WriteHtmlHeader(out, "Library Dependencies");
+ 
+@@ -1122,7 +1122,7 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
++//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
+ 
+    WriteHtmlHeader(out, GetHtml()->GetProductName() + " Reference Guide");
+ 
+@@ -1269,7 +1269,7 @@
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
++//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
+ 
+    // write typesList header
+    WriteHtmlHeader(typesList, "List of data types");

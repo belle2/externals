@@ -20,11 +20,30 @@ global_env = Environment(ENV = os.environ,
 
 
 # check for debug flag
-option = os.environ['BELLE2_OPTION']
+option = os.environ.get('BELLE2_EXTERNALS_OPTION', os.environ['BELLE2_OPTION'])
 if option == 'debug':
     global_env.Append(CCFLAGS = '-g')
 elif option == 'opt':
     global_env.Append(CCFLAGS = '-O3')
+elif option == 'intel':
+    intel_dir = None
+    for dir in os.environ.get('PATH', '').split(os.pathsep):
+        if os.path.isfile(os.path.join(dir, 'icpc')):
+            intel_dir = dir
+            break
+    if not intel_dir:
+        print 'Intel compiler not found.'
+        Exit(1)
+    (base_dir, bin, arch) = intel_dir.rsplit(os.sep, 2)
+    global_env.PrependENVPath('INCLUDE', os.path.join(base_dir, 'include'))
+    global_env.PrependENVPath('LIB', os.path.join(base_dir, 'lib', arch))
+    global_env.PrependENVPath('PATH', intel_dir)
+    global_env.PrependENVPath('LD_LIBRARY_PATH', os.path.join(base_dir, 'lib', arch))
+    global_env['CC'] = 'icc'
+    global_env['CXX'] = 'icpc'
+    global_env['FC'] = 'ifort'
+    global_env['AR'] = 'xiar'
+    global_env['LD'] = 'xild'
 else:
     print 'Aborted because of unknown build option:', option
     Exit(1)

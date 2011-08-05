@@ -9,7 +9,8 @@ from setup_tools import env_vars, source_scripts, add_path, remove_path
 def unsetup_externals(location):
     """function to unsetup an externals directory"""
 
-    subdir = os.environ['BELLE2_SUBDIR']
+    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
+                            os.environ['BELLE2_SUBDIR'])
 
     # externals
     remove_path('PATH', os.path.join(location, 'bin', subdir))
@@ -41,7 +42,8 @@ def unsetup_externals(location):
 def setup_externals(location):
     """function to setup an externals directory"""
 
-    subdir = os.environ['BELLE2_SUBDIR']
+    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
+                            os.environ['BELLE2_SUBDIR'])
 
     # add externals directory to path and library path
     add_path('PATH', os.path.join(location, 'bin', subdir))

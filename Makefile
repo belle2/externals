@@ -3,13 +3,20 @@
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
 export EXTINCDIR := $(EXTDIR)/include
-export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_SUBDIR)
-export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_SUBDIR)
+ifdef BELLE2_EXTERNALS_SUBDIR
+  export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
+  export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
+  EXTERNALS_OPTION := $(BELLE2_EXTERNALS_OPTION)
+else
+  export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_SUBDIR)
+  export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_SUBDIR)
+  EXTERNALS_OPTION := $(BELLE2_OPTION)
+endif
 
 export EXTDIRVAR := \$${BELLE2_EXTERNALS_DIR}
 export EXTINCDIRVAR := $(EXTDIRVAR)/include
-export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_SUBDIR}
-export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_SUBDIR}
+export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR:-\$${BELLE2_SUBDIR}}
+export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR:-\$${BELLE2_SUBDIR}}
 
 export ROOTSYS := $(EXTDIR)/root
 export GENFIT := $(EXTDIRVAR)/genfit
@@ -20,19 +27,38 @@ export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
 NPROCESSES=$(shell grep processor /proc/cpuinfo| wc -l)
 
 # set debug or optimization options 
-ifeq ($(BELLE2_OPTION),debug)
+ifeq ($(EXTERNALS_OPTION),debug)
   export BOOST_OPTION=variant=debug
   export CXXFLAGS=-g
   export GEANT4_OPTION=-D g4debug=y
+  export ROOT_OPTION=
   export ROOTBUILD=debug
   export EVTGEN_OPTION=--enable-debug
-else
+else 
+ifeq ($(EXTERNALS_OPTION),opt)
   export BOOST_OPTION=variant=release
   export CXXFLAGS=-O3
   export GEANT4_OPTION=-D g4debug=n
+  export ROOT_OPTION=
   export ROOTBUILD=
   export EVTGEN_OPTION=
-endif 
+else # intel
+  export CC=icc
+  export CXX=icpc
+  export CXXCPP=icc -E
+  export FC=ifort
+  export AR=xiar
+  export LD=xild
+  export BOOST_OPTION=variant=release toolset=intel
+  export GEANT4_OPTION=-D g4debug=n -D g4compiler=icc
+  export ROOT_OPTION=linuxicc
+  ifeq ($(shell uname -m),x86_64)
+    export ROOT_OPTION=linuxx8664icc
+  endif
+  export ROOTBUILD=
+  export EVTGEN_OPTION=
+endif
+endif
 
 # check for graphics packages
 GL_EXISTS=$(shell pkg-config --exists gl; echo $$?)
@@ -73,9 +99,9 @@ $(EXTLIBDIR)/libgtest.a:
 	@mkdir -p $(EXTINCDIR)/gtest/internal
 	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
 	@cp -a $(EXTDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
-	g++ -I$(EXTINCDIR) -Igtest -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
-	g++ -I$(EXTINCDIR) -Igtest -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
-	@ar -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
+	@$(AR) -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
 
 # google test clean command
 gtest.clean:
@@ -113,8 +139,8 @@ CLHEP/configure:
 # CLHEP build command
 CLHEP/config.log: CLHEP/configure
 	@echo "building CLHEP"
-	@cd CLHEP; ./configure --prefix=$(EXTDIRVAR) \
-	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIRVAR) --bindir=$(EXTBINDIRVAR); make -j $(NPROCESSES); make install
+	@cd CLHEP; export CXX=icc; ./configure --prefix=$(EXTDIRVAR) \
+	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make -j $(NPROCESSES); make install
 
 # CLHEP clean command
 clhep.clean:
@@ -149,13 +175,13 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@-rm geant4/.config/bin/Linux-g++/config.sh
 	@cd geant4; ./Configure -build -d -e -s -D d_portable='define' -D g4includes_flag=y \
 	-D g4granular='y' -D g4wlib_build_g3tog4='y' -D g4wlib_use_g3tog4='y' \
-	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
+	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIRVAR) \
 	-D g4clhep_include_dir=$(EXTINCDIRVAR) -D g4clhep_lib_dir=$(EXTLIBDIRVAR) \
 	-D g4install=$(EXTDIRVAR)/geant4 -D g4make_jobs='$(NPROCESSES)'
-	@-rm -rf geant4/env.*sh; cd geant4; ./Configure
+	@-rm -rf geant4/env.*sh; cd geant4; ./Configure $(GEANT4_OPTION)
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new; mv env.new geant4/env.sh
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new; mv env.new geant4/env.csh
-	@cd geant4/source; CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4SYSTEM=Linux-g++ G4INCLUDE=$(EXTDIRVAR)/include/geant4 make includes dependencies=""
+	@bash -c ". geant4/env.sh; cd geant4/source; make includes dependencies=\"\""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
 
 # GEANT4 clean command
@@ -173,8 +199,8 @@ root/config/Makefile.config:
 	@echo "building root"
 	@-cd root; patch -Np0 < ../root.patch
 	@cd root/geom/geom/src; \
-	svn switch http://root.cern.ch/svn/root/trunk/geom/geom/src/TGeoBoolNode.cxx@38558 TGeoBoolNode.cxx
-	@cd root; ./configure --enable-gsl-shared --enable-roofit; make -j $(NPROCESSES)
+	svn export -r 38558 http://root.cern.ch/svn/root/trunk/geom/geom/src/TGeoBoolNode.cxx
+	@cd root; ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit; make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/include/* $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/lib/* $(EXTLIBDIR)
@@ -218,7 +244,7 @@ geant4_vmc/include/g4root/TG4RootNavMgr.h:
 	@echo "building geant4_vmc"
 	@cd geant4_vmc; VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
 	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTINCDIR)/geant4 \
-	make -j $(NPROCESSES)
+	make CXXOPTS=-fPIC -j $(NPROCESSES)
 	@-rm -rf $(EXTINCDIR)/geant4_vmc
 	@cp -a geant4_vmc/include $(EXTINCDIR)/geant4_vmc 
 	@cp -af geant4_vmc/lib/*/* $(EXTLIBDIR) 

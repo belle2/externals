@@ -269,7 +269,7 @@ geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
 geant4_vmc/include/g4root/TG4RootNavMgr.h:
 	@echo "building geant4_vmc"
 	@cd geant4_vmc; VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
-	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTINCDIR)/geant4 \
+	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTDIR)/geant4/include \
 	make CXXOPTS=-fPIC -j $(NPROCESSES)
 	@-rm -rf $(EXTINCDIR)/geant4_vmc
 	@cp -a geant4_vmc/include $(EXTINCDIR)/geant4_vmc 

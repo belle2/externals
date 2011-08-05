@@ -61,8 +61,8 @@ endif
 endif
 
 # check for graphics packages
-GL_EXISTS=$(shell pkg-config --exists gl; echo $$?)
-ifeq ($(GL_EXISTS),0)
+GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu; echo $$?)
+ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
@@ -73,6 +73,8 @@ all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit evtgen
 # clean up target
 clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean evtgen.clean
 
+# remove only target files
+touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch evtgen.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -110,6 +112,10 @@ gtest.clean:
 	@rm -f gtest/src/*.o
 	@rm -f $(EXTLIBDIR)/libgtest.a
 
+# google test touch command
+gtest.touch:
+	@rm -f $(EXTLIBDIR)/libgtest.a
+
 
 # dependence for boost build
 boost: boost/project-config.jam
@@ -123,6 +129,10 @@ boost/project-config.jam:
 boost.clean:
 	@echo "cleaning boost"
 	@cd boost; ./bjam --clean $(BOOST_OPTION)
+	@rm -f boost/project-config.jam
+
+# boost touch command
+boost.touch:
 	@rm -f boost/project-config.jam
 
 
@@ -146,6 +156,10 @@ CLHEP/config.log: CLHEP/configure
 clhep.clean:
 	@echo "cleaning CLHEP"
 	@cd CLHEP; make clean
+	@rm -f CLHEP/config.log
+
+# CLHEP touch command
+clhep.touch:
 	@rm -f CLHEP/config.log
 
 
@@ -175,7 +189,7 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@-rm geant4/.config/bin/Linux-g++/config.sh
 	@cd geant4; ./Configure -build -d -e -s -D d_portable='define' -D g4includes_flag=y \
 	-D g4granular='y' -D g4wlib_build_g3tog4='y' -D g4wlib_use_g3tog4='y' \
-	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIRVAR) \
+	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
 	-D g4clhep_include_dir=$(EXTINCDIRVAR) -D g4clhep_lib_dir=$(EXTLIBDIRVAR) \
 	-D g4install=$(EXTDIRVAR)/geant4 -D g4make_jobs='$(NPROCESSES)'
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure $(GEANT4_OPTION)
@@ -189,6 +203,10 @@ geant4.clean:
 	@echo "cleaning geant4"
 	@cd geant4; rm -rf tmp lib bin .config
 	@rm -f geant4/env.sh geant4/env.csh
+
+# GEANT4 touch command
+geant4.touch:
+	@rm -f geant4/env.sh
 
 
 # dependence for root build
@@ -209,6 +227,10 @@ root/config/Makefile.config:
 root.clean:
 	@echo "cleaning root"
 	@cd root; make clean
+	@rm -f root/config/Makefile.config
+
+# root touch command
+root.touch:
 	@rm -f root/config/Makefile.config
 
 
@@ -235,6 +257,10 @@ vgm.clean:
 	@echo "cleaning VGM"
 	@cd vgm; rm -rf tmp lib
 
+# vgm touch command
+vgm.touch:
+	@rm -f vgm/tmp/Linux-g++/BaseVGM_common/obj.last
+
 
 # dependence for geant4_vmc build
 geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
@@ -254,6 +280,10 @@ geant4_vmc.clean:
 	@echo "cleaning geant4_vmc"
 	@cd geant4_vmc; rm -rf tmp lib include
 
+# geant4_vmc touch command
+geant4_vmc.touch:
+	@rm -f geant4_vmc/include/g4root/TG4RootNavMgr.h
+
 
 # dependence for genfit build
 genfit: include/genfit/RKTrackRep.h
@@ -269,6 +299,10 @@ include/genfit/RKTrackRep.h:
 genfit.clean:
 	@echo "cleaning genfit"
 	@cd genfit; SCONSFLAGS="" scons -c
+	@rm -f include/genfit/RKTrackRep.h
+
+# genfit touch command
+genfit.touch:
 	@rm -f include/genfit/RKTrackRep.h
 
 
@@ -293,4 +327,8 @@ evtgen/config.mk: evtgen/configure
 evtgen.clean:
 	@echo "cleaning EvtGen"
 	@cd evtgen; make clean
+	@rm -f evtgen/config.mk
+
+# EvtGen touch command
+evtgen.touch:
 	@rm -f evtgen/config.mk

@@ -149,7 +149,7 @@ CLHEP/configure:
 # CLHEP build command
 CLHEP/config.log: CLHEP/configure
 	@echo "building CLHEP"
-	@cd CLHEP; export CXX=icc; ./configure --prefix=$(EXTDIRVAR) \
+	@cd CLHEP; ./configure --prefix=$(EXTDIRVAR) \
 	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make -j $(NPROCESSES); make install
 
 # CLHEP clean command

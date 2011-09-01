@@ -1,6 +1,6 @@
 Index: montecarlo/eg/src/TDatabasePDG.cxx
 ===================================================================
---- montecarlo/eg/src/TDatabasePDG.cxx	(revision 39145)
+--- montecarlo/eg/src/TDatabasePDG.cxx	(revision 40788)
 +++ montecarlo/eg/src/TDatabasePDG.cxx	(working copy)
 @@ -19,6 +19,7 @@
  #include "TDecayChannel.h"
@@ -86,7 +86,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
     //browse data base
 Index: montecarlo/eg/inc/TDatabasePDG.h
 ===================================================================
---- montecarlo/eg/inc/TDatabasePDG.h	(revision 39145)
+--- montecarlo/eg/inc/TDatabasePDG.h	(revision 40788)
 +++ montecarlo/eg/inc/TDatabasePDG.h	(working copy)
 @@ -82,6 +82,8 @@
     virtual void   ReadPDGTable (const char *filename = "");
@@ -99,7 +99,7 @@ Index: montecarlo/eg/inc/TDatabasePDG.h
  };
 Index: html/src/TClassDocOutput.cxx
 ===================================================================
---- html/src/TClassDocOutput.cxx	(revision 39145)
+--- html/src/TClassDocOutput.cxx	(revision 40788)
 +++ html/src/TClassDocOutput.cxx	(working copy)
 @@ -81,7 +81,7 @@
  
@@ -323,7 +323,7 @@ Index: html/src/TClassDocOutput.cxx
  
 Index: html/src/TDocOutput.cxx
 ===================================================================
---- html/src/TDocOutput.cxx	(revision 39145)
+--- html/src/TDocOutput.cxx	(revision 40788)
 +++ html/src/TDocOutput.cxx	(working copy)
 @@ -646,7 +646,7 @@
        return;
@@ -352,7 +352,7 @@ Index: html/src/TDocOutput.cxx
  
        TString htmltitle("Index of ");
        TString moduletitle(module->GetName());
-@@ -1089,7 +1089,7 @@
+@@ -1095,7 +1095,7 @@
        return;
     }
  
@@ -361,7 +361,7 @@ Index: html/src/TDocOutput.cxx
     // write out header
     WriteHtmlHeader(out, "Library Dependencies");
  
-@@ -1122,7 +1122,7 @@
+@@ -1128,7 +1128,7 @@
        return;
     }
  
@@ -370,7 +370,7 @@ Index: html/src/TDocOutput.cxx
  
     WriteHtmlHeader(out, GetHtml()->GetProductName() + " Reference Guide");
  
-@@ -1269,7 +1269,7 @@
+@@ -1275,7 +1275,7 @@
        return;
     }
  

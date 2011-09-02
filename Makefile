@@ -195,7 +195,7 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure $(GEANT4_OPTION)
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new; mv env.new geant4/env.sh
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new; mv env.new geant4/env.csh
-	@bash -c ". geant4/env.sh; cd geant4/source; G4INCLUDE=$(EXTDIRVAR)/include/geant4 make includes dependencies=\"\""
+	@bash -c ". geant4/env.sh; cd geant4/source; make includes dependencies=\"\""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
 
 # GEANT4 clean command
@@ -267,7 +267,7 @@ geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
 geant4_vmc/include/g4root/TG4RootNavMgr.h:
 	@echo "building geant4_vmc"
 	@cd geant4_vmc; VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
-	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTDIR)/geant4/include \
+	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTINCDIR)/geant4 \
 	make CXXOPTS=-fPIC -j $(NPROCESSES)
 	@-rm -rf $(EXTINCDIR)/geant4_vmc
 	@cp -a geant4_vmc/include $(EXTINCDIR)/geant4_vmc 

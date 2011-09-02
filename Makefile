@@ -195,7 +195,7 @@ geant4/env.sh: CLHEP/config.log geant4/Configure
 	@-rm -rf geant4/env.*sh; cd geant4; ./Configure $(GEANT4_OPTION)
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new; mv env.new geant4/env.sh
 	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new; mv env.new geant4/env.csh
-	@bash -c ". geant4/env.sh; cd geant4/source; make includes dependencies=\"\""
+	@bash -c ". geant4/env.sh; cd geant4/source; G4INCLUDE=$(EXTDIRVAR)/include/geant4 make includes dependencies=\"\""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
 
 # GEANT4 clean command

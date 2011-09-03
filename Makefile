@@ -101,8 +101,8 @@ $(EXTLIBDIR)/libgtest.a:
 	@mkdir -p $(EXTINCDIR)/gtest/internal
 	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
 	@cp -a $(EXTDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
-	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
-	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost/boost -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost/boost -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
 	@$(AR) -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
 
 # google test clean command

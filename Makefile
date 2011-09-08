@@ -3,20 +3,18 @@
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
 export EXTINCDIR := $(EXTDIR)/include
-ifdef BELLE2_EXTERNALS_SUBDIR
-  export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
-  export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
+export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
+export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
+ifdef BELLE2_EXTERNALS_OPTION
   EXTERNALS_OPTION := $(BELLE2_EXTERNALS_OPTION)
 else
-  export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_SUBDIR)
-  export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_SUBDIR)
   EXTERNALS_OPTION := $(BELLE2_OPTION)
 endif
 
 export EXTDIRVAR := \$${BELLE2_EXTERNALS_DIR}
 export EXTINCDIRVAR := $(EXTDIRVAR)/include
-export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR:-\$${BELLE2_SUBDIR}}
-export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR:-\$${BELLE2_SUBDIR}}
+export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR}
+export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR}
 
 export ROOTSYS := $(EXTDIR)/root
 export GENFIT := $(EXTDIRVAR)/genfit
@@ -42,7 +40,8 @@ ifeq ($(EXTERNALS_OPTION),opt)
   export ROOT_OPTION=
   export ROOTBUILD=
   export EVTGEN_OPTION=
-else # intel
+else
+ifeq ($(EXTERNALS_OPTION),intel)
   export CC=icc
   export CXX=icpc
   export CXXCPP=icc -E
@@ -57,6 +56,9 @@ else # intel
   endif
   export ROOTBUILD=
   export EVTGEN_OPTION=
+else
+  $(error Unknown externals build option. Please source the setup_belle2.(c)sh script.)
+endif
 endif
 endif
 

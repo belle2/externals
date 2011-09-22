@@ -218,7 +218,7 @@ root: root/config/Makefile.config
 root/config/Makefile.config:
 	@echo "building root"
 	@-cd root; patch -Np0 < ../root.patch
-	@cd root; ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit; make -j $(NPROCESSES)
+	@cd root; ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd; make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/include/* $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/lib/* $(EXTLIBDIR)

@@ -31,6 +31,7 @@ ifeq ($(EXTERNALS_OPTION),debug)
   export GEANT4_OPTION=-D g4debug=y
   export ROOT_OPTION=
   export ROOTBUILD=debug
+  export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
 else 
 ifeq ($(EXTERNALS_OPTION),opt)
@@ -39,6 +40,7 @@ ifeq ($(EXTERNALS_OPTION),opt)
   export GEANT4_OPTION=-D g4debug=n
   export ROOT_OPTION=
   export ROOTBUILD=
+  export PYTHIA_OPTION=
   export EVTGEN_OPTION=
 else
 ifeq ($(EXTERNALS_OPTION),intel)
@@ -55,6 +57,7 @@ ifeq ($(EXTERNALS_OPTION),intel)
     export ROOT_OPTION=linuxx8664icc
   endif
   export ROOTBUILD=
+  export PYTHIA_OPTION=
   export EVTGEN_OPTION=
 else
   $(error Unknown externals build option. Please source the setup_belle2.(c)sh script.)
@@ -70,13 +73,13 @@ endif
 
 
 # all target
-all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit evtgen
+all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean evtgen.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch evtgen.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -306,29 +309,131 @@ genfit.touch:
 	@rm -f include/genfit/RKTrackRep.h
 
 
-# dependence for EvtGen build
+# dependency for HepMC build
+hepmc: include/HepMC/Version.h
+
+# dependency for HepMC download
+hepmc/configure:
+	@echo "downloading HepMC"
+	@wget -O - http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.05.tar.gz | tar xz
+	@mv HepMC-2.06.05 hepmc
+
+# HepMC build command
+include/HepMC/Version.h: hepmc/configure
+	@echo "building HepMC"
+	@cd hepmc; ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc; make -j $(NPROCESSES) install
+	@#cd hepmc; ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc --libdir=$(EXTLIBDIR) --includedir=$(EXTINCDIR) --datadir=$(EXTDIR)/share; make -j $(NPROCESSES) install
+	@cp hepmc/lib/* $(EXTLIBDIR)/
+	@mkdir $(EXTINCDIR)/HepMC; cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
+
+# HepMC clean command
+hepmc.clean:
+	@echo "cleaning HepMC"
+	@cd hepmc; make clean
+	@rm -rf $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
+
+# HepMC touch command
+hepmc.touch:
+	@rm -f include/HepMC/Version.h
+
+
+# dependency for Pythia build
+pythia: include/pythia/Pythia.h
+
+# dependency for Pythia download
+pythia/configure:
+	@echo "downloading Pythia"
+	@wget -O - http://home.thep.lu.se/~torbjorn/pythia8/pythia8153.tgz | tar xz
+	@mv pythia8153 pythia
+
+# Pythia build command
+include/pythia/Pythia.h: pythia/configure
+	@echo "building Pythia"
+	@cd pythia; ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc; make -j $(NPROCESSES)
+	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
+	@mkdir $(EXTINCDIR)/pythia; cp pythia/include/* $(EXTINCDIR)/pythia/
+
+# Pythia clean command
+pythia.clean:
+	@echo "cleaning Pythia"
+	@cd pythia; make clean
+	@rm -rf $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia
+
+# Pythia touch command
+pythia.touch:
+	@rm -f include/pythia/Pythia.h
+
+
+# dependency for Photos build
+photos: include/PHOTOS/Photos.h
+
+# dependency for Photos download
+PHOTOS/configure:
+	@echo "downloading Photos"
+	@wget -O - http://www.ph.unimelb.edu.au/~ndavidson/photos/PHOTOS.3.0.tar.gz | tar xz
+
+# Photos build command
+include/PHOTOS/Photos.h: PHOTOS/configure
+	@echo "building Photos"
+	@cd PHOTOS; ./configure --with-HepMC=$(EXTDIR)/hepmc; make -j $(NPROCESSES)
+	@cp PHOTOS/lib/* $(EXTLIBDIR)/
+	@mkdir $(EXTINCDIR)/PHOTOS; cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
+
+# Photos clean command
+photos.clean:
+	@echo "cleaning Photos"
+	@cd PHOTOS; make clean
+	@rm -rf $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/PHOTOS
+
+# Photos touch command
+photos.touch:
+	@rm -f include/PHOTOS/Photos.h
+
+
+# dependency for Tauola build
+tauola: include/TAUOLA/Tauola.h
+
+# dependency for Tauola download
+TAUOLA/configure:
+	@echo "downloading Tauola"
+	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.5/TAUOLA.1.0.5.tar.gz | tar xz
+
+# Tauola build command
+include/TAUOLA/Tauola.h: TAUOLA/configure
+	@echo "building Tauola"
+	@cd TAUOLA; ./configure --with-HepMC=$(EXTDIR)/hepmc; make
+	@cp TAUOLA/lib/* $(EXTLIBDIR)/
+	@mkdir $(EXTINCDIR)/TAUOLA; cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
+
+# Tauola clean command
+tauola.clean:
+	@echo "cleaning Tauola"
+	@cd TAUOLA; make clean
+	@rm -rf $(EXTLIBDIR)/libTauola* $(EXTINCDIR)/TAUOLA
+
+# Tauola touch command
+tauola.touch:
+	@rm -f include/TAUOLA/Tauola.h
+
+
+# dependency for EvtGen build
 evtgen: evtgen/config.mk
 
-# dependence for EvtGen download
-evtgen/configure:
-	@echo "downloading EvtGen"
-	@wget -O - http://service-spi.web.cern.ch/service-spi/external/MCGenerators/distribution/evtgenlhc-9.1-src.tgz | tar xz
-	@mv evtgenlhc/9.1 evtgen
-	@cd evtgen; patch -Np0 < ../evtgen.patch
-	@rmdir evtgenlhc
-
 # EvtGen build command
-evtgen/config.mk: evtgen/configure
+evtgen/config.mk:
 	@echo "building EvtGen"
-	@cd evtgen; ./configure --lcgplatform=x86_64-slc5-gcc43-opt $(EVTGEN_OPTION); make
-	@cd evtgen; cp lib/* $(EXTLIBDIR)/; mkdir $(EXTINCDIR)/evtgen; cp -r EvtGen* $(EXTINCDIR)/evtgen
+	@cd evtgen; ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION); make -j $(NPROCESSES)
+	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
+	@mkdir $(EXTINCDIR)/evtgen; cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/
 
 # EvtGen clean command
 evtgen.clean:
 	@echo "cleaning EvtGen"
 	@cd evtgen; make clean
-	@rm -f evtgen/config.mk
+	@rm -rf evtgen/config.mk $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen
 
 # EvtGen touch command
 evtgen.touch:
 	@rm -f evtgen/config.mk
+
+

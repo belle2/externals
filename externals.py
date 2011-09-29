@@ -141,6 +141,21 @@ def config_externals(conf):
     # genfit
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'genfit'))
 
+    # HepMC
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'hepMC'))
+
+    # Pythia
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'pythia'))
+
+    # Photos
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'PHOTOS'))
+
+    # Tauola
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'TAUOLA'))
+
+    # EvtGen
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'evtgen'))
+
     return True
 
 

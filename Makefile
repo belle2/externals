@@ -73,13 +73,13 @@ endif
 
 
 # all target
-all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen
+all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -106,8 +106,8 @@ $(EXTLIBDIR)/libgtest.a:
 	@mkdir -p $(EXTINCDIR)/gtest/internal
 	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
 	@cp -a $(EXTDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
-	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost/boost -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
-	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost/boost -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost -I$(EXTDIR)/boost/boost -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
+	$(CXX) -I$(EXTINCDIR) -Igtest -I$(EXTDIR)/boost -I$(EXTDIR)/boost/boost -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
 	@$(AR) -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
 
 # google test clean command
@@ -437,3 +437,30 @@ evtgen.touch:
 	@rm -f evtgen/config.mk
 
 
+# rave download command
+rave/configure: boost/project-config.jam root/config/Makefile.config
+	@echo "downloading rave"
+	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.0.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
+	@mv rave-0.6.0 rave
+	@cd rave/src; ln -s $(EXTINCDIR)/boost boost
+	@cd rave/src/ROOT/genvector; ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/mathcore; ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/smatrix; ln -s $(EXTINCDIR)/root/Math Math
+
+# rave configure command
+rave/config.status: rave/configure CLHEP/config.log
+	@cd rave; CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
+
+# rave build command
+rave: rave/config.status
+	@echo "building rave"
+	@cd rave; make -j $(NPROCESSES) && make install
+
+# rave clean command
+rave.clean:
+	@echo "cleaning rave"
+	@cd rave; make uninstall; make clean
+
+# rave touch command
+rave.touch:
+	@rm -f rave/config.status

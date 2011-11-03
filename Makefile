@@ -352,12 +352,13 @@ include/pythia/Pythia.h: pythia/configure
 	@cd pythia; ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc; make -j $(NPROCESSES)
 	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
 	@mkdir $(EXTINCDIR)/pythia; cp pythia/include/* $(EXTINCDIR)/pythia/
+	@mkdir -p share/pythia; cp pythia/xmldoc/* share/pythia/
 
 # Pythia clean command
 pythia.clean:
 	@echo "cleaning Pythia"
 	@cd pythia; make clean
-	@rm -rf $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia
+	@rm -rf $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia share/pythia
 
 # Pythia touch command
 pythia.touch:
@@ -425,12 +426,13 @@ evtgen/config.mk:
 	@cd evtgen; ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION); make -j $(NPROCESSES)
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
 	@mkdir $(EXTINCDIR)/evtgen; cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/
+	@mkdir -p share/evtgen; cp evtgen/DECAY.DEC evtgen/evt.pdl share/evtgen
 
 # EvtGen clean command
 evtgen.clean:
 	@echo "cleaning EvtGen"
 	@cd evtgen; make clean
-	@rm -rf evtgen/config.mk $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen
+	@rm -rf evtgen/config.mk $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen share/evtgen
 
 # EvtGen touch command
 evtgen.touch:

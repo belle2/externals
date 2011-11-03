@@ -38,6 +38,9 @@ def unsetup_externals(location):
     remove_path('LD_LIBRARY_PATH', os.path.join(root_dir, 'lib'))
     remove_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
 
+    # pythia
+    env_vars['PYTHIA8DATA'] = ''
+
 
 def setup_externals(location):
     """function to setup an externals directory"""
@@ -60,6 +63,9 @@ def setup_externals(location):
     add_path('PATH', os.path.join(root_dir, 'bin'))
     add_path('LD_LIBRARY_PATH', os.path.join(root_dir, 'lib'))
     add_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
+
+    # pythia
+    env_vars['PYTHIA8DATA'] = os.path.join(location, 'share', 'pythia')
 
 
 def check_externals(location):

@@ -440,8 +440,11 @@ evtgen.touch:
 	@rm -f evtgen/config.mk
 
 
+# dependency for rave build
+rave: include/rave/Vertex.h
+
 # rave download command
-rave/configure: boost/project-config.jam root/config/Makefile.config
+rave/configure:
 	@echo "downloading rave"
 	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.0.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
 	@mv rave-0.6.0 rave
@@ -451,11 +454,11 @@ rave/configure: boost/project-config.jam root/config/Makefile.config
 	@cd rave/src/ROOT/smatrix; ln -s $(EXTINCDIR)/root/Math Math
 
 # rave configure command
-rave/config.status: rave/configure CLHEP/config.log
+rave/config.status: rave/configure
 	@cd rave; CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
 
 # rave build command
-rave: rave/config.status
+include/rave/Vertex.h: rave/config.status
 	@echo "building rave"
 	@cd rave; make -j $(NPROCESSES) && make install
 
@@ -463,6 +466,7 @@ rave: rave/config.status
 rave.clean:
 	@echo "cleaning rave"
 	@cd rave; make uninstall; make clean
+	@rm -f rave/config.status
 
 # rave touch command
 rave.touch:

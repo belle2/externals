@@ -128,12 +128,12 @@ boost: boost/project-config.jam
 # boost build command
 boost/project-config.jam:
 	@echo "building boost"
-	@cd boost; ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR); ./bjam install -j$(NPROCESSES) $(BOOST_OPTION)
+	@cd boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) && ./bjam install -j$(NPROCESSES) $(BOOST_OPTION)
 
 # boost clean command
 boost.clean:
 	@echo "cleaning boost"
-	@cd boost; ./bjam --clean $(BOOST_OPTION)
+	@cd boost && ./bjam --clean $(BOOST_OPTION)
 	@rm -f boost/project-config.jam
 
 # boost touch command
@@ -154,13 +154,13 @@ CLHEP/configure:
 # CLHEP build command
 CLHEP/config.log: CLHEP/configure
 	@echo "building CLHEP"
-	@cd CLHEP; ./configure --prefix=$(EXTDIRVAR) \
-	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR); make -j $(NPROCESSES); make install
+	@cd CLHEP && ./configure --prefix=$(EXTDIRVAR) \
+	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
 
 # CLHEP clean command
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@cd CLHEP; make clean
+	@cd CLHEP && make clean
 	@rm -f CLHEP/config.log
 
 # CLHEP touch command
@@ -189,24 +189,24 @@ geant4/Configure:
 # GEANT4 build command
 geant4/env.sh: CLHEP/config.log geant4/Configure
 	@echo "building geant4"
-	@cd geant4; sed 's;test "x$$g4query_conf" != "xyes";false;g' Configure > Configure.new; \
-	mv Configure.new Configure; chmod a+x Configure
+	@cd geant4 && sed 's;test "x$$g4query_conf" != "xyes";false;g' Configure > Configure.new && \
+	mv Configure.new Configure && chmod a+x Configure
 	@-rm geant4/.config/bin/Linux-g++/config.sh
-	@cd geant4; ./Configure -build -d -e -s -D d_portable='define' -D g4includes_flag=y \
+	@cd geant4 && ./Configure -build -d -e -s -D d_portable='define' -D g4includes_flag=y \
 	-D g4granular='y' -D g4wlib_build_g3tog4='y' -D g4wlib_use_g3tog4='y' \
 	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
 	-D g4clhep_include_dir=$(EXTINCDIRVAR) -D g4clhep_lib_dir=$(EXTLIBDIRVAR) \
 	-D g4install=$(EXTDIRVAR)/geant4 -D g4make_jobs='$(NPROCESSES)'
-	@-rm -rf geant4/env.*sh; cd geant4; ./Configure $(GEANT4_OPTION)
-	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new; mv env.new geant4/env.sh
-	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new; mv env.new geant4/env.csh
-	@bash -c ". geant4/env.sh; cd geant4/source; make includes dependencies=\"\""
+	@-rm -rf geant4/env.*sh && cd geant4 && ./Configure $(GEANT4_OPTION)
+	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new && mv env.new geant4/env.sh
+	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new && mv env.new geant4/env.csh
+	@bash -c ". geant4/env.sh && cd geant4/source && make includes dependencies=\"\""
 	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
 
 # GEANT4 clean command
 geant4.clean:
 	@echo "cleaning geant4"
-	@cd geant4; rm -rf tmp lib bin .config
+	@cd geant4 && rm -rf tmp lib bin .config
 	@rm -f geant4/env.sh geant4/env.csh
 
 # GEANT4 touch command
@@ -220,8 +220,8 @@ root: root/config/Makefile.config
 # root build command
 root/config/Makefile.config:
 	@echo "building root"
-	@-cd root; patch -Np0 < ../root.patch
-	@cd root; ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd; make -j $(NPROCESSES)
+	@-cd root && patch -Np0 < ../root.patch
+	@cd root && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/include/* $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/lib/* $(EXTLIBDIR)
@@ -229,7 +229,7 @@ root/config/Makefile.config:
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@cd root; make clean
+	@cd root && make clean
 	@rm -f root/config/Makefile.config
 
 # root touch command
@@ -244,8 +244,8 @@ vgm: vgm/tmp/Linux-g++/BaseVGM_common/obj.last $(VGM_INCLUDES)
 # vgm build command
 vgm/tmp/Linux-g++/BaseVGM_common/obj.last:
 	@echo "building VGM"
-	@-cd vgm; patch -Np0 < ../vgm.patch
-	@cd vgm/packages; VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
+	@-cd vgm && patch -Np0 < ../vgm.patch
+	@cd vgm/packages && VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
 	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 ROOTSYS=$(EXTDIR)/root CPPFLAGS=-I$(EXTINCDIR)/geant4 \
 	make
 	@cp -a vgm/lib/Linux-g++/* $(EXTLIBDIR) 
@@ -258,7 +258,7 @@ include/vgm/%: vgm/packages/%/include
 # vgm clean command
 vgm.clean:
 	@echo "cleaning VGM"
-	@cd vgm; rm -rf tmp lib
+	@cd vgm && rm -rf tmp lib
 
 # vgm touch command
 vgm.touch:
@@ -271,7 +271,7 @@ geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
 # geant4_vmc build command
 geant4_vmc/include/g4root/TG4RootNavMgr.h:
 	@echo "building geant4_vmc"
-	@cd geant4_vmc; VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
+	@cd geant4_vmc && VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
 	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTINCDIR)/geant4 \
 	make CXXOPTS=-fPIC -j $(NPROCESSES)
 	@-rm -rf $(EXTINCDIR)/geant4_vmc
@@ -281,7 +281,7 @@ geant4_vmc/include/g4root/TG4RootNavMgr.h:
 # geant4_vmc clean command
 geant4_vmc.clean:
 	@echo "cleaning geant4_vmc"
-	@cd geant4_vmc; rm -rf tmp lib include
+	@cd geant4_vmc && rm -rf tmp lib include
 
 # geant4_vmc touch command
 geant4_vmc.touch:
@@ -294,14 +294,14 @@ genfit: include/genfit/RKTrackRep.h
 # genfit build command
 include/genfit/RKTrackRep.h:
 	@echo "building genfit"
-	@cd genfit; SCONSFLAGS="" scons
+	@cd genfit && SCONSFLAGS="" scons
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -r genfit/include/* $(EXTINCDIR)/ # copy the installed files
 
 # genfit clean command
 genfit.clean:
 	@echo "cleaning genfit"
-	@cd genfit; SCONSFLAGS="" scons -c
+	@cd genfit && SCONSFLAGS="" scons -c
 	@rm -f include/genfit/RKTrackRep.h
 
 # genfit touch command
@@ -321,15 +321,15 @@ hepmc/configure:
 # HepMC build command
 include/HepMC/Version.h: hepmc/configure
 	@echo "building HepMC"
-	@cd hepmc; ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc; make -j $(NPROCESSES) install
-	@#cd hepmc; ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc --libdir=$(EXTLIBDIR) --includedir=$(EXTINCDIR) --datadir=$(EXTDIR)/share; make -j $(NPROCESSES) install
+	@cd hepmc && ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc && make -j $(NPROCESSES) install
+	@#cd hepmc && ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc --libdir=$(EXTLIBDIR) --includedir=$(EXTINCDIR) --datadir=$(EXTDIR)/share && make -j $(NPROCESSES) install
 	@cp hepmc/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/HepMC; cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
+	@mkdir $(EXTINCDIR)/HepMC && cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
 
 # HepMC clean command
 hepmc.clean:
 	@echo "cleaning HepMC"
-	@cd hepmc; make clean
+	@cd hepmc && make clean
 	@rm -rf $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
 
 # HepMC touch command
@@ -349,15 +349,15 @@ pythia/configure:
 # Pythia build command
 include/pythia/Pythia.h: pythia/configure
 	@echo "building Pythia"
-	@cd pythia; ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc; make -j $(NPROCESSES)
+	@cd pythia && ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc && make -j $(NPROCESSES)
 	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/pythia; cp pythia/include/* $(EXTINCDIR)/pythia/
-	@mkdir -p share/pythia; cp pythia/xmldoc/* share/pythia/
+	@mkdir $(EXTINCDIR)/pythia && cp pythia/include/* $(EXTINCDIR)/pythia/
+	@mkdir -p share/pythia && cp pythia/xmldoc/* share/pythia/
 
 # Pythia clean command
 pythia.clean:
 	@echo "cleaning Pythia"
-	@cd pythia; make clean
+	@cd pythia && make clean
 	@rm -rf $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia share/pythia
 
 # Pythia touch command
@@ -376,14 +376,14 @@ PHOTOS/configure:
 # Photos build command
 include/PHOTOS/Photos.h: PHOTOS/configure
 	@echo "building Photos"
-	@cd PHOTOS; ./configure --with-HepMC=$(EXTDIR)/hepmc; make -j $(NPROCESSES)
+	@cd PHOTOS && ./configure --with-HepMC=$(EXTDIR)/hepmc && make -j $(NPROCESSES)
 	@cp PHOTOS/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/PHOTOS; cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
+	@mkdir $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
 
 # Photos clean command
 photos.clean:
 	@echo "cleaning Photos"
-	@cd PHOTOS; make clean
+	@cd PHOTOS && make clean
 	@rm -rf $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/PHOTOS
 
 # Photos touch command
@@ -402,14 +402,14 @@ TAUOLA/configure:
 # Tauola build command
 include/TAUOLA/Tauola.h: TAUOLA/configure
 	@echo "building Tauola"
-	@cd TAUOLA; ./configure --with-HepMC=$(EXTDIR)/hepmc; make
+	@cd TAUOLA && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
 	@cp TAUOLA/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/TAUOLA; cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
+	@mkdir $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
 
 # Tauola clean command
 tauola.clean:
 	@echo "cleaning Tauola"
-	@cd TAUOLA; make clean
+	@cd TAUOLA && make clean
 	@rm -rf $(EXTLIBDIR)/libTauola* $(EXTINCDIR)/TAUOLA
 
 # Tauola touch command
@@ -423,16 +423,16 @@ evtgen: evtgen/config.mk
 # EvtGen build command
 evtgen/config.mk:
 	@echo "building EvtGen"
-	@-cd evtgen; patch -Np0 < ../evtgen.patch
-	@cd evtgen; ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION); make -j $(NPROCESSES)
+	@-cd evtgen && patch -Np0 < ../evtgen.patch
+	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES)
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/evtgen; cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/
-	@mkdir -p share/evtgen; cp evtgen/DECAY.DEC evtgen/evt.pdl share/evtgen
+	@mkdir $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/
+	@mkdir -p share/evtgen && cp evtgen/DECAY.DEC evtgen/evt.pdl share/evtgen
 
 # EvtGen clean command
 evtgen.clean:
 	@echo "cleaning EvtGen"
-	@cd evtgen; make clean
+	@cd evtgen && make clean
 	@rm -rf evtgen/config.mk $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen share/evtgen
 
 # EvtGen touch command
@@ -448,24 +448,24 @@ rave/configure:
 	@echo "downloading rave"
 	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.0.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
 	@mv rave-0.6.0 rave
-	@cd rave/src; ln -s $(EXTINCDIR)/boost boost
-	@cd rave/src/ROOT/genvector; ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/mathcore; ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/smatrix; ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
+	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/smatrix && ln -s $(EXTINCDIR)/root/Math Math
 
 # rave configure command
 rave/config.status: rave/configure
-	@cd rave; CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
+	@cd rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
 
 # rave build command
 include/rave/Vertex.h: rave/config.status
 	@echo "building rave"
-	@cd rave; make -j $(NPROCESSES) && make install
+	@cd rave && make -j $(NPROCESSES) && make install
 
 # rave clean command
 rave.clean:
 	@echo "cleaning rave"
-	@cd rave; make uninstall; make clean
+	@cd rave && make uninstall && make clean
 	@rm -f rave/config.status
 
 # rave touch command

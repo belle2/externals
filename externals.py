@@ -86,9 +86,6 @@ def config_externals(conf):
 
     from SCons.Script import Environment
 
-    # boost
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'boost'))
-
     # CLHEP
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'CLHEP'))
 

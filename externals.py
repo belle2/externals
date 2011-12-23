@@ -17,22 +17,13 @@ def unsetup_externals(location):
     remove_path('LD_LIBRARY_PATH', os.path.join(location, 'lib', subdir))
 
     # geant4
-    if os.environ.has_key('G4SYSTEM'):
-        remove_path('LD_LIBRARY_PATH', os.path.join(os.environ['G4LIB'],
-                    os.environ['G4SYSTEM']))
-        remove_path('LD_LIBRARY_PATH', os.environ['CLHEP_LIB_DIR'])
-        remove_path('PATH', os.path.join(os.environ['G4WORKDIR'], 'bin',
-                    os.environ['G4SYSTEM']))
     for var in os.environ.keys():
         if var.startswith('G4'):
             env_vars[var] = ''
-    for var in ['CLHEP_BASE_DIR', 'CLHEP_INCLUDE_DIR', 'CLHEP_LIB',
-                'CLHEP_LIB_DIR']:
-        env_vars[var] = ''
 
     # root
     root_dir = os.path.join(location, 'root')
-    if env_vars.has_key('ROOTSYS') and env_vars['ROOTSYS'] == root_dir:
+    if 'ROOTSYS' in env_vars and env_vars['ROOTSYS'] == root_dir:
         env_vars['ROOTSYS'] = ''
     remove_path('PATH', os.path.join(root_dir, 'bin'))
     remove_path('LD_LIBRARY_PATH', os.path.join(root_dir, 'lib'))
@@ -53,8 +44,8 @@ def setup_externals(location):
     add_path('LD_LIBRARY_PATH', os.path.join(location, 'lib', subdir))
 
     # geant4
-    source_scripts.append([os.path.join(location, 'geant4', 'env.sh'),
-                          os.path.join(location, 'geant4', 'env.csh')])
+    source_scripts.append([os.path.join(location, 'bin', subdir, 'geant4.sh'),
+                          os.path.join(location, 'bin', subdir, 'geant4.csh')])
 
     # root
     root_dir = os.path.join(location, 'root')
@@ -71,8 +62,11 @@ def setup_externals(location):
 def check_externals(location):
     """function to check the externals installation"""
 
+    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
+                            os.environ['BELLE2_SUBDIR'])
+
     result = True
-    if not os.path.isfile(os.path.join(location, 'geant4', 'env.sh')):
+    if not os.path.isfile(os.path.join(location, 'bin', subdir, 'geant4.sh')):
         result = False
         sys.stderr.write('Error: geant4 installation is missing.\n')
     if not os.path.isfile(os.path.join(location, 'root', 'bin', 'root.exe')):
@@ -90,7 +84,7 @@ def config_externals(conf):
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'CLHEP'))
 
     # geant4
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'geant4'))
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'Geant4'))
     conf.env['GEANT4_LIBS'] = [
         'G4digits_hits',
         'G4error_propagation',
@@ -160,5 +154,3 @@ def config_externals(conf):
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'evtgen'))
 
     return True
-
-

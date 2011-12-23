@@ -28,7 +28,7 @@ NPROCESSES=$(shell grep processor /proc/cpuinfo| wc -l)
 ifeq ($(EXTERNALS_OPTION),debug)
   export BOOST_OPTION=variant=debug
   export CXXFLAGS=-g
-  export GEANT4_OPTION=-D g4debug=y
+  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export ROOT_OPTION=
   export ROOTBUILD=debug
   export PYTHIA_OPTION=--enable-debug
@@ -37,7 +37,7 @@ else
 ifeq ($(EXTERNALS_OPTION),opt)
   export BOOST_OPTION=variant=release
   export CXXFLAGS=-O3
-  export GEANT4_OPTION=-D g4debug=n
+  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release
   export ROOT_OPTION=
   export ROOTBUILD=
   export PYTHIA_OPTION=
@@ -51,7 +51,7 @@ ifeq ($(EXTERNALS_OPTION),intel)
   export AR=xiar
   export LD=xild
   export BOOST_OPTION=variant=release toolset=intel
-  export GEANT4_OPTION=-D g4debug=n -D g4compiler=icc
+  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc
   export ROOT_OPTION=linuxicc
   ifeq ($(shell uname -m),x86_64)
     export ROOT_OPTION=linuxx8664icc
@@ -73,13 +73,13 @@ endif
 
 
 # all target
-all: dirs gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
+all: dirs cmake gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
+clean: cmake.clean gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
+touch: cmake.touch gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -95,6 +95,30 @@ $(EXTLIBDIR):
 $(EXTBINDIR):
 	@echo "create  $(EXTBINDIR)"
 	@mkdir -p $(EXTBINDIR)
+
+
+# dependency for cmake build
+clhep: CLHEP/config.log
+
+# dependency for cmake download
+cmake/bootstrap:
+	@echo "downloading cmake"
+	@wget -O - http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz | tar xz
+	@mv cmake-2.8.6 cmake
+
+# cmake build command
+cmake/bin/cmake: cmake/bootstrap
+	@echo "building cmake"
+	@cd cmake && make
+
+# cmake clean command
+cmake.clean:
+	@echo "cleaning cmake"
+	@cd cmake && make clean
+
+# cmake touch command
+cmake.touch:
+	@rm -f cmake/bin/cmake
 
 
 # dependence for google test build
@@ -141,15 +165,15 @@ boost.touch:
 	@rm -f boost/project-config.jam
 
 
-# dependence for CLHEP build
+# dependency for CLHEP build
 clhep: CLHEP/config.log
 
-# dependence for CLHEP download
+# dependency for CLHEP download
 CLHEP/configure:
 	@echo "downloading CLHEP"
-	@wget -O - http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.0.1.tgz | tar xz
-	@mv 2.1.0.1/CLHEP .
-	@rmdir 2.1.0.1
+	@wget -O - http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.1.0.tgz | tar xz
+	@mv 2.1.1.0/CLHEP .
+	@rmdir 2.1.1.0
 
 # CLHEP build command
 CLHEP/config.log: CLHEP/configure
@@ -168,50 +192,37 @@ clhep.touch:
 	@rm -f CLHEP/config.log
 
 
-# dependence for GEANT4 build
-geant4: geant4/env.sh
+# dependency for GEANT4 build
+geant4: include/Geant4/G4RunManager.hh
 
-# dependence for GEANT4 download
-geant4/Configure:
+# dependency for GEANT4 download
+geant4/CMakeLists.txt:
 	@echo "downloading geant4"
-	@wget -O - http://geant4.cern.ch/support/source/geant4.9.4.p01.tar.gz | tar xz
-	@mv geant4.9.4.p01 geant4
-	@mkdir -p share/geant4/data
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4EMLOW.6.19.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4NDL.3.14.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4PhotonEvaporation.2.1.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4RadioactiveDecay.3.3.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4ABLA.3.0.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4NEUTRONXS.1.0.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/G4PII.1.2.tar.gz | tar xz
-	@cd share/geant4/data; wget -O - http://geant4.cern.ch/support/source/RealSurface.1.0.tar.gz | tar xz
+	@wget -O - http://geant4.cern.ch/support/source/geant4.9.5.tar.gz | tar xz
+	@mv geant4.9.5 geant4
 
 # GEANT4 build command
-geant4/env.sh: CLHEP/config.log geant4/Configure
+include/Geant4/G4RunManager.hh: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@echo "building geant4"
-	@cd geant4 && sed 's;test "x$$g4query_conf" != "xyes";false;g' Configure > Configure.new && \
-	mv Configure.new Configure && chmod a+x Configure
-	@-rm geant4/.config/bin/Linux-g++/config.sh
-	@cd geant4 && ./Configure -build -d -e -s -D d_portable='define' -D g4includes_flag=y \
-	-D g4granular='y' -D g4wlib_build_g3tog4='y' -D g4wlib_use_g3tog4='y' \
-	$(GEANT4_OPTION) -D g4data=$(EXTDIRVAR)/share/geant4/data -D g4clhep_base_dir=$(EXTDIR) \
-	-D g4clhep_include_dir=$(EXTINCDIRVAR) -D g4clhep_lib_dir=$(EXTLIBDIRVAR) \
-	-D g4install=$(EXTDIRVAR)/geant4 -D g4make_jobs='$(NPROCESSES)'
-	@-rm -rf geant4/env.*sh && cd geant4 && ./Configure $(GEANT4_OPTION)
-	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.sh > env.new && mv env.new geant4/env.sh
-	@sed -f geant4.sed -e "s;${BELLE2_EXTERNALS_DIR};\${BELLE2_EXTERNALS_DIR};g" geant4/env.csh > env.new && mv env.new geant4/env.csh
-	@bash -c ". geant4/env.sh && cd geant4/source && make includes dependencies=\"\""
-	@cp -a $(EXTDIR)/geant4/lib/*/* $(EXTLIBDIR)
+	@mkdir -p geant4/build
+	@cd geant4/build && ../../cmake/bin/cmake \
+	-DCLHEP_ROOT_DIR=$(EXTDIRVAR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
+	-DCMAKE_INSTALL_INCLUDEDIR=$(EXTINCDIR) -DCMAKE_INSTALL_BINDIR=$(EXTBINDIR) \
+	-DCMAKE_INSTALL_LIBDIR=$(EXTLIBDIR) -DCMAKE_INSTALL_DATAROOTDIR=$(EXTDIR)/share .. \
+	-DGEANT4_INSTALL_DATA=ON -DGEANT4_USE_G3TOG4=ON \
+	&& make -j $(NPROCESSES) && make install
+	@sed -f geant4.sed $(EXTBINDIR)/geant4-config > geant4-config \
+	&& mv geant4-config $(EXTBINDIR)/ && chmod a+x $(EXTBINDIR)/geant4-config
 
 # GEANT4 clean command
 geant4.clean:
 	@echo "cleaning geant4"
-	@cd geant4 && rm -rf tmp lib bin .config
-	@rm -f geant4/env.sh geant4/env.csh
+	@cd geant4/build && make clean
+	@rm -rf geant4/build share/Geant4-9.5.0 include/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
-	@rm -f geant4/env.sh
+	@rm -f include/Geant4/G4RunManager.hh
 
 
 # dependence for root build
@@ -245,20 +256,19 @@ vgm: vgm/tmp/Linux-g++/BaseVGM_common/obj.last $(VGM_INCLUDES)
 vgm/tmp/Linux-g++/BaseVGM_common/obj.last:
 	@echo "building VGM"
 	@-cd vgm && patch -Np0 < ../vgm.patch
-	@cd vgm/packages && VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
-	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 ROOTSYS=$(EXTDIR)/root CPPFLAGS=-I$(EXTINCDIR)/geant4 \
-	make
+	@cd vgm/packages && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
+	CLHEP_BASE_DIR=$(EXTDIR) make
 	@cp -a vgm/lib/Linux-g++/* $(EXTLIBDIR) 
 
 # vgm include directories
 include/vgm/%: vgm/packages/%/include
 	@mkdir -p include/vgm
-	@cp -a $</$(subst include/vgm/,,$@) include/vgm/
+	@cp -a $</$(subst include/vgm/,,$@) include/vgm/ && rm -rf include/vgm/*/.svn include/vgm/*/*/.svn
 
 # vgm clean command
 vgm.clean:
 	@echo "cleaning VGM"
-	@cd vgm && rm -rf tmp lib
+	@rm -rf vgm/tmp vgm/lib $(EXTLIBDIR)/lib*GM.so include/vgm
 
 # vgm touch command
 vgm.touch:
@@ -271,8 +281,8 @@ geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
 # geant4_vmc build command
 geant4_vmc/include/g4root/TG4RootNavMgr.h:
 	@echo "building geant4_vmc"
-	@cd geant4_vmc && VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 ROOTSYS=$(EXTDIR)/root \
-	CLHEP_BASE_DIR=$(EXTDIR) G4INSTALL=$(EXTDIR)/geant4 G4INCLUDE=$(EXTINCDIR)/geant4 \
+	@cd geant4_vmc && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 \
+	CLHEP_BASE_DIR=$(EXTDIR) \
 	make CXXOPTS=-fPIC -j $(NPROCESSES)
 	@-rm -rf $(EXTINCDIR)/geant4_vmc
 	@cp -a geant4_vmc/include $(EXTINCDIR)/geant4_vmc 

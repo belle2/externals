@@ -1,4 +1,3 @@
-s;    G4INCLUDE=.*;    G4INCLUDE=\"${BELLE2_EXTERNALS_DIR}/include/geant4\";g
-s;    G4LIB=.*;    G4LIB=\"${BELLE2_EXTERNALS_DIR}/lib/\${BELLE2_EXTERNALS_SUBDIR}\";g
-s;setenv G4INCLUDE .*;setenv G4INCLUDE \"${BELLE2_EXTERNALS_DIR}/geant4/include\";g
-s;setenv G4LIB .*;setenv G4LIB \"${BELLE2_EXTERNALS_DIR}/lib/\${BELLE2_EXTERNALS_SUBDIR}\";g
+s;libdir=.*;libdir=\${BELLE2_EXTERNALS_DIR}/lib/\${BELLE2_EXTERNALS_SUBDIR};g
+s;includedirs=.*;includedirs=\${BELLE2_EXTERNALS_DIR}/include/Geant4;g
+s;clhep_config_exe=.*;clhep_config_exe=\${BELLE2_EXTERNALS_DIR}/bin/\${BELLE2_EXTERNALS_SUBDIR}/clhep-config;g

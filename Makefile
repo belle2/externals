@@ -98,7 +98,7 @@ $(EXTBINDIR):
 
 
 # dependency for cmake build
-clhep: CLHEP/config.log
+cmake: cmake/bin/cmake
 
 # dependency for cmake download
 cmake/bootstrap:

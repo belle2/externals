@@ -153,4 +153,7 @@ def config_externals(conf):
     # EvtGen
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'evtgen'))
 
+    # Rave
+    conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
+
     return True

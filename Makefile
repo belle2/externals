@@ -109,7 +109,7 @@ cmake/bootstrap:
 # cmake build command
 cmake/bin/cmake: cmake/bootstrap
 	@echo "building cmake"
-	@cd cmake && make
+	@cd cmake && ./bootstrap && make
 
 # cmake clean command
 cmake.clean:

@@ -213,6 +213,7 @@ include/Geant4/G4RunManager.hh: cmake/bin/cmake CLHEP/config.log geant4/CMakeLis
 	&& make -j $(NPROCESSES) && make install
 	@sed -f geant4.sed $(EXTBINDIR)/geant4-config > geant4-config \
 	&& mv geant4-config $(EXTBINDIR)/ && chmod a+x $(EXTBINDIR)/geant4-config
+	@sed -f geant4.sed $(EXTBINDIR)/geant4.csh > geant4.csh && mv geant4.csh $(EXTBINDIR)/
 
 # GEANT4 clean command
 geant4.clean:

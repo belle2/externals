@@ -360,7 +360,7 @@ pythia/configure:
 # Pythia build command
 include/pythia/Pythia.h: pythia/configure
 	@echo "building Pythia"
-	@cd pythia && ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc && make -j $(NPROCESSES)
+	@cd pythia && ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES)
 	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
 	@mkdir $(EXTINCDIR)/pythia && cp pythia/include/* $(EXTINCDIR)/pythia/
 	@mkdir -p share/pythia && cp pythia/xmldoc/* share/pythia/
@@ -387,7 +387,7 @@ PHOTOS/configure:
 # Photos build command
 include/PHOTOS/Photos.h: PHOTOS/configure
 	@echo "building Photos"
-	@cd PHOTOS && ./configure --with-HepMC=$(EXTDIR)/hepmc && make -j $(NPROCESSES)
+	@cd PHOTOS && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
 	@cp PHOTOS/lib/* $(EXTLIBDIR)/
 	@mkdir $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
 

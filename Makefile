@@ -205,6 +205,7 @@ geant4/CMakeLists.txt:
 include/Geant4/G4RunManager.hh: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@echo "building geant4"
 	@mkdir -p geant4/build
+	@-cd geant4 && patch -Np0 < ../geant4.patch
 	@cd geant4/build && ../../cmake/bin/cmake \
 	-DCLHEP_ROOT_DIR=$(EXTDIRVAR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	-DCMAKE_INSTALL_INCLUDEDIR=$(EXTINCDIR) -DCMAKE_INSTALL_BINDIR=$(EXTBINDIR) \

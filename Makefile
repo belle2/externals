@@ -65,6 +65,11 @@ endif
 endif
 endif
 
+ifdef ORACLE_HOME
+  ROOT_OPTION += --with-oracle-libdir=$(ORACLE_HOME) --with-oracle-incdir=$(ORACLE_HOME)/sdk/include/
+endif
+ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
+
 # check for graphics packages
 GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
@@ -73,13 +78,13 @@ endif
 
 
 # all target
-all: dirs cmake gtest boost clhep geant4 root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
+all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
 
 # clean up target
-clean: cmake.clean gtest.clean boost.clean clhep.clean geant4.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
+clean: cmake.clean gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
 
 # remove only target files
-touch: cmake.touch gtest.touch boost.touch clhep.touch geant4.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
+touch: cmake.touch gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -112,7 +117,7 @@ cmake/bin/cmake: cmake/bootstrap
 	@cd cmake && ./bootstrap && make
 
 # cmake clean command
-cmake.clean:
+make.clean:
 	@echo "cleaning cmake"
 	@cd cmake && make clean
 
@@ -193,7 +198,7 @@ clhep.touch:
 
 
 # dependency for GEANT4 build
-geant4: include/Geant4/G4RunManager.hh
+geant4: geant4/build/Makefile
 
 # dependency for GEANT4 download
 geant4/CMakeLists.txt:
@@ -202,7 +207,7 @@ geant4/CMakeLists.txt:
 	@mv geant4.9.5 geant4
 
 # GEANT4 build command
-include/Geant4/G4RunManager.hh: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
+geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@echo "building geant4"
 	@mkdir -p geant4/build
 	@-cd geant4 && patch -Np0 < ../geant4.patch
@@ -224,7 +229,115 @@ geant4.clean:
 
 # GEANT4 touch command
 geant4.touch:
-	@rm -f include/Geant4/G4RunManager.hh
+	@rm -f geant4/build/Makefile
+
+
+# dependency for MySql build
+mysql: mysql/build/install_manifest.txt
+
+# dependence for MySql download
+mysql/CMakeLists.txt:
+	@echo "downloading MySql"
+	@wget -O -  http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.20.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@mv mysql-5.5.20 mysql
+
+# MySql build command
+mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt
+	@echo "building MySql"
+	@mkdir -p mysql/build; cd mysql/build && ../../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=../exe .. && make && make install
+	@cp -a mysql/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
+	@cp -a mysql/exe/bin/* $(EXTBINDIR)/ # copy the binaries
+	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql/exe/include/* $(EXTINCDIR)/mysql/  # copy the include files
+
+# MySql clean command
+mysql.clean:
+	@echo "cleaning MySql"
+	@cd mysql/build && make clean
+	@rm -f mysql/build/install_manifest.txt
+
+# MySql touch command
+mysql.touch:
+	@rm -f mysql/build/install_manifest.txt
+
+
+# dependency for mysql-connector-c++ build
+mysql-connector-c++: mysql-connector-c++/install_manifest.txt
+
+# dependence for mysql-connector-c++ download
+mysql-connector-c++/CMakeLists.txt:
+	@echo "downloading mysql-connector-c++"
+	@wget -O - http://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-1.1.0.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@mv mysql-connector-c++-1.1.0 mysql-connector-c++
+
+# mysql-connector-c++ build command
+mysql-connector-c++/install_manifest.txt: cmake/bin/cmake mysql-connector-c++/CMakeLists.txt
+	@echo "building mysql-connector-c++"
+	@cd mysql-connector-c++; ../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=exe -DBOOST_ROOT:STRING=$(EXTINCDIR) \
+	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && ../cmake/bin/cmake -L && make && make install
+	@cp -a mysql-connector-c++/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
+	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql-connector-c++/exe/include/* $(EXTINCDIR)/mysql/
+	@cd $(EXTINCDIR) && ln -sf mysql/cppconn . # link the include files
+
+# mysql-connector-c++ clean command
+mysql-connector-c++.clean:
+	@echo "cleaning mysql-connector-c++"
+	@cd mysql-connector-c++ && make clean
+
+# mysql-connector-c++ touch command
+mysql-connector-c++.touch:
+	@rm -f mysql-connector-c++/install_manifest.txt
+
+
+# dependency for PostgreSql build
+postgresql: postgresql/config.log	
+
+# dependency for PostgreSql download
+postgresql/configure:
+	@echo "downloading PostgreSql"
+	@wget -O - http://ftp.postgresql.org/pub/source/v9.1.2/postgresql-9.1.2.tar.gz | tar xz
+	@mv postgresql-9.1.2 postgresql
+
+# PostgreSql build command
+postgresql/config.log: postgresql/configure
+	@echo "building PostgreSql"
+	@cd postgresql && ./configure --prefix=$(EXTDIRVAR) \
+	--includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make && make install
+
+# PostgreSql clean command
+postgresql.clean:
+	@echo "cleaning PostgreSql"
+	@cd postgresql && make clean
+	@rm -f postgresql/config.log
+
+# PostgreSql touch command
+postgresql.touch:
+	@rm -f postgresql/config.log
+
+
+# dependency for libpqxxl build
+libpqxx: libpqxx/config.log
+
+# dependence for libpqxx download
+libpqxx/configure:
+	@echo "downloading libpqxx"
+	@wget -O - http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz | tar xz
+	@mv libpqxx-4.0 libpqxx
+
+# libpqxx build command
+libpqxx/config.log: libpqxx/configure
+	@echo "building libpqxx"
+	@cd libpqxx && ./configure --enable-shared --prefix=$(EXTDIR) \
+	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) PG_CONFIG=$(EXTBINDIR)/pg_config && make && make install
+
+# libpqxx clean command
+libpqxx.clean:
+	@echo "cleaning libpqxx"
+	@cd libpqxx && make clean
+	@rm -f libpqxx/config.log
+
+# libpqxx touch command
+libpqxx.touch:
+	@rm -f libpqxx/config.log
 
 
 # dependence for root build

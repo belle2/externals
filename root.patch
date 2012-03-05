@@ -1,7 +1,7 @@
 Index: montecarlo/eg/src/TDatabasePDG.cxx
 ===================================================================
---- montecarlo/eg/src/TDatabasePDG.cxx	(revision 42375)
-+++ montecarlo/eg/src/TDatabasePDG.cxx	(working copy)
+--- montecarlo/eg/src/TDatabasePDG.cxx	(Revision 43181)
++++ montecarlo/eg/src/TDatabasePDG.cxx	(Arbeitskopie)
 @@ -19,6 +19,7 @@
  #include "TDecayChannel.h"
  #include "TParticlePDG.h"
@@ -86,8 +86,8 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
     //browse data base
 Index: montecarlo/eg/inc/TDatabasePDG.h
 ===================================================================
---- montecarlo/eg/inc/TDatabasePDG.h	(revision 42375)
-+++ montecarlo/eg/inc/TDatabasePDG.h	(working copy)
+--- montecarlo/eg/inc/TDatabasePDG.h	(Revision 43181)
++++ montecarlo/eg/inc/TDatabasePDG.h	(Arbeitskopie)
 @@ -82,6 +82,8 @@
     virtual void   ReadPDGTable (const char *filename = "");
     virtual Int_t  WritePDGTable(const char *filename);
@@ -99,8 +99,8 @@ Index: montecarlo/eg/inc/TDatabasePDG.h
  };
 Index: html/src/TClassDocOutput.cxx
 ===================================================================
---- html/src/TClassDocOutput.cxx	(revision 42375)
-+++ html/src/TClassDocOutput.cxx	(working copy)
+--- html/src/TClassDocOutput.cxx	(Revision 43181)
++++ html/src/TClassDocOutput.cxx	(Arbeitskopie)
 @@ -81,7 +81,7 @@
  
     if (!force && !IsModified(fCurrentClass, kSource)
@@ -323,8 +323,8 @@ Index: html/src/TClassDocOutput.cxx
  
 Index: html/src/TDocOutput.cxx
 ===================================================================
---- html/src/TDocOutput.cxx	(revision 42375)
-+++ html/src/TDocOutput.cxx	(working copy)
+--- html/src/TDocOutput.cxx	(Revision 43181)
++++ html/src/TDocOutput.cxx	(Arbeitskopie)
 @@ -646,7 +646,7 @@
        return;
     }
@@ -379,3 +379,456 @@ Index: html/src/TDocOutput.cxx
  
     // write typesList header
     WriteHtmlHeader(typesList, "List of data types");
+Index: sql/oracle/src/TOracleStatement.cxx
+===================================================================
+--- sql/oracle/src/TOracleStatement.cxx	(Revision 43181)
++++ sql/oracle/src/TOracleStatement.cxx	(Arbeitskopie)
+@@ -167,7 +167,7 @@
+    CheckStatement("Process", kFALSE);
+ 
+    try {
+-
++ 
+       if (IsParSettMode()) {
+          fStmt->executeUpdate();
+          fWorkingMode = 0;
+@@ -370,7 +370,7 @@
+       Bytes buf((unsigned char*) mem, size);
+ 
+       fStmt->setBytes(npar+1, buf);
+-      
++       
+       return kTRUE;
+ 
+    } catch (SQLException &oraex)  {
+@@ -380,6 +380,37 @@
+ }   
+ 
+ //______________________________________________________________________________
++Bool_t TOracleStatement::RegisterOutputParameter(Int_t npar, Int_t type, UInt_t maxsize, const std::string &sqltype)
++{
++  fStmt->registerOutParam(npar+1, (Type) type, maxsize, sqltype);
++  return kTRUE;
++}
++
++//______________________________________________________________________________
++Bool_t TOracleStatement::SetBlob(Int_t npar, void* mem, Long_t size, Long_t maxsize)
++{
++   // set parameter value as binary data
++   
++   //CheckSetPar("SetBlob");
++   //CheckGetField("SetBlob", kFALSE);
++   try {
++
++      // this is when NextIteration is called first time
++      //if (fIterCounter==1) 
++      //   fStmt->setMaxParamSize(npar+1, maxsize);      
++
++      Blob blob = fStmt->getBlob(npar+1);
++      blob.write(size,(unsigned char*) mem, size); 
++       
++      return kTRUE;
++
++   } catch (SQLException &oraex)  {
++      SetError(oraex.getErrorCode(), oraex.getMessage().c_str(), "SetBlob");
++   }
++   return kFALSE;
++}   
++
++//______________________________________________________________________________
+ Bool_t TOracleStatement::SetDate(Int_t npar, Int_t year, Int_t month, Int_t day)
+ {
+    // Set date value for parameter npar
+Index: sql/oracle/inc/TOracleStatement.h
+===================================================================
+--- sql/oracle/inc/TOracleStatement.h	(Revision 43181)
++++ sql/oracle/inc/TOracleStatement.h	(Arbeitskopie)
+@@ -118,7 +118,8 @@
+    virtual Bool_t      GetVLong64(Int_t npar, std::vector<Long64_t> &value);
+    virtual Bool_t      GetVULong64(Int_t npar, std::vector<ULong64_t> &value);
+    virtual Bool_t      GetVDouble(Int_t npar, std::vector<Double_t> &value);
+-
++   Bool_t              RegisterOutputParameter(Int_t npar, Int_t type, UInt_t maxsize=0, const std::string &sqltype="");
++   Bool_t              SetBlob(Int_t npar, void* mem, Long_t size, Long_t maxsize = 0x1000);
+    ClassDef(TOracleStatement, 0); // SQL statement class for Oracle
+ };
+ 
+Index: sql/pgsql/src/TPgSQLStatement.cxx
+===================================================================
+--- sql/pgsql/src/TPgSQLStatement.cxx	(Revision 43181)
++++ sql/pgsql/src/TPgSQLStatement.cxx	(Arbeitskopie)
+@@ -22,13 +22,13 @@
+ #include "TDatime.h"
+ 
+ #include <stdlib.h>
++#include <arpa/inet.h>
+ 
++
+ ClassImp(TPgSQLStatement)
+ 
+ #ifdef PG_VERSION_NUM
+-
+ static const Int_t kBindStringSize = 25;
+-
+ //______________________________________________________________________________
+ TPgSQLStatement::TPgSQLStatement(PgSQL_Stmt_t* stmt, Bool_t errout):
+    TSQLStatement(errout),
+@@ -40,6 +40,7 @@
+    fIterationCount(0),
+    fParamLengths(0),
+    fParamFormats(0),
++   fResultFormat(0),
+    fNumResultRows(0),
+    fNumResultCols(0)
+ {
+@@ -58,6 +59,7 @@
+       fWorkingMode = 2;
+       SetBuffersNumber(fNumResultCols);
+    }
++   fLittleEndian = ntohl(0x1)!=0x1;
+ }
+ 
+ //______________________________________________________________________________
+@@ -130,11 +132,13 @@
+    if (IsSetParsMode()) {
+       fStmt->fRes= PQexecPrepared(fStmt->fConn,"",fNumBuffers,
+                                  (const char* const*)fBind,
+-                                 0,0,0);
++                                 fParamLengths,
++                                 fParamFormats,
++                                 fResultFormat);
+ 
+    } else { //result set mode
+ 
+-      fStmt->fRes= PQexecPrepared(fStmt->fConn,"",0,(const char* const*) 0,0,0,0);
++      fStmt->fRes= PQexecPrepared(fStmt->fConn,"",0,(const char* const*) 0,0,0, fResultFormat);
+    }
+    ExecStatusType stat = PQresultStatus(fStmt->fRes);
+    if (!pgsql_success(stat))
+@@ -225,6 +229,12 @@
+ }
+ 
+ //______________________________________________________________________________
++Bool_t TPgSQLStatement::SetResultFormat( Int_t binaryformat )
++{
++   fResultFormat = binaryformat;
++   return kTRUE;
++}
++//______________________________________________________________________________
+ Bool_t TPgSQLStatement::NextIteration()
+ {
+    // Increment iteration counter for statement, where parameter can be set.
+@@ -244,9 +254,10 @@
+ 
+    fStmt->fRes= PQexecPrepared(fStmt->fConn,"",fNumBuffers,
+                                (const char* const*)fBind,
+-                               0,//fParamLengths,
+-                               0,//fParamFormats,
+-                               0);
++                               fParamLengths,
++                               fParamFormats,
++                               fResultFormat
++                               );
+    ExecStatusType stat = PQresultStatus(fStmt->fRes);
+    if (!pgsql_success(stat) ){
+       CheckErrNo("NextIteration", kTRUE, kFALSE) ;
+@@ -337,13 +348,30 @@
+ }
+ 
+ //______________________________________________________________________________
++const char * TPgSQLStatement::GetNToH(Int_t npar)
++{
++
++char *val = (char*) PQgetvalue(fStmt->fRes,fIterationCount,npar);
++if (!fLittleEndian) return  (const char*) val;
++char t;
++for( int i = 0;i< fParamLengths[npar]/2;i++ ){
++  t = *(val+i);
++  *(val+i) = *(val+fParamLengths[npar]-1-i);
++  *(val+fParamLengths[npar]-1-i)=t;
++}
++
++return  (const char*) val;
++}
++
++//______________________________________________________________________________
+ Int_t TPgSQLStatement::GetInt(Int_t npar)
+ {
+    // Get integer.
+ 
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+-      return (Int_t)0;
+-
++      return (Int_t)0;  
++   if ( fResultFormat ) return  *((Int_t *) GetNToH( npar ));
++   else 
+    return (Int_t) atoi(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ }
+ 
+@@ -355,6 +383,8 @@
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+       return (UInt_t)0;
+ 
++   if ( fResultFormat ) return *((UInt_t *) GetNToH( npar ));
++   else 
+    return (UInt_t) atoi(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ }
+ 
+@@ -365,7 +395,9 @@
+ 
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+       return (Long_t)0;
+-
++   
++   if ( fResultFormat ) return  *((Long_t *) GetNToH( npar ));
++   else 
+    return (Long_t) atol(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ }
+ 
+@@ -377,6 +409,7 @@
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+       return (Long64_t)0;
+ 
++   if ( fResultFormat ) return *((Long64_t *) GetNToH( npar )); else 
+ #ifndef R__WIN32
+    return (Long64_t) atoll(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ #else
+@@ -392,6 +425,7 @@
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+       return (ULong64_t)0;
+ 
++   if ( fResultFormat ) return  *((ULong64_t *) GetNToH( npar )); else
+ #ifndef R__WIN32
+    return (ULong64_t) atoll(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ #else
+@@ -406,6 +440,9 @@
+ 
+    if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
+       return (Double_t)0;
++   
++   if ( fResultFormat ) return  *((Double_t *) GetNToH( npar )); 
++   else 
+    return (Double_t) atof(PQgetvalue(fStmt->fRes,fIterationCount,npar));
+ }
+ 
+@@ -425,14 +462,17 @@
+ 
+    size_t sz;
+    char *cptr = PQgetvalue(fStmt->fRes,fIterationCount,npar);
+-   unsigned char * mptr = PQunescapeBytea((const unsigned char*)cptr,&sz);
++  
++   unsigned char * mptr = ( unsigned char *) cptr;
++   if ( ! fResultFormat )  mptr = PQunescapeBytea((const unsigned char*)cptr,&sz);   
++   else                      sz = PQgetlength(fStmt->fRes,fIterationCount,npar);
+    if ((Long_t)sz>size) {
+-      delete [] (unsigned char*) mem;
++      if (mem!=NULL) delete [] (unsigned char*) mem;
+       mem = (void*) new unsigned char[sz];
+    }
+    size=sz;
+    memcpy(mem,mptr,sz);
+-   PQfreemem(mptr);
++   if ( !fResultFormat )  PQfreemem(mptr);
+    return kTRUE;
+ }
+ 
+@@ -509,17 +549,35 @@
+    //    stmt->SetNull(2);
+ 
+    fBind[npar][0] = 0;
++   fParamFormats[npar] = 0;
++   
++   return kTRUE;
++}
+ 
++//______________________________________________________________________________
++Bool_t TPgSQLStatement::SetBinaryRaw(Int_t npar, void *value, Long_t size)
++{
++   // Set parameter value as raw binary data
++
++   if (size> kBindStringSize) {
++     delete [] fBind[npar];
++     fBind[npar]= new char[size];
++   }  
++   memcpy(fBind[npar],value, size);
++   fParamFormats[npar] = 1;
++   fParamLengths[npar] = size;
++    
+    return kTRUE;
+ }
+ 
++
+ //______________________________________________________________________________
+ Bool_t TPgSQLStatement::SetInt(Int_t npar, Int_t value)
+ {
+    // Set parameter value as integer.
+-
+    snprintf(fBind[npar],kBindStringSize,"%d",value);
+-
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -529,6 +587,7 @@
+    // Set parameter value as unsinged integer.
+ 
+    snprintf(fBind[npar],kBindStringSize,"%u",value);
++   fParamFormats[npar] = 0;
+ 
+    return kTRUE;
+ }
+@@ -539,6 +598,7 @@
+    // Set parameter value as long.
+ 
+    snprintf(fBind[npar],kBindStringSize,"%ld",value);
++   fParamFormats[npar] = 0;
+ 
+    return kTRUE;
+ }
+@@ -549,6 +609,7 @@
+    // Set parameter value as 64-bit integer.
+ 
+    snprintf(fBind[npar],kBindStringSize,"%lld",(Long64_t)value);
++   fParamFormats[npar] = 0;
+ 
+    return kTRUE;
+ }
+@@ -559,6 +620,7 @@
+    // Set parameter value as unsinged 64-bit integer.
+ 
+    snprintf(fBind[npar],kBindStringSize,"%llu",(ULong64_t)value);
++   fParamFormats[npar] = 0;
+ 
+    return kTRUE;
+ }
+@@ -569,6 +631,7 @@
+    // Set parameter value as double value.
+ 
+    snprintf(fBind[npar],kBindStringSize,"%lf",value);
++   fParamFormats[npar] = 0;
+ 
+    return kTRUE;
+ }
+@@ -583,6 +646,8 @@
+       fBind[npar] = new char[maxsize];
+    }
+    strlcpy(fBind[npar],value,maxsize);
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -593,13 +658,13 @@
+ 
+    size_t sz=size;
+    size_t mxsz=maxsize;
+-   char* mptr = (char*)malloc(2*sz+1);
+-   mxsz=PQescapeString (mptr,(char*)mem,sz);
+-
++   unsigned char* mptr = PQescapeBytea ((const unsigned char*)mem,sz, &mxsz); 
+    delete [] fBind[npar];
+    fBind[npar]= new char[mxsz+1];
+    memcpy(fBind[npar],mptr,mxsz);
+-   free(mptr);
++   PQfreemem(mptr); 
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -610,6 +675,7 @@
+ 
+    TDatime d =TDatime(year,month,day,0,0,0);
+    snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
++   fParamFormats[npar] = 0;
+ 
+    return kFALSE;
+ }
+@@ -621,6 +687,8 @@
+ 
+    TDatime d=TDatime(2000,1,1,hour,min,sec);
+    snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -631,6 +699,8 @@
+ 
+    TDatime d=TDatime(year,month,day,hour,min,sec);
+    snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -641,6 +711,8 @@
+ 
+    TDatime d(year,month,day,hour,min,sec);
+    snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
++   fParamFormats[npar] = 0;
++   
+    return kTRUE;
+ }
+ 
+@@ -722,7 +794,12 @@
+    return kFALSE;
+ }
+ 
++//______________________________________________________________________________
+ 
++Bool_t TPgSQLStatement::SetResultFormat( Int_t )
++{
++   return kFALSE;
++}
+ //______________________________________________________________________________
+ Bool_t TPgSQLStatement::NextIteration()
+ {
+@@ -889,8 +966,12 @@
+ 
+    return kFALSE;
+ }
+-
+ //______________________________________________________________________________
++Bool_t TPgSQLStatement::SetBinaryRaw(Int_t , void *, Long_t )
++{ 
++   return kFALSE;
++}
++//______________________________________________________________________________
+ Bool_t TPgSQLStatement::SetInt(Int_t, Int_t)
+ {
+    // Set parameter value as integer.
+Index: sql/pgsql/inc/TPgSQLStatement.h
+===================================================================
+--- sql/pgsql/inc/TPgSQLStatement.h	(Revision 43181)
++++ sql/pgsql/inc/TPgSQLStatement.h	(Arbeitskopie)
+@@ -54,6 +54,8 @@
+    Int_t                 fIterationCount;//! number of iteration
+    int                  *fParamLengths;  //! length of column
+    int                  *fParamFormats;  //! data type (OID)
++   int                   fResultFormat;  //! result format type
++   Bool_t                fLittleEndian;
+    Int_t                 fNumResultRows;
+    Int_t                 fNumResultCols;
+ 
+@@ -77,7 +79,10 @@
+    virtual Int_t       GetBufferLength() const { return 1; }
+    virtual Int_t       GetNumParameters();
+ 
++   Bool_t SetResultFormat( Int_t binaryformat );
++   const char *        GetNToH(Int_t npar);
+    virtual Bool_t      SetNull(Int_t npar);
++   Bool_t  SetBinaryRaw(Int_t npar, void *value, Long_t size);
+    virtual Bool_t      SetInt(Int_t npar, Int_t value);
+    virtual Bool_t      SetUInt(Int_t npar, UInt_t value);
+    virtual Bool_t      SetLong(Int_t npar, Long_t value);
+@@ -114,6 +119,8 @@
+    virtual Bool_t      GetTime(Int_t npar, Int_t& hour, Int_t& min, Int_t& sec);
+    virtual Bool_t      GetDatime(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec);
+    virtual Bool_t      GetTimestamp(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec, Int_t&);
++   
++   
+ 
+    ClassDef(TPgSQLStatement, 0);  // SQL statement class for PgSQL DB
+ };

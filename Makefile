@@ -447,9 +447,8 @@ hepmc/configure:
 include/HepMC/Version.h: hepmc/configure
 	@echo "building HepMC"
 	@cd hepmc && ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc && make -j $(NPROCESSES) install
-	@#cd hepmc && ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc --libdir=$(EXTLIBDIR) --includedir=$(EXTINCDIR) --datadir=$(EXTDIR)/share && make -j $(NPROCESSES) install
 	@cp hepmc/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/HepMC && cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
+	@mkdir -p $(EXTINCDIR)/HepMC && cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
 
 # HepMC clean command
 hepmc.clean:
@@ -476,8 +475,8 @@ include/pythia/Pythia.h: pythia/configure
 	@echo "building Pythia"
 	@cd pythia && ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES)
 	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/pythia && cp pythia/include/* $(EXTINCDIR)/pythia/
-	@mkdir -p share/pythia && cp pythia/xmldoc/* share/pythia/
+	@mkdir -p $(EXTINCDIR)/pythia && cp pythia/include/* $(EXTINCDIR)/pythia/
+	@mkdir -p share/pythia && cp pythia/xmldoc/* share/pythia/ && chmod u+w share/pythia/*
 
 # Pythia clean command
 pythia.clean:
@@ -503,7 +502,7 @@ include/PHOTOS/Photos.h: PHOTOS/configure
 	@echo "building Photos"
 	@cd PHOTOS && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
 	@cp PHOTOS/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
+	@mkdir -p $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
 
 # Photos clean command
 photos.clean:
@@ -529,7 +528,7 @@ include/TAUOLA/Tauola.h: TAUOLA/configure
 	@echo "building Tauola"
 	@cd TAUOLA && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
 	@cp TAUOLA/lib/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
+	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
 
 # Tauola clean command
 tauola.clean:
@@ -551,7 +550,7 @@ evtgen/config.mk:
 	@-cd evtgen && patch -Np0 < ../evtgen.patch
 	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES)
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
-	@mkdir $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/
+	@mkdir -p $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/ && rm -rf $(EXTINCDIR)/evtgen/*/.svn
 	@mkdir -p share/evtgen && cp evtgen/DECAY.DEC evtgen/evt.pdl share/evtgen
 
 # EvtGen clean command

@@ -1,3 +1,5 @@
+Index: source/processes/optical/src/G4OpBoundaryProcess.cc
+===================================================================
 --- source/processes/optical/src/G4OpBoundaryProcess.cc	2012-02-27 10:57:01.000000000 +0900
 +++ source/processes/optical/src/G4OpBoundaryProcess.cc	2012-02-27 10:38:56.000000000 +0900
 @@ -148,6 +148,7 @@
@@ -18,4 +20,27 @@
 +           G4double finalVelocity = groupvel->Value(thePhotonMomentum);
             aParticleChange.ProposeVelocity(finalVelocity);
          }
+
+Index: source/physics_lists/builders/src/G4EmStandardPhysics.cc
+===================================================================
+--- source/physics_lists/builders/src/G4EmStandardPhysics.cc 2012-03-10 18:06:59.792944000 +0900
++++ source/physics_lists/builders/src/G4EmStandardPhysics.cc 2012-03-10 18:05:00.941355000 +0900
+@@ -190,7 +190,7 @@
+                particleName == "mu-"    ) {
+ 
+       G4MuMultipleScattering* msc = new G4MuMultipleScattering();
+-      msc->AddEmModel(0, new G4WentzelVIModel());
++      //msc->AddEmModel(0, new G4WentzelVIModel());   commented out as recommended by Vladimir Ivantchenko
+ 
+       G4MuBremsstrahlung* mub = new G4MuBremsstrahlung();
+       G4MuPairProduction* mup = new G4MuPairProduction();
+@@ -199,7 +199,7 @@
+       ph->RegisterProcess(new G4MuIonisation(), particle);
+       ph->RegisterProcess(mub, particle);
+       ph->RegisterProcess(mup, particle);
+-      ph->RegisterProcess(new G4CoulombScattering(), particle);
++      //ph->RegisterProcess(new G4CoulombScattering(), particle);   commented out as recommended by Vladimir Ivantchenko
+ 
+     } else if (particleName == "alpha" ||
+                particleName == "He3") {
  

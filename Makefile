@@ -438,22 +438,22 @@ genfit.touch:
 hepmc: include/HepMC/Version.h
 
 # dependency for HepMC download
-hepmc/configure:
+hepmc/README:
 	@echo "downloading HepMC"
-	@wget -O - http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.05.tar.gz | tar xz
-	@mv HepMC-2.06.05 hepmc
+	@wget -O - http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.08.tar.gz | tar xz
+	@mv HepMC-2.06.08 hepmc
 
 # HepMC build command
-include/HepMC/Version.h: hepmc/configure
+include/HepMC/Version.h: hepmc/README
 	@echo "building HepMC"
-	@cd hepmc && ./configure --with-momentum=GEV --with-length=CM --prefix=$(EXTDIR)/hepmc && make -j $(NPROCESSES) install
+	@mkdir -p build/hepmc && cd build/hepmc && ../../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/hepmc -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTDIR)/hepmc && make -j $(NPROCESSES) install
 	@cp hepmc/lib/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/HepMC && cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
 
 # HepMC clean command
 hepmc.clean:
 	@echo "cleaning HepMC"
-	@cd hepmc && make clean
+	@cd build/hepmc && make clean
 	@rm -rf $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
 
 # HepMC touch command
@@ -467,8 +467,8 @@ pythia: include/pythia/Pythia.h
 # dependency for Pythia download
 pythia/configure:
 	@echo "downloading Pythia"
-	@wget -O - http://home.thep.lu.se/~torbjorn/pythia8/pythia8153.tgz | tar xz
-	@mv pythia8153 pythia
+	@wget -O - http://home.thep.lu.se/~torbjorn/pythia8/pythia8160.tgz | tar xz
+	@mv pythia8160 pythia
 
 # Pythia build command
 include/pythia/Pythia.h: pythia/configure
@@ -495,14 +495,16 @@ photos: include/PHOTOS/Photos.h
 # dependency for Photos download
 PHOTOS/configure:
 	@echo "downloading Photos"
-	@wget -O - http://www.ph.unimelb.edu.au/~ndavidson/photos/PHOTOS.3.0.tar.gz | tar xz
+	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.3/PHOTOS.3.3.tar.gz | tar xz
 
 # Photos build command
 include/PHOTOS/Photos.h: PHOTOS/configure
 	@echo "building Photos"
-	@cd PHOTOS && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
+	@-cd PHOTOS && patch -Np0 < ../photos.patch
+	@cd PHOTOS && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
 	@cp PHOTOS/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/* $(EXTINCDIR)/PHOTOS/
+	@mkdir -p $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/Photos/* $(EXTINCDIR)/PHOTOS/
+	@cd include/PHOTOS && ln -s . Photos
 
 # Photos clean command
 photos.clean:
@@ -521,14 +523,15 @@ tauola: include/TAUOLA/Tauola.h
 # dependency for Tauola download
 TAUOLA/configure:
 	@echo "downloading Tauola"
-	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.5/TAUOLA.1.0.5.tar.gz | tar xz
+	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.6/TAUOLA.1.0.6.tar.gz | tar xz
 
 # Tauola build command
 include/TAUOLA/Tauola.h: TAUOLA/configure
 	@echo "building Tauola"
-	@cd TAUOLA && ./configure --with-HepMC=$(EXTDIR)/hepmc && make
+	@cd TAUOLA && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
 	@cp TAUOLA/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/* $(EXTINCDIR)/TAUOLA/
+	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/Tauola/* $(EXTINCDIR)/TAUOLA/
+	@cd TAUOLA/include && mv Tauola/* . && rmdir Tauola && ln -s . Tauola
 
 # Tauola clean command
 tauola.clean:
@@ -547,11 +550,10 @@ evtgen: evtgen/config.mk
 # EvtGen build command
 evtgen/config.mk:
 	@echo "building EvtGen"
-	@-cd evtgen && patch -Np0 < ../evtgen.patch
 	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES)
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/ && rm -rf $(EXTINCDIR)/evtgen/*/.svn
-	@mkdir -p share/evtgen && cp evtgen/DECAY.DEC evtgen/evt.pdl share/evtgen
+	@mkdir -p share/evtgen && cp evtgen/evt.pdl share/evtgen/ && cp evtgen/DECAY_2010.DEC share/evtgen/DECAY.DEC
 
 # EvtGen clean command
 evtgen.clean:

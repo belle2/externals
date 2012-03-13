@@ -1,0 +1,20 @@
+Index src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx
+--- src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx	2012-03-13 09:47:39.000000000 +0900
++++ src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx	2012-03-13 09:42:38.000000000 +0900
+@@ -1,5 +1,6 @@
+ #include "PhotosHEPEVTEvent.h"
+ #include "Log.h"
++#include <cstdio>
+ typedef Photos::Log Log;
+ 
+ PhotosHEPEVTEvent::~PhotosHEPEVTEvent()
+Index src/eventRecordInterfaces/PhotosHEPEVTParticle.cxx
+--- src/eventRecordInterfaces/PhotosHEPEVTParticle.cxx	2012-03-13 09:47:23.000000000 +0900
++++ src/eventRecordInterfaces/PhotosHEPEVTParticle.cxx	2012-03-13 09:43:13.000000000 +0900
+@@ -1,5 +1,6 @@
+ #include "PhotosHEPEVTParticle.h"
+ #include "Log.h"
++#include <cstdio>
+ typedef Photos::Log Log;
+ 
+ PhotosHEPEVTParticle::~PhotosHEPEVTParticle()

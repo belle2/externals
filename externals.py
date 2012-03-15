@@ -113,6 +113,24 @@ def config_externals(conf):
         'G4VRML',
         ]
 
+    # MySQL
+    conf.env['HAS_MYSQL'] = False
+    conf.env['MYSQL_LIBS'] = []
+    if conf.CheckHeader('mysql/mysql.h'):
+        conf.env['HAS_MYSQL'] = True
+        conf.env.Append(CPPDEFINES='-DHAS_MYSQL')
+        conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'mysql'))
+        conf.env['MYSQL_LIBS'] = ['mysqlcppconn', 'mysqlclient']
+
+    # PostgreSQL
+    conf.env['HAS_PGSQL'] = False
+    conf.env['PGSQL_LIBS'] = []
+    if conf.CheckLibWithHeader('pqxx', 'pgsql/pg_config.h', 'C++'):
+        conf.env['HAS_PGSQL'] = True
+        conf.env.Append(CPPDEFINES='-DHAS_PGSQL')
+        conf.env.Append(CPPPATH='pg_config --includedir')
+        conf.env['PGSQL_LIBS'] = ['pqxx', 'pq']
+
     # root
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'root'))
 
@@ -123,10 +141,6 @@ def config_externals(conf):
         conf.env['ROOT_LIBS'] = root_env['LIBS']
         root_env.ParseConfig('root-config --glibs')
         conf.env['ROOT_GLIBS'] = root_env['LIBS']
-    else:
-        print 'root configuration tool missing'
-        print '-> create it with the command "scons externals"'
-        return False
 
     # vgm
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'vgm'))

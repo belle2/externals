@@ -572,8 +572,8 @@ rave: include/rave/Vertex.h
 # rave download command
 rave/configure:
 	@echo "downloading rave"
-	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.0.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
-	@mv rave-0.6.0 rave
+	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
+	@mv rave-0.6.7 rave
 	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
 	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
 	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math

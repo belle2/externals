@@ -19,10 +19,29 @@ export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR}
 export ROOTSYS := $(EXTDIR)/root
 export GENFIT := $(EXTDIRVAR)/genfit
 export PATH := $(ROOTSYS)/bin:$(PATH)
-export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
+ifeq ($(shell uname),Darwin)
+  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(DYLD_LIBRARY_PATH)
+else
+  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
+endif
+
+# set cmake command
+CMAKE=cmake
+CMAKE_EXISTS=$(shell which cmake 2> /dev/null; echo $$?)
+ifneq ($(CMAKE_EXISTS),0)
+  CMAKE=$(EXTDIR)/cmake/bin/cmake
+endif
+
 
 # set number of parallel jobs to the number of processors
-NPROCESSES=$(shell grep processor /proc/cpuinfo| wc -l)
+ifeq ($(shell uname),Darwin)
+  NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
+else
+  NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
+endif
+ifeq ($(NPROCESSES),0)
+  NPROCESSES=1
+endif
 
 # set debug or optimization options 
 ifeq ($(EXTERNALS_OPTION),debug)
@@ -71,7 +90,7 @@ endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
 # check for graphics packages
-GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu; echo $$?)
+GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
@@ -211,7 +230,7 @@ geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@echo "building geant4"
 	@mkdir -p geant4/build
 	@-cd geant4 && patch -Np0 < ../geant4.patch
-	@cd geant4/build && ../../cmake/bin/cmake \
+	@cd geant4/build && $(CMAKE) \
 	-DCLHEP_ROOT_DIR=$(EXTDIRVAR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	-DCMAKE_INSTALL_INCLUDEDIR=$(EXTINCDIR) -DCMAKE_INSTALL_BINDIR=$(EXTBINDIR) \
 	-DCMAKE_INSTALL_LIBDIR=$(EXTLIBDIR) -DCMAKE_INSTALL_DATAROOTDIR=$(EXTDIR)/share .. \
@@ -238,13 +257,13 @@ mysql: mysql/build/install_manifest.txt
 # dependence for MySql download
 mysql/CMakeLists.txt:
 	@echo "downloading MySql"
-	@wget -O -  http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.20.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@wget -O - http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.20.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
 	@mv mysql-5.5.20 mysql
 
 # MySql build command
 mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt
 	@echo "building MySql"
-	@mkdir -p mysql/build; cd mysql/build && ../../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=../exe .. && make && make install
+	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DCMAKE_INSTALL_PREFIX=../exe .. && make && make install
 	@cp -a mysql/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -a mysql/exe/bin/* $(EXTBINDIR)/ # copy the binaries
 	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql/exe/include/* $(EXTINCDIR)/mysql/  # copy the include files
@@ -272,8 +291,8 @@ mysql-connector-c++/CMakeLists.txt:
 # mysql-connector-c++ build command
 mysql-connector-c++/install_manifest.txt: cmake/bin/cmake mysql-connector-c++/CMakeLists.txt
 	@echo "building mysql-connector-c++"
-	@cd mysql-connector-c++; ../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=exe -DBOOST_ROOT:STRING=$(EXTINCDIR) \
-	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && ../cmake/bin/cmake -L && make && make install
+	@cd mysql-connector-c++; $(CMAKE) -DCMAKE_INSTALL_PREFIX=exe -DBOOST_ROOT:STRING=$(EXTINCDIR) \
+	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && $(CMAKE) -L && make && make install
 	@cp -a mysql-connector-c++/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql-connector-c++/exe/include/* $(EXTINCDIR)/mysql/
 	@cd $(EXTINCDIR) && ln -sf mysql/cppconn . # link the include files

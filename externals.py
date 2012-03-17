@@ -3,7 +3,8 @@
 
 import sys
 import os
-from setup_tools import env_vars, source_scripts, add_path, remove_path
+from setup_tools import env_vars, source_scripts, add_path, remove_path, \
+    lib_path_name
 
 
 def unsetup_externals(location):
@@ -14,7 +15,7 @@ def unsetup_externals(location):
 
     # externals
     remove_path('PATH', os.path.join(location, 'bin', subdir))
-    remove_path('LD_LIBRARY_PATH', os.path.join(location, 'lib', subdir))
+    remove_path(lib_path_name, os.path.join(location, 'lib', subdir))
 
     # geant4
     for var in os.environ.keys():
@@ -26,7 +27,7 @@ def unsetup_externals(location):
     if 'ROOTSYS' in env_vars and env_vars['ROOTSYS'] == root_dir:
         env_vars['ROOTSYS'] = ''
     remove_path('PATH', os.path.join(root_dir, 'bin'))
-    remove_path('LD_LIBRARY_PATH', os.path.join(root_dir, 'lib'))
+    remove_path(lib_path_name, os.path.join(root_dir, 'lib'))
     remove_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
 
     # pythia
@@ -41,7 +42,7 @@ def setup_externals(location):
 
     # add externals directory to path and library path
     add_path('PATH', os.path.join(location, 'bin', subdir))
-    add_path('LD_LIBRARY_PATH', os.path.join(location, 'lib', subdir))
+    add_path(lib_path_name, os.path.join(location, 'lib', subdir))
 
     # geant4
     source_scripts.append([os.path.join(location, 'bin', subdir, 'geant4.sh'),
@@ -52,7 +53,7 @@ def setup_externals(location):
     if os.path.isdir(root_dir):
         env_vars['ROOTSYS'] = root_dir
     add_path('PATH', os.path.join(root_dir, 'bin'))
-    add_path('LD_LIBRARY_PATH', os.path.join(root_dir, 'lib'))
+    add_path(lib_path_name, os.path.join(root_dir, 'lib'))
     add_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
 
     # pythia
@@ -171,3 +172,5 @@ def config_externals(conf):
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
 
     return True
+
+

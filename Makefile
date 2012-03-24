@@ -257,8 +257,8 @@ mysql: mysql/build/install_manifest.txt
 # dependence for MySql download
 mysql/CMakeLists.txt:
 	@echo "downloading MySql"
-	@wget -O - http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.20.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
-	@mv mysql-5.5.20 mysql
+	@wget -O - http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.22.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@mv mysql-5.5.22 mysql
 
 # MySql build command
 mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt

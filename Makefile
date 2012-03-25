@@ -523,7 +523,7 @@ include/PHOTOS/Photos.h: PHOTOS/configure
 	@cd PHOTOS && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
 	@cp PHOTOS/lib/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/Photos/* $(EXTINCDIR)/PHOTOS/
-	@cd include/PHOTOS && ln -s . Photos
+	@cd include/PHOTOS && ln -sf . Photos
 
 # Photos clean command
 photos.clean:
@@ -550,7 +550,7 @@ include/TAUOLA/Tauola.h: TAUOLA/configure
 	@cd TAUOLA && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
 	@cp TAUOLA/lib/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/Tauola/* $(EXTINCDIR)/TAUOLA/
-	@cd TAUOLA/include && mv Tauola/* . && rmdir Tauola && ln -s . Tauola
+	@cd TAUOLA/include && mv Tauola/* . && rmdir Tauola && ln -sf . Tauola
 
 # Tauola clean command
 tauola.clean:

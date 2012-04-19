@@ -127,7 +127,7 @@ cmake: cmake/bin/cmake
 # dependency for cmake download
 cmake/bootstrap:
 	@echo "downloading cmake"
-	@wget -O - http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz | tar xz
+	@$(EXTDIR)/download.sh http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz | tar xz
 	@mv cmake-2.8.6 cmake
 
 # cmake build command
@@ -195,7 +195,7 @@ clhep: CLHEP/config.log
 # dependency for CLHEP download
 CLHEP/configure:
 	@echo "downloading CLHEP"
-	@wget -O - http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.1.0.tgz | tar xz
+	@$(EXTDIR)/download.sh clhep-2.1.1.0.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.1.0.tgz
 	@mv 2.1.1.0/CLHEP .
 	@rmdir 2.1.1.0
 
@@ -222,8 +222,8 @@ geant4: geant4/build/Makefile
 # dependency for GEANT4 download
 geant4/CMakeLists.txt:
 	@echo "downloading geant4"
-	@wget -O - http://geant4.cern.ch/support/source/geant4.9.5.tar.gz | tar xz
-	@mv geant4.9.5 geant4
+	@$(EXTDIR)/download.sh geant4.9.5.p01.tar.gz http://geant4.cern.ch/support/source/geant4.9.5.p01.tar.gz
+	@mv geant4.9.5.p01 geant4
 
 # GEANT4 build command
 geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
@@ -257,7 +257,7 @@ mysql: mysql/build/install_manifest.txt
 # dependence for MySql download
 mysql/CMakeLists.txt:
 	@echo "downloading MySql"
-	@wget -O - http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.22.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@$(EXTDIR)/download.sh mysql-5.5.22.tar.gz http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.22.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/
 	@mv mysql-5.5.22 mysql
 
 # MySql build command
@@ -285,7 +285,7 @@ mysql-connector-c++: mysql-connector-c++/install_manifest.txt
 # dependence for mysql-connector-c++ download
 mysql-connector-c++/CMakeLists.txt:
 	@echo "downloading mysql-connector-c++"
-	@wget -O - http://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-1.1.0.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/ | tar xz
+	@$(EXTDIR)/download.sh mysql-connector-c++-1.1.0.tar.gz http://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-1.1.0.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/
 	@mv mysql-connector-c++-1.1.0 mysql-connector-c++
 
 # mysql-connector-c++ build command
@@ -313,7 +313,7 @@ postgresql: postgresql/config.log
 # dependency for PostgreSql download
 postgresql/configure:
 	@echo "downloading PostgreSql"
-	@wget -O - http://ftp.postgresql.org/pub/source/v9.1.2/postgresql-9.1.2.tar.gz | tar xz
+	@$(EXTDIR)/download.sh postgresql-9.1.2.tar.gz http://ftp.postgresql.org/pub/source/v9.1.2/postgresql-9.1.2.tar.gz
 	@mv postgresql-9.1.2 postgresql
 
 # PostgreSql build command
@@ -339,7 +339,7 @@ libpqxx: libpqxx/config.log
 # dependence for libpqxx download
 libpqxx/configure:
 	@echo "downloading libpqxx"
-	@wget -O - http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz | tar xz
+	@$(EXTDIR)/download.sh libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
 	@mv libpqxx-4.0 libpqxx
 
 # libpqxx build command
@@ -369,7 +369,6 @@ root/config/Makefile.config:
 	@cd root && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(EXTDIR)/root/include/* $(EXTINCDIR)/root
-	@cp -a $(EXTDIR)/root/lib/* $(EXTLIBDIR)
 
 # root clean command
 root.clean:
@@ -459,7 +458,7 @@ hepmc: include/HepMC/Version.h
 # dependency for HepMC download
 hepmc/README:
 	@echo "downloading HepMC"
-	@wget -O - http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.08.tar.gz | tar xz
+	@$(EXTDIR)/download.sh HepMC-2.06.08.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.08.tar.gz
 	@mv HepMC-2.06.08 hepmc
 
 # HepMC build command
@@ -486,7 +485,7 @@ pythia: include/pythia/Pythia.h
 # dependency for Pythia download
 pythia/configure:
 	@echo "downloading Pythia"
-	@wget -O - http://home.thep.lu.se/~torbjorn/pythia8/pythia8160.tgz | tar xz
+	@$(EXTDIR)/download.sh pythia8160.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8160.tgz
 	@mv pythia8160 pythia
 
 # Pythia build command
@@ -514,7 +513,7 @@ photos: include/PHOTOS/Photos.h
 # dependency for Photos download
 PHOTOS/configure:
 	@echo "downloading Photos"
-	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.3/PHOTOS.3.3.tar.gz | tar xz
+	@$(EXTDIR)/download.sh PHOTOS.3.3.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.3/PHOTOS.3.3.tar.gz
 
 # Photos build command
 include/PHOTOS/Photos.h: PHOTOS/configure
@@ -542,7 +541,7 @@ tauola: include/TAUOLA/Tauola.h
 # dependency for Tauola download
 TAUOLA/configure:
 	@echo "downloading Tauola"
-	@wget -O - http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.6/TAUOLA.1.0.6.tar.gz | tar xz
+	@$(EXTDIR)/download.sh TAUOLA.1.0.6.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.6/TAUOLA.1.0.6.tar.gz
 
 # Tauola build command
 include/TAUOLA/Tauola.h: TAUOLA/configure
@@ -591,8 +590,9 @@ rave: include/rave/Vertex.h
 # rave download command
 rave/configure:
 	@echo "downloading rave"
-	@wget -O - http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz | tar xz --exclude=*/src/boost --exclude=*/src/ROOT/*/Math
+	@$(EXTDIR)/download.sh rave-0.6.7.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz
 	@mv rave-0.6.7 rave
+	@rm -rf rave/src/boost rave/src/ROOT/*/Math
 	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
 	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
 	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math

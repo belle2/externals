@@ -127,7 +127,7 @@ cmake: cmake/bin/cmake
 # dependency for cmake download
 cmake/bootstrap:
 	@echo "downloading cmake"
-	@$(EXTDIR)/download.sh cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz | tar xz
+	@$(EXTDIR)/download.sh cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
 	@mv cmake-2.8.6 cmake
 
 # cmake build command

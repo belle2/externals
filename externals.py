@@ -23,7 +23,7 @@ def unsetup_externals(location):
             env_vars[var] = ''
 
     # root
-    root_dir = os.path.join(location, 'root')
+    root_dir = os.path.join(location, 'build', 'root', subdir)
     if 'ROOTSYS' in env_vars and env_vars['ROOTSYS'] == root_dir:
         env_vars['ROOTSYS'] = ''
     remove_path('PATH', os.path.join(root_dir, 'bin'))
@@ -49,7 +49,7 @@ def setup_externals(location):
                           os.path.join(location, 'bin', subdir, 'geant4.csh')])
 
     # root
-    root_dir = os.path.join(location, 'root')
+    root_dir = os.path.join(location, 'build', 'root', subdir)
     if os.path.isdir(root_dir):
         env_vars['ROOTSYS'] = root_dir
     add_path('PATH', os.path.join(root_dir, 'bin'))
@@ -70,7 +70,8 @@ def check_externals(location):
     if not os.path.isfile(os.path.join(location, 'bin', subdir, 'geant4.sh')):
         result = False
         sys.stderr.write('Error: geant4 installation is missing.\n')
-    if not os.path.isfile(os.path.join(location, 'root', 'bin', 'root.exe')):
+    root_dir = os.path.join(location, 'build', 'root', subdir)
+    if not os.path.isfile(os.path.join(root_dir, 'bin', 'root.exe')):
         result = False
         sys.stderr.write('Error: root installation is missing.\n')
     return result

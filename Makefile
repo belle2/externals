@@ -366,9 +366,11 @@ root: root/config/Makefile.config
 root/config/Makefile.config:
 	@echo "building root"
 	@-cd root && patch -Np0 < ../root.patch
-	@cd root && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
+	@-mkdir build/root/$(BELLE2_EXTERNALS_SUBDIR)
+	@cd build/root/$(BELLE2_EXTERNALS_SUBDIR) && ln -sf ../../../../root/* .
+	@cd build/root/$(BELLE2_EXTERNALS_SUBDIR) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
-	@cp -a $(EXTDIR)/root/include/* $(EXTINCDIR)/root
+	@cp -a build/root/$(BELLE2_EXTERNALS_SUBDIR)/include/* $(EXTINCDIR)/root
 
 # root clean command
 root.clean:

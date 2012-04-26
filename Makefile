@@ -16,7 +16,7 @@ export EXTINCDIRVAR := $(EXTDIRVAR)/include
 export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR}
 export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR}
 
-export ROOTSYS := $(EXTDIR)/root
+export ROOTSYS := $(EXTDIR)/build/root/$(BELLE2_EXTERNALS_SUBDIR)
 export GENFIT := $(EXTDIRVAR)/genfit
 export PATH := $(ROOTSYS)/bin:$(PATH)
 ifeq ($(shell uname),Darwin)

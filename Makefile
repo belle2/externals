@@ -100,10 +100,10 @@ endif
 all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
 
 # clean up target
-clean: cmake.clean gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
 
 # remove only target files
-touch: cmake.touch gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)

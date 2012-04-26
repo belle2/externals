@@ -136,7 +136,7 @@ cmake/bin/cmake: cmake/bootstrap
 	@cd cmake && ./bootstrap && make
 
 # cmake clean command
-make.clean:
+cmake.clean:
 	@echo "cleaning cmake"
 	@cd cmake && make clean
 

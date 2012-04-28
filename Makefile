@@ -39,6 +39,9 @@ ifeq ($(shell uname),Darwin)
 else
   NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
 endif
+ifdef BELLE2_MAKE_NPROCESSES
+  NPROCESSES=$(BELLE2_MAKE_NPROCESSES)
+endif
 ifeq ($(NPROCESSES),0)
   NPROCESSES=1
 endif
@@ -263,7 +266,7 @@ mysql/CMakeLists.txt:
 # MySql build command
 mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt
 	@echo "building MySql"
-	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DCMAKE_INSTALL_PREFIX=../exe .. && make && make install
+	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DCMAKE_INSTALL_PREFIX=../exe .. && make -j $(NPROCESSES) && make install
 	@cp -a mysql/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -a mysql/exe/bin/* $(EXTBINDIR)/ # copy the binaries
 	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql/exe/include/* $(EXTINCDIR)/mysql/  # copy the include files
@@ -292,7 +295,7 @@ mysql-connector-c++/CMakeLists.txt:
 mysql-connector-c++/install_manifest.txt: cmake/bin/cmake mysql-connector-c++/CMakeLists.txt
 	@echo "building mysql-connector-c++"
 	@cd mysql-connector-c++; $(CMAKE) -DCMAKE_INSTALL_PREFIX=exe -DBOOST_ROOT:STRING=$(EXTINCDIR) \
-	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && $(CMAKE) -L && make && make install
+	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && $(CMAKE) -L && make -j $(NPROCESSES) && make install
 	@cp -a mysql-connector-c++/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql-connector-c++/exe/include/* $(EXTINCDIR)/mysql/
 	@cd $(EXTINCDIR) && ln -sf mysql/cppconn . # link the include files
@@ -320,7 +323,7 @@ postgresql/configure:
 postgresql/config.log: postgresql/configure
 	@echo "building PostgreSql"
 	@cd postgresql && ./configure --prefix=$(EXTDIRVAR) \
-	--includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make && make install
+	--includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
 
 # PostgreSql clean command
 postgresql.clean:
@@ -346,7 +349,7 @@ libpqxx/configure:
 libpqxx/config.log: libpqxx/configure
 	@echo "building libpqxx"
 	@cd libpqxx && ./configure --enable-shared --prefix=$(EXTDIR) \
-	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) PG_CONFIG=$(EXTBINDIR)/pg_config && make && make install
+	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) PG_CONFIG=$(EXTBINDIR)/pg_config && make -j $(NPROCESSES) && make install
 
 # libpqxx clean command
 libpqxx.clean:

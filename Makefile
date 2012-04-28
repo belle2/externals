@@ -615,7 +615,7 @@ include/rave/Vertex.h: rave/config.status
 # rave clean command
 rave.clean:
 	@echo "cleaning rave"
-	@cd rave && make uninstall && make clean
+	@cd rave && make clean
 	@rm -f rave/config.status
 
 # rave touch command

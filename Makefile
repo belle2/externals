@@ -243,7 +243,7 @@ geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 # GEANT4 clean command
 geant4.clean:
 	@echo "cleaning geant4"
-	@cd geant4/build && make clean
+	@-cd geant4/build && make clean
 	@rm -rf geant4/build share/Geant4-9.5.0 include/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
@@ -366,8 +366,7 @@ root: root/config/Makefile.config
 root/config/Makefile.config:
 	@echo "building root"
 	@-cd root && patch -Np0 < ../root.patch
-	@mkdir -p $(ROOTSYS)
-	@cd $(ROOTSYS) && ln -sf ../../../../root/* .
+	@mkdir -p $(ROOTSYS) && cd $(ROOTSYS) && ln -sf ../../../../root/* .
 	@cd $(ROOTSYS) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
@@ -375,6 +374,7 @@ root/config/Makefile.config:
 # root clean command
 root.clean:
 	@echo "cleaning root"
+	@mkdir -p $(ROOTSYS) && cd $(ROOTSYS) && ln -sf ../../../../root/* .
 	@cd $(ROOTSYS) && make clean
 	@rm -f root/config/Makefile.config
 

@@ -366,16 +366,16 @@ root: root/config/Makefile.config
 root/config/Makefile.config:
 	@echo "building root"
 	@-cd root && patch -Np0 < ../root.patch
-	@mkdir -p build/root/$(BELLE2_EXTERNALS_SUBDIR)
-	@cd build/root/$(BELLE2_EXTERNALS_SUBDIR) && ln -sf ../../../../root/* .
-	@cd build/root/$(BELLE2_EXTERNALS_SUBDIR) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
+	@mkdir -p $(ROOTSYS)
+	@cd $(ROOTSYS) && ln -sf ../../../../root/* .
+	@cd $(ROOTSYS) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
-	@cp -a build/root/$(BELLE2_EXTERNALS_SUBDIR)/include/* $(EXTINCDIR)/root
+	@cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
 
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@cd root && make clean
+	@cd $(ROOTSYS) && make clean
 	@rm -f root/config/Makefile.config
 
 # root touch command

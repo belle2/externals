@@ -304,6 +304,7 @@ mysql-connector-c++/install_manifest.txt: cmake/bin/cmake mysql-connector-c++/CM
 mysql-connector-c++.clean:
 	@echo "cleaning mysql-connector-c++"
 	@cd mysql-connector-c++ && make clean
+	@rm -f mysql-connector-c++/install_manifest.txt
 
 # mysql-connector-c++ touch command
 mysql-connector-c++.touch:

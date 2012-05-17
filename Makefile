@@ -555,7 +555,7 @@ include/TAUOLA/Tauola.h: TAUOLA/configure
 	@cd TAUOLA && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
 	@cp TAUOLA/lib/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/Tauola/*.h $(EXTINCDIR)/TAUOLA/
-	@cd TAUOLA/include && ln -sf Tauola/*.h .
+	@cd TAUOLA/include && cp -a Tauola/*.h .
 
 # Tauola clean command
 tauola.clean:
@@ -574,7 +574,7 @@ evtgen: evtgen/config.mk
 # EvtGen build command
 evtgen/config.mk:
 	@echo "building EvtGen"
-	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES)
+	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared && make
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/ && rm -rf $(EXTINCDIR)/evtgen/*/.svn
 	@mkdir -p share/evtgen && cp evtgen/evt.pdl share/evtgen/ && cp evtgen/DECAY_2010.DEC share/evtgen/DECAY.DEC

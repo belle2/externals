@@ -172,6 +172,9 @@ def config_externals(conf):
     # Rave
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
 
+    # FLC
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'FLC'))
+
     return True
 
 

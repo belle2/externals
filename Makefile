@@ -100,13 +100,13 @@ endif
 
 
 # all target
-all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave
+all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave flc
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean flc.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch flc.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -622,3 +622,29 @@ rave.clean:
 # rave touch command
 rave.touch:
 	@rm -f rave/config.status
+
+
+# dependency for FLC build
+flc: include/FLC/libRooComplexPDF/RooComplexPDF.h
+
+# FLC download command
+BELLE_FLC/README:
+	@echo "downloading FLC"
+	@$(EXTDIR)/download.sh BELLE_FLC_1.0.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.0.tar.gz
+
+# FLC build command
+include/FLC/libRooComplexPDF/RooComplexPDF.h: BELLE_FLC/README
+	@echo "building FLC"
+	@cd BELLE_FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cp BELLE_FLC/lib/* $(EXTLIBDIR)/
+	@cp -a BELLE_FLC/include $(EXTINCDIR)/FLC
+
+# flc clean command
+flc.clean:
+	@echo "cleaning FLC"
+	@cd BELLE_FLC && ./make.sh clean
+	@rm -rf include/FLC
+
+# flc touch command
+flc.touch:
+	@rm -rf include/FLC

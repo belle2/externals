@@ -635,7 +635,7 @@ BELLE_FLC/README:
 # FLC build command
 include/FLC/libRooComplexPDF/RooComplexPDF.h: BELLE_FLC/README
 	@echo "building FLC"
-	@cd BELLE_FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cd BELLE_FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(EXTINCDIR)/root BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp BELLE_FLC/lib/* $(EXTLIBDIR)/
 	@cp -a BELLE_FLC/include $(EXTINCDIR)/FLC
 

@@ -151,8 +151,14 @@ cmake.touch:
 # dependence for google test build
 gtest: $(EXTLIBDIR)/libgtest.a
 
+# google test download
+gtest/README:
+	@echo "downloading gtest"
+	@$(EXTDIR)/download.sh gtest-1.5.0.tar.gz http://googletest.googlecode.com/files/gtest-1.5.0.tar.gz
+	@mv gtest-1.5.0 gtest
+
 # google test build command
-$(EXTLIBDIR)/libgtest.a:
+$(EXTLIBDIR)/libgtest.a: gtest/README
 	@echo "building gtest"
 	@mkdir -p $(EXTINCDIR)/gtest/internal
 	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
@@ -176,8 +182,14 @@ gtest.touch:
 # dependence for boost build
 boost: boost/project-config.jam
 
+# boost download
+boost/INSTALL:
+	@echo "downloading boost"
+	@$(EXTDIR)/download.sh boost_1_46_1.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.46.1/boost_1_46_1.tar.gz
+	@mv boost_1_46_1 boost
+
 # boost build command
-boost/project-config.jam:
+boost/project-config.jam: boost/INSTALL
 	@echo "building boost"
 	@cd boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) && ./bjam install -j$(NPROCESSES) $(BOOST_OPTION)
 
@@ -571,8 +583,15 @@ tauola.touch:
 # dependency for EvtGen build
 evtgen: evtgen/config.mk
 
+# EvtGen download command
+evtgen/README:
+	@echo "downloading EvtGen"
+	@$(EXTDIR)/download.sh EvtGen.R01-00-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-00-00/EvtGen.R01-00-00.tar.gz
+	@mv EvtGen/R01-00-00 evtgen
+	@rmdir EvtGen
+
 # EvtGen build command
-evtgen/config.mk:
+evtgen/config.mk: evtgen/README
 	@echo "building EvtGen"
 	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared && make
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/

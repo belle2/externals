@@ -378,8 +378,13 @@ libpqxx.touch:
 # dependence for root build
 root: root/config/Makefile.config
 
+# root download
+root/configure:
+	@echo "downloading root"
+	@$(EXTDIR)/download.sh root_v5.32.01.source.tar.gz ftp://root.cern.ch/root/root_v5.32.01.source.tar.gz
+
 # root build command
-root/config/Makefile.config:
+root/config/Makefile.config: root/configure
 	@echo "building root"
 	@-cd root && patch -Np0 < ../root.patch
 	@mkdir -p $(ROOTSYS) && cd $(ROOTSYS) && ln -sf ../../../../root/* .
@@ -403,8 +408,13 @@ root.touch:
 VGM_INCLUDES=$(subst vgm/packages/,include/vgm/,$(subst /include,,$(wildcard vgm/packages/*/include)))
 vgm: vgm/tmp/Linux-g++/BaseVGM_common/obj.last $(VGM_INCLUDES)
 
+# vgm download
+vgm/LICENSE:
+	@echo "downloading VGM"
+	@$(EXTDIR)/download.sh vgm-v3-05.tar.gz svn:export:706:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-05/vgm
+
 # vgm build command
-vgm/tmp/Linux-g++/BaseVGM_common/obj.last:
+vgm/tmp/Linux-g++/BaseVGM_common/obj.last: vgm/LICENSE
 	@echo "building VGM"
 	@-cd vgm && patch -Np0 < ../vgm.patch
 	@cd vgm/packages && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
@@ -429,8 +439,13 @@ vgm.touch:
 # dependence for geant4_vmc build
 geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
 
+# geant4_vmc download
+geant4_vmc/Makefile:
+	@echo "downloading geant4_vmc"
+	@$(EXTDIR)/download.sh geant4_vmc.2.13.tar.gz ftp://root.cern.ch/root/vmc/geant4_vmc.2.13.tar.gz
+
 # geant4_vmc build command
-geant4_vmc/include/g4root/TG4RootNavMgr.h:
+geant4_vmc/include/g4root/TG4RootNavMgr.h: geant4_vmc/Makefile
 	@echo "building geant4_vmc"
 	@cd geant4_vmc && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 \
 	CLHEP_BASE_DIR=$(EXTDIR) \
@@ -452,8 +467,19 @@ geant4_vmc.touch:
 # dependence for genfit build
 genfit: include/genfit/RKTrackRep.h
 
+# genfit download
+genfit/genfit/genfitLinkDef.h:
+	@echo "downloading genfit"
+	@cd genfit && $(EXTDIR)/download.sh genfit_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
+	@mv genfit/core genfit/genfit
+
+# RKTrackRep download
+genfit/RKTrackRep/genfitRKLinkDef.h:
+	@echo "downloading RKTrackRep"
+	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+
 # genfit build command
-include/genfit/RKTrackRep.h:
+include/genfit/RKTrackRep.h: genfit/genfit/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h
 	@echo "building genfit"
 	@cd genfit && SCONSFLAGS="" scons
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries

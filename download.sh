@@ -13,8 +13,16 @@ shift
 RESULT=1
 while [ $# -gt 0 ]; do
   URL=$1
+  PROTOCOL=`echo ${URL} | awk -F: '{print $1}'`
   shift
-  wget -O - ${URL} | tar xz
+  if [ "${PROTOCOL}" = "svn" ]; then
+    COMMAND=`echo ${URL} | awk -F: '{print $2}'`
+    REVISION=`echo ${URL} | awk -F: '{print $3}'`
+    LINK=`echo ${URL} | sed 's;svn:\w*:\w*:;;'`
+    svn ${COMMAND} -r${REVISION} ${LINK}
+  else
+    wget -O - ${URL} | tar xz
+  fi
   RESULT=$?
   if [ "${RESULT}" = "0" ]; then
     break

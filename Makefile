@@ -100,13 +100,13 @@ endif
 
 
 # all target
-all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm geant4_vmc genfit hepmc pythia photos tauola evtgen rave flc
+all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm genfit hepmc pythia photos tauola evtgen rave flc
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean geant4_vmc.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean flc.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean flc.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch geant4_vmc.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch flc.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch flc.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -434,34 +434,6 @@ vgm.clean:
 # vgm touch command
 vgm.touch:
 	@rm -f vgm/tmp/Linux-g++/BaseVGM_common/obj.last
-
-
-# dependence for geant4_vmc build
-geant4_vmc: geant4_vmc/include/g4root/TG4RootNavMgr.h
-
-# geant4_vmc download
-geant4_vmc/Makefile:
-	@echo "downloading geant4_vmc"
-	@$(EXTDIR)/download.sh geant4_vmc.2.13.tar.gz ftp://root.cern.ch/root/vmc/geant4_vmc.2.13.tar.gz
-
-# geant4_vmc build command
-geant4_vmc/include/g4root/TG4RootNavMgr.h: geant4_vmc/Makefile
-	@echo "building geant4_vmc"
-	@cd geant4_vmc && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm USE_VGM=1 \
-	CLHEP_BASE_DIR=$(EXTDIR) \
-	make CXXOPTS=-fPIC -j $(NPROCESSES)
-	@-rm -rf $(EXTINCDIR)/geant4_vmc
-	@cp -a geant4_vmc/include $(EXTINCDIR)/geant4_vmc 
-	@cp -af geant4_vmc/lib/*/* $(EXTLIBDIR) 
-
-# geant4_vmc clean command
-geant4_vmc.clean:
-	@echo "cleaning geant4_vmc"
-	@cd geant4_vmc && rm -rf tmp lib include
-
-# geant4_vmc touch command
-geant4_vmc.touch:
-	@rm -f geant4_vmc/include/g4root/TG4RootNavMgr.h
 
 
 # dependence for genfit build

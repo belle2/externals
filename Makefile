@@ -92,6 +92,12 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
+# check whether geant4 data files are already installed
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.5.1/data/G4EMLOW6.23; echo $$?)
+ifneq ($(GEANT4_DATA_EXISTS),0)
+  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
+endif
+
 # check for graphics packages
 GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
@@ -245,11 +251,11 @@ geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@echo "building geant4"
 	@mkdir -p geant4/build
 	@-cd geant4 && patch -Np0 < ../geant4.patch
-	@cd geant4/build && $(CMAKE) \
+	@cd geant4/build && $(CMAKE) $(GEANT4_OPTION) \
 	-DCLHEP_ROOT_DIR=$(EXTDIRVAR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	-DCMAKE_INSTALL_INCLUDEDIR=$(EXTINCDIR) -DCMAKE_INSTALL_BINDIR=$(EXTBINDIR) \
 	-DCMAKE_INSTALL_LIBDIR=$(EXTLIBDIR) -DCMAKE_INSTALL_DATAROOTDIR=$(EXTDIR)/share .. \
-	-DGEANT4_INSTALL_DATA=ON -DGEANT4_USE_G3TOG4=ON \
+	-DGEANT4_USE_G3TOG4=ON \
 	&& make -j $(NPROCESSES) && make install
 	@sed -f geant4.sed $(EXTBINDIR)/geant4-config > geant4-config \
 	&& mv geant4-config $(EXTBINDIR)/ && chmod a+x $(EXTBINDIR)/geant4-config

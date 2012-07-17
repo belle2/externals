@@ -411,7 +411,7 @@ root.touch:
 
 
 # dependence for vgm build
-VGM_INCLUDES=$(subst vgm/packages/,include/vgm/,$(subst /include,,$(wildcard vgm/packages/*/include)))
+VGM_INCLUDES=$(foreach dir,BaseVGM ClhepVGM Geant4GM RootGM VGM XmlVGM,include/vgm/$(dir))
 vgm: vgm/tmp/Linux-g++/BaseVGM_common/obj.last $(VGM_INCLUDES)
 
 # vgm download

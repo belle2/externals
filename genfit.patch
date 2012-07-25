@@ -1,0 +1,19 @@
+Index: RKTrackRep/RKTrackRep.cxx
+===================================================================
+--- RKTrackRep/RKTrackRep.cxx
++++ RKTrackRep/RKTrackRep.cxx
+@@ -1099,6 +1099,14 @@
+   // linear extrapolation to surface
+   //
+   if (!stopBecauseOfMaterial) {
++    bool bugfix (true);
++    if( bugfix ) {
++      if (fabs(Sl) > 1.E-12) Sl = 1./Sl;        // Sl = inverted last Stepsize Sl
++      else{ 
++	GFException exc("RKTrackRep::Extrap ==> last stepsize too small -> can't do linear extrapolation!",__LINE__,__FILE__);
++	throw exc;
++      }
++    }
+     // normalize SA
+     SA[0]*=Sl;  SA[1]*=Sl;  SA[2]*=Sl;
+     // calculate A

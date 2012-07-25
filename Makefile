@@ -448,17 +448,18 @@ genfit: include/genfit/RKTrackRep.h
 # genfit download
 genfit/genfit/genfitLinkDef.h:
 	@echo "downloading genfit"
-	@cd genfit && $(EXTDIR)/download.sh genfit_r643.tgz svn:checkout:643:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
+	@cd genfit && $(EXTDIR)/download.sh genfit_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
 	@mv genfit/core genfit/genfit
 
 # RKTrackRep download
 genfit/RKTrackRep/genfitRKLinkDef.h:
 	@echo "downloading RKTrackRep"
-	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r643.tgz svn:checkout:643:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
 
 # genfit build command
 include/genfit/RKTrackRep.h: genfit/genfit/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h
 	@echo "building genfit"
+	@-cd genfit && patch -Np0 < ../genfit.patch
 	@cd genfit && SCONSFLAGS="" scons
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -r genfit/include/* $(EXTINCDIR)/ # copy the installed files

@@ -1,0 +1,19 @@
+diff -r -u src/RaveBase/RaveEngine/src/RaveParameterSetBuilder.cc src/RaveBase/RaveEngine/src/RaveParameterSetBuilder.cc
+--- src/RaveBase/RaveEngine/src/RaveParameterSetBuilder.cc
++++ src/RaveBase/RaveEngine/src/RaveParameterSetBuilder.cc
+@@ -1,12 +1,12 @@
+ #include "RaveBase/RaveEngine/interface/RaveParameterSetBuilder.h"
+ #include "FWCore/MessageLogger/interface/MessageLogger.h"
+-#include <boost/spirit/core.hpp>
+-#include <boost/spirit/actor/push_back_actor.hpp>
++#include <boost/spirit/home/classic/core.hpp>
++#include <boost/spirit/home/classic/actor/push_back_actor.hpp>
+ #include <boost/shared_ptr.hpp>
+ #include <vector>
+ 
+ using namespace std;
+-using namespace boost::spirit;
++using namespace boost::spirit::classic;
+ 
+ namespace {
+ 

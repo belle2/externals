@@ -1,0 +1,10 @@
+--- src/EvtGenModels/EvtPhotosEngine.cpp
++++ src/EvtGenModels/EvtPhotosEngine.cpp
+@@ -38,6 +38,7 @@
+ #include <vector>
+ 
+ using std::endl;
++using namespace Photospp;
+ 
+ EvtPhotosEngine::EvtPhotosEngine(std::string photonType) {
+ 

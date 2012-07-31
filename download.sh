@@ -21,7 +21,7 @@ while [ $# -gt 0 ]; do
     LINK=`echo ${URL} | sed 's;svn:\w*:\w*:;;'`
     svn ${COMMAND} -r${REVISION} ${LINK}
   else
-    wget -O - ${URL} | tar xz
+    wget -O - --tries=3 ${URL} | tar xz
   fi
   RESULT=$?
   if [ "${RESULT}" = "0" ]; then

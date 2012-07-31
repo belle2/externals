@@ -160,8 +160,8 @@ gtest: $(EXTLIBDIR)/libgtest.a
 # google test download
 gtest/README:
 	@echo "downloading gtest"
-	@$(EXTDIR)/download.sh gtest-1.5.0.tar.gz http://googletest.googlecode.com/files/gtest-1.5.0.tar.gz
-	@mv gtest-1.5.0 gtest
+	@$(EXTDIR)/download.sh gtest-1.6.0.tar.gz #http://googletest.googlecode.com/files/gtest-1.6.0.zip
+	@mv gtest-1.6.0 gtest
 
 # google test build command
 $(EXTLIBDIR)/libgtest.a: gtest/README
@@ -191,8 +191,8 @@ boost: boost/project-config.jam
 # boost download
 boost/INSTALL:
 	@echo "downloading boost"
-	@$(EXTDIR)/download.sh boost_1_46_1.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.46.1/boost_1_46_1.tar.gz
-	@mv boost_1_46_1 boost
+	@$(EXTDIR)/download.sh boost_1_50_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.50.0/boost_1_50_0.tar.gz
+	@mv boost_1_50_0 boost
 
 # boost build command
 boost/project-config.jam: boost/INSTALL
@@ -335,8 +335,8 @@ postgresql: postgresql/config.log
 # dependency for PostgreSql download
 postgresql/configure:
 	@echo "downloading PostgreSql"
-	@$(EXTDIR)/download.sh postgresql-9.1.2.tar.gz http://ftp.postgresql.org/pub/source/v9.1.2/postgresql-9.1.2.tar.gz
-	@mv postgresql-9.1.2 postgresql
+	@$(EXTDIR)/download.sh postgresql-9.1.4.tar.gz http://ftp.postgresql.org/pub/source/v9.1.4/postgresql-9.1.4.tar.gz
+	@mv postgresql-9.1.4 postgresql
 
 # PostgreSql build command
 postgresql/config.log: postgresql/configure
@@ -387,7 +387,7 @@ root: root/config/Makefile.config
 # root download
 root/configure:
 	@echo "downloading root"
-	@$(EXTDIR)/download.sh root_v5.32.01.source.tar.gz ftp://root.cern.ch/root/root_v5.32.01.source.tar.gz
+	@$(EXTDIR)/download.sh root_v5.34.01.source.tar.gz ftp://root.cern.ch/root/root_v5.34.01.source.tar.gz
 
 # root build command
 root/config/Makefile.config: root/configure
@@ -481,8 +481,8 @@ hepmc: include/HepMC/Version.h
 # dependency for HepMC download
 hepmc/README:
 	@echo "downloading HepMC"
-	@$(EXTDIR)/download.sh HepMC-2.06.08.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.08.tar.gz
-	@mv HepMC-2.06.08 hepmc
+	@$(EXTDIR)/download.sh HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+	@mv HepMC-2.06.09 hepmc
 
 # HepMC build command
 include/HepMC/Version.h: hepmc/README
@@ -508,8 +508,8 @@ pythia: include/pythia/Pythia.h
 # dependency for Pythia download
 pythia/configure:
 	@echo "downloading Pythia"
-	@$(EXTDIR)/download.sh pythia8160.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8160.tgz
-	@mv pythia8160 pythia
+	@$(EXTDIR)/download.sh pythia8165.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8165.tgz
+	@mv pythia8165 pythia
 
 # Pythia build command
 include/pythia/Pythia.h: pythia/configure
@@ -536,7 +536,7 @@ photos: include/PHOTOS/Photos.h
 # dependency for Photos download
 PHOTOS/configure:
 	@echo "downloading Photos"
-	@$(EXTDIR)/download.sh PHOTOS.3.3.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.3/PHOTOS.3.3.tar.gz
+	@$(EXTDIR)/download.sh PHOTOS.3.5.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.5/PHOTOS.3.5.tar.gz
 
 # Photos build command
 include/PHOTOS/Photos.h: PHOTOS/configure
@@ -564,7 +564,7 @@ tauola: include/TAUOLA/Tauola.h
 # dependency for Tauola download
 TAUOLA/configure:
 	@echo "downloading Tauola"
-	@$(EXTDIR)/download.sh TAUOLA.1.0.6.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.6/TAUOLA.1.0.6.tar.gz
+	@$(EXTDIR)/download.sh TAUOLA.1.0.7.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.7/TAUOLA.1.0.7.tar.gz
 
 # Tauola build command
 include/TAUOLA/Tauola.h: TAUOLA/configure
@@ -594,6 +594,7 @@ evtgen/README:
 	@$(EXTDIR)/download.sh EvtGen.R01-00-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-00-00/EvtGen.R01-00-00.tar.gz
 	@mv EvtGen/R01-00-00 evtgen
 	@rmdir EvtGen
+	@-cd evtgen && patch -Np0 < ../evtgen.patch
 
 # EvtGen build command
 evtgen/config.mk: evtgen/README
@@ -622,6 +623,7 @@ rave/configure:
 	@echo "downloading rave"
 	@$(EXTDIR)/download.sh rave-0.6.7.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz
 	@mv rave-0.6.7 rave
+	@-cd rave && patch -Np0 < ../rave.patch
 	@rm -rf rave/src/boost rave/src/ROOT/*/Math
 	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
 	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math

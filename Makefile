@@ -393,7 +393,8 @@ root/configure:
 root/config/Makefile.config: root/configure
 	@echo "building root"
 	@-cd root && patch -Np0 < ../root.patch
-	@mkdir -p $(ROOTSYS) && cd $(ROOTSYS) && ln -sf ../../../../root/* .
+	@mkdir -p $(ROOTSYS)
+	@-cd $(ROOTSYS) && ln -sf ../../../../root/* .
 	@cd $(ROOTSYS) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
 	@mkdir -p $(EXTINCDIR)/root
 	@cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
@@ -401,7 +402,8 @@ root/config/Makefile.config: root/configure
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@mkdir -p $(ROOTSYS) && cd $(ROOTSYS) && ln -sf ../../../../root/* .
+	@mkdir -p $(ROOTSYS)
+	@-cd $(ROOTSYS) && ln -sf ../../../../root/* .
 	@cd $(ROOTSYS) && make clean
 	@rm -f root/config/Makefile.config
 

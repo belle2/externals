@@ -17,7 +17,8 @@ export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR}
 export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR}
 
 export ROOTSYS := $(EXTDIR)/build/root/$(BELLE2_EXTERNALS_SUBDIR)
-export GENFIT := $(EXTDIRVAR)/genfit
+export GENFIT := $(EXTDIR)/genfit
+export RAVEPATH := $(EXTDIR)/rave
 export PATH := $(ROOTSYS)/bin:$(PATH)
 ifeq ($(shell uname),Darwin)
   export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(DYLD_LIBRARY_PATH)
@@ -448,33 +449,38 @@ vgm.touch:
 genfit: include/genfit/RKTrackRep.h
 
 # genfit download
-genfit/genfit/genfitLinkDef.h:
-	@echo "downloading genfit"
-	@cd genfit && $(EXTDIR)/download.sh genfit_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
-	@mv genfit/core genfit/genfit
+genfit/core/genfitLinkDef.h:
+	@echo "downloading genfit core"
+	@cd genfit && $(EXTDIR)/download.sh genfit_r657.tgz svn:checkout:657:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
 
 # RKTrackRep download
 genfit/RKTrackRep/genfitRKLinkDef.h:
 	@echo "downloading RKTrackRep"
-	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r602.tgz svn:checkout:602:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r657.tgz svn:checkout:657:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+	
+# GFRave download
+genfit/GFRave/GFRaveLinkDef.h:
+	@echo "downloading GFRave"
+	@cd genfit && $(EXTDIR)/download.sh GFRave_r657.tgz svn:checkout:657:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
 
 # genfit build command
-include/genfit/RKTrackRep.h: genfit/genfit/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h
+include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h genfit/GFRave/GFRaveLinkDef.h
 	@echo "building genfit"
-	@-cd genfit && patch -Np0 < ../genfit.patch
-	@cd genfit && SCONSFLAGS="" scons
+	@cd genfit && ../cmake/bin/cmake . && make
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -r genfit/include/* $(EXTINCDIR)/ # copy the installed files
 
 # genfit clean command
 genfit.clean:
 	@echo "cleaning genfit"
-	@cd genfit && SCONSFLAGS="" scons -c
+	@cd genfit && make clean
 	@rm -f include/genfit/RKTrackRep.h
+	@rm -f include/genfit/GFRaveVertexFactory.h
 
 # genfit touch command
 genfit.touch:
 	@rm -f include/genfit/RKTrackRep.h
+	@rm -f include/genfit/GFRaveVertexFactory.h
 
 
 # dependency for HepMC build

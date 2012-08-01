@@ -107,13 +107,13 @@ endif
 
 
 # all target
-all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm genfit hepmc pythia photos tauola evtgen rave flc
+all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm rave genfit hepmc pythia photos tauola evtgen flc
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean rave.clean flc.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean rave.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean flc.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch rave.touch flc.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch rave.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch flc.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -445,6 +445,41 @@ vgm.touch:
 	@rm -f vgm/tmp/Linux-g++/BaseVGM_common/obj.last
 
 
+# dependency for rave build
+rave: include/rave/Vertex.h
+
+# rave download command
+rave/configure:
+	@echo "downloading rave"
+	@$(EXTDIR)/download.sh rave-0.6.7.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz
+	@mv rave-0.6.7 rave
+	@-cd rave && patch -Np0 < ../rave.patch
+	@rm -rf rave/src/boost rave/src/ROOT/*/Math
+	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
+	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src/ROOT/smatrix && ln -s $(EXTINCDIR)/root/Math Math
+
+# rave configure command
+rave/config.status: rave/configure
+	@cd rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
+
+# rave build command
+include/rave/Vertex.h: rave/config.status
+	@echo "building rave"
+	@cd rave && make -j $(NPROCESSES) && make install
+
+# rave clean command
+rave.clean:
+	@echo "cleaning rave"
+	@cd rave && make clean
+	@rm -f rave/config.status
+
+# rave touch command
+rave.touch:
+	@rm -f rave/config.status
+
+
 # dependence for genfit build
 genfit: include/genfit/RKTrackRep.h
 
@@ -457,7 +492,7 @@ genfit/core/genfitLinkDef.h:
 genfit/RKTrackRep/genfitRKLinkDef.h:
 	@echo "downloading RKTrackRep"
 	@cd genfit && $(EXTDIR)/download.sh RKTrackRep_r657.tgz svn:checkout:657:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
-	
+
 # GFRave download
 genfit/GFRave/GFRaveLinkDef.h:
 	@echo "downloading GFRave"
@@ -621,41 +656,6 @@ evtgen.clean:
 # EvtGen touch command
 evtgen.touch:
 	@rm -f evtgen/config.mk
-
-
-# dependency for rave build
-rave: include/rave/Vertex.h
-
-# rave download command
-rave/configure:
-	@echo "downloading rave"
-	@$(EXTDIR)/download.sh rave-0.6.7.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.7.tar.gz
-	@mv rave-0.6.7 rave
-	@-cd rave && patch -Np0 < ../rave.patch
-	@rm -rf rave/src/boost rave/src/ROOT/*/Math
-	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
-	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/smatrix && ln -s $(EXTINCDIR)/root/Math Math
-
-# rave configure command
-rave/config.status: rave/configure
-	@cd rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
-
-# rave build command
-include/rave/Vertex.h: rave/config.status
-	@echo "building rave"
-	@cd rave && make -j $(NPROCESSES) && make install
-
-# rave clean command
-rave.clean:
-	@echo "cleaning rave"
-	@cd rave && make clean
-	@rm -f rave/config.status
-
-# rave touch command
-rave.touch:
-	@rm -f rave/config.status
 
 
 # dependency for FLC build

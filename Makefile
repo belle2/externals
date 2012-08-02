@@ -501,21 +501,19 @@ genfit/GFRave/GFRaveLinkDef.h:
 # genfit build command
 include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h genfit/GFRave/GFRaveLinkDef.h
 	@echo "building genfit"
-	@cd genfit && ../cmake/bin/cmake . && make
+	@cd genfit && ../cmake/bin/cmake . && make # cmake and make
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
-	@cp -r genfit/include/* $(EXTINCDIR)/ # copy the installed files
+	@mkdir -p $(EXTINCDIR)/genfit/ && cp `find genfit/*/*.h | grep -v LinkDef` $(EXTINCDIR)/genfit/ # copy the headers
 
 # genfit clean command
 genfit.clean:
 	@echo "cleaning genfit"
-	@cd genfit && make clean
 	@rm -f include/genfit/RKTrackRep.h
-	@rm -f include/genfit/GFRaveVertexFactory.h
+	@cd genfit && make clean
 
 # genfit touch command
 genfit.touch:
 	@rm -f include/genfit/RKTrackRep.h
-	@rm -f include/genfit/GFRaveVertexFactory.h
 
 
 # dependency for HepMC build

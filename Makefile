@@ -405,7 +405,7 @@ root.clean:
 	@echo "cleaning root"
 	@mkdir -p $(ROOTSYS)
 	@-cd $(ROOTSYS) && ln -sf ../../../../root/* .
-	@cd $(ROOTSYS) && make clean
+	@-cd $(ROOTSYS) && make clean
 	@rm -f root/config/Makefile.config
 
 # root touch command
@@ -510,6 +510,7 @@ genfit.clean:
 	@echo "cleaning genfit"
 	@rm -f include/genfit/RKTrackRep.h
 	@cd genfit && make clean
+	@rm -f genfit/CMakeCache.txt
 
 # genfit touch command
 genfit.touch:

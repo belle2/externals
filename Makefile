@@ -161,7 +161,7 @@ gtest: $(EXTLIBDIR)/libgtest.a
 # google test download
 gtest/README:
 	@echo "downloading gtest"
-	@$(EXTDIR)/download.sh gtest-1.6.0.tar.gz #http://googletest.googlecode.com/files/gtest-1.6.0.zip
+	@$(EXTDIR)/download.sh gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
 	@mv gtest-1.6.0 gtest
 
 # google test build command

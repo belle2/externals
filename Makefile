@@ -455,10 +455,10 @@ rave/configure:
 	@mv rave-0.6.7 rave
 	@-cd rave && patch -Np0 < ../rave.patch
 	@rm -rf rave/src/boost rave/src/ROOT/*/Math
-	@cd rave/src && ln -s $(EXTINCDIR)/boost boost
-	@cd rave/src/ROOT/genvector && ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/mathcore && ln -s $(EXTINCDIR)/root/Math Math
-	@cd rave/src/ROOT/smatrix && ln -s $(EXTINCDIR)/root/Math Math
+	@cd rave/src && ln -s ../../include/boost boost
+	@cd rave/src/ROOT/genvector && ln -s ../../../../include/root/Math Math
+	@cd rave/src/ROOT/mathcore && ln -s ../../../../include/root/Math Math
+	@cd rave/src/ROOT/smatrix && ln -s ../../../../include/root/Math Math
 
 # rave configure command
 rave/config.status: rave/configure

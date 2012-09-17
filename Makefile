@@ -163,6 +163,7 @@ gtest/README:
 	@echo "downloading gtest"
 	@$(EXTDIR)/download.sh gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
 	@mv gtest-1.6.0 gtest
+	@chmod -R u+w gtest
 
 # google test build command
 $(EXTLIBDIR)/libgtest.a: gtest/README
@@ -261,6 +262,10 @@ geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
 	@sed -f geant4.sed $(EXTBINDIR)/geant4-config > geant4-config \
 	&& mv geant4-config $(EXTBINDIR)/ && chmod a+x $(EXTBINDIR)/geant4-config
 	@sed -f geant4.sed $(EXTBINDIR)/geant4.csh > geant4.csh && mv geant4.csh $(EXTBINDIR)/
+ifeq ($(GEANT4_DATA_EXISTS),0)
+	@cat geant4.sh.add >> $(EXTBINDIR)/geant4.sh	
+	@cat geant4.csh.add >> $(EXTBINDIR)/geant4.csh	
+endif
 
 # GEANT4 clean command
 geant4.clean:

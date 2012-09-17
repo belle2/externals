@@ -38,7 +38,7 @@ endif
 ifeq ($(shell uname),Darwin)
   NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
 else
-  NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
+  NPROCESSES=$(shell grep "physical id.*0" /proc/cpuinfo 2> /dev/null | wc -l)
 endif
 ifdef BELLE2_MAKE_NPROCESSES
   NPROCESSES=$(BELLE2_MAKE_NPROCESSES)

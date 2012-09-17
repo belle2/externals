@@ -661,21 +661,23 @@ evtgen.touch:
 flc: include/FLC/libRooComplexPDF/RooComplexPDF.h
 
 # FLC download command
-BELLE_FLC/README:
+FLC/README:
 	@echo "downloading FLC"
-	@$(EXTDIR)/download.sh BELLE_FLC_1.0.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.0.tar.gz
+	@$(EXTDIR)/download.sh BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
+	@mv BELLE_FLC_1.1 FLC
 
 # FLC build command
-include/FLC/libRooComplexPDF/RooComplexPDF.h: BELLE_FLC/README
+include/FLC/libRooComplexPDF/RooComplexPDF.h: FLC/README
 	@echo "building FLC"
-	@cd BELLE_FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(EXTINCDIR)/root BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
-	@cp BELLE_FLC/lib/* $(EXTLIBDIR)/
-	@cp -a BELLE_FLC/include $(EXTINCDIR)/FLC
+	@-cd FLC && patch -Np0 < ../FLC.patch
+	@cd FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(EXTINCDIR)/root BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cp FLC/lib/* $(EXTLIBDIR)/
+	@cp -a FLC/include $(EXTINCDIR)/FLC
 
 # flc clean command
 flc.clean:
 	@echo "cleaning FLC"
-	@cd BELLE_FLC && ./make.sh clean
+	@cd FLC && ./make.sh clean
 	@rm -rf include/FLC
 
 # flc touch command

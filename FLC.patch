@@ -1,0 +1,73 @@
+Index: examples/Makefile
+===================================================================
+--- examples/Makefile
++++ examples/Makefile
+@@ -96,33 +96,6 @@
+ 	$(MAKE) $(TARGET_FLATTE)
+ 	$(MAKE) $(TARGET_BW_A1)
+ 	$(MAKE) $(TARGET_PHI)
+-ifdef BELLE_LEVEL
+-	@echo "BELLE_LEVEL "$(BELLE_LEVEL)" detected"
+-	$(MAKE) $(TARGET_TATAMI)
+-	$(MAKE) $(TARGET_TATAMI_SVV)
+-	$(MAKE) $(TARGET_TATAMI_JPSIKS)
+-else
+-	@echo "-----------------------------------------------------------------------"
+-	@echo "Belle software seems not to be installed on this machine. At least the"
+-	@echo "BELLE_LEVEL environment variable does not exist. Probably you need to"
+-	@echo "source the bashrc_general or cshrc_general."
+-	@echo "This might also be on purpose if you don't want to use BELLE specific"
+-	@echo "resolution functions, e.g. in case of BELLE 2."	
+-	@echo "-----------------------------------------------------------------------"
+-	@echo -n "Searching for precompiled libRooTatamiPortable.so ... "
+-ifeq ($(shell if [ -e $(BELLE_FLC)/libRooTatami/libRooTatamiPortable.so ]; then echo -lRooTatamiPortable; fi), -lRooTatamiPortable)
+-	@echo "OK"
+-	@echo "Using precompiled libRooTatamiPortable.so to built $(TARGET_TATAMI)"
+-	@echo "-----------------------------------------------------------------------"
+-	$(MAKE) $(TARGET_TATAMI)
+-	$(MAKE) $(TARGET_TATAMI_SVV)
+-	$(MAKE) $(TARGET_TATAMI_JPSIKS)
+-else
+-	@echo "FAILED"
+-	@echo "Skipping built of $(TARGET_TATAMI)"
+-	@echo "-----------------------------------------------------------------------"
+-endif
+-endif
+ 
+ $(TARGET): $(OBJS)
+ 	$(CXX) -o $@ $(OBJS) $(LIBS)
+Index: make.sh
+===================================================================
+--- make.sh
++++ make.sh
+@@ -41,19 +41,6 @@
+ fi
+ cd ..
+ 
+-echo "<-- Compiling libRooTatami.so -->"
+-cd libRooTatami
+-make $*
+-if [ $? == 0 ]
+-then
+-  cp libRooTatami.so ../lib
+-  cp libRooTatamiPortable.so ../lib
+-  mkdir -p ../include/libRooTatami
+-  cp *.h ../include/libRooTatami
+-  echo "<-- libRooTatami(Portable).so succesfully built -->"
+-fi
+-cd ..
+-
+ echo "<-- Compiling examples -->"
+ cd examples
+ make $*
+@@ -69,10 +56,4 @@
+   fi
+ fi
+ 
+-echo "<-- IMPORTANT -->"
+-echo "To compile/run the exercises and examples, please add the following environment variable:"
+-echo "export BELLE_FLC="$BELLE_FLC
+-echo "Please make sure to update your LD_LIBRARY_PATH:"
+-echo "export LD_LIBRARY_PATH=\$BELLE_FLC/lib:\$LD_LIBRARY_PATH"
+-
+ exit 0

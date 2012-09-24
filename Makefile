@@ -393,7 +393,7 @@ root: root/config/Makefile.config
 # root download
 root/configure:
 	@echo "downloading root"
-	@$(EXTDIR)/download.sh root_v5.34.01.source.tar.gz ftp://root.cern.ch/root/root_v5.34.01.source.tar.gz
+	@$(EXTDIR)/download.sh root_v5.34.02.source.tar.gz ftp://root.cern.ch/root/root_v5.34.02.source.tar.gz
 
 # root build command
 root/config/Makefile.config: root/configure
@@ -491,17 +491,17 @@ genfit: include/genfit/RKTrackRep.h
 # genfit download
 genfit/core/genfitLinkDef.h:
 	@echo "downloading genfit core"
-	@cd genfit && $(EXTDIR)/download.sh genfit_core_r678.tgz svn:checkout:678:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
+	@cd genfit && $(EXTDIR)/download.sh genfit_core_r685.tgz svn:checkout:685:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
 
 # RKTrackRep download
 genfit/RKTrackRep/genfitRKLinkDef.h:
 	@echo "downloading RKTrackRep"
-	@cd genfit && $(EXTDIR)/download.sh genfit_RKTrackRep_r678.tgz svn:checkout:678:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+	@cd genfit && $(EXTDIR)/download.sh genfit_RKTrackRep_r685.tgz svn:checkout:685:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
 
 # GFRave download
 genfit/GFRave/GFRaveLinkDef.h:
 	@echo "downloading GFRave"
-	@cd genfit && $(EXTDIR)/download.sh genfit_GFRave_r678.tgz svn:checkout:678:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
+	@cd genfit && $(EXTDIR)/download.sh genfit_GFRave_r685.tgz svn:checkout:685:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
 
 # genfit build command
 include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h genfit/GFRave/GFRaveLinkDef.h

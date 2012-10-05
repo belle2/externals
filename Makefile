@@ -638,10 +638,8 @@ evtgen: evtgen/config.mk
 # EvtGen download command
 evtgen/README:
 	@echo "downloading EvtGen"
-	@$(EXTDIR)/download.sh EvtGen.R01-00-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-00-00/EvtGen.R01-00-00.tar.gz
-	@mv EvtGen/R01-00-00 evtgen
-	@rmdir EvtGen
-	@-cd evtgen && patch -Np0 < ../evtgen.patch
+	@$(EXTDIR)/download.sh EvtGen.R01-01-00.tar.gz svn:export:112:http://svnweb.cern.ch/guest/evtgen/tags/R01-01-00
+	@mv R01-01-00 evtgen
 
 # EvtGen build command
 evtgen/config.mk: evtgen/README

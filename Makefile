@@ -107,13 +107,13 @@ endif
 
 
 # all target
-all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm rave genfit hepmc pythia photos tauola evtgen flc
+all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean rave.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean flc.clean
+clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean rave.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean flc.clean eigen.clean
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch rave.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch flc.touch
+touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch rave.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch flc.touch eigen.touch
 
 # directory creation
 dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
@@ -686,3 +686,28 @@ flc.clean:
 # flc touch command
 flc.touch:
 	@rm -rf include/FLC
+
+
+
+# dependency for eigen build
+eigen: include/Eigen/Eigen
+
+# eigen download command
+eigen/INSTALL:
+	@echo "downloading eigen"
+	@$(EXTDIR)/download.sh eigen_3.1.1.tar.gz http://bitbucket.org/eigen/eigen/get/3.1.1.tar.gz
+	@mv eigen-eigen-43d9075b23ef eigen
+
+# eigen build command
+include/Eigen/Eigen: eigen/INSTALL
+	@echo "installing eigen"
+	@cp -a eigen/Eigen $(EXTINCDIR)/
+
+# eigen clean command
+eigen.clean:
+	@echo "cleaning eigen"
+	@rm -rf include/Eigen
+
+# eigen touch command
+eigen.touch:
+	@rm -rf include/Eigen

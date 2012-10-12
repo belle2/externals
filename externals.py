@@ -175,6 +175,9 @@ def config_externals(conf):
     # FLC
     conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'FLC'))
 
+    # eigen
+    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'Eigen'))
+
     return True
 
 

@@ -456,8 +456,8 @@ rave: include/rave/Vertex.h
 # rave download command
 rave/configure:
 	@echo "downloading rave"
-	@$(EXTDIR)/download.sh rave-0.6.9.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.9.tar.gz
-	@mv rave-0.6.9 rave
+	@$(EXTDIR)/download.sh rave-0.6.10.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.10.tar.gz
+	@mv rave-0.6.10 rave
 	@-cd rave && patch -Np0 < ../rave.patch
 	@rm -rf rave/src/boost rave/src/ROOT/*/Math
 	@cd rave/src && ln -s ../../include/boost boost

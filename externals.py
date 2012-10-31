@@ -3,6 +3,7 @@
 
 import sys
 import os
+import subprocess
 from setup_tools import env_vars, source_scripts, add_path, remove_path, \
     lib_path_name
 
@@ -69,11 +70,11 @@ def check_externals(location):
     result = True
     if not os.path.isfile(os.path.join(location, 'bin', subdir, 'geant4.sh')):
         result = False
-        sys.stderr.write('Error: geant4 installation is missing.\n')
+        # sys.stderr.write('Error: geant4 installation is missing.\n')
     root_dir = os.path.join(location, 'build', 'root', subdir)
     if not os.path.isfile(os.path.join(root_dir, 'bin', 'root.exe')):
         result = False
-        sys.stderr.write('Error: root installation is missing.\n')
+        # sys.stderr.write('Error: root installation is missing.\n')
     return result
 
 
@@ -83,10 +84,12 @@ def config_externals(conf):
     from SCons.Script import Environment
 
     # CLHEP
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'CLHEP'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'CLHEP'
+                    ))
 
     # geant4
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'Geant4'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Geant4'
+                    ))
     conf.env['GEANT4_LIBS'] = [
         'G4digits_hits',
         'G4error_propagation',
@@ -121,7 +124,8 @@ def config_externals(conf):
     if conf.CheckHeader('mysql/mysql.h'):
         conf.env['HAS_MYSQL'] = True
         conf.env.Append(CPPDEFINES='-DHAS_MYSQL')
-        conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'mysql'))
+        conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'],
+                        'mysql'))
         conf.env['MYSQL_LIBS'] = ['mysqlcppconn', 'mysqlclient']
 
     # PostgreSQL
@@ -130,11 +134,13 @@ def config_externals(conf):
     if conf.CheckLibWithHeader('pqxx', 'pgsql/pg_config.h', 'C++'):
         conf.env['HAS_PGSQL'] = True
         conf.env.Append(CPPDEFINES='-DHAS_PGSQL')
-        conf.env.Append(CPPPATH='pg_config --includedir')
+        conf.env.Append(CCFLAGS='-I' + (subprocess.Popen(['pg_config',
+                        '--includedir'],
+                        stdout=subprocess.PIPE).communicate()[0])[:-1])
         conf.env['PGSQL_LIBS'] = ['pqxx', 'pq']
 
     # root
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'root'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'root'))
 
     conf.env['ROOT_LIBS'] = conf.env['ROOT_GLIBS'] = []
     if conf.CheckConfigTool('root-config'):
@@ -145,38 +151,45 @@ def config_externals(conf):
         conf.env['ROOT_GLIBS'] = root_env['LIBS']
 
     # vgm
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'vgm'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'vgm'))
 
     # geant4_vmc
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'],
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'],
                     'geant4_vmc/g4root'))
 
     # genfit
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'genfit'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'genfit'
+                    ))
 
     # HepMC
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'hepMC'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'hepMC'
+                    ))
 
     # Pythia
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'pythia'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'pythia'
+                    ))
 
     # Photos
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'PHOTOS'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'PHOTOS'
+                    ))
 
     # Tauola
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'TAUOLA'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'TAUOLA'
+                    ))
 
     # EvtGen
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'evtgen'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'evtgen'
+                    ))
 
     # Rave
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
 
     # FLC
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'FLC'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'FLC'))
 
     # eigen
-    conf.env.Append(CPPPATH=os.path.join(conf.env['EXTINCDIR'], 'Eigen'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Eigen'
+                    ))
 
     return True
 

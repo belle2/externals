@@ -393,7 +393,7 @@ root: root/config/Makefile.config
 # root download
 root/configure:
 	@echo "downloading root"
-	@$(EXTDIR)/download.sh root_v5.34.02.source.tar.gz ftp://root.cern.ch/root/root_v5.34.02.source.tar.gz
+	@$(EXTDIR)/download.sh root_v5.34.03.source.tar.gz ftp://root.cern.ch/root/root_v5.34.03.source.tar.gz
 
 # root build command
 root/config/Makefile.config: root/configure

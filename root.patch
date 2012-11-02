@@ -832,3 +832,16 @@ Index: sql/pgsql/inc/TPgSQLStatement.h
  
     ClassDef(TPgSQLStatement, 0);  // SQL statement class for PgSQL DB
  };
+Index: geom/geom/src/TGeoPcon.cxx
+===================================================================
+--- geom/geom/src/TGeoPcon.cxx	2012/10/18 14:38:39	46644
++++ geom/geom/src/TGeoPcon.cxx	2012/10/18 15:38:50	46645
+@@ -397,7 +397,7 @@
+    Double_t sstep = 1E-6;
+    Double_t point_new[3];
+    // determine which z segment contains the point
+-   Int_t ipl = TMath::BinarySearch(fNz, fZ, point[2]);
++   Int_t ipl = TMath::BinarySearch(fNz, fZ, point[2]+TMath::Sign(1.E-10,dir[2]));
+    if (ipl<0) ipl=0;
+    if (ipl==(fNz-1)) ipl--;
+    Double_t dz = 0.5*(fZ[ipl+1]-fZ[ipl]);

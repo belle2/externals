@@ -2,15 +2,7 @@ Index: montecarlo/eg/src/TParticlePDG.cxx
 ===================================================================
 --- montecarlo/eg/src/TParticlePDG.cxx	(revision 47000)
 +++ montecarlo/eg/src/TParticlePDG.cxx	(working copy)
-@@ -42,6 +42,7 @@
- #include "TParticlePDG.h"
- #include "TDatabasePDG.h"
- 
-+
- ClassImp(TParticlePDG)
- 
- //______________________________________________________________________________
-@@ -99,14 +100,12 @@
+@@ -99,14 +99,12 @@
  TParticlePDG::TParticlePDG(const char* Name, const char* Title, Double_t aMass,
                             Bool_t aStable, Double_t aWidth, Double_t aCharge,
                             const char* aParticleClass, Int_t aPdgCode, Int_t Anti,
@@ -26,7 +18,7 @@ Index: montecarlo/eg/src/TParticlePDG.cxx
     fIsospin       = 0;
     fI3            = 0;
     fStrangeness   = 0;
-@@ -125,10 +124,15 @@
+@@ -125,11 +123,15 @@
     fPdgCode       = aPdgCode;
     fTrackingCode  = aTrackingCode;
     fDecayList     = NULL;
@@ -35,6 +27,7 @@ Index: montecarlo/eg/src/TParticlePDG.cxx
     else      fAntiParticle = 0;
     
     const Double_t kHbar = 6.58211889e-25; // GeV s
+-   if (fWidth != 0.) fLifetime = kHbar / fWidth;
 +   if (fWidth != 0.)
 +       fLifetime = kHbar / fWidth;
 +   else

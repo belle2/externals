@@ -1,7 +1,14 @@
++   if (fWidth != 0.)
++       fLifetime = kHbar / fWidth;
++   else
++       fLifetime      = aLifetime;
+ }
+ 
+ //______________________________________________________________________________
 Index: montecarlo/eg/src/TDatabasePDG.cxx
 ===================================================================
---- montecarlo/eg/src/TDatabasePDG.cxx	(Revision 45300)
-+++ montecarlo/eg/src/TDatabasePDG.cxx	(Arbeitskopie)
+--- montecarlo/eg/src/TDatabasePDG.cxx	(revision 47000)
++++ montecarlo/eg/src/TDatabasePDG.cxx	(working copy)
 @@ -19,6 +19,7 @@
  #include "TDecayChannel.h"
  #include "TParticlePDG.h"
@@ -10,7 +17,27 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
  
  
  ////////////////////////////////////////////////////////////////////////
-@@ -712,6 +713,73 @@
+@@ -115,7 +116,9 @@
+                                         const char* ParticleClass,
+                                         Int_t PDGcode,
+                                         Int_t Anti,
+-                                        Int_t TrackingCode)
++                                        Int_t TrackingCode,
++                                        Double_t Lifetime,
++                                        Double_t Spin)
+ {
+   //
+   //  Particle definition normal constructor. If the particle is set to be
+@@ -135,7 +138,7 @@
+ 
+    TParticlePDG* p = new TParticlePDG(name, title, mass, stable, width,
+                                      charge, ParticleClass, PDGcode, Anti,
+-                                     TrackingCode);
++                                     TrackingCode, Lifetime, Spin);
+    fParticleList->Add(p);
+    if (fPdgMap)
+       fPdgMap->Add((Long_t)PDGcode, (Long_t)p);
+@@ -712,6 +715,80 @@
  
  
  //______________________________________________________________________________
@@ -66,6 +93,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
 +	    indec >> xxxx >> xxxx >> pname >> stdhepid;
 +            indec >> mass >> pwidth >> pmaxwidth >> chg3 >> spin2 >> ctau >> lundkc;
 +
++            const double c_mm_per_s = 1e-3 * 2.997925e8;
 +            TParticlePDG* part = AddParticle(pname,
 +                                             pname,
 +                                             mass,
@@ -73,22 +101,52 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
 +                                             pwidth,
 +                                             chg3,
 +                                             "Unknown",
-+                                             stdhepid);
++                                             stdhepid,
++                                             -1, 0, //anti, trackigCode
++                                             ctau / c_mm_per_s,
++                                             spin2 / 2.0);
 +         }
 +      }
 +   }while(strcmp(cmnd,"end"));
 +}
 +
 +
++
++
++
 +//______________________________________________________________________________
  void TDatabasePDG::Browse(TBrowser* b)
  {
     //browse data base
+Index: montecarlo/eg/inc/TParticlePDG.h
+===================================================================
+--- montecarlo/eg/inc/TParticlePDG.h	(revision 47000)
++++ montecarlo/eg/inc/TParticlePDG.h	(working copy)
+@@ -63,7 +63,7 @@
+    TParticlePDG(const char* Name, const char* Title, Double_t Mass,
+                 Bool_t Stable, Double_t Width, Double_t Charge,
+                 const char* ParticleClass, Int_t PdgCode, Int_t Anti, 
+-                Int_t TrackingCode);
++                Int_t TrackingCode, Double_t Lifetime = 0.0, Double_t Spin = 0.0);
+ 
+    virtual ~TParticlePDG();
+    // ****** access methods
 Index: montecarlo/eg/inc/TDatabasePDG.h
 ===================================================================
---- montecarlo/eg/inc/TDatabasePDG.h	(Revision 45300)
-+++ montecarlo/eg/inc/TDatabasePDG.h	(Arbeitskopie)
-@@ -82,6 +82,8 @@
+--- montecarlo/eg/inc/TDatabasePDG.h	(revision 47000)
++++ montecarlo/eg/inc/TDatabasePDG.h	(working copy)
+@@ -56,7 +56,9 @@
+                                        const char*  ParticleClass,
+                                        Int_t        PdgCode,
+                                        Int_t        Anti=-1,
+-                                       Int_t        TrackingCode=0);
++                                       Int_t        TrackingCode=0,
++                                       Double_t Lifetime = 0.0,
++                                       Double_t Spin = 0.0);
+ 
+    virtual Int_t  ConvertGeant3ToPdg(Int_t Geant3Number) const;
+    virtual Int_t  ConvertPdgToGeant3(Int_t pdgNumber) const;
+@@ -82,6 +84,8 @@
     virtual void   ReadPDGTable (const char *filename = "");
     virtual Int_t  WritePDGTable(const char *filename);
  

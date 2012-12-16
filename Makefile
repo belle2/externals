@@ -644,6 +644,7 @@ evtgen/README:
 # EvtGen build command
 evtgen/config.mk: evtgen/README
 	@echo "building EvtGen"
+	@-cd evtgen && patch -Np0 < ../evtgen.patch
 	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared && make
 	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/ && rm -rf $(EXTINCDIR)/evtgen/*/.svn

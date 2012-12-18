@@ -491,17 +491,17 @@ genfit: include/genfit/RKTrackRep.h
 # genfit download
 genfit/core/genfitLinkDef.h:
 	@echo "downloading genfit core"
-	@cd genfit && $(EXTDIR)/download.sh genfit_core_r713.tgz svn:checkout:713:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
+	@cd genfit && $(EXTDIR)/download.sh genfit_core_r897.tgz svn:checkout:897:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
 
 # RKTrackRep download
 genfit/RKTrackRep/genfitRKLinkDef.h:
 	@echo "downloading RKTrackRep"
-	@cd genfit && $(EXTDIR)/download.sh genfit_RKTrackRep_r713.tgz svn:checkout:713:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
+	@cd genfit && $(EXTDIR)/download.sh genfit_RKTrackRep_r897.tgz svn:checkout:897:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
 
 # GFRave download
 genfit/GFRave/GFRaveLinkDef.h:
 	@echo "downloading GFRave"
-	@cd genfit && $(EXTDIR)/download.sh genfit_GFRave_r713.tgz svn:checkout:713:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
+	@cd genfit && $(EXTDIR)/download.sh genfit_GFRave_r897.tgz svn:checkout:897:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
 
 # genfit build command
 include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h genfit/GFRave/GFRaveLinkDef.h
@@ -509,11 +509,12 @@ include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfi
 	@cd genfit && ../cmake/bin/cmake . && make # cmake and make
 	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@mkdir -p $(EXTINCDIR)/genfit/ && cp `find genfit/*/*.h | grep -v LinkDef` $(EXTINCDIR)/genfit/ # copy the headers
+	@cd genfit/core && cp --parents `find */*.h` $(EXTINCDIR)/genfit/ # copy the headers in subdirectories
 
 # genfit clean command
 genfit.clean:
 	@echo "cleaning genfit"
-	@rm -f include/genfit/RKTrackRep.h
+	@rm -rf include/genfit
 	@cd genfit && make clean
 	@rm -f genfit/CMakeCache.txt
 

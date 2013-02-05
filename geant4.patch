@@ -131,3 +131,25 @@ Index: source/processes/electromagnetic/xrays/src/G4SynchrotronRadiation.cc
        aParticleChange.ProposeLocalEnergyDeposit (0.);
  
        if (newKinEnergy > 0.)
+Index: source/track/src/G4ParticleChange.cc
+===================================================================
+--- source/track/src/G4ParticleChange.cc	2012-03-27 11:44:12.000000000 +0400
++++ source/track/src/G4ParticleChange.cc	2013-01-29 20:21:46.000000000 +0400
+@@ -168,7 +168,7 @@
+ 				    G4bool   IsGoodForTracking    )
+ {
+   //  create track
+-  G4Track* aTrack = new G4Track(aParticle, theTimeChange, thePositionChange);
++  G4Track* aTrack = new G4Track(aParticle, GetGlobalTime(), thePositionChange);
+ 
+   // set IsGoodGorTrackingFlag
+   if (IsGoodForTracking) aTrack->SetGoodForTrackingFlag();
+@@ -185,7 +185,7 @@
+ 				    G4bool   IsGoodForTracking    )
+ {
+   //  create track
+-  G4Track*  aTrack = new G4Track(aParticle, theTimeChange, newPosition);
++  G4Track*  aTrack = new G4Track(aParticle, GetGlobalTime(), newPosition);
+ 
+   // set IsGoodGorTrackingFlag
+   if (IsGoodForTracking) aTrack->SetGoodForTrackingFlag();

@@ -290,7 +290,7 @@ mysql/CMakeLists.txt:
 # MySql build command
 mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt
 	@echo "building MySql"
-	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DCMAKE_INSTALL_PREFIX=../exe .. && make -j $(NPROCESSES) && make install
+	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DENABLE_DTRACE=0 -DCMAKE_INSTALL_PREFIX=../exe .. && make -j $(NPROCESSES) && make install
 	@cp -a mysql/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
 	@cp -a mysql/exe/bin/* $(EXTBINDIR)/ # copy the binaries
 	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql/exe/include/* $(EXTINCDIR)/mysql/  # copy the include files

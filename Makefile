@@ -284,7 +284,7 @@ $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@cp -a $(EXTDIR)/geant4/bin/* $(EXTBINDIR)/
 	@cp -a $(EXTDIR)/geant4/share $(EXTDIR)/
 	@sed -f geant4.sed -i $(EXTBINDIR)/geant4-config
-	@sed -f geant4.ed -i $(EXTBINDIR)/geant4.sh
+	@sed -f geant4.sed -i $(EXTBINDIR)/geant4.sh
 	@sed -f geant4.sed -i $(EXTBINDIR)/geant4.csh
 
 # GEANT4 clean

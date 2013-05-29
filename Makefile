@@ -22,11 +22,8 @@ else
 endif
 
 # set cmake command
-CMAKE=$(shell which cmake)
-ifeq ($(CMAKE),)
-  CMAKE=$(EXTDIR)/cmake/bin/cmake
-  export PATH := $(PATH):$(EXTDIR)/cmake/bin
-endif
+CMAKE=$(EXTDIR)/cmake/bin/cmake
+export PATH := $(EXTDIR)/cmake/bin:$(PATH)
 
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
@@ -278,7 +275,7 @@ $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@mkdir -p $(EXTBUILDDIR)/geant4
 	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/geant4 $(GEANT4_OPTION) \
 	-DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	-DGEANT4_USE_G3TOG4=ON $(EXTSRCDIR)/geant4 && make -j $(NPROCESSES) && make install
+	-DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && make -j $(NPROCESSES) && make install
 	@cp -a $(EXTDIR)/geant4/include/Geant4 $(EXTINCDIR)/
 	@cp -a $(EXTDIR)/geant4/lib*/* $(EXTLIBDIR)/
 	@cp -a $(EXTDIR)/geant4/bin/* $(EXTBINDIR)/
@@ -332,20 +329,20 @@ libpqxx.src: $(EXTSRCDIR)/libpqxx/configure
 # libpqxx download
 $(EXTSRCDIR)/libpqxx/configure:
 	@echo "downloading libpqxx"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh libpqxx-4.0.1.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.1.tar.gz
-	@mv $(EXTSRCDIR)/libpqxx-4.0.1 $(EXTSRCDIR)/libpqxx
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
+	@mv $(EXTSRCDIR)/libpqxx-4.0 $(EXTSRCDIR)/libpqxx
 
 # libpqxx build
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cd $(EXTSRCDIR)/libpqxx && ./configure --enable-shared --prefix=$(EXTDIR) \
-	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) PG_CONFIG=$(EXTBINDIR)/pg_config && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared --prefix=$(EXTDIR) \
+	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
 
 # libpqxx clean
 libpqxx.clean:
 	@echo "cleaning libpqxx"
 	@cd $(EXTSRCDIR)/libpqxx && make clean
-	@rm -f $(EXTINCDIR)/pqxx $(EXTBINDIR)/pqxx-config
+	@rm -rf $(EXTINCDIR)/pqxx $(EXTBINDIR)/pqxx-config
 
 # libpqxx touch
 libpqxx.touch:
@@ -374,7 +371,7 @@ $(EXTBINDIR)/xrootd: $(CMAKE) $(EXTSRCDIR)/xrootd
 # xrootd clean command
 xrootd.clean:
 	@echo "cleaning xrootd"
-	@cd $(EXTSRCDIR)/xrootd && make clean
+	@-cd $(EXTBUILDDIR)/xrootd && make clean
 	@rm -rf $(EXTBUILDDIR)/xrootd $(EXTDIR)/xrootd $(EXTINCDIR)/xrootd $(EXTLIBDIR)/libXrd* $(EXTBINDIR)/xrd* $(EXTBINDIR)/xrootd
 
 # root touch command
@@ -403,8 +400,8 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@cd $(EXTBUILDDIR)/root && make clean
-	@rm -f $(EXTBUILDDIR)/root $(EXTDIR)/root $(EXTINCDIR)/root
+	@-cd $(EXTBUILDDIR)/root && make clean
+	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS)
 
 # root touch command
 root.touch:
@@ -422,7 +419,7 @@ $(EXTSRCDIR)/vgm:
 	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(EXTDIR)/vgm.patch
 
 # vgm build
-$(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
+$(EXTLIBDIR)/libBaseVGM.so: $(CMAKE) $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
 	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vgm -DGeant4_DIR=$(EXTBUILDDIR)/geant4 -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && make install
@@ -486,7 +483,7 @@ $(EXTSRCDIR)/genfit/README:
 	@cp $(EXTDIR)/genfit/CMakeLists.txt $(EXTSRCDIR)/genfit/
 
 # genfit build
-$(EXTINCDIR)/genfit/RKTrackRep.h: $(EXTSRCDIR)/genfit/README
+$(EXTINCDIR)/genfit/RKTrackRep.h: $(CMAKE) $(EXTSRCDIR)/genfit/README
 	@echo "building genfit"
 	@cd $(EXTSRCDIR)/genfit && GENFIT=$(EXTSRCDIR)/genfit RAVEPATH=$(EXTSRCDIR)/rave $(CMAKE) $(EXTSRCDIR)/genfit && make
 	@cp $(EXTSRCDIR)/genfit/lib/* $(EXTLIBDIR)/
@@ -526,8 +523,8 @@ $(EXTINCDIR)/HepMC/Version.h: $(CMAKE) $(EXTSRCDIR)/hepmc
 # HepMC clean
 hepmc.clean:
 	@echo "cleaning HepMC"
-	@cd $(EXTBUILDDIR)/hepmc && make clean
-	@rm -rf $(EXTDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
+	@-cd $(EXTBUILDDIR)/hepmc && make clean
+	@rm -rf $(EXTDIR)/hepmc $(EXTBUILDDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
 
 # HepMC touch
 hepmc.touch:
@@ -633,7 +630,7 @@ $(EXTSRCDIR)/evtgen/configure:
 # EvtGen build
 $(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
-	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared  && make all install
 	@cp $(EXTDIR)/evtgen/lib/lib* $(EXTDIR)/evtgen/lib/archive/* $(EXTLIBDIR)/
 	@cp -a $(EXTDIR)/evtgen/include $(EXTINCDIR)/evtgen
 	@mkdir -p $(EXTDIR)/share/evtgen && cp $(EXTDIR)/evtgen/share/evt.pdl $(EXTDIR)/share/evtgen/ && cp $(EXTDIR)/evtgen/share/DECAY_2010.DEC $(EXTDIR)/share/evtgen/DECAY.DEC
@@ -715,7 +712,7 @@ $(EXTSRCDIR)/vc:
 	@mv $(EXTSRCDIR)/Vc-0.7.1 $(EXTSRCDIR)/vc
 
 # vc build
-$(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
+$(EXTLIBDIR)/libVc.a: $(CMAKE) $(EXTSRCDIR)/vc
 	@echo "installing vc"
 	@mkdir -p $(EXTBUILDDIR)/vc
 	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vc -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && make -j $(NPROCESSES) && make install

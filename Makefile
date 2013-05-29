@@ -280,7 +280,7 @@ $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	-DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	-DGEANT4_USE_G3TOG4=ON $(EXTSRCDIR)/geant4 && make -j $(NPROCESSES) && make install
 	@cp -a $(EXTDIR)/geant4/include/Geant4 $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/geant4/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTDIR)/geant4/lib*/* $(EXTLIBDIR)/
 	@cp -a $(EXTDIR)/geant4/bin/* $(EXTBINDIR)/
 	@cp -a $(EXTDIR)/geant4/share $(EXTDIR)/
 	@sed -f geant4.sed -i $(EXTBINDIR)/geant4-config

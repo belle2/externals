@@ -1,16 +1,3 @@
-Index: config/sys/Linux-g++.gmk
-===================================================================
---- config/sys/Linux-g++.gmk
-+++ config/sys/Linux-g++.gmk
-@@ -69,7 +69,7 @@
-   define build-global-shared-lib
-     @libdir=`(cd $(@D);/bin/pwd)`; \
-      cd $(VGM_TMP)/$(VGM_SYSTEM); \
--     $(CXX) -Wl,-soname,$(@F) -shared -o $$libdir/$(@F) \
-+     $(CXX) -Wl,-soname,$(@F) -Wl,--no-as-needed $(INTYLIBS) -shared -o $$libdir/$(@F) \
-                     $(foreach dir,$(SUBLIBS),$(dir)/*.o);
-   endef
- 
 Index: packages/Geant4GM/source/solids/Polycone.cxx
 ===================================================================
 --- packages/Geant4GM/source/solids/Polycone.cxx	(revision 691)

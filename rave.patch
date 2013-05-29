@@ -17,3 +17,20 @@ diff -r -u src/RaveBase/RaveEngine/src/RaveParameterSetBuilder.cc src/RaveBase/R
  
  namespace {
  
+diff -u src/RaveBase/RaveInterface/src/BasicMultipleKinematicConstraint.cc.orig src/RaveBase/RaveInterface/src/BasicMultipleKinematicConstraint.cc
+--- src/RaveBase/RaveInterface/src/BasicMultipleKinematicConstraint.cc
++++ src/RaveBase/RaveInterface/src/BasicMultipleKinematicConstraint.cc
+@@ -16,9 +16,10 @@
+ {
+   ::KinematicConstraint* internalConstraint =
+     boost::any_cast< boost::shared_ptr< ::KinematicConstraint > > ( constraint.data().getInternal() ).get();
+-  boost::shared_polymorphic_cast< ::MultipleKinematicConstraint > (
+-    boost::any_cast< boost::shared_ptr< ::KinematicConstraint > > ( getInternal() ) )->addConstraint (
+-      internalConstraint );
++  assert(0);
++//  boost::shared_polymorphic_cast< ::MultipleKinematicConstraint > (
++//    boost::any_cast< boost::shared_ptr< ::KinematicConstraint > > ( getInternal() ) )->addConstraint (
++//      internalConstraint );
+ 
+   constraints.push_back ( constraint );
+ }

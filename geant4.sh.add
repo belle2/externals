@@ -1,9 +1,0 @@
-export G4ABLADATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4ABLA3.0; pwd`"
-export G4LEDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4EMLOW6.23; pwd`"
-export G4LEVELGAMMADATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/PhotonEvaporation2.2; pwd`"
-export G4NEUTRONHPDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4NDL4.0; pwd`"
-export G4NEUTRONXSDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4NEUTRONXS1.1; pwd`"
-export G4PIIDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4PII1.3; pwd`"
-export G4RADIOACTIVEDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/RadioactiveDecay3.4; pwd`"
-export G4REALSURFACEDATA="`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/RealSurface1.0; pwd`"
-

@@ -24,7 +24,7 @@ def unsetup_externals(location):
             env_vars[var] = ''
 
     # root
-    root_dir = os.path.join(location, 'build', 'root', subdir)
+    root_dir = os.path.join(location, 'root', subdir)
     if 'ROOTSYS' in env_vars and env_vars['ROOTSYS'] == root_dir:
         env_vars['ROOTSYS'] = ''
     remove_path('PATH', os.path.join(root_dir, 'bin'))
@@ -50,7 +50,7 @@ def setup_externals(location):
                           os.path.join(location, 'bin', subdir, 'geant4.csh')])
 
     # root
-    root_dir = os.path.join(location, 'build', 'root', subdir)
+    root_dir = os.path.join(location, 'root', subdir)
     if os.path.isdir(root_dir):
         env_vars['ROOTSYS'] = root_dir
     add_path('PATH', os.path.join(root_dir, 'bin'))
@@ -71,7 +71,7 @@ def check_externals(location):
     if not os.path.isfile(os.path.join(location, 'bin', subdir, 'geant4.sh')):
         result = False
         # sys.stderr.write('Error: geant4 installation is missing.\n')
-    root_dir = os.path.join(location, 'build', 'root', subdir)
+    root_dir = os.path.join(location, 'root', subdir)
     if not os.path.isfile(os.path.join(root_dir, 'bin', 'root.exe')):
         result = False
         # sys.stderr.write('Error: root installation is missing.\n')
@@ -82,6 +82,9 @@ def config_externals(conf):
     """function to configure the build system for the externals"""
 
     from SCons.Script import Environment
+
+    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
+                            os.environ['BELLE2_SUBDIR'])
 
     # CLHEP
     conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'CLHEP'
@@ -118,16 +121,6 @@ def config_externals(conf):
         'G4VRML',
         ]
 
-    # MySQL
-    conf.env['HAS_MYSQL'] = False
-    conf.env['MYSQL_LIBS'] = []
-    if conf.CheckHeader('mysql/mysql.h'):
-        conf.env['HAS_MYSQL'] = True
-        conf.env.Append(CPPDEFINES='-DHAS_MYSQL')
-        conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'],
-                        'mysql'))
-        conf.env['MYSQL_LIBS'] = ['mysqlcppconn', 'mysqlclient']
-
     # PostgreSQL
     conf.env['HAS_PGSQL'] = False
     conf.env['PGSQL_LIBS'] = []
@@ -140,7 +133,8 @@ def config_externals(conf):
         conf.env['PGSQL_LIBS'] = ['pqxx', 'pq']
 
     # root
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'root'))
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTDIR'], 'root',
+                    subdir, 'include'))
 
     conf.env['ROOT_LIBS'] = conf.env['ROOT_GLIBS'] = []
     if conf.CheckConfigTool('root-config'):
@@ -153,16 +147,12 @@ def config_externals(conf):
     # vgm
     conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'vgm'))
 
-    # geant4_vmc
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'],
-                    'geant4_vmc/g4root'))
-
     # genfit
     conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'genfit'
                     ))
 
     # HepMC
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'hepMC'
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'HepMC'
                     ))
 
     # Pythia
@@ -170,11 +160,11 @@ def config_externals(conf):
                     ))
 
     # Photos
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'PHOTOS'
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Photos'
                     ))
 
     # Tauola
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'TAUOLA'
+    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Tauola'
                     ))
 
     # EvtGen

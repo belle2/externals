@@ -2,6 +2,8 @@
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
+export EXTSRCDIR := $(EXTDIR)/src
+export EXTBUILDDIR := $(EXTDIR)/build
 export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
@@ -11,14 +13,7 @@ else
   EXTERNALS_OPTION := $(BELLE2_OPTION)
 endif
 
-export EXTDIRVAR := \$${BELLE2_EXTERNALS_DIR}
-export EXTINCDIRVAR := $(EXTDIRVAR)/include
-export EXTLIBDIRVAR := $(EXTDIRVAR)/lib/\$${BELLE2_EXTERNALS_SUBDIR}
-export EXTBINDIRVAR := $(EXTDIRVAR)/bin/\$${BELLE2_EXTERNALS_SUBDIR}
-
-export ROOTSYS := $(EXTDIR)/build/root/$(BELLE2_EXTERNALS_SUBDIR)
-export GENFIT := $(EXTDIR)/genfit
-export RAVEPATH := $(EXTDIR)/rave
+export ROOTSYS := $(EXTDIR)/root/$(BELLE2_EXTERNALS_SUBDIR)
 export PATH := $(ROOTSYS)/bin:$(PATH)
 ifeq ($(shell uname),Darwin)
   export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(DYLD_LIBRARY_PATH)
@@ -27,18 +22,20 @@ else
 endif
 
 # set cmake command
-CMAKE=cmake
-CMAKE_EXISTS=$(shell which cmake 2> /dev/null; echo $$?)
-ifneq ($(CMAKE_EXISTS),0)
+CMAKE=$(shell which cmake)
+ifeq ($(CMAKE),)
   CMAKE=$(EXTDIR)/cmake/bin/cmake
+  export PATH := $(PATH):$(EXTDIR)/cmake/bin
 endif
-
 
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
   NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
 else
   NPROCESSES=$(shell grep "physical id.*0" /proc/cpuinfo 2> /dev/null | wc -l)
+  ifeq ($(NPROCESSES),0)
+    NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
+  endif
 endif
 ifdef BELLE2_MAKE_NPROCESSES
   NPROCESSES=$(BELLE2_MAKE_NPROCESSES)
@@ -49,22 +46,28 @@ endif
 
 # set debug or optimization options 
 ifeq ($(EXTERNALS_OPTION),debug)
-  export BOOST_OPTION=variant=debug
   export CXXFLAGS=-g
+  export BOOST_OPTION=variant=debug
+  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export ROOT_OPTION=
   export ROOTBUILD=debug
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
+  export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else 
 ifeq ($(EXTERNALS_OPTION),opt)
-  export BOOST_OPTION=variant=release
   export CXXFLAGS=-O3
+  export BOOST_OPTION=variant=release
+  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
+  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
   export ROOT_OPTION=
   export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
+  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
 ifeq ($(EXTERNALS_OPTION),intel)
   export CC=icc
@@ -74,7 +77,9 @@ ifeq ($(EXTERNALS_OPTION),intel)
   export AR=xiar
   export LD=xild
   export BOOST_OPTION=variant=release toolset=intel
+  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc
+  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
   export ROOT_OPTION=linuxicc
   ifeq ($(shell uname -m),x86_64)
     export ROOT_OPTION=linuxx8664icc
@@ -82,8 +87,9 @@ ifeq ($(EXTERNALS_OPTION),intel)
   export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
+  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
-  $(error Unknown externals build option. Please source the setup_belle2.(c)sh script.)
+  $(error Unknown externals build option. Please source the setup_belle2 script.)
 endif
 endif
 endif
@@ -94,7 +100,7 @@ endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
 # check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.5.1/data/G4EMLOW6.23; echo $$?)
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.1/data/G4EMLOW6.32; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif
@@ -106,17 +112,28 @@ ifeq ($(GL_XMU_EXISTS),0)
 endif
 
 
+# external packages
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen vc
+
 # all target
-all: dirs cmake gtest boost clhep geant4 mysql mysql-connector-c++ postgresql libpqxx root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen
+all: dirs cmake $(PACKAGES)
 
 # clean up target
-clean: gtest.clean boost.clean clhep.clean geant4.clean mysql.clean mysql-connector-c++.clean postgresql.clean libpqxx.clean root.clean vgm.clean rave.clean genfit.clean hepmc.clean pythia.clean photos.clean tauola.clean evtgen.clean flc.clean eigen.clean
+clean: $(foreach package,$(PACKAGES),$(package).clean)
 
 # remove only target files
-touch: gtest.touch boost.touch clhep.touch geant4.touch mysql.touch mysql-connector-c++.touch postgresql.touch libpqxx.touch root.touch vgm.touch rave.touch genfit.touch hepmc.touch pythia.touch photos.touch tauola.touch evtgen.touch flc.touch eigen.touch
+touch: $(foreach package,$(PACKAGES),$(package).touch)
 
 # directory creation
-dirs: $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
+dirs: $(EXTSRCDIR) $(EXTBUILDDIR) $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
+
+$(EXTSRCDIR):
+	@echo "create  $(EXTSRCDIR)"
+	@mkdir -p $(EXTSRCDIR)
+
+$(EXTBUILDDIR):
+	@echo "create  $(EXTBUILDDIR)"
+	@mkdir -p $(EXTBUILDDIR)
 
 $(EXTINCDIR):
 	@echo "create  $(EXTINCDIR)"
@@ -131,585 +148,585 @@ $(EXTBINDIR):
 	@mkdir -p $(EXTBINDIR)
 
 
-# dependency for cmake build
-cmake: cmake/bin/cmake
+# dependencies for cmake
+cmake: $(EXTDIR)/cmake/bin/cmake
+cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
-# dependency for cmake download
-cmake/bootstrap:
+# cmake download
+$(EXTSRCDIR)/cmake/bootstrap:
 	@echo "downloading cmake"
-	@$(EXTDIR)/download.sh cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
-	@mv cmake-2.8.6 cmake
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
+	@mv $(EXTSRCDIR)/cmake-2.8.6 $(EXTSRCDIR)/cmake
 
-# cmake build command
-cmake/bin/cmake: cmake/bootstrap
+# cmake build
+$(EXTDIR)/cmake/bin/cmake: $(EXTSRCDIR)/cmake/bootstrap
 	@echo "building cmake"
-	@cd cmake && ./bootstrap && make
+	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR)/cmake && make && make install
 
-# cmake clean command
+# cmake clean
 cmake.clean:
 	@echo "cleaning cmake"
-	@cd cmake && make clean
+	@cd $(EXTSRCDIR)/cmake && make clean
+	@rm -f $(EXTDIR)/cmake/bin/cmake
 
-# cmake touch command
+# cmake touch
 cmake.touch:
-	@rm -f cmake/bin/cmake
+	@rm -f $(EXTDIR)/cmake/bin/cmake
 
 
-# dependence for google test build
+# dependencies for google test
 gtest: $(EXTLIBDIR)/libgtest.a
+gtest.src: $(EXTSRCDIR)/gtest/README
 
 # google test download
-gtest/README:
+$(EXTSRCDIR)/gtest/README:
 	@echo "downloading gtest"
-	@$(EXTDIR)/download.sh gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
-	@mv gtest-1.6.0 gtest
-	@chmod -R u+w gtest
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
+	@mv $(EXTSRCDIR)/gtest-1.6.0 $(EXTSRCDIR)/gtest
+	@chmod -R u+w $(EXTSRCDIR)/gtest
 
-# google test build command
-$(EXTLIBDIR)/libgtest.a: gtest/README
+# google test build
+$(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README
 	@echo "building gtest"
 	@mkdir -p $(EXTINCDIR)/gtest/internal
-	@cp -a $(EXTDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
-	@cp -a $(EXTDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
-	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest-all.cc -o gtest/src/gtest-all.o
-	$(CXX) -I$(EXTINCDIR) -Igtest -c gtest/src/gtest_main.cc -o gtest/src/gtest_main.o
-	@$(AR) -rv $(EXTLIBDIR)/libgtest.a gtest/src/gtest-all.o gtest/src/gtest_main.o
+	@cp -a $(EXTSRCDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
+	@cp -a $(EXTSRCDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
+	@mkdir -p $(EXTBUILDDIR)/gtest
+	$(CXX) -I$(EXTINCDIR) -I$(EXTSRCDIR)/gtest -c $(EXTSRCDIR)/gtest/src/gtest-all.cc -o $(EXTBUILDDIR)/gtest/gtest-all.o
+	$(CXX) -I$(EXTINCDIR) -I$(EXTSRCDIR)/gtest -c $(EXTSRCDIR)/gtest/src/gtest_main.cc -o $(EXTBUILDDIR)/gtest/gtest_main.o
+	@$(AR) -rv $(EXTLIBDIR)/libgtest.a $(EXTBUILDDIR)/gtest/gtest-all.o $(EXTBUILDDIR)/gtest/gtest_main.o
 
-# google test clean command
+# google test clean
 gtest.clean:
 	@echo "cleaning gtest"
-	@rm -rf $(EXTINCDIR)/gtest
-	@rm -f gtest/src/*.o
-	@rm -f $(EXTLIBDIR)/libgtest.a
+	@rm -rf $(EXTBUILDDIR)/gtest $(EXTINCDIR)/gtest $(EXTLIBDIR)/libgtest.a
 
-# google test touch command
+# google test touch
 gtest.touch:
 	@rm -f $(EXTLIBDIR)/libgtest.a
 
 
-# dependence for boost build
-boost: boost/project-config.jam
+# dependencies for boost
+boost: $(EXTLIBDIR)/libboost_system.so
+boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
-boost/INSTALL:
+$(EXTSRCDIR)/boost/INSTALL:
 	@echo "downloading boost"
-	@$(EXTDIR)/download.sh boost_1_50_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.50.0/boost_1_50_0.tar.gz
-	@mv boost_1_50_0 boost
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh boost_1_53_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.53.0/boost_1_53_0.tar.gz
+	@mv $(EXTSRCDIR)/boost_1_53_0 $(EXTSRCDIR)/boost
 
-# boost build command
-boost/project-config.jam: boost/INSTALL
+# boost build
+$(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
-	@cd boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) && ./bjam install -j$(NPROCESSES) $(BOOST_OPTION)
+	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) && ./b2 install --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 
-# boost clean command
+# boost clean
 boost.clean:
 	@echo "cleaning boost"
-	@cd boost && ./bjam --clean $(BOOST_OPTION)
-	@rm -f boost/project-config.jam
+	@cd $(EXTSRCDIR)/boost && ./b2 --clean $(BOOST_OPTION)
+	@rm -rf $(EXTINCDIR)/boost $(EXTLIBDIR)/libboost_*
 
-# boost touch command
+# boost touch
 boost.touch:
-	@rm -f boost/project-config.jam
+	@rm -f $(EXTLIBDIR)/libboost_system.so
 
 
-# dependency for CLHEP build
-clhep: CLHEP/config.log
+# dependencies for CLHEP
+clhep: $(EXTBINDIR)/clhep-config
+clhep.src: $(EXTSRCDIR)/CLHEP
 
-# dependency for CLHEP download
-CLHEP/configure:
+# CLHEP download
+$(EXTSRCDIR)/CLHEP:
 	@echo "downloading CLHEP"
-	@$(EXTDIR)/download.sh clhep-2.1.1.0.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.1.0.tgz
-	@mv 2.1.1.0/CLHEP .
-	@rmdir 2.1.1.0
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
+	@mv $(EXTSRCDIR)/2.1.3.1/CLHEP $(EXTSRCDIR)/
+	@rmdir $(EXTSRCDIR)/2.1.3.1
 
-# CLHEP build command
-CLHEP/config.log: CLHEP/configure
+# CLHEP build
+$(EXTBINDIR)/clhep-config: $(CMAKE) $(EXTSRCDIR)/CLHEP
 	@echo "building CLHEP"
-	@cd CLHEP && ./configure --prefix=$(EXTDIRVAR) \
-	--includedir=$(EXTINCDIRVAR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
+	@mkdir -p $(EXTBUILDDIR)/CLHEP
+	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/CLHEP $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP && make -j $(NPROCESSES) && make install
+	@cp -a $(EXTDIR)/CLHEP/include/CLHEP $(EXTINCDIR)/
+	@cp -a $(EXTDIR)/CLHEP/lib/* $(EXTLIBDIR)/
+	@cp $(EXTDIR)/CLHEP/bin/* $(EXTBINDIR)/
 
-# CLHEP clean command
+# CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@cd CLHEP && make clean
-	@rm -f CLHEP/config.log
+	@rm -rf $(EXTBUILDDIR)/CLHEP $(EXTDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
 
-# CLHEP touch command
+# CLHEP touch
 clhep.touch:
-	@rm -f CLHEP/config.log
+	@rm -f $(EXTBINDIR)/clhep-config
 
 
-# dependency for GEANT4 build
-geant4: geant4/build/Makefile
+# dependencies for GEANT4
+geant4: $(EXTBINDIR)/geant4.sh
+geant4.src: $(EXTSRCDIR)/geant4
 
-# dependency for GEANT4 download
-geant4/CMakeLists.txt:
+# GEANT4 download
+$(EXTSRCDIR)/geant4:
 	@echo "downloading geant4"
-	@$(EXTDIR)/download.sh geant4.9.5.p01.tar.gz http://geant4.cern.ch/support/source/geant4.9.5.p01.tar.gz
-	@mv geant4.9.5.p01 geant4
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
+	@mv $(EXTSRCDIR)/geant4.9.6.p02 $(EXTSRCDIR)/geant4
 
-# GEANT4 build command
-geant4/build/Makefile: cmake/bin/cmake CLHEP/config.log geant4/CMakeLists.txt
+# GEANT4 build
+$(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@echo "building geant4"
-	@mkdir -p geant4/build
-	@-cd geant4 && patch -Np0 < ../geant4.patch
-	@cd geant4/build && $(CMAKE) $(GEANT4_OPTION) \
-	-DCLHEP_ROOT_DIR=$(EXTDIRVAR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	-DCMAKE_INSTALL_INCLUDEDIR=$(EXTINCDIR) -DCMAKE_INSTALL_BINDIR=$(EXTBINDIR) \
-	-DCMAKE_INSTALL_LIBDIR=$(EXTLIBDIR) -DCMAKE_INSTALL_DATAROOTDIR=$(EXTDIR)/share .. \
-	-DGEANT4_USE_G3TOG4=ON \
-	&& make -j $(NPROCESSES) && make install
-	@sed -f geant4.sed $(EXTBINDIR)/geant4-config > geant4-config \
-	&& mv geant4-config $(EXTBINDIR)/ && chmod a+x $(EXTBINDIR)/geant4-config
-	@sed -f geant4.sed $(EXTBINDIR)/geant4.csh > geant4.csh && mv geant4.csh $(EXTBINDIR)/
-ifeq ($(GEANT4_DATA_EXISTS),0)
-	@cat geant4.sh.add >> $(EXTBINDIR)/geant4.sh	
-	@cat geant4.csh.add >> $(EXTBINDIR)/geant4.csh	
-endif
+	@mkdir -p $(EXTBUILDDIR)/geant4
+	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/geant4 $(GEANT4_OPTION) \
+	-DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
+	-DGEANT4_USE_G3TOG4=ON $(EXTSRCDIR)/geant4 && make -j $(NPROCESSES) && make install
+	@cp -a $(EXTDIR)/geant4/include/Geant4 $(EXTINCDIR)/
+	@cp -a $(EXTDIR)/geant4/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTDIR)/geant4/bin/* $(EXTBINDIR)/
+	@cp -a $(EXTDIR)/geant4/share $(EXTDIR)/
+	@sed -f geant4.sed -i $(EXTBINDIR)/geant4-config
+	@sed -f geant4.ed -i $(EXTBINDIR)/geant4.sh
+	@sed -f geant4.sed -i $(EXTBINDIR)/geant4.csh
 
-# GEANT4 clean command
+# GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
-	@-cd geant4/build && make clean
-	@rm -rf geant4/build share/Geant4-9.5.0 include/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@-cd $(EXTBUILDDIR)/geant4 && make clean
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-9.6.2 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
-	@rm -f geant4/build/Makefile
+	@rm -f $(EXTBINDIR)/geant4.sh
 
 
-# dependency for MySql build
-mysql: mysql/build/install_manifest.txt
+# dependencies for PostgreSql
+postgresql: $(EXTBINDIR)/psql
+postgresql.src: $(EXTSRCDIR)/postgresql/configure
 
-# dependence for MySql download
-mysql/CMakeLists.txt:
-	@echo "downloading MySql"
-	@$(EXTDIR)/download.sh mysql-5.5.22.tar.gz http://downloads.mysql.com/archives/mysql-5.5/mysql-5.5.22.tar.gz
-	@mv mysql-5.5.22 mysql
-
-# MySql build command
-mysql/build/install_manifest.txt: cmake/bin/cmake mysql/CMakeLists.txt
-	@echo "building MySql"
-	@mkdir -p mysql/build; cd mysql/build && $(CMAKE) -DENABLE_DTRACE=0 -DCMAKE_INSTALL_PREFIX=../exe .. && make -j $(NPROCESSES) && make install
-	@cp -a mysql/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
-	@cp -a mysql/exe/bin/* $(EXTBINDIR)/ # copy the binaries
-	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql/exe/include/* $(EXTINCDIR)/mysql/  # copy the include files
-
-# MySql clean command
-mysql.clean:
-	@echo "cleaning MySql"
-	@cd mysql/build && make clean
-	@rm -f mysql/build/install_manifest.txt
-
-# MySql touch command
-mysql.touch:
-	@rm -f mysql/build/install_manifest.txt
-
-
-# dependency for mysql-connector-c++ build
-mysql-connector-c++: mysql-connector-c++/install_manifest.txt
-
-# dependence for mysql-connector-c++ download
-mysql-connector-c++/CMakeLists.txt:
-	@echo "downloading mysql-connector-c++"
-	@$(EXTDIR)/download.sh mysql-connector-c++-1.1.0.tar.gz http://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-1.1.0.tar.gz/from/http://sunsite.informatik.rwth-aachen.de/mysql/
-	@mv mysql-connector-c++-1.1.0 mysql-connector-c++
-
-# mysql-connector-c++ build command
-mysql-connector-c++/install_manifest.txt: cmake/bin/cmake mysql-connector-c++/CMakeLists.txt
-	@echo "building mysql-connector-c++"
-	@cd mysql-connector-c++; $(CMAKE) -DCMAKE_INSTALL_PREFIX=exe -DBOOST_ROOT:STRING=$(EXTINCDIR) \
-	-DMYSQL_CONFIG_EXECUTABLE:FILEPATH=$(EXTBINDIR)/mysql_config . && $(CMAKE) -L && make -j $(NPROCESSES) && make install
-	@cp -a mysql-connector-c++/exe/lib/* $(EXTLIBDIR)/ # copy the libraries
-	@mkdir -p $(EXTINCDIR)/mysql && cp -a mysql-connector-c++/exe/include/* $(EXTINCDIR)/mysql/
-	@cd $(EXTINCDIR) && ln -sf mysql/cppconn . # link the include files
-
-# mysql-connector-c++ clean command
-mysql-connector-c++.clean:
-	@echo "cleaning mysql-connector-c++"
-	@cd mysql-connector-c++ && make clean
-	@rm -f mysql-connector-c++/install_manifest.txt
-
-# mysql-connector-c++ touch command
-mysql-connector-c++.touch:
-	@rm -f mysql-connector-c++/install_manifest.txt
-
-
-# dependency for PostgreSql build
-postgresql: postgresql/config.log	
-
-# dependency for PostgreSql download
-postgresql/configure:
+# PostgreSql download
+$(EXTSRCDIR)/postgresql/configure:
 	@echo "downloading PostgreSql"
-	@$(EXTDIR)/download.sh postgresql-9.1.4.tar.gz http://ftp.postgresql.org/pub/source/v9.1.4/postgresql-9.1.4.tar.gz
-	@mv postgresql-9.1.4 postgresql
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
+	@mv $(EXTSRCDIR)/postgresql-9.2.4 $(EXTSRCDIR)/postgresql
 
-# PostgreSql build command
-postgresql/config.log: postgresql/configure
+# PostgreSql build
+$(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
-	@cd postgresql && ./configure --prefix=$(EXTDIRVAR) \
+	@cd $(EXTSRCDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
 	--includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
 
-# PostgreSql clean command
+# PostgreSql clean
 postgresql.clean:
 	@echo "cleaning PostgreSql"
-	@cd postgresql && make clean
-	@rm -f postgresql/config.log
+	@cd $(EXTSRCDIR)/postgresql && make clean
+	@rm -rf $(EXTINCDIR)/pgsql $(EXTBINDIR)/psql
 
-# PostgreSql touch command
+# PostgreSql touch
 postgresql.touch:
-	@rm -f postgresql/config.log
+	@rm -f $(EXTBINDIR)/psql
 
 
-# dependency for libpqxxl build
-libpqxx: libpqxx/config.log
+# dependencies for libpqxx
+libpqxx: $(EXTBINDIR)/pqxx-config
+libpqxx.src: $(EXTSRCDIR)/libpqxx/configure
 
-# dependence for libpqxx download
-libpqxx/configure:
+# libpqxx download
+$(EXTSRCDIR)/libpqxx/configure:
 	@echo "downloading libpqxx"
-	@$(EXTDIR)/download.sh libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
-	@mv libpqxx-4.0 libpqxx
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh libpqxx-4.0.1.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.1.tar.gz
+	@mv $(EXTSRCDIR)/libpqxx-4.0.1 $(EXTSRCDIR)/libpqxx
 
-# libpqxx build command
-libpqxx/config.log: libpqxx/configure
+# libpqxx build
+$(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cd libpqxx && ./configure --enable-shared --prefix=$(EXTDIR) \
+	@cd $(EXTSRCDIR)/libpqxx && ./configure --enable-shared --prefix=$(EXTDIR) \
 	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) PG_CONFIG=$(EXTBINDIR)/pg_config && make -j $(NPROCESSES) && make install
 
-# libpqxx clean command
+# libpqxx clean
 libpqxx.clean:
 	@echo "cleaning libpqxx"
-	@cd libpqxx && make clean
-	@rm -f libpqxx/config.log
+	@cd $(EXTSRCDIR)/libpqxx && make clean
+	@rm -f $(EXTINCDIR)/pqxx $(EXTBINDIR)/pqxx-config
 
-# libpqxx touch command
+# libpqxx touch
 libpqxx.touch:
-	@rm -f libpqxx/config.log
+	@rm -f $(EXTBINDIR)/pqxx-config
 
 
-# dependence for root build
-root: root/config/Makefile.config
+# dependencies for xrootd
+xrootd: $(EXTBINDIR)/xrootd
+xrootd.src: $(EXTSRCDIR)/xrootd
+
+# xrootd download
+$(EXTSRCDIR)/xrootd:
+	@echo "downloading xrootd"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
+	@mv $(EXTSRCDIR)/xrootd-3.2.7 $(EXTSRCDIR)/xrootd
+
+# xrootd build
+$(EXTBINDIR)/xrootd: $(CMAKE) $(EXTSRCDIR)/xrootd
+	@echo "building xrootd"
+	@mkdir -p $(EXTBUILDDIR)/xrootd
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/xrootd $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && make install
+	@cp -a $(EXTDIR)/xrootd/include/* $(EXTINCDIR)/
+	@cp -a $(EXTDIR)/xrootd/lib*/* $(EXTLIBDIR)/
+	@cp $(EXTDIR)/xrootd/bin/* $(EXTBINDIR)/
+
+# xrootd clean command
+xrootd.clean:
+	@echo "cleaning xrootd"
+	@cd $(EXTSRCDIR)/xrootd && make clean
+	@rm -rf $(EXTBUILDDIR)/xrootd $(EXTDIR)/xrootd $(EXTINCDIR)/xrootd $(EXTLIBDIR)/libXrd* $(EXTBINDIR)/xrd* $(EXTBINDIR)/xrootd
+
+# root touch command
+xrootd.touch:
+	@rm -f $(EXTBINDIR)/xrootd
+
+
+# dependencies for root
+root: $(ROOTSYS)/bin/root
+root.src: $(EXTSRCDIR)/root
 
 # root download
-root/configure:
+$(EXTSRCDIR)/root:
 	@echo "downloading root"
-	@$(EXTDIR)/download.sh root_v5.34.03.source.tar.gz ftp://root.cern.ch/root/root_v5.34.03.source.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.07.source.tar.gz ftp://root.cern.ch/root/root_v5.34.07.source.tar.gz
+	@cd $(EXTSRCDIR)/root && patch -Np0 < $(EXTDIR)/root.patch
 
-# root build command
-root/config/Makefile.config: root/configure
+# root build
+$(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
 	@echo "building root"
-	@-cd root && patch -Np0 < ../root.patch
-	@mkdir -p $(ROOTSYS)
-	@-cd $(ROOTSYS) && ln -sf ../../../../root/* .
-	@cd $(ROOTSYS) && ./configure $(ROOT_OPTION) --enable-gsl-shared --enable-roofit --disable-xrootd && make -j $(NPROCESSES)
-	@mkdir -p $(EXTINCDIR)/root
-	@cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
+	@mkdir -p $(EXTBUILDDIR)/root
+	@cd $(EXTBUILDDIR)/root && XRDSYS=$(EXTDIR)/xrootd $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(ROOTSYS) \
+	-Dgsl_shared=ON -Droofit=ON $(ROOT_OPTION) $(EXTSRCDIR)/root && make -j $(NPROCESSES) && make install
+	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
 
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@mkdir -p $(ROOTSYS)
-	@-cd $(ROOTSYS) && ln -sf ../../../../root/* .
-	@-cd $(ROOTSYS) && make clean
-	@rm -f root/config/Makefile.config
+	@cd $(EXTBUILDDIR)/root && make clean
+	@rm -f $(EXTBUILDDIR)/root $(EXTDIR)/root $(EXTINCDIR)/root
 
 # root touch command
 root.touch:
-	@rm -f root/config/Makefile.config
+	@rm -f $(ROOTSYS)/bin/root
 
 
-# dependence for vgm build
-VGM_INCLUDES=$(foreach dir,BaseVGM ClhepVGM Geant4GM RootGM VGM XmlVGM,include/vgm/$(dir))
-vgm: vgm/tmp/Linux-g++/BaseVGM_common/obj.last $(VGM_INCLUDES)
+# dependencies for vgm
+vgm: $(EXTLIBDIR)/libBaseVGM.so
+vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
-vgm/LICENSE:
+$(EXTSRCDIR)/vgm:
 	@echo "downloading VGM"
-	@$(EXTDIR)/download.sh vgm-v3-05.tar.gz svn:export:706:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-05/vgm
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh vgm-v3-06.tar.gz svn:export:730:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-06/vgm
+	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(EXTDIR)/vgm.patch
 
-# vgm build command
-vgm/tmp/Linux-g++/BaseVGM_common/obj.last: vgm/LICENSE
+# vgm build
+$(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
-	@-cd vgm && patch -Np0 < ../vgm.patch
-	@cd vgm/packages && PATH=$(PATH):$(EXTBINDIR) VGM_INSTALL=$(EXTDIR)/vgm VGM_SYSTEM=Linux-g++ \
-	CLHEP_BASE_DIR=$(EXTDIR) make
-	@cp -a vgm/lib/Linux-g++/* $(EXTLIBDIR) 
+	@mkdir -p $(EXTBUILDDIR)/vgm
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vgm -DGeant4_DIR=$(EXTBUILDDIR)/geant4 -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && make install
+	@cp -a $(EXTDIR)/vgm/include $(EXTINCDIR)/vgm
+	@cp -a $(EXTDIR)/vgm/lib/* $(EXTLIBDIR)/
 
-# vgm include directories
-include/vgm/%: vgm/packages/%/include
-	@mkdir -p include/vgm
-	@cp -a $</$(subst include/vgm/,,$@) include/vgm/ && rm -rf include/vgm/*/.svn include/vgm/*/*/.svn
-
-# vgm clean command
+# vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf vgm/tmp vgm/lib $(EXTLIBDIR)/lib*GM.so include/vgm
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTDIR)/vgm $(EXTINCDIR)/vgm $(EXTLIBDIR)/lib*VGM.so
 
-# vgm touch command
+# vgm touch
 vgm.touch:
-	@rm -f vgm/tmp/Linux-g++/BaseVGM_common/obj.last
+	@rm -f $(EXTLIBDIR)/libBaseVGM.so
 
 
-# dependency for rave build
-rave: include/rave/Vertex.h
+# dependencies for rave
+rave: $(EXTINCDIR)/rave/Vertex.h
+rave.src: $(EXTSRCDIR)/rave/README
 
-# rave download command
-rave/configure:
+# rave download
+$(EXTSRCDIR)/rave/README:
 	@echo "downloading rave"
-	@$(EXTDIR)/download.sh rave-0.6.10.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.10.tar.gz
-	@mv rave-0.6.10 rave
-	@-cd rave && patch -Np0 < ../rave.patch
-	@rm -rf rave/src/boost rave/src/ROOT/*/Math
-	@cd rave/src && ln -s ../../include/boost boost
-	@cd rave/src/ROOT/genvector && ln -s ../../../../include/root/Math Math
-	@cd rave/src/ROOT/mathcore && ln -s ../../../../include/root/Math Math
-	@cd rave/src/ROOT/smatrix && ln -s ../../../../include/root/Math Math
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh rave-0.6.10.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.10.tar.gz
+	@mv $(EXTSRCDIR)/rave-0.6.10 $(EXTSRCDIR)/rave
+	@-cd $(EXTSRCDIR)/rave && patch -Np0 < $(EXTDIR)/rave.patch
+	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
+	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
+	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -s ../../../../../include/root/Math Math
+	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -s ../../../../../include/root/Math Math
+	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -s ../../../../../include/root/Math Math
 
-# rave configure command
-rave/config.status: rave/configure
-	@cd rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
-
-# rave build command
-include/rave/Vertex.h: rave/config.status
+# rave build
+$(EXTINCDIR)/rave/Vertex.h: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
-	@cd rave && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure \
+	--disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
+	@cd $(EXTSRCDIR)/rave && make -j $(NPROCESSES) && make install
 
-# rave clean command
+# rave clean
 rave.clean:
 	@echo "cleaning rave"
-	@cd rave && make clean
-	@rm -f rave/config.status
+	@cd $(EXTSRCDIR)/rave && make clean
+	@rm -f $(EXTINCDIR)/rave/Vertex.h
 
-# rave touch command
+# rave touch
 rave.touch:
-	@rm -f rave/config.status
+	@rm -f $(EXTINCDIR)/rave/Vertex.h
 
 
-# dependence for genfit build
-genfit: include/genfit/RKTrackRep.h
+# dependencies for genfit
+genfit: $(EXTINCDIR)/genfit/RKTrackRep.h
+genfit.src: $(EXTSRCDIR)/genfit/README
 
 # genfit download
-genfit/core/genfitLinkDef.h:
-	@echo "downloading genfit core"
-	@cd genfit && $(EXTDIR)/download.sh genfit_core_r936.tgz svn:checkout:936:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/core
+$(EXTSRCDIR)/genfit/README:
+	@echo "downloading genfit"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh genfit_r988.tgz svn:checkout:988:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk
+	@mv $(EXTSRCDIR)/trunk $(EXTSRCDIR)/genfit
+	@cd $(EXTSRCDIR)/genfit && rm -rf GeaneTrackRep2 RKTrackRepXY LSLtrackRep SlTrackRep RecoHitExamples
+	@cp $(EXTDIR)/genfit/CMakeLists.txt $(EXTSRCDIR)/genfit/
 
-# RKTrackRep download
-genfit/RKTrackRep/genfitRKLinkDef.h:
-	@echo "downloading RKTrackRep"
-	@cd genfit && $(EXTDIR)/download.sh genfit_RKTrackRep_r936.tgz svn:checkout:936:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/RKTrackRep
-
-# GFRave download
-genfit/GFRave/GFRaveLinkDef.h:
-	@echo "downloading GFRave"
-	@cd genfit && $(EXTDIR)/download.sh genfit_GFRave_r936.tgz svn:checkout:936:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk/GFRave
-
-# genfit build command
-include/genfit/RKTrackRep.h: genfit/core/genfitLinkDef.h genfit/RKTrackRep/genfitRKLinkDef.h genfit/GFRave/GFRaveLinkDef.h
+# genfit build
+$(EXTINCDIR)/genfit/RKTrackRep.h: $(EXTSRCDIR)/genfit/README
 	@echo "building genfit"
-	@cd genfit && ../cmake/bin/cmake . && make # cmake and make
-	@cp genfit/lib/* $(EXTLIBDIR)/ # copy the libraries
-	@mkdir -p $(EXTINCDIR)/genfit/ && cp `find genfit/*/*.h | grep -v LinkDef` $(EXTINCDIR)/genfit/ # copy the headers
-	@cd genfit/core && cp --parents `find */*.h` $(EXTINCDIR)/genfit/ # copy the headers in subdirectories
+	@cd $(EXTSRCDIR)/genfit && GENFIT=$(EXTSRCDIR)/genfit RAVEPATH=$(EXTSRCDIR)/rave $(CMAKE) $(EXTSRCDIR)/genfit && make
+	@cp $(EXTSRCDIR)/genfit/lib/* $(EXTLIBDIR)/
+	@mkdir -p $(EXTINCDIR)/genfit && cp $(EXTSRCDIR)/genfit/*/*.h $(EXTINCDIR)/genfit/
+	@cd $(EXTSRCDIR)/genfit/core && cp --parents */*.h $(EXTINCDIR)/genfit/
 
-# genfit clean command
+# genfit clean
 genfit.clean:
 	@echo "cleaning genfit"
-	@rm -rf include/genfit
-	@cd genfit && make clean
-	@rm -f genfit/CMakeCache.txt
+	@cd $(EXTSRCDIR)/genfit && make clean
+	@rm -rf $(EXTINCDIR)/genfit $(EXTSRCDIR)/genfit/CMakeCache.txt
 
 # genfit touch command
 genfit.touch:
-	@rm -f include/genfit/RKTrackRep.h
+	@rm -f $(EXTINCDIR)/genfit/RKTrackRep.h
 
 
-# dependency for HepMC build
-hepmc: include/HepMC/Version.h
+# dependencies for HepMC
+hepmc: $(EXTINCDIR)/HepMC/Version.h
+hepmc.src: $(EXTSRCDIR)/hepmc
 
-# dependency for HepMC download
-hepmc/README:
+# HepMC download
+$(EXTSRCDIR)/hepmc:
 	@echo "downloading HepMC"
-	@$(EXTDIR)/download.sh HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
-	@mv HepMC-2.06.09 hepmc
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+	@mv $(EXTSRCDIR)/HepMC-2.06.09 $(EXTSRCDIR)/hepmc
 
-# HepMC build command
-include/HepMC/Version.h: hepmc/README
+# HepMC build
+$(EXTINCDIR)/HepMC/Version.h: $(CMAKE) $(EXTSRCDIR)/hepmc
 	@echo "building HepMC"
-	@mkdir -p build/hepmc && cd build/hepmc && ../../cmake/bin/cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/hepmc -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTDIR)/hepmc && make -j $(NPROCESSES) install
-	@cp hepmc/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/HepMC && cp hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
+	@mkdir -p $(EXTBUILDDIR)/hepmc
+	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/hepmc -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
+	make -j $(NPROCESSES) && make install
+	@cp $(EXTDIR)/hepmc/lib/* $(EXTLIBDIR)/
+	@mkdir -p $(EXTINCDIR)/HepMC && cp $(EXTDIR)/hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
 
-# HepMC clean command
+# HepMC clean
 hepmc.clean:
 	@echo "cleaning HepMC"
-	@cd build/hepmc && make clean
-	@rm -rf $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
+	@cd $(EXTBUILDDIR)/hepmc && make clean
+	@rm -rf $(EXTDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
 
-# HepMC touch command
+# HepMC touch
 hepmc.touch:
-	@rm -f include/HepMC/Version.h
+	@rm -f $(EXTINCDIR)/HepMC/Version.h
 
 
-# dependency for Pythia build
-pythia: include/pythia/Pythia.h
+# dependencies for Pythia
+pythia: $(EXTINCDIR)/pythia/Pythia.h
+pythia.src: $(EXTSRCDIR)/pythia/configure
 
-# dependency for Pythia download
-pythia/configure:
+# Pythia download
+$(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
-	@$(EXTDIR)/download.sh pythia8165.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8165.tgz
-	@mv pythia8165 pythia
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8176.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8176.tgz
+	@mv $(EXTSRCDIR)/pythia8176 $(EXTSRCDIR)/pythia
 
-# Pythia build command
-include/pythia/Pythia.h: pythia/configure
+# Pythia build
+$(EXTINCDIR)/pythia/Pythia.h: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
-	@cd pythia && ./configure --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES)
-	@cp pythia/lib/lib* pythia/lib/archive/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/pythia && cp pythia/include/* $(EXTINCDIR)/pythia/
-	@mkdir -p share/pythia && cp pythia/xmldoc/* share/pythia/ && chmod u+w share/pythia/*
+	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
+	@cp $(EXTDIR)/pythia/lib/lib* $(EXTDIR)/pythia/lib/archive/* $(EXTLIBDIR)/
+	@mkdir -p $(EXTINCDIR)/pythia && cp $(EXTDIR)/pythia/include/* $(EXTINCDIR)/pythia/
+	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
 
-# Pythia clean command
+# Pythia clean
 pythia.clean:
 	@echo "cleaning Pythia"
-	@cd pythia && make clean
-	@rm -rf $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia share/pythia
+	@cd $(EXTSRCDIR)/pythia && make clean
+	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia $(EXTDIR)/share/pythia
 
-# Pythia touch command
+# Pythia touch
 pythia.touch:
-	@rm -f include/pythia/Pythia.h
+	@rm -f $(EXTINCDIR)/pythia/Pythia.h
 
 
-# dependency for Photos build
-photos: include/PHOTOS/Photos.h
+# dependencies for Photos
+photos: $(EXTINCDIR)/Photos/Photos.h
+photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
-# dependency for Photos download
-PHOTOS/configure:
+# Photos download
+$(EXTSRCDIR)/PHOTOS/configure:
 	@echo "downloading Photos"
-	@$(EXTDIR)/download.sh PHOTOS.3.5.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/PHOTOS.3.5/PHOTOS.3.5.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.52.tar.gz http://annapurna.ifj.edu.pl/~tprzedzinski/resources/PHOTOS.3.52/PHOTOS.3.52.tar.gz
+	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(EXTDIR)/photos.patch
 
-# Photos build command
-include/PHOTOS/Photos.h: PHOTOS/configure
+# Photos build
+$(EXTINCDIR)/Photos/Photos.h: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
-	@-cd PHOTOS && patch -Np0 < ../photos.patch
-	@cd PHOTOS && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
-	@cp PHOTOS/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/PHOTOS && cp PHOTOS/include/Photos/* $(EXTINCDIR)/PHOTOS/
-	@rm -rf include/PHOTOS/Photos; cd include/PHOTOS && ln -sf . Photos
+	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR)/photos --with-hepmc=$(EXTDIR)/hepmc && make && make install
+	@cp $(EXTDIR)/photos/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTDIR)/photos/include/Photos $(EXTINCDIR)/
 
-# Photos clean command
+# Photos clean
 photos.clean:
 	@echo "cleaning Photos"
-	@cd PHOTOS && make clean
-	@rm -rf $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/PHOTOS
+	@cd $(EXTSRCDIR)/PHOTOS && make clean
+	@rm -rf $(EXTDIR)/photos $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/PHOTOS
 
-# Photos touch command
+# Photos touch
 photos.touch:
-	@rm -f include/PHOTOS/Photos.h
+	@rm -f $(EXTINCDIR)/Photos/Photos.h
 
 
-# dependency for Tauola build
-tauola: include/TAUOLA/Tauola.h
+# dependencies for Tauola
+tauola: $(EXTINCDIR)/Tauola/Tauola.h
+tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 
-# dependency for Tauola download
-TAUOLA/configure:
+# Tauola download
+$(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
-	@$(EXTDIR)/download.sh TAUOLA.1.0.7.tar.gz http://hibiscus.if.uj.edu.pl/~przedzinski/TAUOLA.1.0.7/TAUOLA.1.0.7.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.1a.tar.gz http://annapurna.ifj.edu.pl/~tprzedzinski/resources/TAUOLA.1.1.1a/TAUOLA.1.1.1a.tar.gz
 
-# Tauola build command
-include/TAUOLA/Tauola.h: TAUOLA/configure
+# Tauola build
+$(EXTINCDIR)/Tauola/Tauola.h: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
-	@cd TAUOLA && ./configure --with-hepmc=$(EXTDIR)/hepmc && make
-	@cp TAUOLA/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/TAUOLA && cp TAUOLA/include/Tauola/*.h $(EXTINCDIR)/TAUOLA/
-	@cd TAUOLA/include && cp -a Tauola/*.h .
+	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR)/tauola --with-hepmc=$(EXTDIR)/hepmc && make && make install
+	@cp $(EXTDIR)/tauola/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTDIR)/tauola/include/Tauola $(EXTINCDIR)/
 
-# Tauola clean command
+# Tauola clean
 tauola.clean:
 	@echo "cleaning Tauola"
-	@cd TAUOLA && make clean
-	@rm -rf $(EXTLIBDIR)/libTauola* $(EXTINCDIR)/TAUOLA
+	@cd $(EXTSRCDIR)/TAUOLA && make clean
+	@rm -rf $(EXTDIR)/tauola $(EXTLIBDIR)/libTauola* $(EXTINCDIR)/Tauola
 
-# Tauola touch command
+# Tauola touch
 tauola.touch:
-	@rm -f include/TAUOLA/Tauola.h
+	@rm -f $(EXTINCDIR)/Tauola/Tauola.h
 
 
-# dependency for EvtGen build
-evtgen: evtgen/config.mk
+# dependencies for EvtGen
+evtgen: $(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh
+evtgen.src: $(EXTSRCDIR)/evtgen/configure
 
-# EvtGen download command
-evtgen/README:
+# EvtGen download
+$(EXTSRCDIR)/evtgen/configure:
 	@echo "downloading EvtGen"
-	@$(EXTDIR)/download.sh EvtGen.R01-01-00.tar.gz svn:export:112:http://svnweb.cern.ch/guest/evtgen/tags/R01-01-00
-	@mv R01-01-00 evtgen
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-02-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-02-00/EvtGen.R01-02-00.tar.gz
+	@mv $(EXTSRCDIR)/EvtGen/R01-02-00 $(EXTSRCDIR)/evtgen
+	@rmdir $(EXTSRCDIR)/EvtGen
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(EXTDIR)/evtgen.patch
 
-# EvtGen build command
-evtgen/config.mk: evtgen/README
+# EvtGen build
+$(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
-	@-cd evtgen && patch -Np0 < ../evtgen.patch
-	@cd evtgen && ./configure --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/PHOTOS --tauoladir=$(EXTDIR)/TAUOLA $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared && make
-	@cp evtgen/lib/lib* evtgen/lib/archive/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/evtgen && cp -r evtgen/EvtGen* $(EXTINCDIR)/evtgen/ && rm -rf $(EXTINCDIR)/evtgen/*/.svn
-	@mkdir -p share/evtgen && cp evtgen/evt.pdl share/evtgen/ && cp evtgen/DECAY_2010.DEC share/evtgen/DECAY.DEC
+	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) && make install
+	@cp $(EXTDIR)/evtgen/lib/lib* $(EXTDIR)/evtgen/lib/archive/* $(EXTLIBDIR)/
+	@cp -a $(EXTDIR)/evtgen/include $(EXTINCDIR)/evtgen
+	@mkdir -p $(EXTDIR)/share/evtgen && cp $(EXTDIR)/evtgen/share/evt.pdl $(EXTDIR)/share/evtgen/ && cp $(EXTDIR)/evtgen/share/DECAY_2010.DEC $(EXTDIR)/share/evtgen/DECAY.DEC
 
-# EvtGen clean command
+# EvtGen clean
 evtgen.clean:
 	@echo "cleaning EvtGen"
-	@cd evtgen && make clean
-	@rm -rf evtgen/config.mk $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen share/evtgen
+	@cd $(EXTSRCDIR)/evtgen && make clean
+	@rm -rf $(EXTDIR)/evtgen $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen $(EXTDIR)/share/evtgen
 
-# EvtGen touch command
+# EvtGen touch
 evtgen.touch:
-	@rm -f evtgen/config.mk
+	@rm -f $(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh
 
 
-# dependency for FLC build
-flc: include/FLC/libRooComplexPDF/RooComplexPDF.h
+# dependencies for FLC
+flc: $(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h
+flc.src: $(EXTSRCDIR)/FLC/README
 
-# FLC download command
-FLC/README:
+# FLC download
+$(EXTSRCDIR)/FLC/README:
 	@echo "downloading FLC"
-	@$(EXTDIR)/download.sh BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
-	@mv BELLE_FLC_1.1 FLC
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
+	@mv $(EXTSRCDIR)/BELLE_FLC_1.1 $(EXTSRCDIR)/FLC
 
-# FLC build command
-include/FLC/libRooComplexPDF/RooComplexPDF.h: FLC/README
+# FLC build
+$(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
-	@-cd FLC && patch -Np0 < ../FLC.patch
-	@cd FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(EXTINCDIR)/root BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
-	@cp FLC/lib/* $(EXTLIBDIR)/
-	@cp -a FLC/include $(EXTINCDIR)/FLC
+	@-cd $(EXTSRCDIR)/FLC && patch -Np0 < $(EXTDIR)/FLC.patch
+	@cd $(EXTSRCDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cp $(EXTSRCDIR)/FLC/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTSRCDIR)/FLC/include $(EXTINCDIR)/FLC
 
-# flc clean command
+# flc clean
 flc.clean:
 	@echo "cleaning FLC"
-	@cd FLC && ./make.sh clean
-	@rm -rf include/FLC
+	@cd $(EXTSRCDIR)/FLC && ./make.sh clean
+	@rm -rf $(EXTINCDIR)/FLC
 
 # flc touch command
 flc.touch:
-	@rm -rf include/FLC
+	@rm -rf $(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h
 
 
 
-# dependency for eigen build
-eigen: include/Eigen/Eigen
+# dependencies for eigen
+eigen: $(EXTINCDIR)/Eigen/Eigen
+eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
-# eigen download command
-eigen/INSTALL:
+# eigen download
+$(EXTSRCDIR)/eigen/INSTALL:
 	@echo "downloading eigen"
-	@$(EXTDIR)/download.sh eigen_3.1.1.tar.gz http://bitbucket.org/eigen/eigen/get/3.1.1.tar.gz
-	@mv eigen-eigen-43d9075b23ef eigen
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh eigen_3.1.3.tar.gz http://bitbucket.org/eigen/eigen/get/3.1.3.tar.gz
+	@mv $(EXTSRCDIR)/eigen-eigen-2249f9c22fe8 $(EXTSRCDIR)/eigen
 
-# eigen build command
-include/Eigen/Eigen: eigen/INSTALL
+# eigen build
+$(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@echo "installing eigen"
-	@cp -a eigen/Eigen $(EXTINCDIR)/
+	@cp -a $(EXTSRCDIR)/eigen/Eigen $(EXTINCDIR)/
 
-# eigen clean command
+# eigen clean
 eigen.clean:
 	@echo "cleaning eigen"
-	@rm -rf include/Eigen
+	@rm -rf $(EXTINCDIR)/Eigen
 
-# eigen touch command
+# eigen touch
 eigen.touch:
-	@rm -rf include/Eigen
+	@rm -rf $(EXTSRCDIR)/Eigen/Eigen
+
+
+# dependencies for vc
+vc: $(EXTLIBDIR)/libVc.a
+vc.src: $(EXTSRCDIR)/vc
+
+# vc download
+$(EXTSRCDIR)/vc:
+	@echo "downloading vc"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
+	@mv $(EXTSRCDIR)/Vc-0.7.1 $(EXTSRCDIR)/vc
+
+# vc build
+$(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
+	@echo "installing vc"
+	@mkdir -p $(EXTBUILDDIR)/vc
+	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vc -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && make -j $(NPROCESSES) && make install
+	@cp -a $(EXTDIR)/vc/include/Vc $(EXTINCDIR)/
+	@cp -a $(EXTDIR)/vc/lib/lib* $(EXTLIBDIR)/
+
+# vc clean
+vc.clean:
+	@echo "cleaning vc"
+	@rm -rf $(EXTINCDIR)/Vc $(EXTLIBDIR)/libVc.a
+
+# vc touch
+vc.touch:
+	@rm -rf $(EXTLIBDIR)/libVc.a

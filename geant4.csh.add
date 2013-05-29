@@ -1,9 +1,0 @@
-setenv G4ABLADATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4ABLA3.0; pwd`"
-setenv G4LEDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4EMLOW6.23; pwd`"
-setenv G4LEVELGAMMADATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/PhotonEvaporation2.2; pwd`"
-setenv G4NEUTRONHPDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4NDL4.0; pwd`"
-setenv G4NEUTRONXSDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4NEUTRONXS1.1; pwd`"
-setenv G4PIIDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/G4PII1.3; pwd`"
-setenv G4RADIOACTIVEDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/RadioactiveDecay3.4; pwd`"
-setenv G4REALSURFACEDATA "`cd $geant4_envbindir/../../../share/Geant4-9.5.1/data/RealSurface1.0; pwd`"
-

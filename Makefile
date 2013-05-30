@@ -52,7 +52,6 @@ ifeq ($(EXTERNALS_OPTION),debug)
   export ROOTBUILD=debug
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else 
 ifeq ($(EXTERNALS_OPTION),opt)
   export CXXFLAGS=-O3
@@ -64,7 +63,6 @@ ifeq ($(EXTERNALS_OPTION),opt)
   export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
 ifeq ($(EXTERNALS_OPTION),intel)
   export CC=icc
@@ -84,7 +82,6 @@ ifeq ($(EXTERNALS_OPTION),intel)
   export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
   $(error Unknown externals build option. Please source the setup_belle2 script.)
 endif
@@ -110,7 +107,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen vc
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen
 
 # all target
 all: dirs cmake $(PACKAGES)
@@ -700,31 +697,3 @@ eigen.clean:
 # eigen touch
 eigen.touch:
 	@rm -rf $(EXTSRCDIR)/Eigen/Eigen
-
-
-# dependencies for vc
-vc: $(EXTLIBDIR)/libVc.a
-vc.src: $(EXTSRCDIR)/vc
-
-# vc download
-$(EXTSRCDIR)/vc:
-	@echo "downloading vc"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
-	@mv $(EXTSRCDIR)/Vc-0.7.1 $(EXTSRCDIR)/vc
-
-# vc build
-$(EXTLIBDIR)/libVc.a: $(CMAKE) $(EXTSRCDIR)/vc
-	@echo "installing vc"
-	@mkdir -p $(EXTBUILDDIR)/vc
-	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vc -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && make -j $(NPROCESSES) && make install
-	@cp -a $(EXTDIR)/vc/include/Vc $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/vc/lib/lib* $(EXTLIBDIR)/
-
-# vc clean
-vc.clean:
-	@echo "cleaning vc"
-	@rm -rf $(EXTINCDIR)/Vc $(EXTLIBDIR)/libVc.a
-
-# vc touch
-vc.touch:
-	@rm -rf $(EXTLIBDIR)/libVc.a

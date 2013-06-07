@@ -392,7 +392,7 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
 	@mkdir -p $(EXTBUILDDIR)/root
 	@cd $(EXTBUILDDIR)/root && XRDSYS=$(EXTDIR)/xrootd $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(ROOTSYS) \
 	-DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so \
-	-Dgsl_shared=ON -Droofit=ON $(ROOT_OPTION) $(EXTSRCDIR)/root && make -j $(NPROCESSES) && make install
+	-Dmysql=OFF -Dgsl_shared=ON -Droofit=ON $(ROOT_OPTION) $(EXTSRCDIR)/root && make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
 
 # root clean command

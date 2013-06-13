@@ -109,10 +109,13 @@ endif
 # external packages
 PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen
 
-# all target
+# all targets
 all: dirs cmake $(PACKAGES)
 
-# clean up target
+# get source code of all packages
+src: dirs $(foreach package,$(PACKAGES),$(package).src)
+
+# clean up targets
 clean: $(foreach package,$(PACKAGES),$(package).clean)
 
 # remove only target files

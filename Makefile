@@ -393,9 +393,10 @@ $(EXTSRCDIR)/root:
 $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
 	@echo "building root"
 	@mkdir -p $(EXTBUILDDIR)/root
-	@cd $(EXTBUILDDIR)/root && XRDSYS=$(EXTDIR)/xrootd $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(ROOTSYS) \
-	-DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so \
-	-Dmysql=OFF -Dgsl_shared=ON -Droofit=ON $(ROOT_OPTION) $(EXTSRCDIR)/root && make -j $(NPROCESSES) && make install
+	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --with-xrootd=$(EXTDIR)/xrootd \
+	--with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
+	--disable-mysql --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
+	make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
 
 # root clean command

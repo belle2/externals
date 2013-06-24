@@ -442,7 +442,7 @@ vgm.touch:
 
 
 # dependencies for rave
-rave: $(EXTINCDIR)/rave/Vertex.h
+rave: $(EXTLIBDIR)/libRaveBase.so
 rave.src: $(EXTSRCDIR)/rave/README
 
 # rave download
@@ -458,7 +458,7 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -s ../../../../../include/root/Math Math
 
 # rave build
-$(EXTINCDIR)/rave/Vertex.h: $(EXTSRCDIR)/rave/README
+$(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure \
 	--disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
@@ -468,15 +468,15 @@ $(EXTINCDIR)/rave/Vertex.h: $(EXTSRCDIR)/rave/README
 rave.clean:
 	@echo "cleaning rave"
 	@cd $(EXTSRCDIR)/rave && make clean
-	@rm -f $(EXTINCDIR)/rave/Vertex.h
+	@rm -f $(EXTLIBDIR)/libRave* $(EXTINCDIR)/rave
 
 # rave touch
 rave.touch:
-	@rm -f $(EXTINCDIR)/rave/Vertex.h
+	@rm -f $(EXTLIBDIR)/libRaveBase.so
 
 
 # dependencies for genfit
-genfit: $(EXTINCDIR)/genfit/RKTrackRep.h
+genfit: $(EXTLIBDIR)/libgenfit.so
 genfit.src: $(EXTSRCDIR)/genfit/README
 
 # genfit download
@@ -488,7 +488,7 @@ $(EXTSRCDIR)/genfit/README:
 	@cp $(EXTDIR)/genfit/CMakeLists.txt $(EXTSRCDIR)/genfit/
 
 # genfit build
-$(EXTINCDIR)/genfit/RKTrackRep.h: $(CMAKE) $(EXTSRCDIR)/genfit/README
+$(EXTLIBDIR)/libgenfit.so: $(CMAKE) $(EXTSRCDIR)/genfit/README
 	@echo "building genfit"
 	@cd $(EXTSRCDIR)/genfit && GENFIT=$(EXTSRCDIR)/genfit RAVEPATH=$(EXTSRCDIR)/rave $(CMAKE) $(EXTSRCDIR)/genfit && make
 	@cp $(EXTSRCDIR)/genfit/lib/* $(EXTLIBDIR)/
@@ -499,15 +499,15 @@ $(EXTINCDIR)/genfit/RKTrackRep.h: $(CMAKE) $(EXTSRCDIR)/genfit/README
 genfit.clean:
 	@echo "cleaning genfit"
 	@cd $(EXTSRCDIR)/genfit && make clean
-	@rm -rf $(EXTINCDIR)/genfit $(EXTSRCDIR)/genfit/CMakeCache.txt
+	@rm -rf $(EXTLIBDIR)/libgenfit*.so $(EXTLIBDIR)/libgfrave.so $(EXTINCDIR)/genfit $(EXTSRCDIR)/genfit/CMakeCache.txt
 
 # genfit touch command
 genfit.touch:
-	@rm -f $(EXTINCDIR)/genfit/RKTrackRep.h
+	@rm -f $(EXTLIBDIR)/libgenfit.so
 
 
 # dependencies for HepMC
-hepmc: $(EXTINCDIR)/HepMC/Version.h
+hepmc: $(EXTLIBDIR)/libHepMC.so
 hepmc.src: $(EXTSRCDIR)/hepmc
 
 # HepMC download
@@ -517,7 +517,7 @@ $(EXTSRCDIR)/hepmc:
 	@mv $(EXTSRCDIR)/HepMC-2.06.09 $(EXTSRCDIR)/hepmc
 
 # HepMC build
-$(EXTINCDIR)/HepMC/Version.h: $(CMAKE) $(EXTSRCDIR)/hepmc
+$(EXTLIBDIR)/libHepMC.so: $(CMAKE) $(EXTSRCDIR)/hepmc
 	@echo "building HepMC"
 	@mkdir -p $(EXTBUILDDIR)/hepmc
 	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/hepmc -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
@@ -529,15 +529,15 @@ $(EXTINCDIR)/HepMC/Version.h: $(CMAKE) $(EXTSRCDIR)/hepmc
 hepmc.clean:
 	@echo "cleaning HepMC"
 	@-cd $(EXTBUILDDIR)/hepmc && make clean
-	@rm -rf $(EXTDIR)/hepmc $(EXTBUILDDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTINCDIR)/HepMC
+	@rm -rf $(EXTDIR)/hepmc $(EXTBUILDDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTLIBDIR)/libhepmC* $(EXTINCDIR)/HepMC
 
 # HepMC touch
 hepmc.touch:
-	@rm -f $(EXTINCDIR)/HepMC/Version.h
+	@rm -f $(EXTLIBDIR)/libHepMC.so
 
 
 # dependencies for Pythia
-pythia: $(EXTINCDIR)/pythia/Pythia.h
+pythia: $(EXTLIBDIR)/libpythia8.so
 pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
@@ -547,7 +547,7 @@ $(EXTSRCDIR)/pythia/configure:
 	@mv $(EXTSRCDIR)/pythia8176 $(EXTSRCDIR)/pythia
 
 # Pythia build
-$(EXTINCDIR)/pythia/Pythia.h: $(EXTSRCDIR)/pythia/configure
+$(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
 	@cp $(EXTDIR)/pythia/lib/lib* $(EXTDIR)/pythia/lib/archive/* $(EXTLIBDIR)/
@@ -562,11 +562,11 @@ pythia.clean:
 
 # Pythia touch
 pythia.touch:
-	@rm -f $(EXTINCDIR)/pythia/Pythia.h
+	@rm -f $(EXTLIBDIR)/libpythia8.so
 
 
 # dependencies for Photos
-photos: $(EXTINCDIR)/Photos/Photos.h
+photos: $(EXTLIBDIR)/libPhotosCxxInterface.so
 photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
 # Photos download
@@ -576,7 +576,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(EXTDIR)/photos.patch
 
 # Photos build
-$(EXTINCDIR)/Photos/Photos.h: $(EXTSRCDIR)/PHOTOS/configure
+$(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR)/photos --with-hepmc=$(EXTDIR)/hepmc && make && make install
 	@cp $(EXTDIR)/photos/lib/* $(EXTLIBDIR)/
@@ -590,11 +590,11 @@ photos.clean:
 
 # Photos touch
 photos.touch:
-	@rm -f $(EXTINCDIR)/Photos/Photos.h
+	@rm -f $(EXTLIBDIR)/libPhotosCxxInterface.so
 
 
 # dependencies for Tauola
-tauola: $(EXTINCDIR)/Tauola/Tauola.h
+tauola: $(EXTLIBDIR)/libTauolaCxxInterface.so
 tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 
 # Tauola download
@@ -603,7 +603,7 @@ $(EXTSRCDIR)/TAUOLA/configure:
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.1a.tar.gz http://annapurna.ifj.edu.pl/~tprzedzinski/resources/TAUOLA.1.1.1a/TAUOLA.1.1.1a.tar.gz
 
 # Tauola build
-$(EXTINCDIR)/Tauola/Tauola.h: $(EXTSRCDIR)/TAUOLA/configure
+$(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
 	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR)/tauola --with-hepmc=$(EXTDIR)/hepmc && make && make install
 	@cp $(EXTDIR)/tauola/lib/* $(EXTLIBDIR)/
@@ -617,11 +617,11 @@ tauola.clean:
 
 # Tauola touch
 tauola.touch:
-	@rm -f $(EXTINCDIR)/Tauola/Tauola.h
+	@rm -f $(EXTLIBDIR)/libTauolaCxxInterface.so
 
 
 # dependencies for EvtGen
-evtgen: $(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh
+evtgen: $(EXTLIBDIR)/libEvtGen.so
 evtgen.src: $(EXTSRCDIR)/evtgen/configure
 
 # EvtGen download
@@ -633,7 +633,7 @@ $(EXTSRCDIR)/evtgen/configure:
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(EXTDIR)/evtgen.patch
 
 # EvtGen build
-$(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh: $(EXTSRCDIR)/evtgen/configure
+$(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared  && make all install
 	@cp $(EXTDIR)/evtgen/lib/lib* $(EXTDIR)/evtgen/lib/archive/* $(EXTLIBDIR)/
@@ -652,7 +652,7 @@ evtgen.touch:
 
 
 # dependencies for FLC
-flc: $(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h
+flc: $(EXTLIBDIR)/libComplexPDF.so
 flc.src: $(EXTSRCDIR)/FLC/README
 
 # FLC download
@@ -660,11 +660,11 @@ $(EXTSRCDIR)/FLC/README:
 	@echo "downloading FLC"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
 	@mv $(EXTSRCDIR)/BELLE_FLC_1.1 $(EXTSRCDIR)/FLC
+	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(EXTDIR)/FLC.patch
 
 # FLC build
-$(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h: $(EXTSRCDIR)/FLC/README
+$(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
-	@-cd $(EXTSRCDIR)/FLC && patch -Np0 < $(EXTDIR)/FLC.patch
 	@cd $(EXTSRCDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp $(EXTSRCDIR)/FLC/lib/* $(EXTLIBDIR)/
 	@cp -a $(EXTSRCDIR)/FLC/include $(EXTINCDIR)/FLC
@@ -673,11 +673,11 @@ $(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h: $(EXTSRCDIR)/FLC/README
 flc.clean:
 	@echo "cleaning FLC"
 	@cd $(EXTSRCDIR)/FLC && ./make.sh clean
-	@rm -rf $(EXTINCDIR)/FLC
+	@rm -rf $(EXTLIBDIR)/lib*ComplexPDF.so $(EXTINCDIR)/FLC
 
 # flc touch command
 flc.touch:
-	@rm -rf $(EXTINCDIR)/FLC/libRooComplexPDF/RooComplexPDF.h
+	@rm -rf $(EXTLIBDIR)/libComplexPDF.so
 
 
 

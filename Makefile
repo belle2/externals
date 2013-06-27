@@ -3,7 +3,7 @@
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
 export EXTSRCDIR := $(EXTDIR)/src
-export EXTBUILDDIR := $(EXTDIR)/build
+export EXTBUILDDIR := $(EXTDIR)/build/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
@@ -468,7 +468,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 rave.clean:
 	@echo "cleaning rave"
 	@cd $(EXTSRCDIR)/rave && make clean
-	@rm -f $(EXTLIBDIR)/libRave* $(EXTINCDIR)/rave
+	@rm -rf $(EXTLIBDIR)/libRave* $(EXTINCDIR)/rave
 
 # rave touch
 rave.touch:

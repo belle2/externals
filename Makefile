@@ -7,11 +7,6 @@ export EXTBUILDDIR := $(EXTDIR)/build/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
-ifdef BELLE2_EXTERNALS_OPTION
-  EXTERNALS_OPTION := $(BELLE2_EXTERNALS_OPTION)
-else
-  EXTERNALS_OPTION := $(BELLE2_OPTION)
-endif
 
 export ROOTSYS := $(EXTDIR)/root/$(BELLE2_EXTERNALS_SUBDIR)
 export PATH := $(ROOTSYS)/bin:$(PATH)
@@ -42,7 +37,7 @@ ifeq ($(NPROCESSES),0)
 endif
 
 # set debug or optimization options 
-ifeq ($(EXTERNALS_OPTION),debug)
+ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export CXXFLAGS=-g
   export BOOST_OPTION=variant=debug
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -54,7 +49,7 @@ ifeq ($(EXTERNALS_OPTION),debug)
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else 
-ifeq ($(EXTERNALS_OPTION),opt)
+ifeq ($(BELLE2_EXTERNALS_OPTION),opt)
   export CXXFLAGS=-O3
   export BOOST_OPTION=variant=release
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -66,7 +61,7 @@ ifeq ($(EXTERNALS_OPTION),opt)
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
-ifeq ($(EXTERNALS_OPTION),intel)
+ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export CC=icc
   export CXX=icpc
   export CXXCPP=icc -E
@@ -224,7 +219,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 # boost clean
 boost.clean:
 	@echo "cleaning boost"
-	@cd $(EXTSRCDIR)/boost && ./b2 --clean $(BOOST_OPTION)
+	@-cd $(EXTSRCDIR)/boost && ./b2 --clean $(BOOST_OPTION)
 	@rm -rf $(EXTINCDIR)/boost $(EXTLIBDIR)/libboost_*
 
 # boost touch

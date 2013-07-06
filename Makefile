@@ -16,6 +16,8 @@ else
   export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
 endif
 
+export LANG=C
+
 # set cmake command
 CMAKE=$(EXTDIR)/cmake/bin/cmake
 export PATH := $(EXTDIR)/cmake/bin:$(PATH)

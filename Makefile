@@ -1,4 +1,3 @@
-
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)
@@ -94,7 +93,7 @@ endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
 # check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.1/data/G4EMLOW6.32; echo $$?)
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif
@@ -107,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen vc
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -730,3 +729,28 @@ vc.clean:
 vc.touch:
 	@rm -rf $(EXTLIBDIR)/libVc.a
 
+
+# dependencies for nsm2
+nsm2: $(EXTBINDIR)/nsmd2
+nsm2.src: $(EXTSRCDIR)/nsm2
+
+# nsm2 download
+$(EXTSRCDIR)/nsm2:
+	@echo "downloading nsm2"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh nsm2-alpha.tgz
+
+# nsm2 build
+$(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
+	@echo "installing nsm2"
+	@mkdir -p $(EXTBUILDDIR)/nsm2
+	@cd $(EXTSRCDIR)/nsm2 && make && make install
+
+# nsm2 clean
+nsm2.clean:
+	@echo "cleaning nsm2"
+	@cd $(EXTSRCDIR)/nsm2 && make clean
+	@rm -rf $(EXTINCDIR)/nsm2 $(EXTBINDIR)/nsm*2 $(EXTLIBDIR)/libnsm2*
+
+# nsm2 touch
+nsm2.touch:
+	@rm -rf $(EXTBINDIR)/nsmd2

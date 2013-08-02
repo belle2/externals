@@ -582,7 +582,7 @@ $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 photos.clean:
 	@echo "cleaning Photos"
 	@cd $(EXTSRCDIR)/PHOTOS && make clean
-	@rm -rf $(EXTDIR)/photos $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/PHOTOS
+	@rm -rf $(EXTDIR)/photos $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/Photos
 
 # Photos touch
 photos.touch:

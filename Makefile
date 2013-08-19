@@ -633,7 +633,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared  && make all install
 	@cp $(EXTDIR)/evtgen/lib/lib* $(EXTDIR)/evtgen/lib/archive/* $(EXTLIBDIR)/
-	@cp -a $(EXTDIR)/evtgen/include $(EXTINCDIR)/evtgen
+	@rm -rf $(EXTINCDIR)/evtgen && cp -a $(EXTDIR)/evtgen/include $(EXTINCDIR)/evtgen
 	@mkdir -p $(EXTDIR)/share/evtgen && cp $(EXTDIR)/evtgen/share/evt.pdl $(EXTDIR)/share/evtgen/ && cp $(EXTDIR)/evtgen/share/DECAY_2010.DEC $(EXTDIR)/share/evtgen/DECAY.DEC
 
 # EvtGen clean

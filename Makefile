@@ -157,7 +157,7 @@ $(EXTSRCDIR)/cmake/bootstrap:
 # cmake build
 $(EXTDIR)/cmake/bin/cmake: $(EXTSRCDIR)/cmake/bootstrap
 	@echo "building cmake"
-	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR)/cmake && make && make install
+	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR)/cmake && sed -i 's/BUILD_CursesDialog\:BOOL=ON/BUILD_CursesDialog\:BOOL=OFF/g' CMakeCache.txt && make -j $(NPROCESSES) && make install
 
 # cmake clean
 cmake.clean:

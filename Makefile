@@ -541,6 +541,7 @@ $(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8176.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8176.tgz
 	@mv $(EXTSRCDIR)/pythia8176 $(EXTSRCDIR)/pythia
+	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(EXTDIR)/pythia.patch
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure

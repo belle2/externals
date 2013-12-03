@@ -385,8 +385,8 @@ root.src: $(EXTSRCDIR)/root
 # root download
 $(EXTSRCDIR)/root:
 	@echo "downloading root"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.07.source.tar.gz ftp://root.cern.ch/root/root_v5.34.07.source.tar.gz
-	@cd $(EXTSRCDIR)/root && patch -Np0 < $(EXTDIR)/root.patch
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.13.source.tar.gz ftp://root.cern.ch/root/root_v5.34.13.source.tar.gz
+	@cd $(EXTSRCDIR)/root && patch -Np1 < $(EXTDIR)/root.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root

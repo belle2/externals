@@ -1,44 +1,326 @@
-Index: montecarlo/eg/src/TParticlePDG.cxx
-===================================================================
---- montecarlo/eg/src/TParticlePDG.cxx	(revision 47000)
-+++ montecarlo/eg/src/TParticlePDG.cxx	(working copy)
-@@ -99,14 +99,12 @@
- TParticlePDG::TParticlePDG(const char* Name, const char* Title, Double_t aMass,
-                            Bool_t aStable, Double_t aWidth, Double_t aCharge,
-                            const char* aParticleClass, Int_t aPdgCode, Int_t Anti,
--                           Int_t aTrackingCode)
-+                           Int_t aTrackingCode, Double_t aLifetime, Double_t aSpin)
-   : TNamed(Name,Title)
- {
+diff --git a/html/src/TClassDocOutput.cxx b/html/src/TClassDocOutput.cxx
+index eada52e..ad32dea 100644
+--- a/html/src/TClassDocOutput.cxx
++++ b/html/src/TClassDocOutput.cxx
+@@ -81,7 +81,7 @@ void TClassDocOutput::Class2Html(Bool_t force)
  
-    // empty for the time  being
--   fLifetime      = 0;
-    fParity        = 0;
--   fSpin          = 0;
-    fIsospin       = 0;
-    fI3            = 0;
-    fStrangeness   = 0;
-@@ -125,11 +123,15 @@
-    fPdgCode       = aPdgCode;
-    fTrackingCode  = aTrackingCode;
-    fDecayList     = NULL;
-+   fSpin          = aSpin;
-    if (Anti) fAntiParticle = this;
-    else      fAntiParticle = 0;
-    
-    const Double_t kHbar = 6.58211889e-25; // GeV s
--   if (fWidth != 0.) fLifetime = kHbar / fWidth;
-+   if (fWidth != 0.)
-+       fLifetime = kHbar / fWidth;
-+   else
-+       fLifetime      = aLifetime;
+    if (!force && !IsModified(fCurrentClass, kSource)
+        && !IsModified(fCurrentClass, kDoc)) {
+-      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
++//      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
+       return;
+    }
+ 
+@@ -93,8 +93,14 @@ void TClassDocOutput::Class2Html(Bool_t force)
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++   printf("  <compound kind=\"class\">\n");
++   printf("    <name>%s</name>\n", TString(fCurrentClass->GetName()).ReplaceAll("&", "&amp;").ReplaceAll("<", "&lt;").ReplaceAll(">", "&gt;").Data());
++   TString tmp;
++   fHtml->GetHtmlFileName(fCurrentClass, tmp);
++   printf("    <filename>%s</filename>\n", tmp.ReplaceAll("./", "").Data());
+ 
++#ifdef DETAILED_DOXYGEN_TAGS
+    // write a HTML header for the classFile file
+    WriteHtmlHeader(classFile, fCurrentClass->GetName(), "", fCurrentClass);
+    WriteClassDocHeader(classFile);
+@@ -112,6 +118,9 @@ void TClassDocOutput::Class2Html(Bool_t force)
+       fParser->GetSourceInfo(TDocParser::kInfoLastUpdate),
+       fParser->GetSourceInfo(TDocParser::kInfoAuthor),
+       fParser->GetSourceInfo(TDocParser::kInfoCopyright));
++#endif
++
++   printf("  </compound>\n");
  }
  
  //______________________________________________________________________________
-Index: montecarlo/eg/src/TDatabasePDG.cxx
-===================================================================
---- montecarlo/eg/src/TDatabasePDG.cxx	(revision 47000)
-+++ montecarlo/eg/src/TDatabasePDG.cxx	(working copy)
+@@ -158,12 +167,21 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+       TDocMethodWrapper *methWrap = 0;
+       while ((methWrap = (TDocMethodWrapper*) iMethWrap())) {
+          const TMethod* method = methWrap->GetMethod();
++         printf("    <member kind=\"function\"");
++         if (access != TDocParser::kPublic) {
++           printf(" protection=\"%s\"", accesstxt[access]);
++         }
++         if (kIsStatic & method->Property()) {
++           printf(" static=\"yes\"");
++         }
++         printf(">\n");
+ 
+          // it's a c'tor - Cint stores the class name as return type
+          Bool_t isctor = (!strcmp(method->GetName(), method->GetReturnTypeName()));
+          // it's a d'tor - Cint stores "void" as return type
+          Bool_t isdtor = (!isctor && method->GetName()[0] == '~');
+ 
++         printf("      <type>");
+          classFile << "<tr class=\"func";
+          if (method->GetClass() != fCurrentClass)
+             classFile << "inh";
+@@ -173,16 +191,25 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+                classFile << "virtual ";
+             else
+                classFile << " virtual";
++            printf("virtual ");
+          }
+ 
+-         if (kIsStatic & method->Property())
++         if (kIsStatic & method->Property()) {
+             classFile << "static ";
++            printf("static ");
++         }
+ 
+-         if (!isctor && !isdtor)
++         if (!isctor && !isdtor) {
+             fParser->DecorateKeywords(classFile, method->GetReturnTypeName());
++            printf(method->GetReturnTypeName());
++         }
++         printf("</type>\n");
+ 
+          TString mangledM(method->GetClass()->GetName());
+          NameSpace2FileName(mangledM);
++         TString tmp;
++         fHtml->GetHtmlFileName(method->GetClass(), tmp);
++         printf("      <anchorfile>%s</anchorfile>\n", tmp.ReplaceAll("./", "").Data());
+          classFile << "</td><td class=\"funcname\"><a class=\"funcname\" href=\"";
+          if (method->GetClass() != fCurrentClass) {
+             TString htmlFile;
+@@ -191,6 +218,7 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+          }
+          classFile << "#" << mangledM;
+          classFile << ":";
++         printf("      <anchor>%s:", mangledM.Data());
+          mangledM = method->GetName();
+          NameSpace2FileName(mangledM);
+          Int_t overloadIdx = methWrap->GetOverloadIdx();
+@@ -199,6 +227,7 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+             mangledM += overloadIdx;
+          }
+          classFile << mangledM << "\">";
++         printf("%s</anchor>\n", mangledM.Data());
+          if (method->GetClass() != fCurrentClass) {
+             classFile << "<span class=\"baseclass\">";
+             ReplaceSpecialChars(classFile, method->GetClass()->GetName());
+@@ -206,8 +235,10 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+          }
+          ReplaceSpecialChars(classFile, method->GetName());
+          classFile << "</a>";
++         printf("      <name>%s</name>\n", method->GetName());
+ 
+          fParser->DecorateKeywords(classFile, const_cast<TMethod*>(method)->GetSignature());
++         printf("      <arglist>%s</arglist>\n", TString(const_cast<TMethod*>(method)->GetSignature()).ReplaceAll("&", "&amp;").ReplaceAll("\"", "&quot;").Data());
+          bool propSignal = false;
+          bool propMenu   = false;
+          bool propToggle = false;
+@@ -232,6 +263,7 @@ void TClassDocOutput::ListFunctions(std::ostream& classFile)
+             }
+          }
+          classFile << "</td></tr>" << endl;
++         printf("    </member>\n");
+       }
+       classFile << endl << "</table></div>" << endl;
+    }
+@@ -283,6 +315,7 @@ void  TClassDocOutput::ListDataMembers(std::ostream& classFile)
+       Bool_t prevIsInh = kTRUE;
+ 
+       while ((member = (TDataMember*) iDM())) {
++         TString anchorfile, anchor;
+          Bool_t haveNewEnum = access > 2 && prevEnumName != member->GetTypeName();
+          if (haveNewEnum) {
+             if (prevEnumName.Length()) {
+@@ -311,6 +344,10 @@ void  TClassDocOutput::ListDataMembers(std::ostream& classFile)
+                classFile << "enum ";
+             else 
+                startClassName = 5;
++            printf("    <member kind=\"enumeration\">\n");
++            if (!enumName.EndsWith("<i>[unnamed]</i>")) {
++              printf("      <name>%s</name>\n", enumName.Data());
++            }
+             
+             Ssiz_t endClassName = enumName.Last(':'); // need template handling here!
+             if (endClassName != kNPOS && endClassName > 0 && enumName[endClassName - 1] == ':') {
+@@ -332,6 +369,8 @@ void  TClassDocOutput::ListDataMembers(std::ostream& classFile)
+ 
+          TString mangledM(member->GetClass()->GetName());
+          NameSpace2FileName(mangledM);
++         fHtml->GetHtmlFileName(member->GetClass(), anchorfile);
++         anchorfile.ReplaceAll("./", "");
+          classFile << "</td><td class=\"dataname\"><a ";
+          if (member->GetClass() != fCurrentClass) {
+             classFile << "href=\"";
+@@ -342,9 +381,12 @@ void  TClassDocOutput::ListDataMembers(std::ostream& classFile)
+             classFile << "name=\"";
+          classFile << mangledM;
+          classFile << ":";
++         anchor = mangledM;
++         anchor += ":";
+          mangledM = member->GetName();
+          NameSpace2FileName(mangledM);
+          classFile << mangledM << "\">";
++         anchor += mangledM;
+          if (member->GetClass() == fCurrentClass)
+             classFile << "</a>";
+          if (access < 3 && member->GetClass() != fCurrentClass) {
+@@ -369,6 +411,29 @@ void  TClassDocOutput::ListDataMembers(std::ostream& classFile)
+             ReplaceSpecialChars(classFile, member->GetTitle());
+          } else classFile << "<td>";
+          classFile << "</td></tr>" << endl;
++
++         if (haveNewEnum) {
++           printf("      <anchor>%s</anchor>\n", anchor.Data());
++           printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
++           printf("    </member>\n");
++         }
++         if (access > 2) {
++           printf("    <member kind=\"enumvalue\">\n");
++         } else {
++           printf("    <member kind=\"variable\"");
++           if (access != TDocParser::kPublic) {
++             printf(" protection=\"%s\"", accesstxt[access]);
++           }
++           if (member->Property() & G__BIT_ISSTATIC) {
++             printf(" static=\"yes\"");
++           }
++           printf(">\n");
++           printf("      <type>%s</type>\n", fHtml->ShortType(member->GetFullTypeName()));
++         }
++         printf("      <name>%s</name>\n", member->GetName());
++         printf("      <anchor>%s</anchor>\n", anchor.Data());
++         printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
++         printf("    </member>\n");
+       } // for members
+ 
+       if (prevEnumName.Length()) {
+@@ -605,8 +670,8 @@ void TClassDocOutput::ClassTree(TVirtualPad * psCanvas, Bool_t force)
+       gErrorIgnoreLevel = kWarning;
+       psCanvas->SaveAs(filename);
+       gErrorIgnoreLevel = saveErrorIgnoreLevel;
+-   } else
+-      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
++   }// else
++//      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
+ }
+ 
+ //______________________________________________________________________________
+@@ -1153,7 +1218,7 @@ Bool_t TClassDocOutput::CreateHierarchyDot()
+       return kFALSE;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
+    // write out header
+    WriteHtmlHeader(out, "Class Hierarchy");
+    out << "<h1>Class Hierarchy</h1>" << endl;
+@@ -1303,7 +1368,7 @@ void TClassDocOutput::MakeTree(Bool_t force /*= kFALSE*/)
+    if (!htmlFile.Length()) {
+       TString what(fCurrentClass->GetName());
+       what += " (source not found)";
+-      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
++//      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
+       return;
+    }
+ 
+diff --git a/html/src/TDocOutput.cxx b/html/src/TDocOutput.cxx
+index caa8e9f..28ed141 100644
+--- a/html/src/TDocOutput.cxx
++++ b/html/src/TDocOutput.cxx
+@@ -650,7 +650,7 @@ void TDocOutput::CreateHierarchy()
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+    // write out header
+    WriteHtmlHeader(out, "Class Hierarchy");
+@@ -704,7 +704,7 @@ void TDocOutput::CreateClassIndex()
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+    // write indexFile header
+    WriteHtmlHeader(indexFile, "Class Index");
+@@ -833,7 +833,7 @@ void TDocOutput::CreateModuleIndex()
+          Error("CreateModuleIndex", "Can't open file '%s' !", filename.Data());
+          continue;
+       }
+-      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
++//      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
+ 
+       TString htmltitle("Index of ");
+       TString moduletitle(module->GetName());
+@@ -1102,7 +1102,7 @@ void TDocOutput::CreateModuleIndex()
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
++//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
+    // write out header
+    WriteHtmlHeader(out, "Library Dependencies");
+ 
+@@ -1135,7 +1135,7 @@ void TDocOutput::CreateProductIndex()
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
++//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
+ 
+    WriteHtmlHeader(out, GetHtml()->GetProductName() + " Reference Guide");
+ 
+@@ -1282,7 +1282,7 @@ void TDocOutput::CreateTypeIndex()
+       return;
+    }
+ 
+-   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
++//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
+ 
+    // write typesList header
+    WriteHtmlHeader(typesList, "List of data types");
+diff --git a/montecarlo/eg/inc/TDatabasePDG.h b/montecarlo/eg/inc/TDatabasePDG.h
+index 12c4f22..a6f2e2e 100644
+--- a/montecarlo/eg/inc/TDatabasePDG.h
++++ b/montecarlo/eg/inc/TDatabasePDG.h
+@@ -58,7 +58,9 @@ public:
+                                        const char*  ParticleClass,
+                                        Int_t        PdgCode,
+                                        Int_t        Anti=-1,
+-                                       Int_t        TrackingCode=0);
++                                       Int_t        TrackingCode=0,
++                                       Double_t Lifetime = 0.0,
++                                       Double_t Spin = 0.0);
+ 
+    virtual Int_t  ConvertGeant3ToPdg(Int_t Geant3Number) const;
+    virtual Int_t  ConvertPdgToGeant3(Int_t pdgNumber) const;
+@@ -84,6 +86,8 @@ public:
+    virtual void   ReadPDGTable (const char *filename = "");
+    virtual Int_t  WritePDGTable(const char *filename);
+ 
++   virtual void   ReadEvtGenTable(const char* filename);
++
+    ClassDef(TDatabasePDG,2)  // PDG particle database
+ 
+ };
+diff --git a/montecarlo/eg/inc/TParticlePDG.h b/montecarlo/eg/inc/TParticlePDG.h
+index 0ce32b3..27e6a91 100644
+--- a/montecarlo/eg/inc/TParticlePDG.h
++++ b/montecarlo/eg/inc/TParticlePDG.h
+@@ -63,7 +63,7 @@ public:
+    TParticlePDG(const char* Name, const char* Title, Double_t Mass,
+                 Bool_t Stable, Double_t Width, Double_t Charge,
+                 const char* ParticleClass, Int_t PdgCode, Int_t Anti, 
+-                Int_t TrackingCode);
++                Int_t TrackingCode, Double_t Lifetime = 0.0, Double_t Spin = 0.0);
+ 
+    virtual ~TParticlePDG();
+    // ****** access methods
+diff --git a/montecarlo/eg/src/TDatabasePDG.cxx b/montecarlo/eg/src/TDatabasePDG.cxx
+index 87d7f84..2c93245 100644
+--- a/montecarlo/eg/src/TDatabasePDG.cxx
++++ b/montecarlo/eg/src/TDatabasePDG.cxx
 @@ -19,6 +19,7 @@
  #include "TDecayChannel.h"
  #include "TParticlePDG.h"
@@ -47,7 +329,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
  
  
  ////////////////////////////////////////////////////////////////////////
-@@ -115,7 +116,9 @@
+@@ -118,7 +119,9 @@ TParticlePDG* TDatabasePDG::AddParticle(const char *name, const char *title,
                                          const char* ParticleClass,
                                          Int_t PDGcode,
                                          Int_t Anti,
@@ -58,7 +340,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
  {
    //
    //  Particle definition normal constructor. If the particle is set to be
-@@ -135,7 +138,7 @@
+@@ -138,7 +141,7 @@ TParticlePDG* TDatabasePDG::AddParticle(const char *name, const char *title,
  
     TParticlePDG* p = new TParticlePDG(name, title, mass, stable, width,
                                       charge, ParticleClass, PDGcode, Anti,
@@ -67,7 +349,7 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
     fParticleList->Add(p);
     if (fPdgMap)
        fPdgMap->Add((Long_t)PDGcode, (Long_t)p);
-@@ -712,6 +715,80 @@
+@@ -715,6 +718,80 @@ void TDatabasePDG::ReadPDGTable(const char *FileName)
  
  
  //______________________________________________________________________________
@@ -148,330 +430,62 @@ Index: montecarlo/eg/src/TDatabasePDG.cxx
  void TDatabasePDG::Browse(TBrowser* b)
  {
     //browse data base
-Index: montecarlo/eg/inc/TParticlePDG.h
-===================================================================
---- montecarlo/eg/inc/TParticlePDG.h	(revision 47000)
-+++ montecarlo/eg/inc/TParticlePDG.h	(working copy)
-@@ -63,7 +63,7 @@
-    TParticlePDG(const char* Name, const char* Title, Double_t Mass,
-                 Bool_t Stable, Double_t Width, Double_t Charge,
-                 const char* ParticleClass, Int_t PdgCode, Int_t Anti, 
--                Int_t TrackingCode);
-+                Int_t TrackingCode, Double_t Lifetime = 0.0, Double_t Spin = 0.0);
+diff --git a/montecarlo/eg/src/TParticlePDG.cxx b/montecarlo/eg/src/TParticlePDG.cxx
+index 8d406da..58a75e7 100644
+--- a/montecarlo/eg/src/TParticlePDG.cxx
++++ b/montecarlo/eg/src/TParticlePDG.cxx
+@@ -99,14 +99,12 @@ TParticlePDG::TParticlePDG(Int_t )
+ TParticlePDG::TParticlePDG(const char* Name, const char* Title, Double_t aMass,
+                            Bool_t aStable, Double_t aWidth, Double_t aCharge,
+                            const char* aParticleClass, Int_t aPdgCode, Int_t Anti,
+-                           Int_t aTrackingCode)
++                           Int_t aTrackingCode, Double_t aLifetime, Double_t aSpin)
+   : TNamed(Name,Title)
+ {
  
-    virtual ~TParticlePDG();
-    // ****** access methods
-Index: montecarlo/eg/inc/TDatabasePDG.h
-===================================================================
---- montecarlo/eg/inc/TDatabasePDG.h	(revision 47000)
-+++ montecarlo/eg/inc/TDatabasePDG.h	(working copy)
-@@ -56,7 +56,9 @@
-                                        const char*  ParticleClass,
-                                        Int_t        PdgCode,
-                                        Int_t        Anti=-1,
--                                       Int_t        TrackingCode=0);
-+                                       Int_t        TrackingCode=0,
-+                                       Double_t Lifetime = 0.0,
-+                                       Double_t Spin = 0.0);
+    // empty for the time  being
+-   fLifetime      = 0;
+    fParity        = 0;
+-   fSpin          = 0;
+    fIsospin       = 0;
+    fI3            = 0;
+    fStrangeness   = 0;
+@@ -125,11 +123,15 @@ TParticlePDG::TParticlePDG(const char* Name, const char* Title, Double_t aMass,
+    fPdgCode       = aPdgCode;
+    fTrackingCode  = aTrackingCode;
+    fDecayList     = NULL;
++   fSpin          = aSpin;
+    if (Anti) fAntiParticle = this;
+    else      fAntiParticle = 0;
+    
+    const Double_t kHbar = 6.58211889e-25; // GeV s
+-   if (fWidth != 0.) fLifetime = kHbar / fWidth;
++   if (fWidth != 0.)
++       fLifetime = kHbar / fWidth;
++   else
++       fLifetime      = aLifetime;
+ }
  
-    virtual Int_t  ConvertGeant3ToPdg(Int_t Geant3Number) const;
-    virtual Int_t  ConvertPdgToGeant3(Int_t pdgNumber) const;
-@@ -82,6 +84,8 @@
-    virtual void   ReadPDGTable (const char *filename = "");
-    virtual Int_t  WritePDGTable(const char *filename);
- 
-+   virtual void   ReadEvtGenTable(const char* filename);
-+
-    ClassDef(TDatabasePDG,2)  // PDG particle database
- 
+ //______________________________________________________________________________
+diff --git a/sql/oracle/inc/TOracleStatement.h b/sql/oracle/inc/TOracleStatement.h
+index f8c593f..cdd808c 100644
+--- a/sql/oracle/inc/TOracleStatement.h
++++ b/sql/oracle/inc/TOracleStatement.h
+@@ -122,7 +122,8 @@ public:
+    virtual Bool_t      GetVLong64(Int_t npar, std::vector<Long64_t> &value);
+    virtual Bool_t      GetVULong64(Int_t npar, std::vector<ULong64_t> &value);
+    virtual Bool_t      GetVDouble(Int_t npar, std::vector<Double_t> &value);
+-
++   Bool_t              RegisterOutputParameter(Int_t npar, Int_t type, UInt_t maxsize=0, const std::string &sqltype="");
++   Bool_t              SetBlob(Int_t npar, void* mem, Long_t size, Long_t maxsize = 0x1000);
+    ClassDef(TOracleStatement, 0); // SQL statement class for Oracle
  };
-Index: html/src/TClassDocOutput.cxx
-===================================================================
---- html/src/TClassDocOutput.cxx	(Revision 45300)
-+++ html/src/TClassDocOutput.cxx	(Arbeitskopie)
-@@ -81,7 +81,7 @@
  
-    if (!force && !IsModified(fCurrentClass, kSource)
-        && !IsModified(fCurrentClass, kDoc)) {
--      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
-+//      Printf(fHtml->GetCounterFormat(), "-no change-", fHtml->GetCounter(), filename.Data());
-       return;
-    }
- 
-@@ -93,8 +93,14 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
-+//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
-+   printf("  <compound kind=\"class\">\n");
-+   printf("    <name>%s</name>\n", TString(fCurrentClass->GetName()).ReplaceAll("&", "&amp;").ReplaceAll("<", "&lt;").ReplaceAll(">", "&gt;").Data());
-+   TString tmp;
-+   fHtml->GetHtmlFileName(fCurrentClass, tmp);
-+   printf("    <filename>%s</filename>\n", tmp.ReplaceAll("./", "").Data());
- 
-+#ifdef DETAILED_DOXYGEN_TAGS
-    // write a HTML header for the classFile file
-    WriteHtmlHeader(classFile, fCurrentClass->GetName(), "", fCurrentClass);
-    WriteClassDocHeader(classFile);
-@@ -112,6 +118,9 @@
-       fParser->GetSourceInfo(TDocParser::kInfoLastUpdate),
-       fParser->GetSourceInfo(TDocParser::kInfoAuthor),
-       fParser->GetSourceInfo(TDocParser::kInfoCopyright));
-+#endif
-+
-+   printf("  </compound>\n");
- }
- 
- //______________________________________________________________________________
-@@ -158,12 +167,21 @@
-       TDocMethodWrapper *methWrap = 0;
-       while ((methWrap = (TDocMethodWrapper*) iMethWrap())) {
-          const TMethod* method = methWrap->GetMethod();
-+         printf("    <member kind=\"function\"");
-+         if (access != TDocParser::kPublic) {
-+           printf(" protection=\"%s\"", accesstxt[access]);
-+         }
-+         if (kIsStatic & method->Property()) {
-+           printf(" static=\"yes\"");
-+         }
-+         printf(">\n");
- 
-          // it's a c'tor - Cint stores the class name as return type
-          Bool_t isctor = (!strcmp(method->GetName(), method->GetReturnTypeName()));
-          // it's a d'tor - Cint stores "void" as return type
-          Bool_t isdtor = (!isctor && method->GetName()[0] == '~');
- 
-+         printf("      <type>");
-          classFile << "<tr class=\"func";
-          if (method->GetClass() != fCurrentClass)
-             classFile << "inh";
-@@ -173,16 +191,25 @@
-                classFile << "virtual ";
-             else
-                classFile << " virtual";
-+            printf("virtual ");
-          }
- 
--         if (kIsStatic & method->Property())
-+         if (kIsStatic & method->Property()) {
-             classFile << "static ";
-+            printf("static ");
-+         }
- 
--         if (!isctor && !isdtor)
-+         if (!isctor && !isdtor) {
-             fParser->DecorateKeywords(classFile, method->GetReturnTypeName());
-+            printf(method->GetReturnTypeName());
-+         }
-+         printf("</type>\n");
- 
-          TString mangledM(method->GetClass()->GetName());
-          NameSpace2FileName(mangledM);
-+         TString tmp;
-+         fHtml->GetHtmlFileName(method->GetClass(), tmp);
-+         printf("      <anchorfile>%s</anchorfile>\n", tmp.ReplaceAll("./", "").Data());
-          classFile << "</td><td class=\"funcname\"><a class=\"funcname\" href=\"";
-          if (method->GetClass() != fCurrentClass) {
-             TString htmlFile;
-@@ -191,6 +218,7 @@
-          }
-          classFile << "#" << mangledM;
-          classFile << ":";
-+         printf("      <anchor>%s:", mangledM.Data());
-          mangledM = method->GetName();
-          NameSpace2FileName(mangledM);
-          Int_t overloadIdx = methWrap->GetOverloadIdx();
-@@ -199,6 +227,7 @@
-             mangledM += overloadIdx;
-          }
-          classFile << mangledM << "\">";
-+         printf("%s</anchor>\n", mangledM.Data());
-          if (method->GetClass() != fCurrentClass) {
-             classFile << "<span class=\"baseclass\">";
-             ReplaceSpecialChars(classFile, method->GetClass()->GetName());
-@@ -206,8 +235,10 @@
-          }
-          ReplaceSpecialChars(classFile, method->GetName());
-          classFile << "</a>";
-+         printf("      <name>%s</name>\n", method->GetName());
- 
-          fParser->DecorateKeywords(classFile, const_cast<TMethod*>(method)->GetSignature());
-+         printf("      <arglist>%s</arglist>\n", TString(const_cast<TMethod*>(method)->GetSignature()).ReplaceAll("&", "&amp;").ReplaceAll("\"", "&quot;").Data());
-          bool propSignal = false;
-          bool propMenu   = false;
-          bool propToggle = false;
-@@ -232,6 +263,7 @@
-             }
-          }
-          classFile << "</td></tr>" << endl;
-+         printf("    </member>\n");
-       }
-       classFile << endl << "</table></div>" << endl;
-    }
-@@ -283,6 +315,7 @@
-       Bool_t prevIsInh = kTRUE;
- 
-       while ((member = (TDataMember*) iDM())) {
-+         TString anchorfile, anchor;
-          Bool_t haveNewEnum = access > 2 && prevEnumName != member->GetTypeName();
-          if (haveNewEnum) {
-             if (prevEnumName.Length()) {
-@@ -311,6 +344,10 @@
-                classFile << "enum ";
-             else 
-                startClassName = 5;
-+            printf("    <member kind=\"enumeration\">\n");
-+            if (!enumName.EndsWith("<i>[unnamed]</i>")) {
-+              printf("      <name>%s</name>\n", enumName.Data());
-+            }
-             
-             Ssiz_t endClassName = enumName.Last(':'); // need template handling here!
-             if (endClassName != kNPOS && endClassName > 0 && enumName[endClassName - 1] == ':') {
-@@ -332,6 +369,8 @@
- 
-          TString mangledM(member->GetClass()->GetName());
-          NameSpace2FileName(mangledM);
-+         fHtml->GetHtmlFileName(member->GetClass(), anchorfile);
-+         anchorfile.ReplaceAll("./", "");
-          classFile << "</td><td class=\"dataname\"><a ";
-          if (member->GetClass() != fCurrentClass) {
-             classFile << "href=\"";
-@@ -342,9 +381,12 @@
-             classFile << "name=\"";
-          classFile << mangledM;
-          classFile << ":";
-+         anchor = mangledM;
-+         anchor += ":";
-          mangledM = member->GetName();
-          NameSpace2FileName(mangledM);
-          classFile << mangledM << "\">";
-+         anchor += mangledM;
-          if (member->GetClass() == fCurrentClass)
-             classFile << "</a>";
-          if (access < 3 && member->GetClass() != fCurrentClass) {
-@@ -369,6 +411,29 @@
-             ReplaceSpecialChars(classFile, member->GetTitle());
-          } else classFile << "<td>";
-          classFile << "</td></tr>" << endl;
-+
-+         if (haveNewEnum) {
-+           printf("      <anchor>%s</anchor>\n", anchor.Data());
-+           printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
-+           printf("    </member>\n");
-+         }
-+         if (access > 2) {
-+           printf("    <member kind=\"enumvalue\">\n");
-+         } else {
-+           printf("    <member kind=\"variable\"");
-+           if (access != TDocParser::kPublic) {
-+             printf(" protection=\"%s\"", accesstxt[access]);
-+           }
-+           if (member->Property() & G__BIT_ISSTATIC) {
-+             printf(" static=\"yes\"");
-+           }
-+           printf(">\n");
-+           printf("      <type>%s</type>\n", fHtml->ShortType(member->GetFullTypeName()));
-+         }
-+         printf("      <name>%s</name>\n", member->GetName());
-+         printf("      <anchor>%s</anchor>\n", anchor.Data());
-+         printf("      <anchorfile>%s</anchorfile>\n", anchorfile.Data());
-+         printf("    </member>\n");
-       } // for members
- 
-       if (prevEnumName.Length()) {
-@@ -605,8 +670,8 @@
-       gErrorIgnoreLevel = kWarning;
-       psCanvas->SaveAs(filename);
-       gErrorIgnoreLevel = saveErrorIgnoreLevel;
--   } else
--      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
-+   }// else
-+//      Printf(fHtml->GetCounterFormat(), "-no change-", "", filename.Data());
- }
- 
- //______________________________________________________________________________
-@@ -1153,7 +1218,7 @@
-       return kFALSE;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
-+//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (filename + ".html").Data());
-    // write out header
-    WriteHtmlHeader(out, "Class Hierarchy");
-    out << "<h1>Class Hierarchy</h1>" << endl;
-@@ -1303,7 +1368,7 @@
-    if (!htmlFile.Length()) {
-       TString what(fCurrentClass->GetName());
-       what += " (source not found)";
--      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
-+//      Printf(fHtml->GetCounterFormat(), "-skipped-", "", what.Data());
-       return;
-    }
- 
-Index: html/src/TDocOutput.cxx
-===================================================================
---- html/src/TDocOutput.cxx	(Revision 45300)
-+++ html/src/TDocOutput.cxx	(Arbeitskopie)
-@@ -650,7 +650,7 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
-+//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
- 
-    // write out header
-    WriteHtmlHeader(out, "Class Hierarchy");
-@@ -704,7 +704,7 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
-+//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
- 
-    // write indexFile header
-    WriteHtmlHeader(indexFile, "Class Index");
-@@ -833,7 +833,7 @@
-          Error("CreateModuleIndex", "Can't open file '%s' !", filename.Data());
-          continue;
-       }
--      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
-+//      Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), filename.Data());
- 
-       TString htmltitle("Index of ");
-       TString moduletitle(module->GetName());
-@@ -1099,7 +1099,7 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
-+//   Printf(fHtml->GetCounterFormat(), "", fHtml->GetCounter(), (dotfilename + ".html").Data());
-    // write out header
-    WriteHtmlHeader(out, "Library Dependencies");
- 
-@@ -1132,7 +1132,7 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
-+//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
- 
-    WriteHtmlHeader(out, GetHtml()->GetProductName() + " Reference Guide");
- 
-@@ -1279,7 +1279,7 @@
-       return;
-    }
- 
--   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
-+//   Printf(fHtml->GetCounterFormat(), "", "", outFile.Data());
- 
-    // write typesList header
-    WriteHtmlHeader(typesList, "List of data types");
-Index: sql/oracle/src/TOracleStatement.cxx
-===================================================================
---- sql/oracle/src/TOracleStatement.cxx	(Revision 45300)
-+++ sql/oracle/src/TOracleStatement.cxx	(Arbeitskopie)
-@@ -171,7 +171,7 @@
+diff --git a/sql/oracle/src/TOracleStatement.cxx b/sql/oracle/src/TOracleStatement.cxx
+index 5c37f38..aceb9e9 100644
+--- a/sql/oracle/src/TOracleStatement.cxx
++++ b/sql/oracle/src/TOracleStatement.cxx
+@@ -171,7 +171,7 @@ Bool_t TOracleStatement::Process()
     CheckStatement("Process", kFALSE);
  
     try {
@@ -480,7 +494,7 @@ Index: sql/oracle/src/TOracleStatement.cxx
        if (IsParSettMode()) {
           fStmt->executeUpdate();
           fWorkingMode = 0;
-@@ -374,7 +374,7 @@
+@@ -374,7 +374,7 @@ Bool_t TOracleStatement::SetBinary(Int_t npar, void* mem, Long_t size, Long_t ma
        Bytes buf((unsigned char*) mem, size);
  
        fStmt->setBytes(npar+1, buf);
@@ -489,7 +503,7 @@ Index: sql/oracle/src/TOracleStatement.cxx
        return kTRUE;
  
     } catch (SQLException &oraex)  {
-@@ -384,6 +384,37 @@
+@@ -384,6 +384,37 @@ Bool_t TOracleStatement::SetBinary(Int_t npar, void* mem, Long_t size, Long_t ma
  }   
  
  //______________________________________________________________________________
@@ -527,41 +541,61 @@ Index: sql/oracle/src/TOracleStatement.cxx
  Bool_t TOracleStatement::SetDate(Int_t npar, Int_t year, Int_t month, Int_t day)
  {
     // Set date value for parameter npar
-Index: sql/oracle/inc/TOracleStatement.h
-===================================================================
---- sql/oracle/inc/TOracleStatement.h	(Revision 45300)
-+++ sql/oracle/inc/TOracleStatement.h	(Arbeitskopie)
-@@ -122,7 +122,8 @@
-    virtual Bool_t      GetVLong64(Int_t npar, std::vector<Long64_t> &value);
-    virtual Bool_t      GetVULong64(Int_t npar, std::vector<ULong64_t> &value);
-    virtual Bool_t      GetVDouble(Int_t npar, std::vector<Double_t> &value);
--
-+   Bool_t              RegisterOutputParameter(Int_t npar, Int_t type, UInt_t maxsize=0, const std::string &sqltype="");
-+   Bool_t              SetBlob(Int_t npar, void* mem, Long_t size, Long_t maxsize = 0x1000);
-    ClassDef(TOracleStatement, 0); // SQL statement class for Oracle
- };
+diff --git a/sql/pgsql/inc/TPgSQLStatement.h b/sql/pgsql/inc/TPgSQLStatement.h
+index b4e1deb..0f9d934 100644
+--- a/sql/pgsql/inc/TPgSQLStatement.h
++++ b/sql/pgsql/inc/TPgSQLStatement.h
+@@ -53,6 +53,8 @@ private:
+    Int_t                 fIterationCount;//! number of iteration
+    int                  *fParamLengths;  //! length of column
+    int                  *fParamFormats;  //! data type (OID)
++   int                   fResultFormat;  //! result format type
++   Bool_t                fLittleEndian;
+    Int_t                 fNumResultRows;
+    Int_t                 fNumResultCols;
  
-Index: sql/pgsql/src/TPgSQLStatement.cxx
-===================================================================
---- sql/pgsql/src/TPgSQLStatement.cxx	(Revision 45300)
-+++ sql/pgsql/src/TPgSQLStatement.cxx	(Arbeitskopie)
-@@ -22,13 +22,13 @@
- #include "TDatime.h"
+@@ -78,7 +80,10 @@ public:
+    virtual Int_t       GetBufferLength() const { return 1; }
+    virtual Int_t       GetNumParameters();
+ 
++   Bool_t SetResultFormat( Int_t binaryformat );
++   const char *        GetNToH(Int_t npar);
+    virtual Bool_t      SetNull(Int_t npar);
++   Bool_t  SetBinaryRaw(Int_t npar, void *value, Long_t size);
+    virtual Bool_t      SetInt(Int_t npar, Int_t value);
+    virtual Bool_t      SetUInt(Int_t npar, UInt_t value);
+    virtual Bool_t      SetLong(Int_t npar, Long_t value);
+@@ -117,6 +122,8 @@ public:
+    virtual Bool_t      GetTime(Int_t npar, Int_t& hour, Int_t& min, Int_t& sec);
+    virtual Bool_t      GetDatime(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec);
+    virtual Bool_t      GetTimestamp(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec, Int_t&);
++   
++   
+ 
+    ClassDef(TPgSQLStatement, 0);  // SQL statement class for PgSQL DB
+ };
+diff --git a/sql/pgsql/src/TPgSQLStatement.cxx b/sql/pgsql/src/TPgSQLStatement.cxx
+index 1d80f11..b86f3a9 100644
+--- a/sql/pgsql/src/TPgSQLStatement.cxx
++++ b/sql/pgsql/src/TPgSQLStatement.cxx
+@@ -23,6 +23,8 @@
+ #include "TTimeStamp.h"
  
  #include <stdlib.h>
 +#include <arpa/inet.h>
- 
 +
+ 
  ClassImp(TPgSQLStatement)
  
- #ifdef PG_VERSION_NUM
--
+@@ -31,7 +33,6 @@ ClassImp(TPgSQLStatement)
+ #include "libpq/libpq-fs.h"
+ 
  static const Int_t kBindStringSize = 25;
 -
  //______________________________________________________________________________
  TPgSQLStatement::TPgSQLStatement(PgSQL_Stmt_t* stmt, Bool_t errout):
     TSQLStatement(errout),
-@@ -40,6 +40,7 @@
+@@ -43,6 +44,7 @@ TPgSQLStatement::TPgSQLStatement(PgSQL_Stmt_t* stmt, Bool_t errout):
     fIterationCount(0),
     fParamLengths(0),
     fParamFormats(0),
@@ -569,7 +603,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     fNumResultRows(0),
     fNumResultCols(0)
  {
-@@ -58,6 +59,7 @@
+@@ -66,6 +68,7 @@ TPgSQLStatement::TPgSQLStatement(PgSQL_Stmt_t* stmt, Bool_t errout):
        fWorkingMode = 2;
        SetBuffersNumber(fNumResultCols);
     }
@@ -577,9 +611,9 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  }
  
  //______________________________________________________________________________
-@@ -130,11 +132,13 @@
+@@ -165,11 +168,13 @@ Bool_t TPgSQLStatement::Process()
     if (IsSetParsMode()) {
-       fStmt->fRes= PQexecPrepared(fStmt->fConn,"",fNumBuffers,
+       fStmt->fRes= PQexecPrepared(fStmt->fConn,"preparedstmt",fNumBuffers,
                                   (const char* const*)fBind,
 -                                 0,0,0);
 +                                 fParamLengths,
@@ -588,12 +622,12 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     } else { //result set mode
  
--      fStmt->fRes= PQexecPrepared(fStmt->fConn,"",0,(const char* const*) 0,0,0,0);
-+      fStmt->fRes= PQexecPrepared(fStmt->fConn,"",0,(const char* const*) 0,0,0, fResultFormat);
+-      fStmt->fRes= PQexecPrepared(fStmt->fConn,"preparedstmt",0,(const char* const*) 0,0,0,0);
++      fStmt->fRes= PQexecPrepared(fStmt->fConn,"preparedstmt",0,(const char* const*) 0,0,0, fResultFormat);
     }
     ExecStatusType stat = PQresultStatus(fStmt->fRes);
     if (!pgsql_success(stat))
-@@ -225,6 +229,12 @@
+@@ -260,6 +265,12 @@ Bool_t TPgSQLStatement::NextResultRow()
  }
  
  //______________________________________________________________________________
@@ -606,9 +640,9 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  Bool_t TPgSQLStatement::NextIteration()
  {
     // Increment iteration counter for statement, where parameter can be set.
-@@ -244,9 +254,10 @@
+@@ -279,9 +290,10 @@ Bool_t TPgSQLStatement::NextIteration()
  
-    fStmt->fRes= PQexecPrepared(fStmt->fConn,"",fNumBuffers,
+    fStmt->fRes= PQexecPrepared(fStmt->fConn,"preparedstmt",fNumBuffers,
                                 (const char* const*)fBind,
 -                               0,//fParamLengths,
 -                               0,//fParamFormats,
@@ -620,7 +654,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     ExecStatusType stat = PQresultStatus(fStmt->fRes);
     if (!pgsql_success(stat) ){
        CheckErrNo("NextIteration", kTRUE, kFALSE) ;
-@@ -337,13 +348,30 @@
+@@ -372,13 +384,30 @@ Bool_t TPgSQLStatement::IsNull(Int_t npar)
  }
  
  //______________________________________________________________________________
@@ -653,7 +687,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return (Int_t) atoi(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  }
  
-@@ -355,6 +383,8 @@
+@@ -390,6 +419,8 @@ UInt_t TPgSQLStatement::GetUInt(Int_t npar)
     if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
        return (UInt_t)0;
  
@@ -662,7 +696,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return (UInt_t) atoi(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  }
  
-@@ -365,7 +395,9 @@
+@@ -400,7 +431,9 @@ Long_t TPgSQLStatement::GetLong(Int_t npar)
  
     if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
        return (Long_t)0;
@@ -673,7 +707,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return (Long_t) atol(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  }
  
-@@ -377,6 +409,7 @@
+@@ -412,6 +445,7 @@ Long64_t TPgSQLStatement::GetLong64(Int_t npar)
     if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
        return (Long64_t)0;
  
@@ -681,7 +715,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  #ifndef R__WIN32
     return (Long64_t) atoll(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  #else
-@@ -392,6 +425,7 @@
+@@ -427,6 +461,7 @@ ULong64_t TPgSQLStatement::GetULong64(Int_t npar)
     if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
        return (ULong64_t)0;
  
@@ -689,7 +723,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  #ifndef R__WIN32
     return (ULong64_t) atoll(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  #else
-@@ -406,6 +440,9 @@
+@@ -441,6 +476,9 @@ Double_t TPgSQLStatement::GetDouble(Int_t npar)
  
     if (PQgetisnull(fStmt->fRes,fIterationCount,npar))
        return (Double_t)0;
@@ -699,7 +733,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return (Double_t) atof(PQgetvalue(fStmt->fRes,fIterationCount,npar));
  }
  
-@@ -425,14 +462,17 @@
+@@ -460,14 +498,17 @@ Bool_t TPgSQLStatement::GetBinary(Int_t npar, void* &mem, Long_t& size)
  
     size_t sz;
     char *cptr = PQgetvalue(fStmt->fRes,fIterationCount,npar);
@@ -720,7 +754,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -509,17 +549,35 @@
+@@ -677,17 +718,35 @@ Bool_t TPgSQLStatement::SetNull(Int_t npar)
     //    stmt->SetNull(2);
  
     fBind[npar][0] = 0;
@@ -728,12 +762,12 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
 +   
 +   return kTRUE;
 +}
- 
++
 +//______________________________________________________________________________
 +Bool_t TPgSQLStatement::SetBinaryRaw(Int_t npar, void *value, Long_t size)
 +{
 +   // Set parameter value as raw binary data
-+
+ 
 +   if (size> kBindStringSize) {
 +     delete [] fBind[npar];
 +     fBind[npar]= new char[size];
@@ -758,7 +792,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -529,6 +587,7 @@
+@@ -697,6 +756,7 @@ Bool_t TPgSQLStatement::SetUInt(Int_t npar, UInt_t value)
     // Set parameter value as unsinged integer.
  
     snprintf(fBind[npar],kBindStringSize,"%u",value);
@@ -766,7 +800,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     return kTRUE;
  }
-@@ -539,6 +598,7 @@
+@@ -707,6 +767,7 @@ Bool_t TPgSQLStatement::SetLong(Int_t npar, Long_t value)
     // Set parameter value as long.
  
     snprintf(fBind[npar],kBindStringSize,"%ld",value);
@@ -774,7 +808,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     return kTRUE;
  }
-@@ -549,6 +609,7 @@
+@@ -717,6 +778,7 @@ Bool_t TPgSQLStatement::SetLong64(Int_t npar, Long64_t value)
     // Set parameter value as 64-bit integer.
  
     snprintf(fBind[npar],kBindStringSize,"%lld",(Long64_t)value);
@@ -782,7 +816,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     return kTRUE;
  }
-@@ -559,6 +620,7 @@
+@@ -727,6 +789,7 @@ Bool_t TPgSQLStatement::SetULong64(Int_t npar, ULong64_t value)
     // Set parameter value as unsinged 64-bit integer.
  
     snprintf(fBind[npar],kBindStringSize,"%llu",(ULong64_t)value);
@@ -790,7 +824,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     return kTRUE;
  }
-@@ -569,6 +631,7 @@
+@@ -737,6 +800,7 @@ Bool_t TPgSQLStatement::SetDouble(Int_t npar, Double_t value)
     // Set parameter value as double value.
  
     snprintf(fBind[npar],kBindStringSize,"%lf",value);
@@ -798,7 +832,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  
     return kTRUE;
  }
-@@ -583,6 +646,8 @@
+@@ -751,6 +815,8 @@ Bool_t TPgSQLStatement::SetString(Int_t npar, const char* value, Int_t maxsize)
        fBind[npar] = new char[maxsize];
     }
     strlcpy(fBind[npar],value,maxsize);
@@ -807,7 +841,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -593,13 +658,13 @@
+@@ -761,13 +827,13 @@ Bool_t TPgSQLStatement::SetBinary(Int_t npar, void* mem, Long_t size, Long_t max
  
     size_t sz=size;
     size_t mxsz=maxsize;
@@ -825,15 +859,15 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -610,6 +675,7 @@
+@@ -831,6 +897,7 @@ Bool_t TPgSQLStatement::SetDate(Int_t npar, Int_t year, Int_t month, Int_t day)
  
     TDatime d =TDatime(year,month,day,0,0,0);
     snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
 +   fParamFormats[npar] = 0;
  
-    return kFALSE;
+    return kTRUE;
  }
-@@ -621,6 +687,8 @@
+@@ -842,6 +909,8 @@ Bool_t TPgSQLStatement::SetTime(Int_t npar, Int_t hour, Int_t min, Int_t sec)
  
     TDatime d=TDatime(2000,1,1,hour,min,sec);
     snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
@@ -842,7 +876,7 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -631,6 +699,8 @@
+@@ -852,6 +921,8 @@ Bool_t TPgSQLStatement::SetDatime(Int_t npar, Int_t year, Int_t month, Int_t day
  
     TDatime d=TDatime(year,month,day,hour,min,sec);
     snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
@@ -851,16 +885,16 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
     return kTRUE;
  }
  
-@@ -641,6 +711,8 @@
+@@ -865,6 +936,8 @@ Bool_t TPgSQLStatement::SetTimestamp(Int_t npar, Int_t year, Int_t month, Int_t
  
     TDatime d(year,month,day,hour,min,sec);
-    snprintf(fBind[npar],kBindStringSize,"%s",(char*)d.AsSQLString());
+    snprintf(fBind[npar],kBindStringSize,"%s.%06d",(char*)d.AsSQLString(),frac);
 +   fParamFormats[npar] = 0;
 +   
     return kTRUE;
  }
  
-@@ -722,7 +794,12 @@
+@@ -946,7 +1019,12 @@ Bool_t TPgSQLStatement::NextResultRow()
     return kFALSE;
  }
  
@@ -873,50 +907,16 @@ Index: sql/pgsql/src/TPgSQLStatement.cxx
  //______________________________________________________________________________
  Bool_t TPgSQLStatement::NextIteration()
  {
-@@ -889,8 +966,12 @@
+@@ -1120,7 +1198,11 @@ Bool_t TPgSQLStatement::SetNull(Int_t)
  
     return kFALSE;
  }
 -
- //______________________________________________________________________________
++//______________________________________________________________________________
 +Bool_t TPgSQLStatement::SetBinaryRaw(Int_t , void *, Long_t )
 +{ 
 +   return kFALSE;
 +}
-+//______________________________________________________________________________
+ //______________________________________________________________________________
  Bool_t TPgSQLStatement::SetInt(Int_t, Int_t)
  {
-    // Set parameter value as integer.
-Index: sql/pgsql/inc/TPgSQLStatement.h
-===================================================================
---- sql/pgsql/inc/TPgSQLStatement.h	(Revision 45300)
-+++ sql/pgsql/inc/TPgSQLStatement.h	(Arbeitskopie)
-@@ -54,6 +54,8 @@
-    Int_t                 fIterationCount;//! number of iteration
-    int                  *fParamLengths;  //! length of column
-    int                  *fParamFormats;  //! data type (OID)
-+   int                   fResultFormat;  //! result format type
-+   Bool_t                fLittleEndian;
-    Int_t                 fNumResultRows;
-    Int_t                 fNumResultCols;
- 
-@@ -77,7 +79,10 @@
-    virtual Int_t       GetBufferLength() const { return 1; }
-    virtual Int_t       GetNumParameters();
- 
-+   Bool_t SetResultFormat( Int_t binaryformat );
-+   const char *        GetNToH(Int_t npar);
-    virtual Bool_t      SetNull(Int_t npar);
-+   Bool_t  SetBinaryRaw(Int_t npar, void *value, Long_t size);
-    virtual Bool_t      SetInt(Int_t npar, Int_t value);
-    virtual Bool_t      SetUInt(Int_t npar, UInt_t value);
-    virtual Bool_t      SetLong(Int_t npar, Long_t value);
-@@ -114,6 +119,8 @@
-    virtual Bool_t      GetTime(Int_t npar, Int_t& hour, Int_t& min, Int_t& sec);
-    virtual Bool_t      GetDatime(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec);
-    virtual Bool_t      GetTimestamp(Int_t npar, Int_t& year, Int_t& month, Int_t& day, Int_t& hour, Int_t& min, Int_t& sec, Int_t&);
-+   
-+   
- 
-    ClassDef(TPgSQLStatement, 0);  // SQL statement class for PgSQL DB
- };

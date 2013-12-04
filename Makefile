@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit hepmc pythia photos tauola evtgen flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -497,9 +497,36 @@ genfit.clean:
 	@cd $(EXTSRCDIR)/genfit && make clean
 	@rm -rf $(EXTLIBDIR)/libgenfit*.so $(EXTLIBDIR)/libgfrave.so $(EXTINCDIR)/genfit $(EXTSRCDIR)/genfit/CMakeCache.txt
 
-# genfit touch command
+# genfit touch
 genfit.touch:
 	@rm -f $(EXTLIBDIR)/libgenfit.so
+
+
+# dependencies for MillepedeII
+MillepedeII: $(EXTBINDIR)/pede
+MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
+
+# MillepedeII download
+$(EXTSRCDIR)/MillepedeII/WIKI:
+	@echo "downloading MillepedeII"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh MillepedeII_V04-01-00.tgz #svn:checkout:118:http://svnsrv.desy.de/public/MillepedeII/tags/V04-01-00
+	@mv $(EXTSRCDIR)/V04-01-00 $(EXTSRCDIR)/MillepedeII
+
+# MillepedeII build
+$(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
+	@echo "building MillepedeII"
+	@cd $(EXTSRCDIR)/MillepedeII && make pede
+	@cp $(EXTSRCDIR)/MillepedeII/pede $(EXTBINDIR)/
+
+# MillepedeII clean
+MillepedeII.clean:
+	@echo "cleaning MillepedeII"
+	@cd $(EXTSRCDIR)/MillepedeII && make clean
+	@rm -f $(EXTSRCDIR)/pede $(EXTBINDIR)/pede
+
+# MillepedeII touch
+MillepedeII.touch:
+	@rm -f $(EXTBINDIR)/pede
 
 
 # dependencies for HepMC

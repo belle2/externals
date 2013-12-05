@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave genfit MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -469,37 +469,6 @@ rave.clean:
 # rave touch
 rave.touch:
 	@rm -f $(EXTLIBDIR)/libRaveBase.so
-
-
-# dependencies for genfit
-genfit: $(EXTLIBDIR)/libgenfit.so
-genfit.src: $(EXTSRCDIR)/genfit/README
-
-# genfit download
-$(EXTSRCDIR)/genfit/README:
-	@echo "downloading genfit"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh genfit_r988.tgz svn:checkout:988:https://genfit.svn.sourceforge.net/svnroot/genfit/trunk
-	@mv $(EXTSRCDIR)/trunk $(EXTSRCDIR)/genfit
-	@cd $(EXTSRCDIR)/genfit && rm -rf GeaneTrackRep2 RKTrackRepXY LSLtrackRep SlTrackRep RecoHitExamples
-	@cp $(EXTDIR)/genfit/CMakeLists.txt $(EXTSRCDIR)/genfit/
-
-# genfit build
-$(EXTLIBDIR)/libgenfit.so: $(CMAKE) $(EXTSRCDIR)/genfit/README
-	@echo "building genfit"
-	@cd $(EXTSRCDIR)/genfit && GENFIT=$(EXTSRCDIR)/genfit RAVEPATH=$(EXTSRCDIR)/rave $(CMAKE) $(EXTSRCDIR)/genfit && make
-	@cp $(EXTSRCDIR)/genfit/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/genfit && cp $(EXTSRCDIR)/genfit/*/*.h $(EXTINCDIR)/genfit/
-	@cd $(EXTSRCDIR)/genfit/core && cp --parents */*.h $(EXTINCDIR)/genfit/
-
-# genfit clean
-genfit.clean:
-	@echo "cleaning genfit"
-	@cd $(EXTSRCDIR)/genfit && make clean
-	@rm -rf $(EXTLIBDIR)/libgenfit*.so $(EXTLIBDIR)/libgfrave.so $(EXTINCDIR)/genfit $(EXTSRCDIR)/genfit/CMakeCache.txt
-
-# genfit touch
-genfit.touch:
-	@rm -f $(EXTLIBDIR)/libgenfit.so
 
 
 # dependencies for MillepedeII

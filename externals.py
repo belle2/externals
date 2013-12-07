@@ -147,10 +147,6 @@ def config_externals(conf):
     # vgm
     conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'vgm'))
 
-    # genfit
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'genfit'
-                    ))
-
     # HepMC
     conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'HepMC'
                     ))

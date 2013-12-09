@@ -394,7 +394,7 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
 	@mkdir -p $(EXTBUILDDIR)/root
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --with-xrootd=$(EXTDIR)/xrootd \
 	--with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
-	--disable-mysql --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
+	--disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
 	make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
 

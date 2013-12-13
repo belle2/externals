@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx xrootd root vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -348,6 +348,34 @@ libpqxx.touch:
 	@rm -f $(EXTBINDIR)/pqxx-config
 
 
+# dependencies for NeuroBayes
+neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
+neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
+
+# NeuroBayes download
+$(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
+	@echo "downloading NeuroBayes"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh NeuroBayes_3.7.0.tgz
+
+# NeuroBayes build
+$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
+	@echo "building NeuroBayes"
+	@mkdir $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
+	$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
+	$(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
+	$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
+	@cp $(EXTSRCDIR)/neurobayes/`uname -m`/* $(EXTLIBDIR)/
+
+# NeuroBayes clean command
+neurobayes.clean:
+	@echo "cleaning NeuroBayes"
+	@rm -rf $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(EXTLIBDIR)/libdsa.so $(EXTINCDIR)/neurobayes
+
+# NeuroBayes touch command
+neurobayes.touch:
+	@rm -f $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
+
+
 # dependencies for xrootd
 xrootd: $(EXTBINDIR)/xrootd
 xrootd.src: $(EXTSRCDIR)/xrootd
@@ -380,16 +408,17 @@ xrootd.touch:
 
 # dependencies for root
 root: $(ROOTSYS)/bin/root
-root.src: $(EXTSRCDIR)/root
+root.src: $(EXTSRCDIR)/root/README
 
 # root download
-$(EXTSRCDIR)/root:
+$(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "downloading root"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.13.source.tar.gz ftp://root.cern.ch/root/root_v5.34.13.source.tar.gz
 	@cd $(EXTSRCDIR)/root && patch -Np1 < $(EXTDIR)/root.patch
+	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/src/
 
 # root build
-$(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root
+$(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	@echo "building root"
 	@mkdir -p $(EXTBUILDDIR)/root
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --with-xrootd=$(EXTDIR)/xrootd \
@@ -407,6 +436,25 @@ root.clean:
 # root touch command
 root.touch:
 	@rm -f $(ROOTSYS)/bin/root
+
+
+# dependencies for NeuroBayes TMVA plugin
+nbplugin: $(ROOTSYS)/lib/libTMVANeuroBayes.so
+
+# NeuroBayes TMVA plugin build
+$(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
+	@echo "building NeuroBayes TMVA plugin"
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && make install
+
+#  NeuroBayes TMVA plugin clean command
+nbplugin.clean:
+	@echo "cleaning NeuroBayes TMVA plugin"
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make clean
+	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
+
+# NeuroBayes TMVA plugin touch command
+nbplugin.touch:
+	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
 
 
 # dependencies for vgm

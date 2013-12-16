@@ -689,7 +689,7 @@ evtgen.clean:
 
 # EvtGen touch
 evtgen.touch:
-	@rm -f $(EXTINCDIR)/evtgen/EvtGen/EvtGen.hh
+	@rm -f $(EXTLIBDIR)/libEvtGen.so
 
 
 # dependencies for FLC
@@ -768,7 +768,7 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
 # vc clean
 vc.clean:
 	@echo "cleaning vc"
-	@rm -rf $(EXTINCDIR)/Vc $(EXTLIBDIR)/libVc.a
+	@rm -rf $(EXTBUILDDIR)/vc $(EXTINCDIR)/Vc $(EXTLIBDIR)/libVc.a
 
 # vc touch
 vc.touch:

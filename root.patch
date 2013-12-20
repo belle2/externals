@@ -920,3 +920,12 @@ index 1d80f11..b86f3a9 100644
  //______________________________________________________________________________
  Bool_t TPgSQLStatement::SetInt(Int_t, Int_t)
  {
+diff --git a/etc/system.plugins-ios b/etc/system.plugins-ios
+--- a/etc/system.plugins-ios
++++ b/etc/system.plugins-ios
+@@ -152,3 +152,5 @@
+ +Plugin.TVirtualX: win32 TGWin32 Win32 "TGWin32(const char*,const char*)"
+ +Plugin.TVirtualX: win32gdk TGWin32 Win32gdk "TGWin32(const char*,const char*)"
+ +Plugin.TVirtualX: qt TGQt GQt "TGQt(const char*,const char*)"
++Plugin.TMVA@@MethodBase: .*_NeuroBayes.*     TMVA::MethodNeuroBayes TMVANeuroBayes "MethodNeuroBayes(DataSetInfo&,TString)"
+++Plugin.TMVA@@MethodBase:  .*NeuroBayes.* TMVA::MethodNeuroBayes TMVANeuroBayes "MethodNeuroBayes(TString&,TString&,DataSetInfo&,TString&)"

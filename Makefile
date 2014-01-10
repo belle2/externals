@@ -729,8 +729,8 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
 	@echo "downloading eigen"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh eigen_3.1.3.tar.gz http://bitbucket.org/eigen/eigen/get/3.1.3.tar.gz
-	@mv $(EXTSRCDIR)/eigen-eigen-2249f9c22fe8 $(EXTSRCDIR)/eigen
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
+	@mv $(EXTSRCDIR)/eigen-eigen-ffa86ffb5570 $(EXTSRCDIR)/eigen
 
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL

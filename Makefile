@@ -583,23 +583,22 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8176.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8176.tgz
-	@mv $(EXTSRCDIR)/pythia8176 $(EXTSRCDIR)/pythia
-	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(EXTDIR)/pythia.patch
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8183.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8183.tgz
+	@mv $(EXTSRCDIR)/pythia8183 $(EXTSRCDIR)/pythia
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
 	@cp $(EXTDIR)/pythia/lib/lib* $(EXTDIR)/pythia/lib/archive/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/pythia && cp $(EXTDIR)/pythia/include/* $(EXTINCDIR)/pythia/
+	@mkdir -p $(EXTINCDIR)/Pythia8 && cp $(EXTDIR)/pythia/include/Pythia8/* $(EXTINCDIR)/Pythia8/
 	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
 
 # Pythia clean
 pythia.clean:
 	@echo "cleaning Pythia"
 	@cd $(EXTSRCDIR)/pythia && make clean
-	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/pythia $(EXTDIR)/share/pythia
+	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8 $(EXTDIR)/share/pythia
 
 # Pythia touch
 pythia.touch:
@@ -613,7 +612,7 @@ photos.src: $(EXTSRCDIR)/PHOTOS/configure
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
 	@echo "downloading Photos"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.52.tar.gz http://annapurna.ifj.edu.pl/~tprzedzinski/resources/PHOTOS.3.52/PHOTOS.3.52.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.54.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.54/PHOTOS.3.54.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(EXTDIR)/photos.patch
 
 # Photos build
@@ -641,7 +640,7 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.1a.tar.gz http://annapurna.ifj.edu.pl/~tprzedzinski/resources/TAUOLA.1.1.1a/TAUOLA.1.1.1a.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gg  http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
@@ -668,8 +667,8 @@ evtgen.src: $(EXTSRCDIR)/evtgen/configure
 # EvtGen download
 $(EXTSRCDIR)/evtgen/configure:
 	@echo "downloading EvtGen"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-02-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-02-00/EvtGen.R01-02-00.tar.gz
-	@mv $(EXTSRCDIR)/EvtGen/R01-02-00 $(EXTSRCDIR)/evtgen
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-03-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-03-00/EvtGen.R01-03-00.tar.gz
+	@mv $(EXTSRCDIR)/EvtGen/R01-03-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(EXTDIR)/evtgen.patch
 

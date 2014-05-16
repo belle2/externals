@@ -781,7 +781,7 @@ nsm2.src: $(EXTSRCDIR)/nsm2
 # nsm2 download
 $(EXTSRCDIR)/nsm2:
 	@echo "downloading nsm2"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh nsm2-alpha.tgz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh nsm2.1.9.27.tgz
 
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2

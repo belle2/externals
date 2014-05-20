@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -445,7 +445,7 @@ $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(RO
 	@echo "building NeuroBayes TMVA plugin"
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && make install
 
-#  NeuroBayes TMVA plugin clean command
+# NeuroBayes TMVA plugin clean command
 nbplugin.clean:
 	@echo "cleaning NeuroBayes TMVA plugin"
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make clean
@@ -454,6 +454,31 @@ nbplugin.clean:
 # NeuroBayes TMVA plugin touch command
 nbplugin.touch:
 	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
+
+
+# dependencies for FastBDT TMVA plugin
+fastbdt: $(ROOTSYS)/lib/libTMVAFastBDT.so
+fastbdt.src: $(ROOTSYS)/lib/libTMVAFastBDT.so
+
+# FastBDT download
+$(EXTSRCDIR)/FastBDT/Makefile:
+	@echo "downloading FastBDT"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh FastBDT.tar.gz
+
+# FastBDT TMVA plugin build
+$(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
+	@echo "building FastBDT TMVA plugin"
+	@cd $(EXTSRCDIR)/FastBDT && make && make install
+
+# FastBDT TMVA plugin clean command
+fastbdt.clean:
+	@echo "cleaning FastBDT TMVA plugin"
+	@cd $(EXTSRCDIR)/FastBDT && make clean
+	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
+
+# FastBDT TMVA plugin touch command
+fastbdt.touch:
+	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
 
 
 # dependencies for vgm

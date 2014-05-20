@@ -355,7 +355,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
 	@echo "downloading NeuroBayes"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh NeuroBayes_3.7.0.tgz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh NeuroBayes_3.7.0_nbpluginfix.tgz
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README

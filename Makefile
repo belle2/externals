@@ -93,7 +93,7 @@ endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
 # check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-10.0.1/data/G4EMLOW6.35; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif

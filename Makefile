@@ -93,7 +93,7 @@ endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
 # check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-10.0.1/data/G4EMLOW6.35; echo $$?)
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif
@@ -235,9 +235,9 @@ clhep.src: $(EXTSRCDIR)/CLHEP
 # CLHEP download
 $(EXTSRCDIR)/CLHEP:
 	@echo "downloading CLHEP"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh clhep-2.1.4.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.4.1.tgz
-	@mv $(EXTSRCDIR)/2.1.4.1/CLHEP $(EXTSRCDIR)/
-	@rmdir $(EXTSRCDIR)/2.1.4.1
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
+	@mv $(EXTSRCDIR)/2.1.3.1/CLHEP $(EXTSRCDIR)/
+	@rmdir $(EXTSRCDIR)/2.1.3.1
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(CMAKE) $(EXTSRCDIR)/CLHEP
@@ -265,8 +265,8 @@ geant4.src: $(EXTSRCDIR)/geant4
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
 	@echo "downloading geant4"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh geant4.10.00.p01.tar.gz http://geant4.cern.ch/support/source/geant4.10.00.p01.tar.gz
-	@mv $(EXTSRCDIR)/geant4.10.00.p01 $(EXTSRCDIR)/geant4
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
+	@mv $(EXTSRCDIR)/geant4.9.6.p02 $(EXTSRCDIR)/geant4
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -287,7 +287,7 @@ $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.0.1 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-9.6.2 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
@@ -413,7 +413,7 @@ root.src: $(EXTSRCDIR)/root/README
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "downloading root"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.18.source.tar.gz ftp://root.cern.ch/root/root_v5.34.18.source.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.21.source.tar.gz ftp://root.cern.ch/root/root_v5.34.21.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/src/
 
 # root build
@@ -516,8 +516,8 @@ rave.src: $(EXTSRCDIR)/rave/README
 # rave download
 $(EXTSRCDIR)/rave/README:
 	@echo "downloading rave"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh rave-0.6.10.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.10.tar.gz
-	@mv $(EXTSRCDIR)/rave-0.6.10 $(EXTSRCDIR)/rave
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh rave-0.6.16.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.16.tar.gz
+	@mv $(EXTSRCDIR)/rave-0.6.16 $(EXTSRCDIR)/rave
 	@-cd $(EXTSRCDIR)/rave && patch -Np0 < $(EXTDIR)/rave.patch
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
 	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
@@ -529,7 +529,7 @@ $(EXTSRCDIR)/rave/README:
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) ./configure \
-	--disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR)
+	--disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR)
 	@cd $(EXTSRCDIR)/rave && make -j $(NPROCESSES) && make install
 
 # rave clean

@@ -439,6 +439,7 @@ root.touch:
 
 # dependencies for NeuroBayes TMVA plugin
 nbplugin: $(ROOTSYS)/lib/libTMVANeuroBayes.so
+nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 
 # NeuroBayes TMVA plugin build
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
@@ -458,7 +459,7 @@ nbplugin.touch:
 
 # dependencies for FastBDT TMVA plugin
 fastbdt: $(ROOTSYS)/lib/libTMVAFastBDT.so
-fastbdt.src: $(ROOTSYS)/lib/libTMVAFastBDT.so
+fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:

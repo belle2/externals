@@ -519,7 +519,6 @@ $(EXTSRCDIR)/rave/README:
 	@echo "downloading rave"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh rave-0.6.16.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.16.tar.gz
 	@mv $(EXTSRCDIR)/rave-0.6.16 $(EXTSRCDIR)/rave
-	@-cd $(EXTSRCDIR)/rave && patch -Np0 < $(EXTDIR)/rave.patch
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
 	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
 	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -s ../../../../../include/root/Math Math

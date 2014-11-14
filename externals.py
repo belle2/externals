@@ -87,12 +87,12 @@ def config_externals(conf):
                             os.environ['BELLE2_SUBDIR'])
 
     # CLHEP
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'CLHEP'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'CLHEP'))
 
     # geant4
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Geant4'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'Geant4'))
     conf.env['GEANT4_LIBS'] = [
         'G4digits_hits',
         'G4error_propagation',
@@ -127,14 +127,14 @@ def config_externals(conf):
     if conf.CheckLibWithHeader('pqxx', 'pgsql/pg_config.h', 'C++'):
         conf.env['HAS_PGSQL'] = True
         conf.env.Append(CPPDEFINES='-DHAS_PGSQL')
-        conf.env.Append(CCFLAGS='-I' + (subprocess.Popen(['pg_config',
+        conf.env.Append(CCFLAGS='-isystem' + (subprocess.Popen(['pg_config',
                         '--includedir'],
                         stdout=subprocess.PIPE).communicate()[0])[:-1])
         conf.env['PGSQL_LIBS'] = ['pqxx', 'pq']
 
     # root
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTDIR'], 'root',
-                    subdir, 'include'))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTDIR'],
+                    'root', subdir, 'include'))
 
     conf.env['ROOT_LIBS'] = conf.env['ROOT_GLIBS'] = []
     if conf.CheckConfigTool('root-config'):
@@ -145,37 +145,39 @@ def config_externals(conf):
         conf.env['ROOT_GLIBS'] = root_env['LIBS']
 
     # vgm
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'vgm'))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'vgm'))
 
     # HepMC
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'HepMC'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'HepMC'))
 
     # Pythia
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'pythia'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'pythia'))
 
     # Photos
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Photos'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'Photos'))
 
     # Tauola
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Tauola'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'Tauola'))
 
     # EvtGen
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'evtgen'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'evtgen'))
 
     # Rave
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
 
     # FLC
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'FLC'))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'FLC'))
 
     # eigen
-    conf.env.Append(CCFLAGS='-I' + os.path.join(conf.env['EXTINCDIR'], 'Eigen'
-                    ))
+    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
+                    'Eigen'))
 
     return True
 

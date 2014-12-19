@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -664,7 +664,7 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gg  http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1.tar.gz
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
@@ -713,6 +713,33 @@ evtgen.clean:
 # EvtGen touch
 evtgen.touch:
 	@rm -f $(EXTLIBDIR)/libEvtGen.so
+
+
+# dependencies for Phokhara
+phokhara: $(EXTLIBDIR)/libeemmg5.so
+phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
+
+# Phokhara download
+$(EXTSRCDIR)/phokhara/Makefile:
+	@echo "downloading Phokhara"
+	@mkdir -p $(EXTSRCDIR)/phokhara && cd $(EXTSRCDIR)/phokhara && $(EXTDIR)/download.sh PH9.1.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1.tar.gz
+
+# Phokhara build
+$(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
+	@echo "building Phokhara"
+	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make
+	@cp $(EXTSRCDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
+	@mkdir -p $(EXTDIR)/share/phokhara && cp $(EXTSRCDIR)/phokhara/const_and_model_paramall9.1.dat $(EXTDIR)/share/phokhara/
+
+# Phokhara clean
+phokhara.clean:
+	@echo "cleaning Phokhara"
+	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make clean
+	@rm -rf $(EXTLIBDIR)/libeemmg*.so $(EXTLIBDIR)/libqcdloop1.so $(EXTLIBDIR)/libpjfry.so
+
+# Phokhara touch
+phokhara.touch:
+	@rm -f $(EXTLIBDIR)/libeemmg5.so
 
 
 # dependencies for FLC

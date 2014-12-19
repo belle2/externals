@@ -664,7 +664,7 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure

@@ -425,12 +425,13 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	--disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
 	make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
+	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tmva/test/* $(EXTDIR)/share/root/tmva
 
 # root clean command
 root.clean:
 	@echo "cleaning root"
 	@-cd $(EXTBUILDDIR)/root && make clean
-	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS)
+	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS) $(EXTDIR)/share/root
 
 # root touch command
 root.touch:

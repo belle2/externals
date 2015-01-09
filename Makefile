@@ -221,7 +221,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 boost.clean:
 	@echo "cleaning boost"
 	@-cd $(EXTSRCDIR)/boost && ./b2 --clean $(BOOST_OPTION)
-	@rm -rf $(EXTINCDIR)/boost $(EXTLIBDIR)/libboost_*
+	@rm -rf $(EXTINCDIR)/boost $(EXTLIBDIR)/libboost_* $(EXTBUILDDIR)/boost
 
 # boost touch
 boost.touch:

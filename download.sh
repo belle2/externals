@@ -40,7 +40,7 @@ done
 
 # if none succeeded use the Belle II web server
 if [ "${RESULT}" -ne "0" ]; then
-  wget -O - --tries=3 --no-check-certificate --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/${FILE_NAME} | tar xz
+  wget -O - --tries=3 --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/${FILE_NAME} | tar xz
   RESULT=$?
 fi
 

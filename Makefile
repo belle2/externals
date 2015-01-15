@@ -736,7 +736,7 @@ $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
 phokhara.clean:
 	@echo "cleaning Phokhara"
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make clean
-	@rm -rf $(EXTLIBDIR)/libeemmg*.so $(EXTLIBDIR)/libqcdloop1.so $(EXTLIBDIR)/libpjfry.so
+	@rm -rf $(EXTSRCDIR)/phokhara/eemmg-lib/*/*.o $(EXTLIBDIR)/libeemmg*.so $(EXTLIBDIR)/libqcdloop1.so $(EXTLIBDIR)/libpjfry.so
 
 # Phokhara touch
 phokhara.touch:

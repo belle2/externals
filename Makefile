@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -741,6 +741,40 @@ phokhara.clean:
 # Phokhara touch
 phokhara.touch:
 	@rm -f $(EXTLIBDIR)/libeemmg5.so
+
+
+# dependencies for MadGraph
+madgraph: $(EXTDIR)/madgraph/bin/mg5 $(EXTLIBDIR)/libExRootAnalysis.so
+madgraph.src: $(EXTDIR)/madgraph/bin/mg5 $(EXTSRCDIR)/ExRootAnalysis/Makefile
+
+# MadGraph developer's kit installation
+$(EXTDIR)/madgraph/bin/mg5:
+	@echo "downloading MadGraph"
+	@$(EXTDIR)/download.sh MG5_aMC_v2.2.2.tar.gz
+	@mv $(EXTDIR)/MG5_aMC_v2_2_2 $(EXTDIR)/madgraph
+
+# MadGraph ExRootAnalysis download
+$(EXTSRCDIR)/ExRootAnalysis/Makefile:
+	@echo "downloading ExRootAnalysis"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh ExRootAnalysis_V1.1.2.tar.gz
+
+# MadGraph ExRootAnalysis build
+$(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
+	@echo "building ExRootAnalysis"
+	@cd $(EXTSRCDIR)/ExRootAnalysis && make
+	@cp $(EXTSRCDIR)/ExRootAnalysis/lib*.so $(EXTLIBDIR)/
+	@cp $(EXTSRCDIR)/ExRootAnalysis/Ex*Converter $(EXTBINDIR)/
+	@cp -a $(EXTSRCDIR)/ExRootAnalysis/ExRootAnalysis $(EXTINCDIR)/
+
+# MadGraph clean
+madgraph.clean:
+	@echo "cleaning MadGraph"
+	@cd $(EXTSRCDIR)/ExRootAnalysis && make clean
+	@rm -rf $(EXTLIBDIR)/libExRootAnalysis.so $(EXTBINDIR)/Ex*Converter $(EXTINCDIR)/ExRootAnalysis
+
+# MadGraph touch
+madgraph.touch:
+	@rm -f $(EXTLIBDIR)/libExRootAnalysis.so
 
 
 # dependencies for FLC

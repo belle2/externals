@@ -34,6 +34,9 @@ def unsetup_externals(location):
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
+    # panther
+    env_vars['PANTHER_TABLE_DIR'] = ''
+
 
 def setup_externals(location):
     """function to setup an externals directory"""
@@ -59,6 +62,9 @@ def setup_externals(location):
 
     # pythia
     env_vars['PYTHIA8DATA'] = os.path.join(location, 'share', 'pythia')
+
+    # panther
+    env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'panther')
 
 
 def check_externals(location):

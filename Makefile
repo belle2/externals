@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 panther
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -884,3 +884,28 @@ nsm2.clean:
 # nsm2 touch
 nsm2.touch:
 	@rm -rf $(EXTBINDIR)/nsmd2
+
+
+# dependencies for panther
+panther: $(EXTLIBDIR)/libpanther.so
+panther.src: $(EXTSRCDIR)/panther
+
+# panther download
+$(EXTSRCDIR)/panther:
+	@echo "downloading panther"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh panther-1.0.tgz http://belle.kek.jp/~itoh/misc/b2bii/panther-1.0.tgz
+
+# panther build
+$(EXTLIBDIR)/libpanther.so: $(EXTSRCDIR)/panther
+	@echo "installing panther"
+	@cd $(EXTSRCDIR)/panther && make libs install
+
+# panther clean
+panther.clean:
+	@echo "cleaning panther"
+	@cd $(EXTSRCDIR)/panther && make clean
+	@rm -rf $(EXTINCDIR)/panther $(EXTDIR)/share/panther $(EXTLIBDIR)/libpanther.so
+
+# panther touch
+panther.touch:
+	@rm -rf $(EXTLIBDIR)/libpanther.so

@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 panther
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 panther pntdb
 
 # all targets
 all: dirs cmake $(PACKAGES)

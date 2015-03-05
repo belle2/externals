@@ -894,7 +894,7 @@ panther.src: $(EXTSRCDIR)/panther
 # panther download
 $(EXTSRCDIR)/panther:
 	@echo "downloading panther"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh panther-1.0.tgz http://belle.kek.jp/~itoh/misc/b2bii/panther-1.0.tgz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh panther-1.1.tgz
 
 # panther build
 $(EXTLIBDIR)/libpanther.so: $(EXTSRCDIR)/panther
@@ -905,8 +905,33 @@ $(EXTLIBDIR)/libpanther.so: $(EXTSRCDIR)/panther
 panther.clean:
 	@echo "cleaning panther"
 	@cd $(EXTSRCDIR)/panther && make clean
-	@rm -rf $(EXTINCDIR)/panther $(EXTDIR)/share/panther $(EXTLIBDIR)/libpanther.so
+	@rm -rf $(EXTINCDIR)/panther $(EXTDIR)/share/panther $(EXTLIBDIR)/libpanther.*
 
 # panther touch
 panther.touch:
 	@rm -rf $(EXTLIBDIR)/libpanther.so
+
+
+# dependencies for pntdb
+pntdb: $(EXTLIBDIR)/libpntdb.so
+pntdb.src: $(EXTSRCDIR)/pntdb
+
+# pntdb download
+$(EXTSRCDIR)/pntdb:
+	@echo "downloading pntdb"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pntdb-1.1.tgz
+
+# pntdb build
+$(EXTLIBDIR)/libpntdb.so: $(EXTSRCDIR)/pntdb
+	@echo "installing pntdb"
+	@cd $(EXTSRCDIR)/pntdb && make && make install
+
+# pntdb clean
+pntdb.clean:
+	@echo "cleaning pntdb"
+	@cd $(EXTSRCDIR)/pntdb && make clean
+	@rm -rf $(EXTINCDIR)/pntdb $(EXTLIBDIR)/libpntdb.*
+
+# pntdb touch
+pntdb.touch:
+	@rm -rf $(EXTLIBDIR)/libpntdb.so

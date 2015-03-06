@@ -24,3 +24,16 @@ Index: packages/RootGM/source/solids/Polycone.cxx
  double*   RootGM::Polycone::fgZBuffer = 0;
  double*   RootGM::Polycone::fgRinBuffer = 0;
  double*   RootGM::Polycone::fgRoutBuffer = 0;
+Index: packages/BaseVGM/source/materials/VMaterialFactory.cxx
+===================================================================
+--- packages/BaseVGM/source/materials/VMaterialFactory.cxx	(revision 730)
++++ packages/BaseVGM/source/materials/VMaterialFactory.cxx	(working copy)
+@@ -474,5 +474,8 @@
+   else     
+     GenerateMedia(factory, materialMap);
+ 
++  delete elementMap; // LEP
++  delete isotopeMap; // LEP
++
+   return true;
+ }  

@@ -51,3 +51,29 @@
  Enddecay
  
  End
+--- src/EvtGenModels/EvtPartWave.cpp
++++ src/EvtGenModels/EvtPartWave.cpp
+@@ -38,7 +38,7 @@
+ #include "EvtGenBase/EvtCGCoefSingle.hh"
+ #include <algorithm>
+ using std::endl;
+-EvtPartWave::~EvtPartWave() {}
++EvtPartWave::~EvtPartWave() { delete _evalHelAmp; } // LEP
+ 
+ std::string EvtPartWave::getName(){
+ 
+@@ -235,8 +235,13 @@
+ 				getDaug(1),
+ 				_HBC);
+ 
+-}
++  delete [] _lambdaA2; // LEP
++  delete [] _lambdaB2; // LEP
++  delete [] _lambdaC2; // LEP
++  for(ib=0;ib<_nB;ib++) delete [] _HBC[ib]; // LEP
++  delete [] _HBC; // LEP
+ 
++}
+ 
+ void EvtPartWave::initProbMax(){
+ 

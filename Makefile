@@ -724,7 +724,9 @@ phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
 # Phokhara download
 $(EXTSRCDIR)/phokhara/Makefile:
 	@echo "downloading Phokhara"
-	@mkdir -p $(EXTSRCDIR)/phokhara && cd $(EXTSRCDIR)/phokhara && $(EXTDIR)/download.sh PH9.1.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
+	@mv $(EXTSRCDIR)/PH9.1 $(EXTSRCDIR)/phokhara
+	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make clean
 
 # Phokhara build
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile

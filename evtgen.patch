@@ -1,3 +1,14 @@
+--- configure
++++ configure
+@@ -130,7 +130,7 @@
+     HEPMCLIBLIST="-lHepMC"
+     PHOTOSLIBLIST="-lPhotosCxxInterface -lPhotosFortran"
+     TAUOLALIBLIST="-lTauolaCxxInterface -lTauolaFortran"
+-    PYTHIALIBLIST="-lpythia8 -llhapdfdummy"
++    PYTHIALIBLIST="-lpythia8"
+ 
+ }
+ 
 --- DECAY_2010.DEC
 +++ DECAY_2010.DEC
 @@ -10221,28 +10221,28 @@

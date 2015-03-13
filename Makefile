@@ -608,17 +608,16 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8183.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8183.tgz
-	@mv $(EXTSRCDIR)/pythia8183 $(EXTSRCDIR)/pythia
-	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(EXTDIR)/pythia.patch
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8205.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8205.tgz
+	@mv $(EXTSRCDIR)/pythia8205 $(EXTSRCDIR)/pythia
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
-	@cp $(EXTDIR)/pythia/lib/lib* $(EXTDIR)/pythia/lib/archive/* $(EXTLIBDIR)/
+	@cp $(EXTDIR)/pythia/lib/lib* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/Pythia8 && cp $(EXTDIR)/pythia/include/Pythia8/* $(EXTINCDIR)/Pythia8/
-	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
+	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/share/Pythia8/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
 
 # Pythia clean
 pythia.clean:

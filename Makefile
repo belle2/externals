@@ -616,14 +616,14 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
 	@cp $(EXTDIR)/pythia/lib/lib* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/Pythia8 && cp $(EXTDIR)/pythia/include/Pythia8/* $(EXTINCDIR)/Pythia8/
+	@cp -a $(EXTDIR)/pythia/include/* $(EXTINCDIR)/
 	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/share/Pythia8/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
 
 # Pythia clean
 pythia.clean:
 	@echo "cleaning Pythia"
 	@cd $(EXTSRCDIR)/pythia && make clean
-	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8 $(EXTDIR)/share/pythia
+	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8* $(EXTDIR)/share/pythia
 
 # Pythia touch
 pythia.touch:

@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 panther pntdb
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 belle_legacy
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -888,51 +888,26 @@ nsm2.touch:
 	@rm -rf $(EXTBINDIR)/nsmd2
 
 
-# dependencies for panther
-panther: $(EXTLIBDIR)/libpanther.so
-panther.src: $(EXTSRCDIR)/panther
+# dependencies for belle_legacy
+belle_legacy: $(EXTLIBDIR)/libbelle_legacy.so
+belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
-# panther download
-$(EXTSRCDIR)/panther:
-	@echo "downloading panther"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh panther-1.1.tgz
+# belle_legacy download
+$(EXTSRCDIR)/belle_legacy:
+	@echo "downloading belle_legacy"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh belle_legacy-1.0.tgz svn:checkout:16398:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
-# panther build
-$(EXTLIBDIR)/libpanther.so: $(EXTSRCDIR)/panther
-	@echo "installing panther"
-	@cd $(EXTSRCDIR)/panther && make libs install
+# belle_legacy build
+$(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
+	@echo "installing belle_legacy"
+	@cd $(EXTSRCDIR)/belle_legacy && make && make install
 
-# panther clean
-panther.clean:
-	@echo "cleaning panther"
-	@cd $(EXTSRCDIR)/panther && make clean
-	@rm -rf $(EXTINCDIR)/panther $(EXTDIR)/share/panther $(EXTLIBDIR)/libpanther.*
+# belle_legacy clean
+belle_legacy.clean:
+	@echo "cleaning belle_legacy"
+	@cd $(EXTSRCDIR)/belle_legacy && make clean
+	@rm -rf $(EXTINCDIR)/belle_legacy $(EXTDIR)/share/belle_legacy $(EXTLIBDIR)/libbelle_legacy.*
 
-# panther touch
-panther.touch:
-	@rm -rf $(EXTLIBDIR)/libpanther.so
-
-
-# dependencies for pntdb
-pntdb: $(EXTLIBDIR)/libpntdb.so
-pntdb.src: $(EXTSRCDIR)/pntdb
-
-# pntdb download
-$(EXTSRCDIR)/pntdb:
-	@echo "downloading pntdb"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pntdb-1.1.tgz
-
-# pntdb build
-$(EXTLIBDIR)/libpntdb.so: $(EXTSRCDIR)/pntdb
-	@echo "installing pntdb"
-	@cd $(EXTSRCDIR)/pntdb && make && make install
-
-# pntdb clean
-pntdb.clean:
-	@echo "cleaning pntdb"
-	@cd $(EXTSRCDIR)/pntdb && make clean
-	@rm -rf $(EXTINCDIR)/pntdb $(EXTLIBDIR)/libpntdb.*
-
-# pntdb touch
-pntdb.touch:
-	@rm -rf $(EXTLIBDIR)/libpntdb.so
+# belle_legacy touch
+belle_legacy.touch:
+	@rm -rf $(EXTLIBDIR)/libbelle_legacy.so

@@ -900,7 +900,7 @@ $(EXTSRCDIR)/belle_legacy:
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
-	@cd $(EXTSRCDIR)/belle_legacy && make && make install
+	@cd $(EXTSRCDIR)/belle_legacy && make -j $(NPROCESSES) && make install
 
 # belle_legacy clean
 belle_legacy.clean:

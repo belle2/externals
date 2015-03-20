@@ -106,7 +106,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 belle_legacy
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 belle_legacy curl
 
 # all targets
 all: dirs cmake $(PACKAGES)
@@ -911,3 +911,30 @@ belle_legacy.clean:
 # belle_legacy touch
 belle_legacy.touch:
 	@rm -rf $(EXTLIBDIR)/libbelle_legacy.so
+
+
+# dependencies for curl
+curl: $(EXTLIBDIR)/libcurl.so
+curl.src: $(EXTSRCDIR)/curl/README
+
+# curl download
+$(EXTSRCDIR)/curl/README:
+	@echo "downloading curl"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
+	@mv $(EXTSRCDIR)/curl-7.41.0 $(EXTSRCDIR)/curl
+
+# curl build
+$(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
+	@echo "building curl"
+	@cd $(EXTSRCDIR)/curl && ./configure --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && make -j $(NPROCESSES) && make install
+
+# curl clean
+curl.clean:
+	@echo "cleaning curl"
+	@cd $(EXTSRCDIR)/curl && make uninstall && make clean
+	@rm -rf $(EXTINCDIR)/curl $(EXTDIR)/share/curl
+
+
+# curl touch
+curl.touch:
+	@rm -rf $(EXTLIBDIR)/libcurl.so

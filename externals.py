@@ -67,7 +67,7 @@ def setup_externals(location):
     env_vars['PYTHIA8DATA'] = os.path.join(location, 'share', 'pythia')
 
     # panther
-    env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'panther')
+    env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'belle_legacy', 'panther')
 
     # pntdb
     env_vars['BELLE_POSTGRES_SERVER'] = 'ekpbelle.physik.uni-karlsruhe.de'

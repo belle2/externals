@@ -179,7 +179,7 @@ gcc.src: $(EXTSRCDIR)/gcc/src
 
 $(EXTSRCDIR)/gcc/src:
 	@echo "downloading GCC"
-	@cd $(EXTSRCDIR) && wget -O - --tries=3 --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/gcc-4.9.2-contrib.tar.bz2 | tar xj
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gcc-4.9.2-contrib.tar.bz2 | tar xj
 	@mkdir -p $(EXTSRCDIR)/gcc
 	@mv $(EXTSRCDIR)/gcc-4.9.2 $(EXTSRCDIR)/gcc/src
 

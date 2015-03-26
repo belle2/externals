@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# function for downloading and unpacking an archive file
+function DownloadArchive ()
+{
+  EXTENSION=`echo $* | awk -F. '{print $NF}'`
+  if [ "${EXTENSION}" = "zip" ]; then
+    tmp=`mktemp  /tmp/belle2_tmp.XXXX`
+    rm -f $tmp
+    wget -O - --tries=3 $*
+    unzip $tmp
+    rm -f $tmp
+  elif [ "${EXTENSION}" = "bz2" ]; then
+    wget -O - --tries=3 $* | tar xj
+  else
+    wget -O - --tries=3 $* | tar xz
+  fi
+}
+
 # check number of arguments
 if [ $# -lt 1 ]; then
   exit 1
@@ -22,15 +39,7 @@ while [ $# -gt 0 ]; do
     LINK=`echo ${URL} | sed 's;svn:\w*:\w*:;;'`
     svn ${COMMAND} -r${REVISION} ${LINK}
   else
-    if [ "${EXTENSION}" = "zip" ]; then
-      tmp=`mktemp  /tmp/belle2_tmp.XXXX`
-      rm -f $tmp
-      wget -O $tmp --tries=3 ${URL}
-      unzip $tmp
-      rm -f $tmp
-    else
-      wget -O - --tries=3 ${URL} | tar xz
-    fi
+    DownloadArchive ${URL}
   fi
   RESULT=$?
   if [ "${RESULT}" = "0" ]; then
@@ -40,7 +49,7 @@ done
 
 # if none succeeded use the Belle II web server
 if [ "${RESULT}" -ne "0" ]; then
-  wget -O - --tries=3 --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/${FILE_NAME} | tar xz
+  DownloadArchive --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/${FILE_NAME}
   RESULT=$?
 fi
 

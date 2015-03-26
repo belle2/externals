@@ -278,8 +278,8 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
 	@echo "downloading boost"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh boost_1_55_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz
-	@mv $(EXTSRCDIR)/boost_1_55_0 $(EXTSRCDIR)/boost
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh boost_1_57_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.57.0/boost_1_57_0.tar.gz
+	@mv $(EXTSRCDIR)/boost_1_57_0 $(EXTSRCDIR)/boost
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL

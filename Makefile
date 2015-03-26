@@ -167,6 +167,7 @@ $(EXTDIR)/gcc/bin/ld: $(EXTSRCDIR)/binutils/src
 	@mkdir -p $(EXTSRCDIR)/binutils/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib --enable-shared --prefix=$(EXTDIR)/gcc && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) install
+	@rm -rf $(EXTSRCDIR)/binutils/build
 
 binutils.clean:
 	@echo "cleaning binutils"
@@ -187,6 +188,7 @@ $(EXTDIR)/gcc/bin/gcc: $(EXTSRCDIR)/gcc/src
 	@mkdir -p $(EXTSRCDIR)/gcc/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR)/gcc --enable-languages=c,c++,fortran && make -j $(NPROCESSES) && make install
+	@rm -rf $(EXTSRCDIR)/gcc/build
 
 gcc.clean:
 	@echo "cleaning gcc"

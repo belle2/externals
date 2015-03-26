@@ -17,6 +17,10 @@ endif
 
 export LANG=C
 
+#binutils/gcc/gdb environment
+export PATH := $(EXTDIR)/gcc/bin:$(PATH)
+export LD_LIBRARY_PATH := $(EXTDIR)/gcc/lib:$(EXTDIR)/gcc/lib64:$(LD_LIBRARY_PATH)
+
 # set cmake command
 CMAKE=$(EXTDIR)/cmake/bin/cmake
 export PATH := $(EXTDIR)/cmake/bin:$(PATH)
@@ -108,8 +112,9 @@ endif
 # external packages
 PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 belle_legacy curl
 
-# all targets
-all: dirs cmake $(PACKAGES)
+# all targets (in this order)
+# Note: system gcc and our binutils might be incompatible, so build gcc first
+all: dirs gcc binutils gdb cmake $(PACKAGES)
 
 # get source code of all packages
 src: dirs $(foreach package,$(PACKAGES),$(package).src)
@@ -142,6 +147,65 @@ $(EXTLIBDIR):
 $(EXTBINDIR):
 	@echo "create  $(EXTBINDIR)"
 	@mkdir -p $(EXTBINDIR)
+
+binutils: $(EXTDIR)/gcc/bin/ld
+binutils.src: $(EXTSRCDIR)/binutils/src
+
+$(EXTSRCDIR)/binutils/src:
+	@echo "downloading binutils"
+	@mkdir -p $(EXTSRCDIR)/binutils
+	@cd $(EXTSRCDIR)/binutils && $(EXTDIR)/download.sh binutils-2.23.1.tar.gz
+	@cd $(EXTSRCDIR)/binutils && mv binutils-2.23.1 src
+
+$(EXTDIR)/gcc/bin/ld: $(EXTSRCDIR)/binutils/src
+	@echo "building binutils"
+	@mkdir -p $(EXTSRCDIR)/binutils/build
+	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
+	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib --enable-shared --prefix=$(EXTDIR)/gcc && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) install
+
+binutils.clean:
+	@echo "cleaning binutils"
+	@-cd $(EXTSRCDIR)/binutils/build && make distclean
+	@rm -rf $(EXTSRCDIR)/binutils
+
+gcc: $(EXTDIR)/gcc/bin/gcc
+gcc.src: $(EXTSRCDIR)/gcc/src
+
+$(EXTSRCDIR)/gcc/src:
+	@echo "downloading GCC"
+	@cd $(EXTSRCDIR) && wget -O - --tries=3 --user=belle2 --password=Aith4tee https://belle2.cc.kek.jp/download/gcc-4.9.2-contrib.tar.bz2 | tar xj
+	@mkdir -p $(EXTSRCDIR)/gcc
+	@mv $(EXTSRCDIR)/gcc-4.9.2 $(EXTSRCDIR)/gcc/src
+
+$(EXTDIR)/gcc/bin/gcc: $(EXTSRCDIR)/gcc/src
+	@echo "building gcc"
+	@mkdir -p $(EXTSRCDIR)/gcc/build
+	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
+	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR)/gcc --enable-languages=c,c++,fortran && make -j $(NPROCESSES) && make install
+
+gcc.clean:
+	@echo "cleaning gcc"
+	@rm -rf $(EXTSRCDIR)/gcc
+	@rm -rf $(EXTDIR)/gcc
+
+gdb: $(EXTDIR)/gcc/bin/gdb
+gdb.src: $(EXTSRCDIR)/gdb
+
+$(EXTSRCDIR)/gdb:
+	@echo "downloading gdb"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
+	@mv $(EXTSRCDIR)/gdb-7.8.2 $(EXTSRCDIR)/gdb
+
+$(EXTDIR)/gcc/bin/gdb: $(EXTSRCDIR)/gdb
+	@echo "building gdb"
+	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
+	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
+	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR)/gcc && make -j $(NPROCESSES) && make -j $(NPROCESSES) install
+
+gdb.clean:
+	@echo "cleaning gdb"
+	@-cd $(EXTSRCDIR)/gdb && make distclean
+	@rm -rf $(EXTSRCDIR)/gdb
 
 
 # dependencies for cmake

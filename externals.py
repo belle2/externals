@@ -14,6 +14,11 @@ def unsetup_externals(location):
     subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
                             os.environ['BELLE2_SUBDIR'])
 
+    #gcc
+    remove_path('PATH', os.path.join(location, 'gcc', 'bin'))
+    remove_path(lib_path_name, os.path.join(location, 'gcc', 'lib'))
+    remove_path(lib_path_name, os.path.join(location, 'gcc', 'lib64'))
+
     # externals
     remove_path('PATH', os.path.join(location, 'bin', subdir))
     remove_path(lib_path_name, os.path.join(location, 'lib', subdir))
@@ -46,6 +51,11 @@ def setup_externals(location):
 
     subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
                             os.environ['BELLE2_SUBDIR'])
+
+    #gcc
+    add_path('PATH', os.path.join(location, 'gcc', 'bin'))
+    add_path(lib_path_name, os.path.join(location, 'gcc', 'lib'))
+    add_path(lib_path_name, os.path.join(location, 'gcc', 'lib64'))
 
     # add externals directory to path and library path
     add_path('PATH', os.path.join(location, 'bin', subdir))

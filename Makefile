@@ -17,9 +17,14 @@ endif
 
 export LANG=C
 
-#binutils/gcc/gdb environment
-export PATH := $(EXTDIR)/gcc/bin:$(PATH)
-export LD_LIBRARY_PATH := $(EXTDIR)/gcc/lib:$(EXTDIR)/gcc/lib64:$(LD_LIBRARY_PATH)
+ifndef BELLE2_SYSTEM_COMPILER
+  #binutils/gcc/gdb environment
+  export PATH := $(EXTDIR)/gcc/bin:$(PATH)
+  export LD_LIBRARY_PATH := $(EXTDIR)/gcc/lib:$(EXTDIR)/gcc/lib64:$(LD_LIBRARY_PATH)
+else
+  $(info Note: Will use system GCC to build the externals (unset BELLE2_SYSTEM_COMPILER to change this))
+endif
+
 
 # set cmake command
 CMAKE=$(EXTDIR)/cmake/bin/cmake

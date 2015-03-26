@@ -52,10 +52,12 @@ def setup_externals(location):
     subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
                             os.environ['BELLE2_SUBDIR'])
 
-    #gcc
-    add_path('PATH', os.path.join(location, 'gcc', 'bin'))
-    add_path(lib_path_name, os.path.join(location, 'gcc', 'lib'))
-    add_path(lib_path_name, os.path.join(location, 'gcc', 'lib64'))
+    use_system_compiler = 'BELLE2_SYSTEM_COMPILER' in os.environ
+    if not use_system_compiler:
+        #gcc
+        add_path('PATH', os.path.join(location, 'gcc', 'bin'))
+        add_path(lib_path_name, os.path.join(location, 'gcc', 'lib'))
+        add_path(lib_path_name, os.path.join(location, 'gcc', 'lib64'))
 
     # add externals directory to path and library path
     add_path('PATH', os.path.join(location, 'bin', subdir))

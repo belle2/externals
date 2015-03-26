@@ -459,7 +459,7 @@ $(EXTSRCDIR)/xrootd:
 $(EXTBINDIR)/xrootd: $(CMAKE) $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
-	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/xrootd $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && make install
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/xrootd $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && make -j $(NPROCESSES) && make install
 	@cp -a $(EXTDIR)/xrootd/include/* $(EXTINCDIR)/
 	@cp -a $(EXTDIR)/xrootd/lib*/* $(EXTLIBDIR)/
 	@cp $(EXTDIR)/xrootd/bin/* $(EXTBINDIR)/

@@ -6,8 +6,7 @@ function DownloadArchive ()
   EXTENSION=`echo $* | awk -F. '{print $NF}'`
   if [ "${EXTENSION}" = "zip" ]; then
     tmp=`mktemp  /tmp/belle2_tmp.XXXX`
-    rm -f $tmp
-    wget -O - --tries=3 $*
+    wget -O $tmp --tries=3 $*
     unzip $tmp
     rm -f $tmp
   elif [ "${EXTENSION}" = "bz2" ]; then

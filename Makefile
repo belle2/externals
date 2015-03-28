@@ -179,7 +179,7 @@ gcc.src: $(EXTSRCDIR)/gcc/src
 
 $(EXTSRCDIR)/gcc/src:
 	@echo "downloading GCC"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gcc-4.9.2-contrib.tar.bz2 | tar xj
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gcc-4.9.2-contrib.tar.bz2
 	@mkdir -p $(EXTSRCDIR)/gcc
 	@mv $(EXTSRCDIR)/gcc-4.9.2 $(EXTSRCDIR)/gcc/src
 

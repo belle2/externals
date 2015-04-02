@@ -709,7 +709,7 @@ photos.src: $(EXTSRCDIR)/PHOTOS/configure
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
 	@echo "downloading Photos"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.54.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.54/PHOTOS.3.54.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(EXTDIR)/photos.patch
 
 # Photos build

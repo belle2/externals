@@ -622,8 +622,8 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
 	@echo "downloading MillepedeII"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh MillepedeII_V04-02-00.tgz svn:checkout:124:http://svnsrv.desy.de/public/MillepedeII/tags/V04-02-00
-	@mv $(EXTSRCDIR)/V04-02-00 $(EXTSRCDIR)/MillepedeII
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
+	@mv $(EXTSRCDIR)/V04-03-00 $(EXTSRCDIR)/MillepedeII
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI

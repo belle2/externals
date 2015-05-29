@@ -115,7 +115,7 @@ endif
 
 
 # external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph flc eigen vc nsm2 belle_legacy curl
+PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry flc eigen vc nsm2 belle_legacy curl
 
 # all targets (in this order)
 # Note: system gcc and our binutils might be incompatible, so build gcc first
@@ -848,6 +848,34 @@ madgraph.clean:
 # MadGraph touch
 madgraph.touch:
 	@rm -f $(EXTLIBDIR)/libExRootAnalysis.so
+
+
+# dependencies for CRY
+cry: $(EXTLIBDIR)/libCRY.a
+cry.src: $(EXTSRCDIR)/cry/configure
+
+# CRY download
+$(EXTSRCDIR)/cry/README:
+	@echo "downloading CRY"
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
+	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
+
+# CRY build
+$(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
+	@echo "building CRY"
+	@cd $(EXTSRCDIR)/cry && make
+	@cp $(EXTSRCDIR)/cry/lib/libCRY.a $(EXTLIBDIR)/
+	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTSRCDIR)/cry/src/*.h $(EXTINCDIR)/cry/
+
+# CRY clean
+cry.clean:
+	@echo "cleaning CRY"
+	@cd $(EXTSRCDIR)/cry && make clean
+	@rm -rf $(EXTLIBDIR)/libCRY.a $(EXTINCDIR)/cry
+
+# CRY touch
+cry.touch:
+	@rm -f $(EXTLIBDIR)/libCRY.a
 
 
 # dependencies for FLC

@@ -679,9 +679,8 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8205.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8205.tgz
-	@mv $(EXTSRCDIR)/pythia8205 $(EXTSRCDIR)/pythia
-	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(EXTDIR)/pythia.patch
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
+	@mv $(EXTSRCDIR)/pythia8209 $(EXTSRCDIR)/pythia
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure

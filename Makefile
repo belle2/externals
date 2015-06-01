@@ -859,19 +859,20 @@ $(EXTSRCDIR)/cry/README:
 	@echo "downloading CRY"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
 	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
+	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(EXTDIR)/cry.patch
 
 # CRY build
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
 	@cd $(EXTSRCDIR)/cry && make
-	@cp $(EXTSRCDIR)/cry/lib/libCRY.a $(EXTLIBDIR)/
+	@cp $(EXTSRCDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTSRCDIR)/cry/src/*.h $(EXTINCDIR)/cry/
 
 # CRY clean
 cry.clean:
 	@echo "cleaning CRY"
 	@cd $(EXTSRCDIR)/cry && make clean
-	@rm -rf $(EXTLIBDIR)/libCRY.a $(EXTINCDIR)/cry
+	@rm -rf $(EXTLIBDIR)/libCRY.* $(EXTINCDIR)/cry
 
 # CRY touch
 cry.touch:

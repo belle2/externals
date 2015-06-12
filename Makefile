@@ -763,8 +763,8 @@ evtgen.src: $(EXTSRCDIR)/evtgen/configure
 # EvtGen download
 $(EXTSRCDIR)/evtgen/configure:
 	@echo "downloading EvtGen"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-03-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-03-00/EvtGen.R01-03-00.tar.gz
-	@mv $(EXTSRCDIR)/EvtGen/R01-03-00 $(EXTSRCDIR)/evtgen
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
+	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(EXTDIR)/evtgen.patch
 

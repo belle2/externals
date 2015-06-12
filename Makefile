@@ -995,7 +995,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
 	@echo "downloading belle_legacy"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh belle_legacy-1.2.tgz svn:checkout:18322:https://belle2.cc.kek.jp/svn/groups/belle_legacy
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

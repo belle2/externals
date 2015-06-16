@@ -536,7 +536,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
 	@echo "downloading FastBDT"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh FastBDT-1.1.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh FastBDT-1.2.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root

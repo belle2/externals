@@ -797,6 +797,7 @@ $(EXTSRCDIR)/phokhara/Makefile:
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
 	@mv $(EXTSRCDIR)/PH9.1 $(EXTSRCDIR)/phokhara
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
+	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(EXTDIR)/phokhara.patch
 
 # Phokhara build
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile

@@ -1,0 +1,147 @@
+--- eemmg-lib/ff/ffinit_mine.f
++++ eemmg-lib/ff/ffinit_mine.f
+@@ -45,19 +45,20 @@
+ *  #[ check:
+ *	check whether tehre is anything to do
+ 	if ( init .ne. 0 ) return
+-	init = 1
+-	print *,'===================================================='
+-	print *,'  FF 2.0, a package to evaluate one-loop integrals'
+-	print *,'written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam'
+-	print *,'===================================================='
+-	print *,'for the algorithms used see preprint NIKHEF-H 89/17,'
+-	print *,'''New Algorithms for One-loop Integrals'', by G.J. van'
+-	print *,'Oldenborgh and J.A.M. Vermaseren, published in '
+-	print *,'Zeitschrift fuer Physik C46(1990)425.'
+-	print *,'===================================================='
++! 	init = 1
++! 	print *,'===================================================='
++! 	print *,'  FF 2.0, a package to evaluate one-loop integrals'
++! 	print *,'written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam'
++! 	print *,'===================================================='
++! 	print *,'for the algorithms used see preprint NIKHEF-H 89/17,'
++! 	print *,'''New Algorithms for One-loop Integrals'', by G.J. van'
++! 	print *,'Oldenborgh and J.A.M. Vermaseren, published in '
++! 	print *,'Zeitschrift fuer Physik C46(1990)425.'
++! 	print *,'===================================================='
+ *  #] check:
+ *  #[ precision etc:
+-	lwrite = .TRUE.
++! 	lwrite = .TRUE.
++	lwrite = .FALSE.
+ 	nevent = -1
+ *
+ *	the loss of accuracy in any single subtraction at which
+@@ -499,8 +500,8 @@
+    90	    continue
+ 	    goto 110
+   100	    continue
+-	    print '(a)',
+-     +		'fferr:  warning cannot open fferr.dat with error texts'
++! 	    print '(a)',
++!      +		'fferr:  warning cannot open fferr.dat with error texts'
+   110	    continue
+ 	    close(ifile)
+ 	endif
+@@ -508,9 +509,9 @@
+ *  #[ nerr=999:
+ 	if ( nerr .eq. 999 ) then
+ *	    print out total numbers...
+-	    print '(a)',' '
+-	    print '(a)','total number of errors and warnings'
+-	    print '(a)','==================================='
++! 	    print '(a)',' '
++! 	    print '(a)','total number of errors and warnings'
++! 	    print '(a)','==================================='
+ 	    inone = 1
+ 	    do 10 i=1,nmax
+ 		if ( noccur(i) .gt. 0 ) then
+@@ -520,11 +521,11 @@
+ 		    inone = 0
+ 		endif
+    10	    continue
+-	    if ( inone.eq.1 ) print '(a)','fferr: no errors'
++! 	    if ( inone.eq.1 ) print '(a)','fferr: no errors'
+ 	    if ( lwarn ) then
+ 		call ffwarn(999,ierr,x1,x1)
+ 	    else
+-		print '(a)','the warning system has been disabled'
++! 		print '(a)','the warning system has been disabled'
+ 	    endif
+ 	    print '(a)',' '
+ 	    return
+@@ -787,8 +788,8 @@
+ 	return
+ *	file could not be found
+    40	continue
+-	print *,'ffopen: error: could not open ',fullname
+-	print *,'        adjust path in ffopen (ffinit_mine.f)'
++! 	print *,'ffopen: error: could not open ',fullname
++! 	print *,'        adjust path in ffopen (ffinit_mine.f)'
+ 	ier = -1
+ *###] ffopen:
+ 	end
+--- eemmg-lib/ql/qlinit.f
++++ eemmg-lib/ql/qlinit.f
+@@ -1,14 +1,14 @@
+       subroutine qlinit
+       implicit none
+ 
+-      write(*,*) '===================================================='
+-      write(*,*) '  This is QCDLoop - version 1.9                     '
+-      write(*,*) '  Authors: Keith Ellis and Giulia Zanderighi        ' 
+-      write(*,*) '  (ellis@fnal.gov, g.zanderighi1@physics.ox.ac.uk)  '
+-      write(*,*) '  For details see FERMILAB-PUB-07-633-T,OUTP-07/16P '
+-      write(*,*) '  arXiv:0712.1851 [hep-ph], published in            '
+-      write(*,*) '  JHEP 0802:002,2008.                               '
+-      write(*,*) '===================================================='
++!       write(*,*) '===================================================='
++!       write(*,*) '  This is QCDLoop - version 1.9                     '
++!       write(*,*) '  Authors: Keith Ellis and Giulia Zanderighi        ' 
++!       write(*,*) '  (ellis@fnal.gov, g.zanderighi1@physics.ox.ac.uk)  '
++!       write(*,*) '  For details see FERMILAB-PUB-07-633-T,OUTP-07/16P '
++!       write(*,*) '  arXiv:0712.1851 [hep-ph], published in            '
++!       write(*,*) '  JHEP 0802:002,2008.                               '
++!       write(*,*) '===================================================='
+       
+       call ffini
+       call flush(6)
+--- eemmg-lib/src/integral.cpp
++++ eemmg-lib/src/integral.cpp
+@@ -14,7 +14,7 @@
+ #ifdef USE_QCDLOOP
+ Initialize::Initialize()
+ {
+-  printf("PJFRY init\n");
++//   printf("PJFRY init\n");
+   const double dbl_min=std::numeric_limits<double>::min();
+ 
+   F77_FUNC(qlinit,QLINIT)();
+@@ -23,22 +23,22 @@
+     qlprec.xalogm=dbl_min;
+     qlprec.xalog2=sqrt(dbl_min);
+     #ifndef NDEBUG
+-    printf("Set xalogm to normalized value %e\n", qlprec.xalogm);
+-    printf("Set xalog2 to normalized value %e\n", qlprec.xalog2);
++//     printf*/("Set xalogm to normalized value %e\n", qlprec.xalogm);
++//     printf("Set xalog2 to normalized value %e\n", qlprec.xalog2);
+     #endif
+   }
+   if (qlprec.xclogm < dbl_min) {
+     qlprec.xclogm=dbl_min;
+     qlprec.xclog2=sqrt(dbl_min);
+     #ifndef NDEBUG
+-    printf("Set xclogm to normalized value %e\n", qlprec.xclogm);
+-    printf("Set xclog2 to normalized value %e\n", qlprec.xclog2);
++//     printf("Set xclogm to normalized value %e\n", qlprec.xclogm);
++//     printf("Set xclog2 to normalized value %e\n", qlprec.xclog2);
+     #endif
+   }
+   if (qlflag.lwarn) {
+     qlflag.lwarn=0;
+     #ifndef NDEBUG
+-    printf("Disable FF warnings %d\n",qlflag.lwarn);
++//     printf("Disable FF warnings %d\n",qlflag.lwarn);
+     #endif
+   }
+ }

@@ -99,3 +99,74 @@
  
  void EvtPartWave::initProbMax(){
  
+--- src/EvtGenExternal/EvtPythia.cpp
++++ src/EvtGenExternal/EvtPythia.cpp
+@@ -16,6 +16,7 @@
+ //
+ //    RYD       January 8, 1997       Module created
+ //    JJB       April 2011            Modified to use new Pythia8 interface
++//    FERBER, Torben   July 2015      Modified to re-generate PYTHIA events that are already defined in the decfile
+ //
+ //------------------------------------------------------------------------
+ 
+@@ -26,6 +27,8 @@
+ #include "EvtGenBase/EvtPDL.hh"
+ #include "EvtGenBase/EvtSpinDensity.hh"
+ 
++#include "EvtGenBase/EvtDecayTable.hh"
++
+ #include "EvtGenExternal/EvtPythia.hh"
+ 
+ #include "EvtGenExternal/EvtExternalGenFactory.hh"
+@@ -86,9 +89,49 @@
+   if (_pythiaEngine == 0) {
+     _pythiaEngine = EvtExternalGenFactory::getInstance()->getGenerator(EvtExternalGenFactory::PythiaGenId);
+   }
+-    
++
+   if (_pythiaEngine != 0) {
+-    _pythiaEngine->doDecay(p);
++    //     _pythiaEngine->doDecay(p);
++
++    //NEW (TF, 2015) to avoid double counting when pythia produces a decay that is already defined in the decfile
++    int more = 0; //used for the check
++    int ntrials = 0; //counter for trials
++    const int maxtrials = 1000; //number of trials to regenerate event
++    const int maxdaughters = 25; //maximum number of first generation decay daughters
++
++    do {
++      _pythiaEngine->doDecay(p);
++
++      EvtId parentid = p->getId();
++      int ndaughters = p->getNDaug();
++      EvtId daughters[maxdaughters];
++
++      int i = 0;
++      for ( i = 0; i < ndaughters && ndaughters < maxdaughters; i++) {
++	EvtId daugId = p->getDaug(i)->getId();
++	daughters[i] = daugId;
++      }
++      
++      //exception maxdaughters
++      if(ndaughters >= maxdaughters) {
++	EvtGenReport(EVTGEN_ERROR, "EvtPythia::decay") << " naughters >= maxdaughters Will terminate execution!" << std::endl; ::abort();
++      }
++
++      EvtDecayTable* table = EvtDecayTable::getInstance();
++      int channel = table->inChannelList(parentid, ndaughters, daughters);
++
++      //EvtGenReport(EVTGEN_INFO, "EvtPythia::decay") << " ntrials=" << ntrials << ", parentid=" << parentid << ", ndaughters=" << ndaughters << ", channel=" << channel << std::endl;
++
++      more = ((channel!=-1)&&(channel!=p->getChannel()));
++      ntrials = ntrials + 1;
++    
++    } while(more && ntrials<maxtrials);
++    
++    //exception maxtrials
++    if(ntrials>=maxtrials) {
++      EvtGenReport(EVTGEN_ERROR, "EvtPythia::decay") << " ntrials>=maxtrials Will terminate execution!" << std::endl; ::abort();
++    }
++    
+   }
+ 
+   this->fixPolarisations(p);

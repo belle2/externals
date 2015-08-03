@@ -286,7 +286,7 @@ $(EXTSRCDIR)/boost/INSTALL:
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
-	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu && ./b2 install --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
+	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu && ./b2 install --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 
 # boost clean
 boost.clean:

@@ -1,0 +1,43 @@
+From d7b2eb52f8d77fa1b75b30f1fc90d285e7f81b52 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Steffen=20R=C3=B6cker?= <sroecker@ekp.uni-karlsruhe.de>
+Date: Tue, 17 Feb 2015 19:06:19 +0100
+Subject: [PATCH 1/1] ROOT 6 compability (Christian Pulvermacher)
+
+---
+ inc/MethodNeuroBayes.h   | 4 ++--
+ src/MethodNeuroBayes.cxx | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/inc/MethodNeuroBayes.h b/inc/MethodNeuroBayes.h
+index 364bd76..7dd1283 100644
+--- a/inc/MethodNeuroBayes.h
++++ b/inc/MethodNeuroBayes.h
+@@ -36,10 +36,10 @@ namespace TMVA {
+ 	      	virtual void Train( void );
+ 
+ 	      	// write weights to file
+-	      	virtual void WriteWeightsToStream( ostream& o ) const;
++	      	virtual void WriteWeightsToStream( std::ostream& o ) const;
+ 
+ 	      	// read weights from file
+-	      	virtual void ReadWeightsFromStream( istream& istr );
++	      	virtual void ReadWeightsFromStream( std::istream& istr );
+ 
+ 	      	void GetHelpMessage() const;
+ 		virtual void DeclareOptions();
+diff --git a/src/MethodNeuroBayes.cxx b/src/MethodNeuroBayes.cxx
+index 5b38b54..dde2870 100644
+--- a/src/MethodNeuroBayes.cxx
++++ b/src/MethodNeuroBayes.cxx
+@@ -25,6 +25,8 @@
+ 
+ #include "MethodNeuroBayes.h"
+ 
++using namespace std;
++
+ ClassImp(TMVA::MethodNeuroBayes)
+ 
+ int TMVA::MethodNeuroBayes::CountInstanzes = 0;
+-- 
+1.9.1
+

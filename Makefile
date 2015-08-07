@@ -484,7 +484,8 @@ root.src: $(EXTSRCDIR)/root/README
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "downloading root"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v5.34.25.source.tar.gz https://root.cern.ch/download/root_v5.34.25.source.tar.gz
+	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
+	@mv $(EXTSRCDIR)/root-6.04.02 $(EXTSRCDIR)/root
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/src/
 
 # root build

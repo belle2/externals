@@ -427,6 +427,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
 	@echo "downloading NeuroBayes"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh NeuroBayes_3.7.0_nbpluginfix.tgz
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(EXTDIR)/neurobayes.patch
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
@@ -486,7 +487,7 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "downloading root"
 	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
 	@mv $(EXTSRCDIR)/root-6.04.02 $(EXTSRCDIR)/root
-	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/src/
+	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 
 # root build
 $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
@@ -497,7 +498,7 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	--disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
 	make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
-	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tmva/test/* $(EXTDIR)/share/root/tmva
+	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tmva/tmva/test/* $(EXTDIR)/share/root/tmva
 
 # root clean command
 root.clean:
@@ -518,12 +519,14 @@ nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
 	@echo "building NeuroBayes TMVA plugin"
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && make install
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # NeuroBayes TMVA plugin clean command
 nbplugin.clean:
 	@echo "cleaning NeuroBayes TMVA plugin"
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
+	@rm -f $(ROOTSYS)/lib/TMVA_NeuroBayes_Dict_rdict.pcm
 
 # NeuroBayes TMVA plugin touch command
 nbplugin.touch:
@@ -543,12 +546,14 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
 	@cd $(EXTSRCDIR)/FastBDT && make && make install
+	@cd $(EXTSRCDIR)/FastBDT && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:
 	@echo "cleaning FastBDT TMVA plugin"
 	@cd $(EXTSRCDIR)/FastBDT && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
+	@rm -f $(ROOTSYS)/lib/TMVA_FastBDT_Dict_rdict.pcm
 
 # FastBDT TMVA plugin touch command
 fastbdt.touch:

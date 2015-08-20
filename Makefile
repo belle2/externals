@@ -602,6 +602,7 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -s ../../../../../include/root/Math Math
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -s ../../../../../include/root/Math Math
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -s ../../../../../include/root/Math Math
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(EXTDIR)/rave-template-fix.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

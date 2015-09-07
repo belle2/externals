@@ -26,7 +26,7 @@ export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
 # as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets
 # are not passed to sub make with the catch all pattern rule below
-all: $(BELLE2_EXTERNALS_OPTION) ; 
+all: $(BELLE2_EXTERNALS_OPTION) ;
 
 # common needs to compile the common packages. And we need directories first
 common:

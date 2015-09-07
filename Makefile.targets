@@ -1,5 +1,5 @@
 # reset makeflags for sub make calls
-MAKEFLAGS:=
+override MAKEFLAGS:=
 
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
@@ -37,6 +37,10 @@ endif
 ifeq ($(NPROCESSES),0)
   NPROCESSES=1
 endif
+
+# Default compiler: gcc/g++
+export CC:=gcc
+export CXX:=g++
 
 # set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
@@ -122,6 +126,11 @@ SHARED_DIRECTORIES=$(EXTINCDIR) $(EXTDIR)/share
 donothing: ;
 
 dirs: $(DIRECTORIES) $(SHARED_DIRECTORIES)
+# make a lib64 -> lib symlink on 64bit platforms because gcc decides it needs
+# to install some libraries in lib64
+ifeq ($(shell uname -m),x86_64)
+	@cd $(EXTDIR) && ln -sfT lib lib64
+endif
 
 # pkg config wrapper using correct paths and being relocatable (if .pc files are fixed)
 pkg-config: $(EXTBINDIR)/pkg-config
@@ -175,15 +184,17 @@ gcc.src: $(EXTSRCDIR)/gcc/src
 
 $(EXTSRCDIR)/gcc/src:
 	@echo "downloading GCC"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) gcc-4.9.2-contrib.tar.bz2
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) gcc-5.2.0.tar.bz2 ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.2.0/gcc-5.2.0.tar.bz2
 	@mkdir -p $(EXTSRCDIR)/gcc
-	@mv $(EXTSRCDIR)/gcc-4.9.2 $(EXTSRCDIR)/gcc/src
+	@mv $(EXTSRCDIR)/gcc-5.2.0 $(EXTSRCDIR)/gcc/src
+	# download prerequisites automatically
+	@cd $(EXTSRCDIR)/gcc/src && contrib/download_prerequisites
 
 $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc/src
 	@echo "building gcc"
-	@mkdir -p $(EXTSRCDIR)/gcc/build
+	@mkdir -p $(EXTBUILDDIR)/gcc
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/src/configure --disable-multilib --prefix=$(EXTDIR) \
 	    --enable-languages=c,c++,fortran && \
 	    make -j $(NPROCESSES) && make install
 	@rm -rf $(EXTSRCDIR)/gcc/build
@@ -230,7 +241,7 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
 	@cd $< && make install PREFIX=$(EXTDIR)
 	# make links relative
-	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep &&\
+	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep && \
 	    ln -fs bzgrep bzegrep && ln -fs bzmore bzless
 
 python: $(EXTBINDIR)/python3
@@ -282,8 +293,8 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
 	@echo "downloading cmake"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
-	@mv $(EXTSRCDIR)/cmake-2.8.6 $(EXTSRCDIR)/cmake
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) cmake-3.3.1.tar.gz http://www.cmake.org/files/v3.3/cmake-3.3.1.tar.gz
+	@mv $(EXTSRCDIR)/cmake-3.3.1 $(EXTSRCDIR)/cmake
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
@@ -342,13 +353,13 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
 	@echo "downloading boost"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) boost_1_57_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.57.0/boost_1_57_0.tar.gz
-	@mv $(EXTSRCDIR)/boost_1_57_0 $(EXTSRCDIR)/boost
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) boost_1_59_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.bz2
+	@mv $(EXTSRCDIR)/boost_1_59_0 $(EXTSRCDIR)/boost
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
-	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu && \
+	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu --with-python=python3 && \
 	    ./b2 install --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 
 # boost clean
@@ -858,9 +869,15 @@ $(EXTSRCDIR)/evtgen/configure:
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cp -fa $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/evtgen && ./configure --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
 	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) && \
-	    make -j $(NPROCESSES) lib_shared  && make all install
+	    make -j $(NPROCESSES) lib_shared && make all
+	# install ourselves as evtgen stuff is expected in share/evtgen but
+	# evtgen has no option to install that way
+	@cd $(EXTBUILDDIR)/evtgen && \
+	    cp -fr lib/* $(EXTLIBDIR) && \
+	    cp -fr EvtGen EvtGenBase EvtGenModels EvtGenExternal $(EXTINCDIR) && \
+	    mkdir -p $(EXTDIR)/share/evtgen && cp -fr *.DEC *.XML evt.pdl $(EXTDIR)/share/evtgen
 
 # EvtGen clean
 evtgen.clean:

@@ -9,6 +9,24 @@
  
  }
  
+@@ -167,7 +167,7 @@
+ #
+ ARCH=`uname`
+ theGcc=`g++ --version | grep '[0-9]\.[0-9]\.[0-9]' -o | head -1 | awk -F . '{print $1}'`
+-if [ ${theGcc} = 4 ]; then
++if [ ${theGcc} -ge 4 ]; then
+   ARCH=${ARCH}-gcc4
+ fi
+ echo "Platform is $ARCH"
+@@ -211,7 +211,7 @@
+   FFLAGS="${FFLAGS_OPT}"
+   CFLAGS="${CFLAGS_OPT}"
+   CXXFLAGS="${CXXFLAGS_OPT}"
+-  FLIBS="-lgfortran -lgfortranbegin"
++  FLIBS="-lgfortran"
+   if [ ${COMPMODE} = OPT ]; then
+     FFLAGS="${FFLAGS_OPT}"
+     CFLAGS="${CFLAGS_OPT}"
 --- evt.pdl
 +++ evt.pdl
 @@ -370,7 +370,7 @@

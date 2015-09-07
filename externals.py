@@ -118,12 +118,21 @@ def config_externals(conf):
     )
 
     def add_incdir(*components):
+        """small helper to add a directory to the system include path"""
         conf.env.Append(CCFLAGS="-isystem%s" % os.path.join(*components))
+
+    # configure python
+    python_env = Environment(ENV=os.environ)
+    python_env.ParseConfig("python3-config --includes --ldflags")
+    conf.env["PYTHON_LIBS"] = python_env["LIBS"]
+    conf.env.Append(LIBPATH=python_env["LIBPATH"])
+    for incdir in python_env["CPPPATH"]:
+        add_incdir(incdir)
 
     # CLHEP
     add_incdir(conf.env['EXTINCDIR'], 'CLHEP')
 
-    # geant4
+    # configure geant4
     add_incdir(conf.env['EXTINCDIR'], 'Geant4')
     conf.env['GEANT4_LIBS'] = [
         'G4digits_hits',

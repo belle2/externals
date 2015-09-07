@@ -1,3 +1,6 @@
+# reset makeflags for sub make calls
+MAKEFLAGS:=
+
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export BELLE2_EXTERNALS_SUBDIR := $(BELLE2_ARCH)/$(BELLE2_EXTERNALS_OPTION)
@@ -126,11 +129,9 @@ pkg-config: $(EXTBINDIR)/pkg-config
 $(EXTBINDIR)/pkg-config:
 	install pkg-config $@
 
+#Fix absolute paths in .pc files for pkg-config
 relocatable_fixes:
-	@#Fix absolute paths in .pc files
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
-	@#Fix absolute paths in pip packages
-	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 # create directories
 $(DIRECTORIES):
@@ -157,8 +158,8 @@ $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils/src
 	@echo "building binutils"
 	@mkdir -p $(EXTSRCDIR)/binutils/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib\
-	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) &&\
+	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib \
+	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install
 	@rm -rf $(EXTSRCDIR)/binutils/build
 
@@ -181,7 +182,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc/src
 	@mkdir -p $(EXTSRCDIR)/gcc/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR) \
-	    --enable-languages=c,c++,fortran &&\
+	    --enable-languages=c,c++,fortran && \
 	    make -j $(NPROCESSES) && make install
 	@rm -rf $(EXTSRCDIR)/gcc/build
 
@@ -204,7 +205,7 @@ $(EXTSRCDIR)/libxml2:
 	@mv $(EXTSRCDIR)/libxml2-2.9.2/ $@
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
-	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 &&\
+	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
@@ -247,6 +248,8 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $< && ./configure --enable-shared --without-pymalloc --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
+	@#Fix absolute paths in pip packages and other python scripts
+	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
@@ -400,7 +403,7 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@mkdir -p $(EXTBUILDDIR)/geant4
 	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(GEANT4_OPTION) \
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 &&\
+	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && \
 	    make -j $(NPROCESSES) && make install
 	@# Fix absolute path in geant4-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4-config
@@ -433,7 +436,7 @@ $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@cp -a $(EXTSRCDIR)/postgresql $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
-	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
+	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 
 # PostgreSql clean
@@ -462,7 +465,7 @@ $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
 	@cp -a $(EXTSRCDIR)/libpqxx $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
-	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in pqxx-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
@@ -521,7 +524,7 @@ $(EXTSRCDIR)/xrootd:
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
-	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd &&\
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
 
 # xrootd clean command
@@ -555,9 +558,9 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sf ../../../include/root include
 	@# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR)\
-	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql\
-	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit\
+	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
+	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \
+	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
@@ -581,7 +584,7 @@ nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
 	@echo "building NeuroBayes TMVA plugin"
 	@cp -a $(EXTSRCDIR)/neurobayes $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) &&\
+	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && \
 	    make install
 	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
 
@@ -638,9 +641,9 @@ $(EXTSRCDIR)/vgm:
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DGeant4_DIR=$(EXTBUILDDIR)/geant4\
-	    -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS)\
-	    -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm &&\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DGeant4_DIR=$(EXTBUILDDIR)/geant4 \
+	    -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS) \
+	    -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    make install
 
 # vgm clean
@@ -675,7 +678,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@cp -a $(EXTSRCDIR)/rave $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
 	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
-	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR)\
+	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in .cmake file/RaveConfig.cmake:
@@ -796,7 +799,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cp -a $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) &&\
+	@cd $(EXTBUILDDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
 	    make && make install
 
 # Photos clean
@@ -947,7 +950,7 @@ $(EXTSRCDIR)/cry/README:
 # CRY build
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
-	@cp -a $(EXTBUILDDIR)/cry $(EXTBUILDDIR)
+	@cp -a $(EXTSRCDIR)/cry $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/cry && make
 	@cp $(EXTBUILDDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTBUILDDIR)/cry/src/*.h $(EXTINCDIR)/cry/
@@ -977,7 +980,7 @@ $(EXTSRCDIR)/FLC/README:
 # FLC build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
-	@cp -a $(EXTBUILDDIR)/FLC $(EXTBUILDDIR)
+	@cp -a $(EXTSRCDIR)/FLC $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp $(EXTBUILDDIR)/FLC/lib/* $(EXTLIBDIR)/
 	@cp -a $(EXTBUILDDIR)/FLC/include $(EXTINCDIR)
@@ -1033,7 +1036,7 @@ $(EXTSRCDIR)/vc:
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
 	@echo "installing vc"
 	@mkdir -p $(EXTBUILDDIR)/vc
-	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc &&\
+	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in .cmake file/RaveConfig.cmake:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/Vc/VcConfig.cmake
@@ -1060,7 +1063,7 @@ $(EXTSRCDIR)/nsm2:
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
 	@echo "installing nsm2"
-	@cp -a $(EXTBUILDDIR)/nsm2 $(EXTBUILDDIR)
+	@cp -a $(EXTSRCDIR)/nsm2 $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/nsm2 && make && make install
 
 # nsm2 clean
@@ -1086,8 +1089,8 @@ $(EXTSRCDIR)/belle_legacy:
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
-	@cp -a $(EXTBUILDDIR)/belle_legacy $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/belle_legacy && make -j $(NPROCESSES) &&\
+	@cp -a $(EXTSRCDIR)/belle_legacy $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/belle_legacy && make -j $(NPROCESSES) && \
 	    make BELLE2_EXTERNALS_DIR=$(EXTDIR) BELLE2_EXTERNALS_SUBDIR="" install
 
 # belle_legacy clean
@@ -1114,9 +1117,9 @@ $(EXTSRCDIR)/curl/README:
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
-	@cp -a $(EXTBUILDDIR)/curl $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
-	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl &&\
+	@cp -a $(EXTSRCDIR)/curl $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config

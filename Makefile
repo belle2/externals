@@ -1,64 +1,58 @@
 # shut up sub makes
 MAKEFLAGS+=-s
 
+# check if BELLE2_EXTERNALS_OPTION is what we expect it to be
+ifeq (,$(strip $(filter $(BELLE2_EXTERNALS_OPTION),opt debug intel)))
+    $(error Unknown externals build option. Please source the setup_belle2 script.)
+endif
+# and also BELLE2_ARCH is important
+ifeq (,$(BELLE2_ARCH))
+    $(error Architecture not defined. Please source the setup_belle2 script.)
+endif
+
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=gcc binutils bzip2 python gdb libxml2 cmake boost gtest \
-   pkg-config eigen
+    pkg-config eigen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
     vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry \
-    flc vc nsm2 belle_legacy curl relocatable_fixes
+    flc vc nsm2 belle_legacy curl
 
 # python packages to be included with the python package
 export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
 
-# override option for common targets
-$(COMMON_PACKAGES): BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).touch): BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).src): BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).clean): BELLE2_EXTERNALS_OPTION=common
-
-# supplying two BELLE2_EXTERNAL_OPTION targets (opt, debug, intel) will not
-# work, only the first one will be made. Soo, let's check for that and throw an
-# error
-OPTION_GOALS:=$(filter $(MAKECMDGOALS),opt intel debug)
-OPTION_GOALS_COUNT=$(shell python -c 'if len("$(OPTION_GOALS)".strip().split())>1: print("many")')
-ifneq (,$(OPTION_GOALS_COUNT))
-    $(error Only one of opt, debug, intel can be supplied at once)
-endif
-
-# as default, compile all, first make directories, then common, then fix
-# relocatable issues.  
+# as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets
 # are not passed to sub make with the catch all pattern rule below
-all: common $(PACKAGES) relocatable_fixes ; 
+all: $(BELLE2_EXTERNALS_OPTION) ; 
+
 # common needs to compile the common packages. And we need directories first
-common: dirs $(COMMON_PACKAGES) ;
+common:
+	@$(MAKE) -f Makefile.targets dirs $(COMMON_PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
-# compile specifically in opt
-opt: BELLE2_EXTERNALS_OPTION=opt
-opt: all ;
+# compile specifically in given mode
+opt debug intel: common
+	@$(MAKE) -f Makefile.targets dirs $(PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
-# compile specifically in debug
-debug: BELLE2_EXTERNALS_OPTION=debug
-debug: all ;
-
-# compile specifically in intel
-intel: BELLE2_EXTERNALS_OPTION=intel
-intel: all ;
-
+# let touch, src and clean only run on the non-common stuff to avoid expensive
+# recompilation of common packages by mistake.
 touch: $(foreach package,$(PACKAGES),$(package).touch) ;
 src: $(foreach package,$(PACKAGES),$(package).src) ;
 clean: $(foreach package,$(PACKAGES),$(package).clean) ;
 
-# targets we ant to execute for both options
-dirs relocatable_fixes:
-	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=common
-	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
+# so far so good, just running make should now do the correct thing but we want
+# to be able to call make gcc and he should do the correct thing. So every
+# other target we just pass to the sub make but we override the
+# BELLE2_EXTERNALS_OPTION for the $(COMMON_PACKAGES) targets
+$(COMMON_PACKAGES): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES),$(package).touch): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES),$(package).src): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES),$(package).clean): override BELLE2_EXTERNALS_OPTION=common
 
-# all else get executed with the option they got. Specifying the option here is
-# not necessary but helps with debugging
+# all targets not otherwise defined re executed with the option they got by
+# calling make on the targets file.  Specifying the option here is not
+# necessary but helps with debugging
 %:
 	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)

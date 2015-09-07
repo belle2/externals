@@ -1,22 +1,33 @@
 #!/bin/bash
 
+check_archive() {
+  # check if file exists
+  [ -f ${EXTSRCDIR}/${FILENAME} ] || return 1
+  # if so, check if the checksum matches
+  if [ -z $BELLE2_EXTERNALS_IGNORE_CHECKSUM ]; then
+    cat ${BELLE2_EXTERNALS_DIR}/sha256sum.txt | grep ${FILENAME} | sha256sum -c -
+    if [ $? -ne 0 ]; then
+      echo "could not verify ${FILENAME}, if you know what you're doing set"\
+        "\$BELLE2_EXTERNALS_IGNORE_CHECKSUM=1 to ignore the checksum verification";
+      return 1;
+    fi
+  fi
+}
+
 get_archive () {
   URL=$1
   shift
-  EXTENSION=`echo ${URL} | awk -F. '{print $NF}'`
-  wget --tries=3 -O ${EXTSRCDIR}/${FILENAME} "$@" ${URL}
-
-  # check sha256 checksum of archive unless specified otherwise
-  if [ $? -eq 0 ]; then
-    if [ -z $BELLE2_EXTERNALS_IGNORE_CHECKSUM ]; then
-      cat ${BELLE2_EXTERNALS_DIR}/sha256sum.txt | grep ${FILENAME} | sha256sum -c - \
-          || { echo "could not verify ${FILENAME}"; return 1; }
-    fi
-  else
-    return 1;
+  # only download if not present or wrong checksum
+  check_archive
+  if [ $? -ne 0 ]; then
+    wget --tries=3 -O ${EXTSRCDIR}/${FILENAME} "$@" ${URL} || return 1
+    # check again
+    check_archive || return 1
   fi
 
-  # Extract in temp dir and move to final destination name
+  # get file extension
+  EXTENSION=`echo ${URL} | awk -F. '{print $NF}'`
+  # extract in temp dir and move to final destination name
   TMPDIR=`mktemp -d belle2_tmp.XXXX`
   EXTRACT="tar zxf"
   if [ "${EXTENSION}" == "zip" ]; then
@@ -28,7 +39,9 @@ get_archive () {
   pushd ${TMPDIR} &> /dev/null
   # extract file
   ${EXTRACT} ${EXTSRCDIR}/${FILENAME}
-  # Rename the directoy in the tmpdir to what we want
+  # Remove old dir
+  rm -fr ${DIRNAME}
+  # Rename the directory in the tmpdir to what we want
   mv -T * ${DIRNAME}
   popd &> /dev/null
   rm -fr ${TMPDIR}

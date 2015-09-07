@@ -135,6 +135,8 @@ endif
 
 # pkg config wrapper using correct paths and being relocatable (if .pc files are fixed)
 pkg-config: $(EXTBINDIR)/pkg-config
+# nothing to do for src
+pkg-config.src: ;
 
 $(EXTBINDIR)/pkg-config:
 	install pkg-config $@
@@ -158,22 +160,18 @@ $(SHARED_DIRECTORIES):
 	@cd `dirname $@` && ln -sf ../../`basename $@`
 
 binutils: $(EXTBINDIR)/ld
-binutils.src: $(EXTSRCDIR)/binutils/src
+binutils.src: $(EXTSRCDIR)/binutils
 
-$(EXTSRCDIR)/binutils/src:
-	@echo "downloading binutils"
-	@mkdir -p $(EXTSRCDIR)/binutils
-	@cd $(EXTSRCDIR)/binutils && $(DOWNLOAD) binutils-2.25.1.tar.gz http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz
-	@cd $(EXTSRCDIR)/binutils && mv binutils-2.25.1 src
+$(EXTSRCDIR)/binutils:
+	@$(DOWNLOAD) binutils binutils-2.25.1.tar.gz http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz
 
-$(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils/src
+$(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
-	@mkdir -p $(EXTSRCDIR)/binutils/build
+	@mkdir -p $(EXTBUILDDIR)/binutils
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib \
+	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure --disable-werror --disable-multilib \
 	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install
-	@rm -rf $(EXTSRCDIR)/binutils/build
 
 binutils.clean:
 	@echo "cleaning binutils"
@@ -181,24 +179,20 @@ binutils.clean:
 	@rm -rf $(EXTSRCDIR)/binutils
 
 gcc: $(EXTBINDIR)/gcc
-gcc.src: $(EXTSRCDIR)/gcc/src
+gcc.src: $(EXTSRCDIR)/gcc
 
-$(EXTSRCDIR)/gcc/src:
-	@echo "downloading GCC"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) gcc-5.2.0.tar.bz2 ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.2.0/gcc-5.2.0.tar.bz2
-	@mkdir -p $(EXTSRCDIR)/gcc
-	@mv $(EXTSRCDIR)/gcc-5.2.0 $(EXTSRCDIR)/gcc/src
+$(EXTSRCDIR)/gcc:
+	@$(DOWNLOAD) gcc gcc-5.2.0.tar.bz2 ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.2.0/gcc-5.2.0.tar.bz2
 	# download prerequisites automatically
-	@cd $(EXTSRCDIR)/gcc/src && contrib/download_prerequisites
+	@cd $(EXTSRCDIR)/gcc && contrib/download_prerequisites
 
-$(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc/src
+$(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	@echo "building gcc"
 	@mkdir -p $(EXTBUILDDIR)/gcc
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/src/configure --disable-multilib --prefix=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --prefix=$(EXTDIR) \
 	    --enable-languages=c,c++,fortran && \
 	    make -j $(NPROCESSES) && make install
-	@rm -rf $(EXTSRCDIR)/gcc/build
 
 gcc.clean:
 	@echo "cleaning gcc"
@@ -215,8 +209,7 @@ libxml2.touch:
 	@rm $(EXTBINDIR)/xml2-config
 
 $(EXTSRCDIR)/libxml2:
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) libxml2-2.9.2.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
-	@mv $(EXTSRCDIR)/libxml2-2.9.2/ $@
+	@$(DOWNLOAD) libxml2 libxml2-2.9.2.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 && \
@@ -235,8 +228,7 @@ bzip2.touch:
 	@rm -fr $(EXTBINDIR)/bzip2
 
 $(EXTSRCDIR)/bzip2:
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) bzip2-1.0.6.tar.gz http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
-	@mv $(EXTSRCDIR)/bzip2-1.0.6 $@
+	@$(DOWNLOAD) bzip2 bzip2-1.0.6.tar.gz http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
 
 $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
@@ -255,8 +247,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) Python-3.4.3.tgz https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz
-	@mv $(EXTSRCDIR)/Python-3.4.3 $@
+	@$(DOWNLOAD) python Python-3.4.3.tgz https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -270,9 +261,7 @@ gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@echo "downloading gdb"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
-	@mv $(EXTSRCDIR)/gdb-7.8.2 $(EXTSRCDIR)/gdb
+	@$(DOWNLOAD) gdb gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
@@ -293,9 +282,7 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@echo "downloading cmake"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) cmake-3.3.1.tar.gz http://www.cmake.org/files/v3.3/cmake-3.3.1.tar.gz
-	@mv $(EXTSRCDIR)/cmake-3.3.1 $(EXTSRCDIR)/cmake
+	@$(DOWNLOAD) cmake cmake-3.3.1.tar.gz http://www.cmake.org/files/v3.3/cmake-3.3.1.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
@@ -321,10 +308,7 @@ gtest.src: $(EXTSRCDIR)/gtest/README
 
 # google test download
 $(EXTSRCDIR)/gtest/README:
-	@echo "downloading gtest"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
-	@mv $(EXTSRCDIR)/gtest-1.6.0 $(EXTSRCDIR)/gtest
-	@chmod -R u+w $(EXTSRCDIR)/gtest
+	@$(DOWNLOAD) gtest gtest-1.7.0.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
 
 # google test build
 $(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README
@@ -353,9 +337,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@echo "downloading boost"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) boost_1_59_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.bz2
-	@mv $(EXTSRCDIR)/boost_1_59_0 $(EXTSRCDIR)/boost
+	@$(DOWNLOAD) boost boost_1_59_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -380,16 +362,13 @@ clhep.src: $(EXTSRCDIR)/CLHEP
 
 # CLHEP download
 $(EXTSRCDIR)/CLHEP:
-	@echo "downloading CLHEP"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
-	@mv $(EXTSRCDIR)/2.1.3.1/CLHEP $(EXTSRCDIR)/
-	@rmdir $(EXTSRCDIR)/2.1.3.1
+	@$(DOWNLOAD) CLHEP clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/CLHEP
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP && \
+	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP/CLHEP && \
 	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
@@ -408,9 +387,7 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@echo "downloading geant4"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
-	@mv $(EXTSRCDIR)/geant4.9.6.p02 $(EXTSRCDIR)/geant4
+	@$(DOWNLOAD) geant4 geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -442,9 +419,7 @@ postgresql.src: $(EXTSRCDIR)/postgresql/configure
 
 # PostgreSql download
 $(EXTSRCDIR)/postgresql/configure:
-	@echo "downloading PostgreSql"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
-	@mv $(EXTSRCDIR)/postgresql-9.2.4 $(EXTSRCDIR)/postgresql
+	@$(DOWNLOAD) postgresql postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
 
 # PostgreSql build
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
@@ -471,9 +446,7 @@ libpqxx.src: $(EXTSRCDIR)/libpqxx/configure
 
 # libpqxx download
 $(EXTSRCDIR)/libpqxx/configure:
-	@echo "downloading libpqxx"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
-	@mv $(EXTSRCDIR)/libpqxx-4.0 $(EXTSRCDIR)/libpqxx
+	@$(DOWNLOAD) libpqxx libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
 
 # libpqxx build, FIXME: pg_config could be in common? use `which pg_config`?
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
@@ -502,8 +475,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
-	@echo "downloading NeuroBayes"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) NeuroBayes_3.7.0_nbpluginfix.tgz
+	@$(DOWNLOAD) neurobayes NeuroBayes_3.7.0_nbpluginfix.tgz
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
 
 # NeuroBayes build
@@ -531,9 +503,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@echo "downloading xrootd"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
-	@mv $(EXTSRCDIR)/xrootd-3.2.7 $(EXTSRCDIR)/xrootd
+	@$(DOWNLOAD) xrootd xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
@@ -559,9 +529,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
-	@echo "downloading root"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
-	@mv $(EXTSRCDIR)/root-6.04.02 $(EXTSRCDIR)/root
+	@$(DOWNLOAD) root root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 
 # root build
@@ -630,8 +598,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
-	@echo "downloading FastBDT"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) FastBDT-1.2.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-1.2.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
@@ -657,8 +624,7 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@echo "downloading VGM"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) vgm-v3-06.tar.gz svn:export:730:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-06/vgm
+	@$(DOWNLOAD) vgm vgm-v3-06.tar.gz svn:export:730:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-06/vgm
 	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(PATCHDIR)/vgm.patch
 
 # vgm build
@@ -687,8 +653,7 @@ rave.src: $(EXTSRCDIR)/rave/README
 # rave download
 $(EXTSRCDIR)/rave/README:
 	@echo "downloading rave"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
-	@mv $(EXTSRCDIR)/rave-0.6.24 $(EXTSRCDIR)/rave
+	@$(DOWNLOAD) rave rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
 	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
 	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -fs $(ROOTSYS)/include/Math Math
@@ -725,9 +690,7 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@echo "downloading MillepedeII"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
-	@mv $(EXTSRCDIR)/V04-03-00 $(EXTSRCDIR)/MillepedeII
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
@@ -752,9 +715,7 @@ hepmc.src: $(EXTSRCDIR)/hepmc
 
 # HepMC download
 $(EXTSRCDIR)/hepmc:
-	@echo "downloading HepMC"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
-	@mv $(EXTSRCDIR)/HepMC-2.06.09 $(EXTSRCDIR)/hepmc
+	@$(DOWNLOAD) hepmc HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
 
 # HepMC build
 $(EXTLIBDIR)/libHepMC.so: $(EXTSRCDIR)/hepmc
@@ -781,9 +742,7 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@echo "downloading Pythia"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
-	@mv $(EXTSRCDIR)/pythia8209 $(EXTSRCDIR)/pythia
+	@$(DOWNLOAD) pythia pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
 	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia.patch
 
 # Pythia build
@@ -815,8 +774,7 @@ photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
-	@echo "downloading Photos"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
+	@$(DOWNLOAD) PHOTOS PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
 # Photos build
@@ -843,8 +801,7 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
-	@echo "downloading Tauola"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
+	@$(DOWNLOAD) TAUOLA TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
@@ -869,8 +826,7 @@ evtgen.src: $(EXTSRCDIR)/evtgen/configure
 
 # EvtGen download
 $(EXTSRCDIR)/evtgen/configure:
-	@echo "downloading EvtGen"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
+	@$(DOWNLOAD) EvtGen EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
 	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
@@ -906,9 +862,7 @@ phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
 
 # Phokhara download
 $(EXTSRCDIR)/phokhara/Makefile:
-	@echo "downloading Phokhara"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
-	@mv $(EXTSRCDIR)/PH9.1 $(EXTSRCDIR)/phokhara
+	@$(DOWNLOAD) phokhara PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
 	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(PATCHDIR)/phokhara.patch
 
@@ -938,13 +892,12 @@ madgraph.src: $(EXTDIR)/madgraph/bin/mg5 $(EXTSRCDIR)/ExRootAnalysis/Makefile
 # MadGraph developer's kit installation
 $(EXTDIR)/madgraph/bin/mg5:
 	@echo "downloading MadGraph"
-	@cd $(EXTDIR) && $(DOWNLOAD) MG5_aMC_v2.2.2.tar.gz
-	@mv $(EXTDIR)/MG5_aMC_v2_2_2 $(EXTDIR)/madgraph
+	@$(DOWNLOAD) madgraph MG5_aMC_v2.2.2.tar.gz
+	@mv $(EXTSRCDIR)/madgraph $(EXTDIR)/madgraph
 
 # MadGraph ExRootAnalysis download
 $(EXTSRCDIR)/ExRootAnalysis/Makefile:
-	@echo "downloading ExRootAnalysis"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) ExRootAnalysis_V1.1.2.tar.gz
+	@$(DOWNLOAD) ExRootAnalysis ExRootAnalysis_V1.1.2.tar.gz
 
 # MadGraph ExRootAnalysis build
 $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
@@ -968,13 +921,11 @@ madgraph.touch:
 
 # dependencies for CRY
 cry: $(EXTLIBDIR)/libCRY.a
-cry.src: $(EXTSRCDIR)/cry/configure
+cry.src: $(EXTSRCDIR)/cry/README
 
 # CRY download
 $(EXTSRCDIR)/cry/README:
-	@echo "downloading CRY"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
-	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
+	@$(DOWNLOAD) cry cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
 	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(PATCHDIR)/cry.patch
 
 # CRY build
@@ -1002,9 +953,7 @@ flc.src: $(EXTSRCDIR)/FLC/README
 
 # FLC download
 $(EXTSRCDIR)/FLC/README:
-	@echo "downloading FLC"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
-	@mv $(EXTSRCDIR)/BELLE_FLC_1.1 $(EXTSRCDIR)/FLC
+	@$(DOWNLOAD) FLC BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
 	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(PATCHDIR)/FLC.patch
 
 # FLC build, FIXME: make clean? delete folder first?
@@ -1033,9 +982,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@echo "downloading eigen"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
-	@mv $(EXTSRCDIR)/eigen-eigen-ffa86ffb5570 $(EXTSRCDIR)/eigen
+	@$(DOWNLOAD) eigen eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
 
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
@@ -1058,9 +1005,7 @@ vc.src: $(EXTSRCDIR)/vc
 
 # vc download
 $(EXTSRCDIR)/vc:
-	@echo "downloading vc"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
-	@mv $(EXTSRCDIR)/Vc-0.7.1 $(EXTSRCDIR)/vc
+	@$(DOWNLOAD) vc Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
 
 # vc build
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
@@ -1087,8 +1032,7 @@ nsm2.src: $(EXTSRCDIR)/nsm2
 
 # nsm2 download
 $(EXTSRCDIR)/nsm2:
-	@echo "downloading nsm2"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) nsm2.1.9.27.tgz
+	@$(DOWNLOAD) nsm2 nsm2.1.9.27.tgz
 
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
@@ -1113,8 +1057,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@echo "downloading belle_legacy"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
+	@$(DOWNLOAD) belle_legacy belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
@@ -1140,9 +1083,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@echo "downloading curl"
-	@cd $(EXTSRCDIR) && $(DOWNLOAD) curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
-	@mv $(EXTSRCDIR)/curl-7.41.0 $(EXTSRCDIR)/curl
+	@$(DOWNLOAD) curl curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README

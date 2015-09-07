@@ -1,6 +1,11 @@
 # shut up sub makes
 MAKEFLAGS+=-s
 
+# downloading now checks the sha256sum of the downloaded files. If you want to
+# skip this (to upgrade packages or if sha256sum is not installed on your
+# system) then comment out the following line
+# export BELLE2_EXTERNALS_IGNORE_CHECKSUM=1
+
 # check if BELLE2_EXTERNALS_OPTION is what we expect it to be
 ifeq (,$(strip $(filter $(BELLE2_EXTERNALS_OPTION),opt debug intel)))
     $(error Unknown externals build option. Please source the setup_belle2 script.)
@@ -39,7 +44,7 @@ opt debug intel: common
 # let touch, src and clean only run on the non-common stuff to avoid expensive
 # recompilation of common packages by mistake.
 touch: $(foreach package,$(PACKAGES),$(package).touch) ;
-src: $(foreach package,$(PACKAGES),$(package).src) ;
+src: $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
 clean: $(foreach package,$(PACKAGES),$(package).clean) ;
 
 # so far so good, just running make should now do the correct thing but we want
@@ -56,3 +61,7 @@ $(foreach package,$(COMMON_PACKAGES),$(package).clean): override BELLE2_EXTERNAL
 # necessary but helps with debugging
 %:
 	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
+
+# make new checksum file
+checksum:
+	sha256sum -b $(sort $(foreach ext,zip bz2 gz tgz,$(wildcard src/*.$(ext)))) > sha256sum.txt

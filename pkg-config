@@ -1,0 +1,17 @@
+#!/bin/bash
+# This script wraps the system pkg-config by adding a new variable to point to
+# the BELLE2_EXTERNALS_DIR. This makes pkg-config work even when when the path
+# changes (assuming the variable is used in the .pc files which we enforce
+# using sed).
+if [ -z $BELLE2_EXTERNALS_DIR ]; then
+    echo "Belle2 environment not set up"
+    exit 1;
+fi
+# add our pkgconfig paths
+export PKG_CONFIG_PATH=$BELLE2_EXTERNALS_DIR/$BELLE2_SUBDIR/lib/pkgconfig:$BELLE2_EXTERNALS_DIR/$BELLE2_ARCH/common/lib/pkgconfig:$PKG_CONFIG_PATH
+# call system pkg-config and define extra variable. It would be much better to
+# find the default pkg-config instead of assuming /usr/bin but "env -i `which
+# pkg-config`" does not work on SL5. Also, the extra variable needs to be the
+# last argument on SL5. As first it screws up variable queries like pkg-config
+# --variable prefix freetype2 as used by freetype-config.
+/usr/bin/pkg-config "$@" --define-variable=BELLE2_EXTERNALS_DIR=$BELLE2_EXTERNALS_DIR "$@"

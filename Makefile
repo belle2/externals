@@ -15,7 +15,7 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES=gcc binutils gdb python libxml2 cmake boost gtest
+COMMON_PACKAGES=gcc binutils gdb python libxml2 cmake boost gtest pkg-config
 
 # python packages to be included with the python package
 PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
@@ -148,7 +148,7 @@ DIRECTORIES=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTLIBDIR) $(EXTBINDIR)
 SHARED_DIRECTORIES=$(EXTINCDIR) $(EXTDIR)/share
 
 # all targets (in this order)
-all: $(DIRECTORIES) $(SHARED_DIRECTORIES) $(ALL_TARGETS)
+all: $(DIRECTORIES) $(SHARED_DIRECTORIES) $(ALL_TARGETS) relocatable_fixes
 
 # get source code of all packages
 src: $(DIRECTORIES) $(SHARED_DIRECTORIES) $(foreach package,$(ALL_TARGETS),$(package).src)
@@ -162,6 +162,18 @@ touch: $(foreach package,$(ALL_TARGETS),$(package).touch)
 # common packages, make sure they are compiled first
 common:
 	$(MAKE) BELLE2_EXTERNALS_OPTION=common
+
+# pkg config wrapper using correct paths and being relocatable (if .pc files are fixed)
+pkg-config: $(EXTBINDIR)/pkg-config
+
+$(EXTBINDIR)/pkg-config:
+	install pkg-config $@
+
+relocatable_fixes:
+	@#Fix absolute paths in .pc files
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
+	@#Fix absolute paths in pip packages
+	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 # create directories
 $(DIRECTORIES):
@@ -235,8 +247,11 @@ $(EXTSRCDIR)/libxml2:
 	@mv $(EXTSRCDIR)/libxml2-2.9.2/ $@
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
-	cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 &&\
+	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 &&\
 	    make -j $(NPROCESSES) && make install
+	@#Fix absolute path in xml2-config and lib/xml2Conf.sh
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xml2Conf.sh
 
 bzip2: $(EXTBINDIR)/bzip2
 bzip2.src: $(EXTSRCDIR)/bzip2
@@ -276,7 +291,6 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 
 $(PYTHON_PACKAGES): python
 	@$(EXTBINDIR)/pip3 -q --disable-pip-version-check install $@
-	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
@@ -432,6 +446,10 @@ $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 &&\
 	    make -j $(NPROCESSES) && make install
+	@# Fix absolute path in geant4-config
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4-config
+	@# Also fix geant4make just to be safe
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-9.6.2/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
@@ -488,6 +506,8 @@ $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
 	    make -j $(NPROCESSES) && make install
+	@#Fix absolute path in pqxx-config
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 
 # libpqxx clean
 libpqxx.clean:
@@ -698,6 +718,8 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR)\
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR)
 	@cd $(EXTSRCDIR)/rave && make -j $(NPROCESSES) && make install
+	@#Fix absolute path in .cmake file/RaveConfig.cmake:
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/rave/RaveConfig.cmake
 
 # rave clean
 rave.clean:
@@ -783,6 +805,10 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared\
 	    --with-hepmc3=$(EXTDIR) $(PYTHIA_OPTION) &&\
 	    make -j $(NPROCESSES) && make install
+	@#Fix absolute path in pythia8-config and make it executable
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
+	@sed -i "s:\$$PREFIX/Makefile.inc:\$$PREFIX/share/Pythia8/examples/Makefile.inc:g" $(EXTBINDIR)/pythia8-config
+	@chmod a+x $(EXTBINDIR)/pythia8-config
 
 # Pythia clean
 pythia.clean:
@@ -1041,6 +1067,8 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
 	@mkdir -p $(EXTBUILDDIR)/vc
 	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc &&\
 	    make -j $(NPROCESSES) && make install
+	@#Fix absolute path in .cmake file/RaveConfig.cmake:
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/Vc/VcConfig.cmake
 
 # vc clean
 vc.clean:
@@ -1117,9 +1145,11 @@ $(EXTSRCDIR)/curl/README:
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
-	@cd $(EXTSRCDIR)/curl && ./configure --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
+	@cd $(EXTSRCDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
 	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl &&\
 	    make -j $(NPROCESSES) && make install
+	@#Fix absolute path in curl-config
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config
 
 # curl clean
 curl.clean:

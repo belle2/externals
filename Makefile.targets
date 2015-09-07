@@ -267,10 +267,14 @@ $(EXTSRCDIR)/python:
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
-	@echo `which g++`
 	#FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
-	@cd $< && ./configure --enable-shared --without-pymalloc --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
+	@mkdir -p $(EXTBUILDDIR)/python
+	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure --enable-shared --without-pymalloc \
+	    --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
+# problem with pip 6.08 on SL5, upgrade to newer version before trying to install other packages
+	@$(EXTBINDIR)/pip3 --disable-pip-version-check --trusted-host pypi.python.org install -U pip==7.1.2
+# now intall all python packages defined in Makefile
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
 
 gdb: $(EXTBINDIR)/gdb

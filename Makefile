@@ -693,7 +693,7 @@ $(EXTSRCDIR)/pythia/configure:
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
-	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc3=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
 	@cp $(EXTDIR)/pythia/lib/lib* $(EXTLIBDIR)/
 	@cp -a $(EXTDIR)/pythia/include/* $(EXTINCDIR)/
 	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/share/Pythia8/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*

@@ -111,12 +111,26 @@ endif
 ALL_TARGETS=
 # if option is set to common we compile the common and python packages only
 ifeq ($(BELLE2_EXTERNALS_OPTION),common)
-  $(info common mode)
+  $(info compiling common packages)
   ALL_TARGETS=$(COMMON_PACKAGES) $(PYTHON_PACKAGES)
 else
+  # make sure that common targets are not called directly
+  # this is still not 100% correct as someone could call make
+  # Linux_x86_64/opt/bin/ld but in that case I think they probably deserve to
+  # run into problems or know what they are doing anyway
+  COMMON_GOALS:=$(filter $(MAKECMDGOALS), $(COMMON_PACKAGES))
+  COMMON_GOALS+=$(filter $(MAKECMDGOALS), $(foreach package,$(COMMON_PACKAGES),$(package).touch))
+  COMMON_GOALS+=$(filter $(MAKECMDGOALS), $(foreach package,$(COMMON_PACKAGES),$(package).src))
+  COMMON_GOALS+=$(filter $(MAKECMDGOALS), $(foreach package,$(COMMON_PACKAGES),$(package).clean))
+  COMMON_GOALS:=$(strip $(COMMON_GOALS))
+  ifneq (,$(COMMON_GOALS))
+    $(error The following targets are only valid in common mode: $(COMMON_GOALS).\
+        You have to call "make BELLE2_EXTERNALS_OPTION=common $(COMMON_GOALS)")
+  endif
+
   # otherwise let's take the stuff from common and build software packages
   ALL_TARGETS=common $(PACKAGES)
-  $(info compiling $(BELLE2_EXTERNALS_OPTION))
+  $(info compiling packages with option $(BELLE2_EXTERNALS_OPTION))
 
   CMAKE=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin/cmake
   # add opt path as fallback for debug externals

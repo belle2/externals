@@ -519,13 +519,18 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-4.2.3.tar.gz http://xrootd.org/download/v4.2.3/xrootd-4.2.3.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
-	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && \
+# FIXME: python support for version 3 seems to be broken so we disable python
+# support for now. But let's leave the flags in so that it doesn't get lost
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	    -DENABLE_PYTHON=OFF \
+	    -DPython_ADDITIONAL_VERSIONS=3.4 -DPYTHON_EXECUTABLE=`which python3` \
+	    $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
 
 # xrootd clean command

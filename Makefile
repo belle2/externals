@@ -51,8 +51,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export ROOT_OPTION=
-  export ROOTBUILD=debug
+  export ROOT_OPTION=--build=debug
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -67,7 +66,6 @@ ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
   export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
   export ROOT_OPTION=
-  export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -87,7 +85,6 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   ifeq ($(shell uname -m),x86_64)
     export ROOT_OPTION=linuxx8664icc
   endif
-  export ROOTBUILD=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -300,7 +297,8 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@echo `which g++`
-	@cd $< && ./configure --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
+	@#FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
+	@cd $< && ./configure --enable-shared --without-pymalloc --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
 
 $(PYTHON_PACKAGES): python
@@ -611,10 +609,10 @@ $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sf ../../../include/root include
 	@# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing \
-	    --with-xrootd=$(EXTDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
-	    --disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit\
-	    $(ROOT_OPTION) $(ROOT_EXTA_OPTION) && \
+	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR)\
+	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql\
+	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit\
+	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
 

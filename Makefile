@@ -15,7 +15,7 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES=gcc binutils gdb python libxml2 cmake boost gtest pkg-config
+COMMON_PACKAGES=gcc binutils bzip2 gdb python libxml2 cmake boost gtest pkg-config
 
 # python packages to be included with the python package
 PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1

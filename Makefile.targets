@@ -573,6 +573,15 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sf ../../../include/root include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
+# FIXME: cmake is not quite working how we want it: -Dminimal=ON is ignored and
+# -Dfail-on-missing=ON leads to all kinds of trouble as it also fails if an
+# automatic dependency (like gviz) is not found. So for the time being we would
+# have to disable all options by hand and reenable them when needed. While this
+# is doable a -Dminimal=ON and then enable what we need would be much
+# preferrable. Once this works we can use this. Probably needs pgsql library path
+#	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
+#	    -DPython_ADDITIONAL_VERSIONS=3.4 -Dminimal=ON -Dfail-on-missing=ON -Dgsl_shared=ON \
+#	    -Droofit=ON -Dxrootd=ON -Dpgsql=ON -Dbuiltin_gsl=ON $(ROOT_OPTION) $(ROOTCONFIG_EXTRA)
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
 	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \
 	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit \

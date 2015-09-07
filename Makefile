@@ -304,7 +304,7 @@ $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR) && \
+	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR) --with-python=python3 && \
 	    make -j $(NPROCESSES) && make -j $(NPROCESSES) install
 
 gdb.clean:

@@ -1,34 +1,36 @@
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
-export EXTDIR := $(BELLE2_EXTERNALS_DIR)
-export EXTSRCDIR := $(EXTDIR)/src
-export EXTBUILDDIR := $(EXTDIR)/build/$(BELLE2_EXTERNALS_SUBDIR)
+export PATCHDIR := $(BELLE2_EXTERNALS_DIR)
+export EXTDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_EXTERNALS_SUBDIR)
+export EXTSRCDIR := $(BELLE2_EXTERNALS_DIR)/src
+export EXTBUILDDIR := $(BELLE2_EXTERNALS_DIR)/build/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTINCDIR := $(EXTDIR)/include
-export EXTLIBDIR := $(EXTDIR)/lib/$(BELLE2_EXTERNALS_SUBDIR)
-export EXTBINDIR := $(EXTDIR)/bin/$(BELLE2_EXTERNALS_SUBDIR)
+export EXTLIBDIR := $(EXTDIR)/lib
+export EXTBINDIR := $(EXTDIR)/bin
+export ROOTSYS := $(EXTDIR)/root
 
-export ROOTSYS := $(EXTDIR)/root/$(BELLE2_EXTERNALS_SUBDIR)
-export PATH := $(ROOTSYS)/bin:$(PATH)
-ifeq ($(shell uname),Darwin)
-  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(DYLD_LIBRARY_PATH)
-else
-  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(LD_LIBRARY_PATH)
-endif
+# download script to get and extract sources
+export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
+
+# targets only needed by extoption OPT
+# Note: system gcc and our binutils might be incompatible, so build gcc first
+OPT_TARGETS=gcc binutils
+
+# base targets we don't want to compile in debug mode anyway
+BASE_TARGETS=gdb python libxml2 cmake boost gtest
+
+# external packages
+PACKAGES=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm \
+         rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry flc \
+         eigen vc nsm2 belle_legacy curl
+
+# python packages
+PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
+#SCons==2.3.0
 
 export LANG=C
 
-ifndef BELLE2_SYSTEM_COMPILER
-  #binutils/gcc/gdb environment
-  export PATH := $(EXTDIR)/gcc/bin:$(PATH)
-  export LD_LIBRARY_PATH := $(EXTDIR)/gcc/lib:$(EXTDIR)/gcc/lib64:$(LD_LIBRARY_PATH)
-else
-  $(info Note: Will use system GCC to build the externals (unset BELLE2_SYSTEM_COMPILER to change this))
-endif
-
-
 # set cmake command
-CMAKE=$(EXTDIR)/cmake/bin/cmake
-export PATH := $(EXTDIR)/cmake/bin:$(PATH)
 
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
@@ -46,7 +48,7 @@ ifeq ($(NPROCESSES),0)
   NPROCESSES=1
 endif
 
-# set debug or optimization options 
+# set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export CXXFLAGS=-g
   export BOOST_OPTION=variant=debug
@@ -58,7 +60,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-else 
+else
 ifeq ($(BELLE2_EXTERNALS_OPTION),opt)
   export CXXFLAGS=-O3
   export BOOST_OPTION=variant=release
@@ -101,72 +103,88 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
-# check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
-ifneq ($(GEANT4_DATA_EXISTS),0)
-  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
-endif
-
 # check for graphics packages
 GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
+ALL_TARGETS=
+# if we don't compile in debug we compile everything
+ifneq ($(BELLE2_EXTERNALS_OPTION),debug)
+  ifeq ($(BELLE2_EXTERNALS_OPTION),opt)
+    ALL_TARGETS=$(OPT_TARGETS)
+  endif
+  $(info non debug mode)
 
-# external packages
-PACKAGES=gtest boost clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry flc eigen vc nsm2 belle_legacy curl
+  ALL_TARGETS+=$(BASE_TARGETS) $(PYTHON_PACKAGES) $(PACKAGES)
+  CMAKE=$(EXTBINDIR)/cmake
+
+  # check whether geant4 data files are already installed
+  GEANT4_DATA_EXISTS=$(shell test -d $(EXTDIR)/share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
+  ifneq ($(GEANT4_DATA_EXISTS),0)
+   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
+  endif
+else
+  # otherwise let's take the big system libraries from opt, we don't want to debug them anyway
+  # and let's make a symlink to the opt/geant4 data
+  ALL_TARGETS=$(PACKAGES)
+  $(info debug mode)
+
+  CMAKE=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/bin/cmake
+  # add opt path as fallback for debug externals
+  export PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/bin:$(PATH)
+  ifeq ($(shell uname),Darwin)
+    export DYLD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/lib:$(DYLD_LIBRARY_PATH)
+  else
+    export LD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/lib:$(LD_LIBRARY_PATH)
+  endif
+endif
+
+# now add path for current option
+export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(PATH)
+ifeq ($(shell uname),Darwin)
+  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(DYLD_LIBRARY_PATH)
+else
+  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(LD_LIBRARY_PATH)
+endif
+
+# directory we want to create  creation
+DIRECTORIES=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
 
 # all targets (in this order)
-# Note: system gcc and our binutils might be incompatible, so build gcc first
-all: dirs gcc binutils gdb cmake $(PACKAGES)
+all: $(DIRECTORIES) $(ALL_TARGETS)
 
 # get source code of all packages
-src: dirs $(foreach package,$(PACKAGES),$(package).src)
+src: $(DIRECTORIES) $(foreach package,$(ALL_TARGETS),$(package).src)
 
 # clean up targets
-clean: $(foreach package,$(PACKAGES),$(package).clean)
+clean: $(foreach package,$(ALL_TARGETS),$(package).clean)
 
 # remove only target files
-touch: $(foreach package,$(PACKAGES),$(package).touch)
+touch: $(foreach package,$(ALL_TARGETS),$(package).touch)
 
-# directory creation
-dirs: $(EXTSRCDIR) $(EXTBUILDDIR) $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
+# create directory
+$(DIRECTORIES):
+	@echo "create  $@"
+	@mkdir -p $@
 
-$(EXTSRCDIR):
-	@echo "create  $(EXTSRCDIR)"
-	@mkdir -p $(EXTSRCDIR)
-
-$(EXTBUILDDIR):
-	@echo "create  $(EXTBUILDDIR)"
-	@mkdir -p $(EXTBUILDDIR)
-
-$(EXTINCDIR):
-	@echo "create  $(EXTINCDIR)"
-	@mkdir -p $(EXTINCDIR)
-
-$(EXTLIBDIR):
-	@echo "create  $(EXTLIBDIR)"
-	@mkdir -p $(EXTLIBDIR)
-
-$(EXTBINDIR):
-	@echo "create  $(EXTBINDIR)"
-	@mkdir -p $(EXTBINDIR)
-
-binutils: $(EXTDIR)/gcc/bin/ld
+binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils/src
 
 $(EXTSRCDIR)/binutils/src:
 	@echo "downloading binutils"
 	@mkdir -p $(EXTSRCDIR)/binutils
-	@cd $(EXTSRCDIR)/binutils && $(EXTDIR)/download.sh binutils-2.23.1.tar.gz
-	@cd $(EXTSRCDIR)/binutils && mv binutils-2.23.1 src
+	@cd $(EXTSRCDIR)/binutils && $(DOWNLOAD) binutils-2.25.1.tar.gz http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz
+	@cd $(EXTSRCDIR)/binutils && mv binutils-2.25.1 src
 
-$(EXTDIR)/gcc/bin/ld: $(EXTSRCDIR)/binutils/src
+$(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils/src
 	@echo "building binutils"
 	@mkdir -p $(EXTSRCDIR)/binutils/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib --enable-shared --prefix=$(EXTDIR)/gcc && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) && make tooldir=$(EXTDIR)/gcc -j $(NPROCESSES) install
+	@cd $(EXTSRCDIR)/binutils/build && unset CXXFLAGS && ../src/configure --disable-werror --disable-multilib\
+	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) &&\
+	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install
 	@rm -rf $(EXTSRCDIR)/binutils/build
 
 binutils.clean:
@@ -174,20 +192,22 @@ binutils.clean:
 	@-cd $(EXTSRCDIR)/binutils/build && make distclean
 	@rm -rf $(EXTSRCDIR)/binutils
 
-gcc: $(EXTDIR)/gcc/bin/gcc
+gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc/src
 
 $(EXTSRCDIR)/gcc/src:
 	@echo "downloading GCC"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gcc-4.9.2-contrib.tar.bz2
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) gcc-4.9.2-contrib.tar.bz2
 	@mkdir -p $(EXTSRCDIR)/gcc
 	@mv $(EXTSRCDIR)/gcc-4.9.2 $(EXTSRCDIR)/gcc/src
 
-$(EXTDIR)/gcc/bin/gcc: $(EXTSRCDIR)/gcc/src
+$(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc/src
 	@echo "building gcc"
 	@mkdir -p $(EXTSRCDIR)/gcc/build
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR)/gcc --enable-languages=c,c++,fortran && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/gcc/build && unset CXXFLAGS && ../src/configure --disable-multilib --prefix=$(EXTDIR) \
+	    --enable-languages=c,c++,fortran &&\
+	    make -j $(NPROCESSES) && make install
 	@rm -rf $(EXTSRCDIR)/gcc/build
 
 gcc.clean:
@@ -195,19 +215,77 @@ gcc.clean:
 	@rm -rf $(EXTSRCDIR)/gcc
 	@rm -rf $(EXTDIR)/gcc
 
-gdb: $(EXTDIR)/gcc/bin/gdb
+libxml2: $(EXTBINDIR)/xml2-config
+libxml2.src: $(EXTSRCDIR)/libxml2
+
+libxml2.clean:
+	@rm -fr $(EXTSRCDIR)/libxml
+
+libxml2.touch:
+	@rm $(EXTBINDIR)/xml2-config
+
+$(EXTSRCDIR)/libxml2:
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) libxml2-2.9.2.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
+	@mv $(EXTSRCDIR)/libxml2-2.9.2/ $@
+
+$(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
+	cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 &&\
+	    make && make install
+
+bzip2: $(EXTBINDIR)/bzip2
+bzip2.src: $(EXTSRCDIR)/bzip2
+
+bzip2.clean:
+	@rm -fr $(EXTSRCDIR)/bzip2
+
+bzip2.touch:
+	@rm -fr $(EXTBINDIR)/bzip2
+
+$(EXTSRCDIR)/bzip2:
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) bzip2-1.0.6.tar.gz http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+	@mv $(EXTSRCDIR)/bzip2-1.0.6 $@
+
+$(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
+	cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
+	cd $< && make install PREFIX=$(EXTDIR)
+
+python: $(EXTBINDIR)/python3
+python.src: $(EXTSRCDIR)/python
+
+python.clean:
+	@rm -fr $(EXTSRCDIR)/python
+
+python.touch:
+	@rm -fr $(EXTBINDIR)/python3
+
+$(EXTSRCDIR)/python:
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) Python-3.4.3.tgz https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz
+	@mv $(EXTSRCDIR)/Python-3.4.3 $@
+
+$(EXTBINDIR)/python3: $(EXTSRCDIR)/python
+	@echo "building python"
+	@echo `which g++`
+	@cd $< && ./configure --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
+	    make -j $(NPROCESSES) && make install
+
+$(PYTHON_PACKAGES): python
+	@$(EXTBINDIR)/pip3 -q --disable-pip-version-check install $@
+	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
+
+gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
 	@echo "downloading gdb"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
 	@mv $(EXTSRCDIR)/gdb-7.8.2 $(EXTSRCDIR)/gdb
 
-$(EXTDIR)/gcc/bin/gdb: $(EXTSRCDIR)/gdb
+$(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR)/gcc && make -j $(NPROCESSES) && make -j $(NPROCESSES) install
+	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make -j $(NPROCESSES) install
 
 gdb.clean:
 	@echo "cleaning gdb"
@@ -216,29 +294,31 @@ gdb.clean:
 
 
 # dependencies for cmake
-cmake: $(EXTDIR)/cmake/bin/cmake
+cmake: $(EXTBINDIR)/cmake
 cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
 	@echo "downloading cmake"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) cmake-2.8.6.tar.gz http://www.cmake.org/files/v2.8/cmake-2.8.6.tar.gz
 	@mv $(EXTSRCDIR)/cmake-2.8.6 $(EXTSRCDIR)/cmake
 
 # cmake build
-$(EXTDIR)/cmake/bin/cmake: $(EXTSRCDIR)/cmake/bootstrap
+$(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
 	@echo "building cmake"
-	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR)/cmake && sed -i 's/BUILD_CursesDialog\:BOOL=ON/BUILD_CursesDialog\:BOOL=OFF/g' CMakeCache.txt && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR) && \
+	    sed -i 's/BUILD_CursesDialog\:BOOL=ON/BUILD_CursesDialog\:BOOL=OFF/g' CMakeCache.txt && \
+	    make -j $(NPROCESSES) && make install
 
 # cmake clean
 cmake.clean:
 	@echo "cleaning cmake"
 	@cd $(EXTSRCDIR)/cmake && make clean
-	@rm -f $(EXTDIR)/cmake/bin/cmake
+	@rm -f $(EXTBINDIR)/cmake
 
 # cmake touch
 cmake.touch:
-	@rm -f $(EXTDIR)/cmake/bin/cmake
+	@rm -f $(EXTBINDIR)/cmake
 
 
 # dependencies for google test
@@ -248,7 +328,7 @@ gtest.src: $(EXTSRCDIR)/gtest/README
 # google test download
 $(EXTSRCDIR)/gtest/README:
 	@echo "downloading gtest"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) gtest-1.6.0.tar.gz http://googletest.googlecode.com/files/gtest-1.6.0.zip
 	@mv $(EXTSRCDIR)/gtest-1.6.0 $(EXTSRCDIR)/gtest
 	@chmod -R u+w $(EXTSRCDIR)/gtest
 
@@ -280,13 +360,14 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
 	@echo "downloading boost"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh boost_1_57_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.57.0/boost_1_57_0.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) boost_1_57_0.tar.gz http://downloads.sourceforge.net/project/boost/boost/1.57.0/boost_1_57_0.tar.gz
 	@mv $(EXTSRCDIR)/boost_1_57_0 $(EXTSRCDIR)/boost
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
-	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu && ./b2 install --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
+	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --without-icu && \
+	    ./b2 install --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 
 # boost clean
 boost.clean:
@@ -306,7 +387,7 @@ clhep.src: $(EXTSRCDIR)/CLHEP
 # CLHEP download
 $(EXTSRCDIR)/CLHEP:
 	@echo "downloading CLHEP"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) clhep-2.1.3.1.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.1.3.1.tgz
 	@mv $(EXTSRCDIR)/2.1.3.1/CLHEP $(EXTSRCDIR)/
 	@rmdir $(EXTSRCDIR)/2.1.3.1
 
@@ -314,10 +395,8 @@ $(EXTSRCDIR)/CLHEP:
 $(EXTBINDIR)/clhep-config: $(CMAKE) $(EXTSRCDIR)/CLHEP
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/CLHEP $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP && make -j $(NPROCESSES) && make install
-	@cp -a $(EXTDIR)/CLHEP/include/CLHEP $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/CLHEP/lib/* $(EXTLIBDIR)/
-	@cp $(EXTDIR)/CLHEP/bin/* $(EXTBINDIR)/
+	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP && \
+	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
 clhep.clean:
@@ -336,23 +415,17 @@ geant4.src: $(EXTSRCDIR)/geant4
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
 	@echo "downloading geant4"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) geant4.9.6.p02.tar.gz http://geant4.cern.ch/support/source/geant4.9.6.p02.tar.gz
 	@mv $(EXTSRCDIR)/geant4.9.6.p02 $(EXTSRCDIR)/geant4
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(CMAKE) $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@echo "building geant4"
 	@mkdir -p $(EXTBUILDDIR)/geant4
-	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/geant4 $(GEANT4_OPTION) \
-	-DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	-DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && make -j $(NPROCESSES) && make install
-	@cp -a $(EXTDIR)/geant4/include/Geant4 $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/geant4/lib*/* $(EXTLIBDIR)/
-	@cp -a $(EXTDIR)/geant4/bin/* $(EXTBINDIR)/
-	@cp -a $(EXTDIR)/geant4/share $(EXTDIR)/
-	@sed -f geant4.sed -i $(EXTBINDIR)/geant4-config
-	@sed -f geant4.sed -i $(EXTBINDIR)/geant4.sh
-	@sed -f geant4.sed -i $(EXTBINDIR)/geant4.csh
+	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(GEANT4_OPTION) \
+	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
+	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 &&\
+	    make -j $(NPROCESSES) && make install
 
 # GEANT4 clean
 geant4.clean:
@@ -372,14 +445,15 @@ postgresql.src: $(EXTSRCDIR)/postgresql/configure
 # PostgreSql download
 $(EXTSRCDIR)/postgresql/configure:
 	@echo "downloading PostgreSql"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
 	@mv $(EXTSRCDIR)/postgresql-9.2.4 $(EXTSRCDIR)/postgresql
 
 # PostgreSql build
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@cd $(EXTSRCDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
-	--includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
+	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
+	    make -j $(NPROCESSES) && make install
 
 # PostgreSql clean
 postgresql.clean:
@@ -399,14 +473,15 @@ libpqxx.src: $(EXTSRCDIR)/libpqxx/configure
 # libpqxx download
 $(EXTSRCDIR)/libpqxx/configure:
 	@echo "downloading libpqxx"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
 	@mv $(EXTSRCDIR)/libpqxx-4.0 $(EXTSRCDIR)/libpqxx
 
 # libpqxx build
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared --prefix=$(EXTDIR) \
-	--includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
+	    make -j $(NPROCESSES) && make install
 
 # libpqxx clean
 libpqxx.clean:
@@ -426,16 +501,16 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
 	@echo "downloading NeuroBayes"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh NeuroBayes_3.7.0_nbpluginfix.tgz
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(EXTDIR)/neurobayes.patch
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) NeuroBayes_3.7.0_nbpluginfix.tgz
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
-	$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
-	$(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
-	$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
+	@$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
+	    $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
+	@$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
 	@cp $(EXTSRCDIR)/neurobayes/`uname -m`/* $(EXTLIBDIR)/
 
 # NeuroBayes clean command
@@ -455,17 +530,15 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 # xrootd download
 $(EXTSRCDIR)/xrootd:
 	@echo "downloading xrootd"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) xrootd-3.2.7.tar.gz http://xrootd.org/download/v3.2.7/xrootd-3.2.7.tar.gz
 	@mv $(EXTSRCDIR)/xrootd-3.2.7 $(EXTSRCDIR)/xrootd
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(CMAKE) $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
-	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/xrootd $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && make -j $(NPROCESSES) && make install
-	@cp -a $(EXTDIR)/xrootd/include/* $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/xrootd/lib*/* $(EXTLIBDIR)/
-	@cp $(EXTDIR)/xrootd/bin/* $(EXTBINDIR)/
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd &&\
+	    make -j $(NPROCESSES) && make install
 
 # xrootd clean command
 xrootd.clean:
@@ -485,7 +558,7 @@ root.src: $(EXTSRCDIR)/root/README
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "downloading root"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
 	@mv $(EXTSRCDIR)/root-6.04.02 $(EXTSRCDIR)/root
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 
@@ -493,11 +566,12 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	@echo "building root"
 	@mkdir -p $(EXTBUILDDIR)/root
-	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --with-xrootd=$(EXTDIR)/xrootd \
-	--with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
-	--disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit $(ROOT_OPTION) && \
-	make -j $(NPROCESSES) && make install
-	@mkdir -p $(EXTINCDIR)/root && cp -a $(ROOTSYS)/include/* $(EXTINCDIR)/root
+	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing \
+	    --with-xrootd=$(EXTDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
+	    --disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit\
+	    $(ROOT_OPTION) $(ROOT_EXTA_OPTION) && \
+	    make -j $(NPROCESSES) && make install
+	@cd $(EXTINCDIR) && ln -sf ../root/include/ root
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
 
 # root clean command
@@ -517,8 +591,9 @@ nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 
 # NeuroBayes TMVA plugin build
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
-	@echo "building NeuroBayes TMVA plugin"
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && make install
+	@echo "buildng NeuroBayes TMVA plugin"
+	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) &&\
+	    make install
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # NeuroBayes TMVA plugin clean command
@@ -540,7 +615,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
 	@echo "downloading FastBDT"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh FastBDT-1.2.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) FastBDT-1.2.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
@@ -567,16 +642,17 @@ vgm.src: $(EXTSRCDIR)/vgm
 # vgm download
 $(EXTSRCDIR)/vgm:
 	@echo "downloading VGM"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh vgm-v3-06.tar.gz svn:export:730:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-06/vgm
-	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(EXTDIR)/vgm.patch
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) vgm-v3-06.tar.gz svn:export:730:https://vgm.svn.sourceforge.net/svnroot/vgm/tags/v3-06/vgm
+	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(PATCHDIR)/vgm.patch
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(CMAKE) $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vgm -DGeant4_DIR=$(EXTBUILDDIR)/geant4 -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && make install
-	@cp -a $(EXTDIR)/vgm/include $(EXTINCDIR)/vgm
-	@cp -a $(EXTDIR)/vgm/lib/* $(EXTLIBDIR)/
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DGeant4_DIR=$(EXTBUILDDIR)/geant4\
+	    -DCLHEP_INCLUDE_DIR=$(EXTINCDIR)/CLHEP -DCLHEP_LIBRARY_DIR=$(EXTLIBDIR) -DROOT_DIR=$(ROOTSYS)\
+	    -DROOT_INCLUDE_DIR=$(ROOTSYS)/include -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm &&\
+	    make install
 
 # vgm clean
 vgm.clean:
@@ -595,20 +671,22 @@ rave.src: $(EXTSRCDIR)/rave/README
 # rave download
 $(EXTSRCDIR)/rave/README:
 	@echo "downloading rave"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
 	@mv $(EXTSRCDIR)/rave-0.6.24 $(EXTSRCDIR)/rave
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
 	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
-	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -s ../../../../../include/root/Math Math
-	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -s ../../../../../include/root/Math Math
-	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -s ../../../../../include/root/Math Math
-	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(EXTDIR)/rave-template-fix.patch
+	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -fs $(ROOTSYS)/include/Math Math
+	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -fs $(ROOTSYS)/include/Math Math
+	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -fs $(ROOTSYS)/include/Math Math
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
-	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
-	--disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR)
+	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
+	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR)\
+	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR)
 	@cd $(EXTSRCDIR)/rave && make -j $(NPROCESSES) && make install
 
 # rave clean
@@ -629,7 +707,7 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
 	@echo "downloading MillepedeII"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
 	@mv $(EXTSRCDIR)/V04-03-00 $(EXTSRCDIR)/MillepedeII
 
 # MillepedeII build
@@ -656,17 +734,16 @@ hepmc.src: $(EXTSRCDIR)/hepmc
 # HepMC download
 $(EXTSRCDIR)/hepmc:
 	@echo "downloading HepMC"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
 	@mv $(EXTSRCDIR)/HepMC-2.06.09 $(EXTSRCDIR)/hepmc
 
 # HepMC build
 $(EXTLIBDIR)/libHepMC.so: $(CMAKE) $(EXTSRCDIR)/hepmc
 	@echo "building HepMC"
 	@mkdir -p $(EXTBUILDDIR)/hepmc
-	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/hepmc -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
-	make -j $(NPROCESSES) && make install
-	@cp $(EXTDIR)/hepmc/lib/* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/HepMC && cp $(EXTDIR)/hepmc/include/HepMC/* $(EXTINCDIR)/HepMC/
+	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	    -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
+	    make -j $(NPROCESSES) && make install
 
 # HepMC clean
 hepmc.clean:
@@ -686,17 +763,16 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
 	@echo "downloading Pythia"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
 	@mv $(EXTSRCDIR)/pythia8209 $(EXTSRCDIR)/pythia
-	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(EXTDIR)/pythia.patch
+	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia.patch
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
-	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR)/pythia --enable-shared --with-hepmc3=$(EXTDIR)/hepmc $(PYTHIA_OPTION) && make -j $(NPROCESSES) && make install
-	@cp $(EXTDIR)/pythia/lib/lib* $(EXTLIBDIR)/
-	@cp -a $(EXTDIR)/pythia/include/* $(EXTINCDIR)/
-	@mkdir -p $(EXTDIR)/share/pythia && cp $(EXTDIR)/pythia/share/Pythia8/xmldoc/* $(EXTDIR)/share/pythia/ && chmod u+w $(EXTDIR)/share/pythia/*
+	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared\
+	    --with-hepmc3=$(EXTDIR) $(PYTHIA_OPTION) &&\
+	    make -j $(NPROCESSES) && make install
 
 # Pythia clean
 pythia.clean:
@@ -716,15 +792,14 @@ photos.src: $(EXTSRCDIR)/PHOTOS/configure
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
 	@echo "downloading Photos"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
-	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(EXTDIR)/photos.patch
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
+	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
 # Photos build
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
-	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR)/photos --with-hepmc=$(EXTDIR)/hepmc && make && make install
-	@cp $(EXTDIR)/photos/lib/* $(EXTLIBDIR)/
-	@cp -a $(EXTDIR)/photos/include/Photos $(EXTINCDIR)/
+	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) &&\
+	    make && make install
 
 # Photos clean
 photos.clean:
@@ -744,14 +819,12 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
-	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR)/tauola --with-hepmc=$(EXTDIR)/hepmc && make && make install
-	@cp $(EXTDIR)/tauola/lib/* $(EXTLIBDIR)/
-	@cp -a $(EXTDIR)/tauola/include/Tauola $(EXTINCDIR)/
+	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
 
 # Tauola clean
 tauola.clean:
@@ -771,18 +844,17 @@ evtgen.src: $(EXTSRCDIR)/evtgen/configure
 # EvtGen download
 $(EXTSRCDIR)/evtgen/configure:
 	@echo "downloading EvtGen"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
 	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
-	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(EXTDIR)/evtgen.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
 
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
-	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR)/evtgen --hepmcdir=$(EXTDIR)/hepmc --pythiadir=$(EXTDIR)/pythia --photosdir=$(EXTDIR)/photos --tauoladir=$(EXTDIR)/tauola $(EVTGEN_OPTION) && make -j $(NPROCESSES) lib_shared  && make all install
-	@cp $(EXTDIR)/evtgen/lib/lib* $(EXTDIR)/evtgen/lib/archive/* $(EXTLIBDIR)/
-	@rm -rf $(EXTINCDIR)/evtgen && cp -a $(EXTDIR)/evtgen/include $(EXTINCDIR)/evtgen
-	@mkdir -p $(EXTDIR)/share/evtgen && cp $(EXTDIR)/evtgen/share/evt.pdl $(EXTDIR)/share/evtgen/ && cp $(EXTDIR)/evtgen/share/DECAY_2010.DEC $(EXTDIR)/share/evtgen/DECAY.DEC
+	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
+	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) &&\
+	    make -j $(NPROCESSES) lib_shared  && make all install
 
 # EvtGen clean
 evtgen.clean:
@@ -802,10 +874,10 @@ phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
 # Phokhara download
 $(EXTSRCDIR)/phokhara/Makefile:
 	@echo "downloading Phokhara"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
 	@mv $(EXTSRCDIR)/PH9.1 $(EXTSRCDIR)/phokhara
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
-	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(EXTDIR)/phokhara.patch
+	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(PATCHDIR)/phokhara.patch
 
 # Phokhara build
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
@@ -832,13 +904,13 @@ madgraph.src: $(EXTDIR)/madgraph/bin/mg5 $(EXTSRCDIR)/ExRootAnalysis/Makefile
 # MadGraph developer's kit installation
 $(EXTDIR)/madgraph/bin/mg5:
 	@echo "downloading MadGraph"
-	@$(EXTDIR)/download.sh MG5_aMC_v2.2.2.tar.gz
+	@cd $(EXTDIR) && $(DOWNLOAD) MG5_aMC_v2.2.2.tar.gz
 	@mv $(EXTDIR)/MG5_aMC_v2_2_2 $(EXTDIR)/madgraph
 
 # MadGraph ExRootAnalysis download
 $(EXTSRCDIR)/ExRootAnalysis/Makefile:
 	@echo "downloading ExRootAnalysis"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh ExRootAnalysis_V1.1.2.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) ExRootAnalysis_V1.1.2.tar.gz
 
 # MadGraph ExRootAnalysis build
 $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
@@ -866,9 +938,9 @@ cry.src: $(EXTSRCDIR)/cry/configure
 # CRY download
 $(EXTSRCDIR)/cry/README:
 	@echo "downloading CRY"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) cry_v1.7.tar.gz http://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz
 	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
-	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(EXTDIR)/cry.patch
+	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(PATCHDIR)/cry.patch
 
 # CRY build
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
@@ -895,22 +967,22 @@ flc.src: $(EXTSRCDIR)/FLC/README
 # FLC download
 $(EXTSRCDIR)/FLC/README:
 	@echo "downloading FLC"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
 	@mv $(EXTSRCDIR)/BELLE_FLC_1.1 $(EXTSRCDIR)/FLC
-	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(EXTDIR)/FLC.patch
+	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(PATCHDIR)/FLC.patch
 
 # FLC build
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
 	@cd $(EXTSRCDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp $(EXTSRCDIR)/FLC/lib/* $(EXTLIBDIR)/
-	@cp -a $(EXTSRCDIR)/FLC/include $(EXTINCDIR)/FLC
+	@cp -a $(EXTSRCDIR)/FLC/include $(EXTINCDIR)
 
 # flc clean
 flc.clean:
 	@echo "cleaning FLC"
 	@cd $(EXTSRCDIR)/FLC && ./make.sh clean
-	@rm -rf $(EXTLIBDIR)/lib*ComplexPDF.so $(EXTINCDIR)/FLC
+	@rm -rf $(EXTLIBDIR)/lib*ComplexPDF.so $(EXTINCDIR)
 
 # flc touch command
 flc.touch:
@@ -925,7 +997,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
 	@echo "downloading eigen"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
 	@mv $(EXTSRCDIR)/eigen-eigen-ffa86ffb5570 $(EXTSRCDIR)/eigen
 
 # eigen build
@@ -950,16 +1022,15 @@ vc.src: $(EXTSRCDIR)/vc
 # vc download
 $(EXTSRCDIR)/vc:
 	@echo "downloading vc"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
 	@mv $(EXTSRCDIR)/Vc-0.7.1 $(EXTSRCDIR)/vc
 
 # vc build
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
 	@echo "installing vc"
 	@mkdir -p $(EXTBUILDDIR)/vc
-	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/vc -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && make -j $(NPROCESSES) && make install
-	@cp -a $(EXTDIR)/vc/include/Vc $(EXTINCDIR)/
-	@cp -a $(EXTDIR)/vc/lib/lib* $(EXTLIBDIR)/
+	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc &&\
+	    make -j $(NPROCESSES) && make install
 
 # vc clean
 vc.clean:
@@ -978,7 +1049,7 @@ nsm2.src: $(EXTSRCDIR)/nsm2
 # nsm2 download
 $(EXTSRCDIR)/nsm2:
 	@echo "downloading nsm2"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh nsm2.1.9.27.tgz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) nsm2.1.9.27.tgz
 
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
@@ -1004,12 +1075,13 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
 	@echo "downloading belle_legacy"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
-	@cd $(EXTSRCDIR)/belle_legacy && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/belle_legacy && make -j $(NPROCESSES) &&\
+	    make BELLE2_EXTERNALS_DIR=$(EXTDIR) BELLE2_EXTERNALS_SUBDIR="" install
 
 # belle_legacy clean
 belle_legacy.clean:
@@ -1029,13 +1101,15 @@ curl.src: $(EXTSRCDIR)/curl/README
 # curl download
 $(EXTSRCDIR)/curl/README:
 	@echo "downloading curl"
-	@cd $(EXTSRCDIR) && $(EXTDIR)/download.sh curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
+	@cd $(EXTSRCDIR) && $(DOWNLOAD) curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
 	@mv $(EXTSRCDIR)/curl-7.41.0 $(EXTSRCDIR)/curl
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
-	@cd $(EXTSRCDIR)/curl && ./configure --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && make -j $(NPROCESSES) && make install
+	@cd $(EXTSRCDIR)/curl && ./configure --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl &&\
+	    make -j $(NPROCESSES) && make install
 
 # curl clean
 curl.clean:

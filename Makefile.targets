@@ -96,7 +96,6 @@ ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
-
 # check whether geant4 data files are already installed
 GEANT4_DATA_EXISTS=$(shell test -d $(EXTDIR)/share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
@@ -429,17 +428,18 @@ $(EXTSRCDIR)/postgresql/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
 	@mv $(EXTSRCDIR)/postgresql-9.2.4 $(EXTSRCDIR)/postgresql
 
-# PostgreSql build, FIXME: make clean? delete folder first?
+# PostgreSql build
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
-	@cd $(EXTSRCDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
+	@cp -a $(EXTSRCDIR)/postgresql $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
 	    make -j $(NPROCESSES) && make install
 
 # PostgreSql clean
 postgresql.clean:
 	@echo "cleaning PostgreSql"
-	@cd $(EXTSRCDIR)/postgresql && make clean
+	@-cd $(EXTBUILDDIR)/postgresql 2>/dev/null && make clean
 	@rm -rf $(EXTINCDIR)/pgsql $(EXTBINDIR)/psql
 
 # PostgreSql touch
@@ -457,10 +457,11 @@ $(EXTSRCDIR)/libpqxx/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
 	@mv $(EXTSRCDIR)/libpqxx-4.0 $(EXTSRCDIR)/libpqxx
 
-# libpqxx build, FIXME: make clean? delete folder first?
+# libpqxx build, FIXME: pg_config could be in common? use `which pg_config`?
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
+	@cp -a $(EXTSRCDIR)/libpqxx $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) &&\
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in pqxx-config
@@ -469,7 +470,7 @@ $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 # libpqxx clean
 libpqxx.clean:
 	@echo "cleaning libpqxx"
-	@cd $(EXTSRCDIR)/libpqxx && make clean
+	@-cd $(EXTBUILDDIR)/libpqxx 2>/dev/null && make clean
 	@rm -rf $(EXTINCDIR)/pqxx $(EXTBINDIR)/pqxx-config
 
 # libpqxx touch
@@ -487,7 +488,7 @@ $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) NeuroBayes_3.7.0_nbpluginfix.tgz
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
 
-# NeuroBayes build, FIXME: make clean? delete folder first?
+# NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
@@ -526,7 +527,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 # xrootd clean command
 xrootd.clean:
 	@echo "cleaning xrootd"
-	@-cd $(EXTBUILDDIR)/xrootd && make clean
+	@-cd $(EXTBUILDDIR)/xrootd 2>/dev/null && make clean
 	@rm -rf $(EXTBUILDDIR)/xrootd $(EXTDIR)/xrootd $(EXTINCDIR)/xrootd $(EXTLIBDIR)/libXrd* $(EXTBINDIR)/xrd* $(EXTBINDIR)/xrootd
 
 # root touch command
@@ -564,7 +565,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # root clean command
 root.clean:
 	@echo "cleaning root"
-	@-cd $(EXTBUILDDIR)/root && make clean
+	@-cd $(EXTBUILDDIR)/root 2>/dev/null && make clean
 	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS) $(EXTDIR)/share/root
 
 # root touch command
@@ -578,15 +579,16 @@ nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 
 # NeuroBayes TMVA plugin build
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
-	@echo "buildng NeuroBayes TMVA plugin"
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) &&\
+	@echo "building NeuroBayes TMVA plugin"
+	@cp -a $(EXTSRCDIR)/neurobayes $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) &&\
 	    make install
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
+	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
 
-# NeuroBayes TMVA plugin clean command, FIXME: make clean? delete folder first?
+# NeuroBayes TMVA plugin clean command
 nbplugin.clean:
 	@echo "cleaning NeuroBayes TMVA plugin"
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make clean
+	@-cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin 2>/dev/null && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
 	@rm -f $(ROOTSYS)/lib/TMVA_NeuroBayes_Dict_rdict.pcm
 
@@ -604,16 +606,16 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 	@echo "downloading FastBDT"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) FastBDT-1.2.tar.gz
 
-# FastBDT TMVA plugin build, FIXME: make clean? delete folder first?
+# FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
-	@cd $(EXTSRCDIR)/FastBDT && make && make install
-	@cd $(EXTSRCDIR)/FastBDT && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
+	@cp -a $(EXTSRCDIR)/FastBDT $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/FastBDT && make && make install && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:
 	@echo "cleaning FastBDT TMVA plugin"
-	@cd $(EXTSRCDIR)/FastBDT && make clean
+	@-cd $(EXTBUILDDIR)/FastBDT 2>/dev/null && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
 	@rm -f $(ROOTSYS)/lib/TMVA_FastBDT_Dict_rdict.pcm
 
@@ -667,21 +669,22 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -fs $(ROOTSYS)/include/Math Math
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
-# rave build, FIXME: make clean? delete folder first?
+# rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
-	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
+	@cp -a $(EXTSRCDIR)/rave $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
 	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR)\
-	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR)
-	@cd $(EXTSRCDIR)/rave && make -j $(NPROCESSES) && make install
+	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in .cmake file/RaveConfig.cmake:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/rave/RaveConfig.cmake
 
 # rave clean
 rave.clean:
 	@echo "cleaning rave"
-	@cd $(EXTSRCDIR)/rave && make clean
+	@-cd $(EXTBUILDDIR)/rave 2>/dev/null && make clean
 	@rm -rf $(EXTLIBDIR)/libRave* $(EXTINCDIR)/rave
 
 # rave touch
@@ -699,17 +702,17 @@ $(EXTSRCDIR)/MillepedeII/WIKI:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
 	@mv $(EXTSRCDIR)/V04-03-00 $(EXTSRCDIR)/MillepedeII
 
-# MillepedeII build, FIXME: make clean? delete folder first?
+# MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
 	@echo "building MillepedeII"
-	@cd $(EXTSRCDIR)/MillepedeII && make pede
-	@cp $(EXTSRCDIR)/MillepedeII/pede $(EXTBINDIR)/
+	@cp -a $(EXTSRCDIR)/MillepedeII $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/MillepedeII && make pede && cp pede $(EXTBINDIR)/
 
 # MillepedeII clean
 MillepedeII.clean:
 	@echo "cleaning MillepedeII"
-	@cd $(EXTSRCDIR)/MillepedeII && make clean
-	@rm -f $(EXTSRCDIR)/pede $(EXTBINDIR)/pede
+	@-cd $(EXTBUILDDIR)/MillepedeII 2>/dev/null && make clean
+	@rm -f $(EXTBUILDDIR)/pede $(EXTBINDIR)/pede
 
 # MillepedeII touch
 MillepedeII.touch:
@@ -737,7 +740,7 @@ $(EXTLIBDIR)/libHepMC.so: $(EXTSRCDIR)/hepmc
 # HepMC clean
 hepmc.clean:
 	@echo "cleaning HepMC"
-	@-cd $(EXTBUILDDIR)/hepmc && make clean
+	@-cd $(EXTBUILDDIR)/hepmc 2>/dev/null && make clean
 	@rm -rf $(EXTDIR)/hepmc $(EXTBUILDDIR)/hepmc $(EXTLIBDIR)/libHepMC* $(EXTLIBDIR)/libhepmC* $(EXTINCDIR)/HepMC
 
 # HepMC touch
@@ -756,11 +759,12 @@ $(EXTSRCDIR)/pythia/configure:
 	@mv $(EXTSRCDIR)/pythia8209 $(EXTSRCDIR)/pythia
 	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia.patch
 
-# Pythia build, FIXME: make clean? delete folder first?
+# Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
-	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared\
-	    --with-hepmc3=$(EXTDIR) $(PYTHIA_OPTION) &&\
+	@cp -a $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared \
+	    --with-hepmc3=$(EXTDIR) $(PYTHIA_OPTION) && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -770,7 +774,7 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 # Pythia clean
 pythia.clean:
 	@echo "cleaning Pythia"
-	@cd $(EXTSRCDIR)/pythia && make clean
+	@-cd $(EXTBUILDDIR)/pythia 2>/dev/null && make clean
 	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8* $(EXTDIR)/share/pythia
 
 # Pythia touch
@@ -788,16 +792,17 @@ $(EXTSRCDIR)/PHOTOS/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
-# Photos build, FIXME: make clean? delete folder first?
+# Photos build
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
-	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) &&\
+	@cp -a $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) &&\
 	    make && make install
 
 # Photos clean
 photos.clean:
 	@echo "cleaning Photos"
-	@cd $(EXTSRCDIR)/PHOTOS && make clean
+	@-cd $(EXTBUILDDIR)/PHOTOS 2>/dev/null && make clean
 	@rm -rf $(EXTDIR)/photos $(EXTLIBDIR)/libPhotos* $(EXTINCDIR)/Photos
 
 # Photos touch
@@ -814,15 +819,16 @@ $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
-# Tauola build, FIXME: make clean? delete folder first?
+# Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
-	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
+	@cp -a $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
 
 # Tauola clean
 tauola.clean:
 	@echo "cleaning Tauola"
-	@cd $(EXTSRCDIR)/TAUOLA && make clean
+	@-cd $(EXTBUILDDIR)/TAUOLA 2>/dev/null && make clean
 	@rm -rf $(EXTDIR)/tauola $(EXTLIBDIR)/libTauola* $(EXTINCDIR)/Tauola
 
 # Tauola touch
@@ -842,17 +848,18 @@ $(EXTSRCDIR)/evtgen/configure:
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
 
-# EvtGen build, FIXME: make clean? delete folder first?
+# EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
-	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
-	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) &&\
+	@cp -a $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
+	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) && \
 	    make -j $(NPROCESSES) lib_shared  && make all install
 
 # EvtGen clean
 evtgen.clean:
 	@echo "cleaning EvtGen"
-	@cd $(EXTSRCDIR)/evtgen && make clean
+	@-cd $(EXTBUILDDIR)/evtgen 2>/dev/null && make clean
 	@rm -rf $(EXTDIR)/evtgen $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen $(EXTDIR)/share/evtgen
 
 # EvtGen touch
@@ -872,17 +879,18 @@ $(EXTSRCDIR)/phokhara/Makefile:
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
 	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(PATCHDIR)/phokhara.patch
 
-# Phokhara build, FIXME: make clean? delete folder first?
+# Phokhara build
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
 	@echo "building Phokhara"
-	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make
-	@cp $(EXTSRCDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
+	@cp -a $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && make
+	@cp $(EXTBUILDDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
 	@mkdir -p $(EXTDIR)/share/phokhara && cp $(EXTSRCDIR)/phokhara/const_and_model_paramall9.1.dat $(EXTDIR)/share/phokhara/
 
 # Phokhara clean
 phokhara.clean:
 	@echo "cleaning Phokhara"
-	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make clean
+	@-cd $(EXTBUILDDIR)/phokhara/eemmg-lib 2>/dev/null && make clean
 	@rm -rf $(EXTSRCDIR)/phokhara/eemmg-lib/*/*.o $(EXTLIBDIR)/libeemmg*.so $(EXTLIBDIR)/libqcdloop1.so $(EXTLIBDIR)/libpjfry.so
 
 # Phokhara touch
@@ -905,18 +913,19 @@ $(EXTSRCDIR)/ExRootAnalysis/Makefile:
 	@echo "downloading ExRootAnalysis"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) ExRootAnalysis_V1.1.2.tar.gz
 
-# MadGraph ExRootAnalysis build, FIXME: make clean? delete folder first?
+# MadGraph ExRootAnalysis build
 $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
 	@echo "building ExRootAnalysis"
-	@cd $(EXTSRCDIR)/ExRootAnalysis && make
-	@cp $(EXTSRCDIR)/ExRootAnalysis/lib*.so $(EXTLIBDIR)/
-	@cp $(EXTSRCDIR)/ExRootAnalysis/Ex*Converter $(EXTBINDIR)/
-	@cp -a $(EXTSRCDIR)/ExRootAnalysis/ExRootAnalysis $(EXTINCDIR)/
+	@cp -a $(EXTSRCDIR)/ExRootAnalysis $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/ExRootAnalysis && make
+	@cp $(EXTBUILDDIR)/ExRootAnalysis/lib*.so $(EXTLIBDIR)/
+	@cp $(EXTBUILDDIR)/ExRootAnalysis/Ex*Converter $(EXTBINDIR)/
+	@cp -a $(EXTBUILDDIR)/ExRootAnalysis/ExRootAnalysis $(EXTINCDIR)/
 
 # MadGraph clean
 madgraph.clean:
 	@echo "cleaning MadGraph"
-	@cd $(EXTSRCDIR)/ExRootAnalysis && make clean
+	@-cd $(EXTBUILDDIR)/ExRootAnalysis 2>/dev/null && make clean
 	@rm -rf $(EXTLIBDIR)/libExRootAnalysis.so $(EXTBINDIR)/Ex*Converter $(EXTINCDIR)/ExRootAnalysis
 
 # MadGraph touch
@@ -935,17 +944,18 @@ $(EXTSRCDIR)/cry/README:
 	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
 	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(PATCHDIR)/cry.patch
 
-# CRY build, FIXME: make clean? delete folder first?
+# CRY build
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
-	@cd $(EXTSRCDIR)/cry && make
-	@cp $(EXTSRCDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
-	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTSRCDIR)/cry/src/*.h $(EXTINCDIR)/cry/
+	@cp -a $(EXTBUILDDIR)/cry $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/cry && make
+	@cp $(EXTBUILDDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
+	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTBUILDDIR)/cry/src/*.h $(EXTINCDIR)/cry/
 
 # CRY clean
 cry.clean:
 	@echo "cleaning CRY"
-	@cd $(EXTSRCDIR)/cry && make clean
+	@-cd $(EXTBUILDDIR)/cry 2>/dev/null && make clean
 	@rm -rf $(EXTLIBDIR)/libCRY.* $(EXTINCDIR)/cry
 
 # CRY touch
@@ -967,14 +977,15 @@ $(EXTSRCDIR)/FLC/README:
 # FLC build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
-	@cd $(EXTSRCDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
-	@cp $(EXTSRCDIR)/FLC/lib/* $(EXTLIBDIR)/
-	@cp -a $(EXTSRCDIR)/FLC/include $(EXTINCDIR)
+	@cp -a $(EXTBUILDDIR)/FLC $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cp $(EXTBUILDDIR)/FLC/lib/* $(EXTLIBDIR)/
+	@cp -a $(EXTBUILDDIR)/FLC/include $(EXTINCDIR)
 
 # flc clean
 flc.clean:
 	@echo "cleaning FLC"
-	@cd $(EXTSRCDIR)/FLC && ./make.sh clean
+	@-cd $(EXTBUILDDIR)/FLC 2>/dev/null && ./make.sh clean
 	@rm -rf $(EXTLIBDIR)/lib*ComplexPDF.so $(EXTINCDIR)
 
 # flc touch command
@@ -1046,16 +1057,16 @@ $(EXTSRCDIR)/nsm2:
 	@echo "downloading nsm2"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) nsm2.1.9.27.tgz
 
-# nsm2 build, FIXME: make clean? delete folder first?
+# nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
 	@echo "installing nsm2"
-	@mkdir -p $(EXTBUILDDIR)/nsm2
-	@cd $(EXTSRCDIR)/nsm2 && make && make install
+	@cp -a $(EXTBUILDDIR)/nsm2 $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/nsm2 && make && make install
 
 # nsm2 clean
 nsm2.clean:
 	@echo "cleaning nsm2"
-	@cd $(EXTSRCDIR)/nsm2 && make clean
+	@-cd $(EXTBUILDDIR)/nsm2 && make clean
 	@rm -rf $(EXTINCDIR)/nsm2 $(EXTBINDIR)/nsm*2 $(EXTLIBDIR)/libnsm2*
 
 # nsm2 touch
@@ -1072,16 +1083,17 @@ $(EXTSRCDIR)/belle_legacy:
 	@echo "downloading belle_legacy"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
-# belle_legacy build, FIXME: make clean? delete folder first?
+# belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
-	@cd $(EXTSRCDIR)/belle_legacy && make -j $(NPROCESSES) &&\
+	@cp -a $(EXTBUILDDIR)/belle_legacy $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/belle_legacy && make -j $(NPROCESSES) &&\
 	    make BELLE2_EXTERNALS_DIR=$(EXTDIR) BELLE2_EXTERNALS_SUBDIR="" install
 
 # belle_legacy clean
 belle_legacy.clean:
 	@echo "cleaning belle_legacy"
-	@cd $(EXTSRCDIR)/belle_legacy && make clean
+	@-cd $(EXTBUILDDIR)/belle_legacy 2>/dev/null && make clean
 	@rm -rf $(EXTINCDIR)/belle_legacy $(EXTDIR)/share/belle_legacy $(EXTLIBDIR)/libbelle_legacy.*
 
 # belle_legacy touch
@@ -1099,10 +1111,11 @@ $(EXTSRCDIR)/curl/README:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
 	@mv $(EXTSRCDIR)/curl-7.41.0 $(EXTSRCDIR)/curl
 
-# curl build, FIXME: make clean? delete folder first?
+# curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
-	@cd $(EXTSRCDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
+	@cp -a $(EXTBUILDDIR)/curl $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\
 	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl &&\
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in curl-config
@@ -1111,9 +1124,8 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 # curl clean
 curl.clean:
 	@echo "cleaning curl"
-	@cd $(EXTSRCDIR)/curl && make uninstall && make clean
+	@-cd $(EXTBUILDDIR)/curl 2>/dev/null && make uninstall && make clean
 	@rm -rf $(EXTINCDIR)/curl $(EXTDIR)/share/curl
-
 
 # curl touch
 curl.touch:

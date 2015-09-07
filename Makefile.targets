@@ -440,8 +440,8 @@ $(EXTSRCDIR)/postgresql/configure:
 # PostgreSql build
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
-	@cp -fa $(EXTSRCDIR)/postgresql $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
+	@mkdir -p $(EXTBUILDDIR)/postgresql
+	@cd $(EXTBUILDDIR)/postgresql && $(EXTSRCDIR)/postgresql/configure --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 
@@ -467,8 +467,8 @@ $(EXTSRCDIR)/libpqxx/configure:
 # libpqxx build, FIXME: pg_config could be in common? use `which pg_config`?
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cp -fa $(EXTSRCDIR)/libpqxx $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
+	@mkdir -p $(EXTBUILDDIR)/libpqxx
+	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config $(EXTSRCDIR)/libpqxx/configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pqxx-config
@@ -680,9 +680,9 @@ $(EXTSRCDIR)/rave/README:
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
-	@cp -fa $(EXTSRCDIR)/rave $(EXTBUILDDIR)
+	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" $(EXTSRCDIR)/rave/configure \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install

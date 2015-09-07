@@ -142,7 +142,7 @@ $(DIRECTORIES):
 $(SHARED_DIRECTORIES):
 	@echo "create shared $@"
 	@mkdir -p $(BELLE2_EXTERNALS_DIR)/`basename $@`
-	@# TODO: make relpath dynamic?
+	# TODO: make relpath dynamic?
 	@cd `dirname $@` && ln -sf ../../`basename $@`
 
 binutils: $(EXTBINDIR)/ld
@@ -207,7 +207,7 @@ $(EXTSRCDIR)/libxml2:
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in xml2-config and lib/xml2Conf.sh
+	#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xml2Conf.sh
 
@@ -247,11 +247,11 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@echo `which g++`
-	@#FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
+	#FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
 	@cd $< && ./configure --enable-shared --without-pymalloc --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
-	@#Fix absolute paths in pip packages and other python scripts
+	#Fix absolute paths in pip packages and other python scripts
 	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 gdb: $(EXTBINDIR)/gdb
@@ -408,9 +408,9 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && \
 	    make -j $(NPROCESSES) && make install
-	@# Fix absolute path in geant4-config
+	# Fix absolute path in geant4-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4-config
-	@# Also fix geant4make just to be safe
+	# Also fix geant4make just to be safe
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-9.6.2/geant4make/geant4make.*
 
 # GEANT4 clean
@@ -470,7 +470,7 @@ $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in pqxx-config
+	#Fix absolute path in pqxx-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 
 # libpqxx clean
@@ -555,11 +555,11 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@echo "building root"
-	@# make root/include directory a symlink to include/root
+	# make root/include directory a symlink to include/root
 	@mkdir -p $(EXTINCDIR)/root $(ROOTSYS)
-	@# FIXME: dynamic relpath?
+	# FIXME: dynamic relpath?
 	@cd $(ROOTSYS) && ln -sf ../../../include/root include
-	@# now compile root and install into ROOTSYS
+	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
 	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \
@@ -684,7 +684,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in .cmake file/RaveConfig.cmake:
+	#Fix absolute path in .cmake file/RaveConfig.cmake:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/rave/RaveConfig.cmake
 
 # rave clean
@@ -772,7 +772,7 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@cd $(EXTBUILDDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared \
 	    --with-hepmc2=$(EXTDIR) $(PYTHIA_OPTION) && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in pythia8-config and make it executable
+	#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
 	@sed -i "s:\$$PREFIX/Makefile.inc:\$$PREFIX/share/Pythia8/examples/Makefile.inc:g" $(EXTBINDIR)/pythia8-config
 	@chmod a+x $(EXTBINDIR)/pythia8-config
@@ -1041,7 +1041,7 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
 	@mkdir -p $(EXTBUILDDIR)/vc
 	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in .cmake file/RaveConfig.cmake:
+	#Fix absolute path in .cmake file/RaveConfig.cmake:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/Vc/VcConfig.cmake
 
 # vc clean
@@ -1124,7 +1124,7 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
 	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
 	    make -j $(NPROCESSES) && make install
-	@#Fix absolute path in curl-config
+	#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config
 
 # curl clean

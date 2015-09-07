@@ -17,13 +17,13 @@ endif
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=gcc binutils bzip2 python gdb libxml2 cmake boost gtest \
+COMMON_PACKAGES:=gcc binutils zlib bzip2 python gdb libxml2 cmake boost gtest \
     pkg-config eigen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
     vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry \
-    flc vc nsm2 belle_legacy curl
+    flc vc nsm2 belle_legacy curl fann
 
 # python packages to be included with the python package
 export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1

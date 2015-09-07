@@ -53,6 +53,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  export FANN_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else
 # make if (option=opt or option=common) using the filter: filter will only
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
@@ -67,6 +68,7 @@ ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
+  export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
 ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export CC=icc
@@ -86,6 +88,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
+  export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
   $(error Unknown externals build option. Please source the setup_belle2 script.)
 endif
@@ -191,7 +194,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	@mkdir -p $(EXTBUILDDIR)/gcc
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --prefix=$(EXTDIR) \
-	    --enable-languages=c,c++,fortran && \
+	    --enable-languages=c,c++,fortran --without-system-libz && \
 	    make -j $(NPROCESSES) && make install
 
 gcc.clean:
@@ -217,6 +220,19 @@ $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xml2Conf.sh
+
+zlib: $(EXTLIBDIR)/libz.so
+zlib.src: $(EXTSRCDIR)/zlib
+zlib.touch:
+	@rm -f $(EXTLIBDIR)/libz.so
+
+$(EXTSRCDIR)/zlib:
+	@$(DOWNLOAD) zlib zlib-1.2.8.tar.gz http://zlib.net/zlib-1.2.8.tar.gz
+
+# zlib: so basic that we only want it it common so we just do an in source build
+$(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib
+	@cd $(EXTSRCDIR)/zlib && ./configure --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) install
 
 bzip2: $(EXTBINDIR)/bzip2
 bzip2.src: $(EXTSRCDIR)/bzip2
@@ -1104,3 +1120,17 @@ curl.clean:
 # curl touch
 curl.touch:
 	@rm -rf $(EXTLIBDIR)/libcurl.so
+
+# FANN: Fast Artificial Neural Network Library
+fann: $(EXTLIBDIR)/libfann.so
+fann.src: $(EXTSRCDIR)/fann/README.txt
+fann.touch:
+	@rm -f $(EXTLIBDIR)/libfann.so
+
+$(EXTSRCDIR)/fann/README.txt:
+	@$(DOWNLOAD) fann fann-2.2.0.tar.gz https://github.com/libfann/fann/archive/2.2.0.tar.gz
+
+$(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.txt
+	@mkdir -p $(EXTBUILDDIR)/fann
+	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(FANN_OPTION) $(EXTSRCDIR)/fann && \
+	    make -j $(NPROCESSES); make install

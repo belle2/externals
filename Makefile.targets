@@ -225,8 +225,8 @@ $(EXTSRCDIR)/bzip2:
 	@mv $(EXTSRCDIR)/bzip2-1.0.6 $@
 
 $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
-	cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
-	cd $< && make install PREFIX=$(EXTDIR)
+	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
+	@cd $< && make install PREFIX=$(EXTDIR)
 
 python: $(EXTBINDIR)/python3
 python.src: $(EXTSRCDIR)/python
@@ -434,7 +434,7 @@ $(EXTSRCDIR)/postgresql/configure:
 # PostgreSql build
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
-	@cp -a $(EXTSRCDIR)/postgresql $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/postgresql $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -463,7 +463,7 @@ $(EXTSRCDIR)/libpqxx/configure:
 # libpqxx build, FIXME: pg_config could be in common? use `which pg_config`?
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
-	@cp -a $(EXTSRCDIR)/libpqxx $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/libpqxx $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -583,7 +583,7 @@ nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # NeuroBayes TMVA plugin build
 $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
 	@echo "building NeuroBayes TMVA plugin"
-	@cp -a $(EXTSRCDIR)/neurobayes $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/neurobayes $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && \
 	    make install
 	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
@@ -612,7 +612,7 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
-	@cp -a $(EXTSRCDIR)/FastBDT $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/FastBDT $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/FastBDT && make && make install && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
@@ -675,7 +675,7 @@ $(EXTSRCDIR)/rave/README:
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
-	@cp -a $(EXTSRCDIR)/rave $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/rave $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
 	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" ./configure \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
@@ -708,7 +708,7 @@ $(EXTSRCDIR)/MillepedeII/WIKI:
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
 	@echo "building MillepedeII"
-	@cp -a $(EXTSRCDIR)/MillepedeII $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/MillepedeII $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/MillepedeII && make pede && cp pede $(EXTBINDIR)/
 
 # MillepedeII clean
@@ -765,9 +765,9 @@ $(EXTSRCDIR)/pythia/configure:
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
-	@cp -a $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared \
-	    --with-hepmc3=$(EXTDIR) $(PYTHIA_OPTION) && \
+	    --with-hepmc2=$(EXTDIR) $(PYTHIA_OPTION) && \
 	    make -j $(NPROCESSES) && make install
 	@#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -798,7 +798,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 # Photos build
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
-	@cp -a $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
 	    make && make install
 
@@ -825,7 +825,7 @@ $(EXTSRCDIR)/TAUOLA/configure:
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
-	@cp -a $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
 
 # Tauola clean
@@ -854,7 +854,7 @@ $(EXTSRCDIR)/evtgen/configure:
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
-	@cp -a $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
 	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) && \
 	    make -j $(NPROCESSES) lib_shared  && make all install
@@ -885,7 +885,7 @@ $(EXTSRCDIR)/phokhara/Makefile:
 # Phokhara build
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
 	@echo "building Phokhara"
-	@cp -a $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && make
 	@cp $(EXTBUILDDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
 	@mkdir -p $(EXTDIR)/share/phokhara && cp $(EXTSRCDIR)/phokhara/const_and_model_paramall9.1.dat $(EXTDIR)/share/phokhara/
@@ -919,7 +919,7 @@ $(EXTSRCDIR)/ExRootAnalysis/Makefile:
 # MadGraph ExRootAnalysis build
 $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
 	@echo "building ExRootAnalysis"
-	@cp -a $(EXTSRCDIR)/ExRootAnalysis $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/ExRootAnalysis $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/ExRootAnalysis && make
 	@cp $(EXTBUILDDIR)/ExRootAnalysis/lib*.so $(EXTLIBDIR)/
 	@cp $(EXTBUILDDIR)/ExRootAnalysis/Ex*Converter $(EXTBINDIR)/
@@ -950,7 +950,7 @@ $(EXTSRCDIR)/cry/README:
 # CRY build
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
-	@cp -a $(EXTSRCDIR)/cry $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/cry $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/cry && make
 	@cp $(EXTBUILDDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTBUILDDIR)/cry/src/*.h $(EXTINCDIR)/cry/
@@ -980,7 +980,7 @@ $(EXTSRCDIR)/FLC/README:
 # FLC build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
-	@cp -a $(EXTSRCDIR)/FLC $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/FLC $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp $(EXTBUILDDIR)/FLC/lib/* $(EXTLIBDIR)/
 	@cp -a $(EXTBUILDDIR)/FLC/include $(EXTINCDIR)
@@ -1063,7 +1063,7 @@ $(EXTSRCDIR)/nsm2:
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
 	@echo "installing nsm2"
-	@cp -a $(EXTSRCDIR)/nsm2 $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/nsm2 $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/nsm2 && make && make install
 
 # nsm2 clean
@@ -1089,7 +1089,7 @@ $(EXTSRCDIR)/belle_legacy:
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
-	@cp -a $(EXTSRCDIR)/belle_legacy $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/belle_legacy $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/belle_legacy && make -j $(NPROCESSES) && \
 	    make BELLE2_EXTERNALS_DIR=$(EXTDIR) BELLE2_EXTERNALS_SUBDIR="" install
 
@@ -1117,7 +1117,7 @@ $(EXTSRCDIR)/curl/README:
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
-	@cp -a $(EXTSRCDIR)/curl $(EXTBUILDDIR)
+	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
 	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
 	    make -j $(NPROCESSES) && make install

@@ -15,7 +15,8 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES=gcc binutils bzip2 gdb python libxml2 cmake boost gtest pkg-config
+COMMON_PACKAGES=gcc binutils bzip2 gdb python libxml2 cmake boost gtest pkg-config \
+                eigen
 
 # python packages to be included with the python package
 PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
@@ -24,7 +25,7 @@ PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
 # external packages
 PACKAGES=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm \
          rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry flc \
-         eigen vc nsm2 belle_legacy curl
+         vc nsm2 belle_legacy curl
 
 export LANG=C
 
@@ -484,7 +485,7 @@ $(EXTSRCDIR)/postgresql/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
 	@mv $(EXTSRCDIR)/postgresql-9.2.4 $(EXTSRCDIR)/postgresql
 
-# PostgreSql build
+# PostgreSql build, FIXME: make clean? delete folder first?
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@cd $(EXTSRCDIR)/postgresql && ./configure --prefix=$(EXTDIR) \
@@ -512,7 +513,7 @@ $(EXTSRCDIR)/libpqxx/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
 	@mv $(EXTSRCDIR)/libpqxx-4.0 $(EXTSRCDIR)/libpqxx
 
-# libpqxx build
+# libpqxx build, FIXME: make clean? delete folder first?
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
 	@cd $(EXTSRCDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config ./configure --enable-shared \
@@ -542,7 +543,7 @@ $(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) NeuroBayes_3.7.0_nbpluginfix.tgz
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
 
-# NeuroBayes build
+# NeuroBayes build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
@@ -638,7 +639,7 @@ $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(RO
 	    make install
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
 
-# NeuroBayes TMVA plugin clean command
+# NeuroBayes TMVA plugin clean command, FIXME: make clean? delete folder first?
 nbplugin.clean:
 	@echo "cleaning NeuroBayes TMVA plugin"
 	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && make clean
@@ -659,7 +660,7 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 	@echo "downloading FastBDT"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) FastBDT-1.2.tar.gz
 
-# FastBDT TMVA plugin build
+# FastBDT TMVA plugin build, FIXME: make clean? delete folder first?
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
 	@cd $(EXTSRCDIR)/FastBDT && make && make install
@@ -722,7 +723,7 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -fs $(ROOTSYS)/include/Math Math
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
-# rave build
+# rave build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@cd $(EXTSRCDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
@@ -754,7 +755,7 @@ $(EXTSRCDIR)/MillepedeII/WIKI:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) MillepedeII_V04-03-00.tgz svn:checkout:140:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-00
 	@mv $(EXTSRCDIR)/V04-03-00 $(EXTSRCDIR)/MillepedeII
 
-# MillepedeII build
+# MillepedeII build, FIXME: make clean? delete folder first?
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
 	@echo "building MillepedeII"
 	@cd $(EXTSRCDIR)/MillepedeII && make pede
@@ -811,7 +812,7 @@ $(EXTSRCDIR)/pythia/configure:
 	@mv $(EXTSRCDIR)/pythia8209 $(EXTSRCDIR)/pythia
 	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia.patch
 
-# Pythia build
+# Pythia build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cd $(EXTSRCDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared\
@@ -843,7 +844,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
-# Photos build
+# Photos build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cd $(EXTSRCDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) &&\
@@ -869,7 +870,7 @@ $(EXTSRCDIR)/TAUOLA/configure:
 	@echo "downloading Tauola"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
 
-# Tauola build
+# Tauola build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
 	@cd $(EXTSRCDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
@@ -897,7 +898,7 @@ $(EXTSRCDIR)/evtgen/configure:
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
 
-# EvtGen build
+# EvtGen build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cd $(EXTSRCDIR)/evtgen && ./configure --prefix=$(EXTDIR) --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
@@ -927,7 +928,7 @@ $(EXTSRCDIR)/phokhara/Makefile:
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
 	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(PATCHDIR)/phokhara.patch
 
-# Phokhara build
+# Phokhara build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
 	@echo "building Phokhara"
 	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && make
@@ -960,7 +961,7 @@ $(EXTSRCDIR)/ExRootAnalysis/Makefile:
 	@echo "downloading ExRootAnalysis"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) ExRootAnalysis_V1.1.2.tar.gz
 
-# MadGraph ExRootAnalysis build
+# MadGraph ExRootAnalysis build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
 	@echo "building ExRootAnalysis"
 	@cd $(EXTSRCDIR)/ExRootAnalysis && make
@@ -990,7 +991,7 @@ $(EXTSRCDIR)/cry/README:
 	@mv $(EXTSRCDIR)/cry_v1.7 $(EXTSRCDIR)/cry
 	@cd $(EXTSRCDIR)/cry && patch -Np0 < $(PATCHDIR)/cry.patch
 
-# CRY build
+# CRY build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
 	@cd $(EXTSRCDIR)/cry && make
@@ -1019,7 +1020,7 @@ $(EXTSRCDIR)/FLC/README:
 	@mv $(EXTSRCDIR)/BELLE_FLC_1.1 $(EXTSRCDIR)/FLC
 	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(PATCHDIR)/FLC.patch
 
-# FLC build
+# FLC build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
 	@cd $(EXTSRCDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
@@ -1101,7 +1102,7 @@ $(EXTSRCDIR)/nsm2:
 	@echo "downloading nsm2"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) nsm2.1.9.27.tgz
 
-# nsm2 build
+# nsm2 build, FIXME: make clean? delete folder first?
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
 	@echo "installing nsm2"
 	@mkdir -p $(EXTBUILDDIR)/nsm2
@@ -1127,7 +1128,7 @@ $(EXTSRCDIR)/belle_legacy:
 	@echo "downloading belle_legacy"
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) belle_legacy-1.3.tgz svn:checkout:18674:https://belle2.cc.kek.jp/svn/groups/belle_legacy
 
-# belle_legacy build
+# belle_legacy build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 	@echo "installing belle_legacy"
 	@cd $(EXTSRCDIR)/belle_legacy && make -j $(NPROCESSES) &&\
@@ -1154,7 +1155,7 @@ $(EXTSRCDIR)/curl/README:
 	@cd $(EXTSRCDIR) && $(DOWNLOAD) curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
 	@mv $(EXTSRCDIR)/curl-7.41.0 $(EXTSRCDIR)/curl
 
-# curl build
+# curl build, FIXME: make clean? delete folder first?
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
 	@cd $(EXTSRCDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR)\

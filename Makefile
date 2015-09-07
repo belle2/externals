@@ -1,5 +1,6 @@
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
+export BELLE2_EXTERNALS_SUBDIR := $(BELLE2_ARCH)/$(BELLE2_EXTERNALS_OPTION)
 export PATCHDIR := $(BELLE2_EXTERNALS_DIR)
 export EXTDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTSRCDIR := $(BELLE2_EXTERNALS_DIR)/src
@@ -12,25 +13,20 @@ export ROOTSYS := $(EXTDIR)/root
 # download script to get and extract sources
 export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 
-# targets only needed by extoption OPT
-# Note: system gcc and our binutils might be incompatible, so build gcc first
-OPT_TARGETS=gcc binutils
+# base packages we don't want to compile in debug mode anyway so we compile
+# them with option common
+COMMON_PACKAGES=gcc binutils gdb python libxml2 cmake boost gtest
 
-# base targets we don't want to compile in debug mode anyway
-BASE_TARGETS=gdb python libxml2 cmake boost gtest
+# python packages to be included with the python package
+PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
+#SCons==2.3.0
 
 # external packages
 PACKAGES=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt vgm \
          rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry flc \
          eigen vc nsm2 belle_legacy curl
 
-# python packages
-PYTHON_PACKAGES=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
-#SCons==2.3.0
-
 export LANG=C
-
-# set cmake command
 
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
@@ -61,7 +57,10 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else
-ifeq ($(BELLE2_EXTERNALS_OPTION),opt)
+# make if (option=opt or option=common) using the filter: filter will only
+# return common or opt if they are in the EXTERNALS_OPTION so if the option is
+# anything else we get an empty string
+ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export CXXFLAGS=-O3
   export BOOST_OPTION=variant=release
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -110,35 +109,29 @@ ifeq ($(GL_XMU_EXISTS),0)
 endif
 
 ALL_TARGETS=
-# if we don't compile in debug we compile everything
-ifneq ($(BELLE2_EXTERNALS_OPTION),debug)
-  ifeq ($(BELLE2_EXTERNALS_OPTION),opt)
-    ALL_TARGETS=$(OPT_TARGETS)
-  endif
-  $(info non debug mode)
-
-  ALL_TARGETS+=$(BASE_TARGETS) $(PYTHON_PACKAGES) $(PACKAGES)
-  CMAKE=$(EXTBINDIR)/cmake
-
-  # check whether geant4 data files are already installed
-  GEANT4_DATA_EXISTS=$(shell test -d $(EXTDIR)/share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
-  ifneq ($(GEANT4_DATA_EXISTS),0)
-   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
-  endif
+# if option is set to common we compile the common and python packages only
+ifeq ($(BELLE2_EXTERNALS_OPTION),common)
+  $(info common mode)
+  ALL_TARGETS=$(COMMON_PACKAGES) $(PYTHON_PACKAGES)
 else
-  # otherwise let's take the big system libraries from opt, we don't want to debug them anyway
-  # and let's make a symlink to the opt/geant4 data
-  ALL_TARGETS=$(PACKAGES)
-  $(info debug mode)
+  # otherwise let's take the stuff from common and build software packages
+  ALL_TARGETS=common $(PACKAGES)
+  $(info compiling $(BELLE2_EXTERNALS_OPTION))
 
-  CMAKE=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/bin/cmake
+  CMAKE=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin/cmake
   # add opt path as fallback for debug externals
-  export PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/bin:$(PATH)
+  export PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
   ifeq ($(shell uname),Darwin)
-    export DYLD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/lib:$(DYLD_LIBRARY_PATH)
+    export DYLD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(DYLD_LIBRARY_PATH)
   else
-    export LD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/opt/lib:$(LD_LIBRARY_PATH)
+    export LD_LIBRARY_PATH := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(LD_LIBRARY_PATH)
   endif
+endif
+
+# check whether geant4 data files are already installed
+GEANT4_DATA_EXISTS=$(shell test -d $(EXTDIR)/share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
+ifneq ($(GEANT4_DATA_EXISTS),0)
+  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif
 
 # now add path for current option
@@ -149,14 +142,16 @@ else
   export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(LD_LIBRARY_PATH)
 endif
 
-# directory we want to create  creation
-DIRECTORIES=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTINCDIR) $(EXTLIBDIR) $(EXTBINDIR)
+# directory we want to create
+DIRECTORIES=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTLIBDIR) $(EXTBINDIR)
+# directories we want to share between all options
+SHARED_DIRECTORIES=$(EXTINCDIR) $(EXTDIR)/share
 
 # all targets (in this order)
-all: $(DIRECTORIES) $(ALL_TARGETS)
+all: $(DIRECTORIES) $(SHARED_DIRECTORIES) $(ALL_TARGETS)
 
 # get source code of all packages
-src: $(DIRECTORIES) $(foreach package,$(ALL_TARGETS),$(package).src)
+src: $(DIRECTORIES) $(SHARED_DIRECTORIES) $(foreach package,$(ALL_TARGETS),$(package).src)
 
 # clean up targets
 clean: $(foreach package,$(ALL_TARGETS),$(package).clean)
@@ -164,10 +159,21 @@ clean: $(foreach package,$(ALL_TARGETS),$(package).clean)
 # remove only target files
 touch: $(foreach package,$(ALL_TARGETS),$(package).touch)
 
-# create directory
+# common packages, make sure they are compiled first
+common:
+	$(MAKE) BELLE2_EXTERNALS_OPTION=common
+
+# create directories
 $(DIRECTORIES):
-	@echo "create  $@"
+	@echo "create $@"
 	@mkdir -p $@
+
+# create shared directories
+$(SHARED_DIRECTORIES):
+	@echo "create shared $@"
+	@mkdir -p $(BELLE2_EXTERNALS_DIR)/`basename $@`
+	@# TODO: make relpath dynamic?
+	@cd `dirname $@` && ln -sf ../../`basename $@`
 
 binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils/src
@@ -213,7 +219,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc/src
 gcc.clean:
 	@echo "cleaning gcc"
 	@rm -rf $(EXTSRCDIR)/gcc
-	@rm -rf $(EXTDIR)/gcc
+	#@rm -rf $(EXTDIR)/gcc
 
 libxml2: $(EXTBINDIR)/xml2-config
 libxml2.src: $(EXTSRCDIR)/libxml2
@@ -230,7 +236,7 @@ $(EXTSRCDIR)/libxml2:
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 &&\
-	    make && make install
+	    make -j $(NPROCESSES) && make install
 
 bzip2: $(EXTBINDIR)/bzip2
 bzip2.src: $(EXTSRCDIR)/bzip2
@@ -565,13 +571,17 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # root build
 $(ROOTSYS)/bin/root: $(CMAKE) $(EXTSRCDIR)/root/README
 	@echo "building root"
+	@# make root/include directory a symlink to include/root
+	@mkdir -p $(EXTINCDIR)/root $(ROOTSYS)
+	@# FIXME: dynamic relpath?
+	@cd $(ROOTSYS) && ln -sf ../../../include/root include
+	@# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing \
 	    --with-xrootd=$(EXTDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) \
 	    --disable-mysql --with-python-libdir=$(BELLE2_TOOLS)/python/lib --enable-gsl_shared --enable-roofit\
 	    $(ROOT_OPTION) $(ROOT_EXTA_OPTION) && \
 	    make -j $(NPROCESSES) && make install
-	@cd $(EXTINCDIR) && ln -sf ../root/include/ root
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
 
 # root clean command

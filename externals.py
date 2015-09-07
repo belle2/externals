@@ -8,15 +8,20 @@ from setup_tools import env_vars, source_scripts, add_path, remove_path, \
     lib_path_name
 
 
-def unsetup_externals(location):
+def unsetup_externals(location, common=False):
     """function to unsetup an externals directory"""
 
-    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
-                            os.environ['BELLE2_SUBDIR'])
+    if common:
+        subdir = os.path.join(os.environ["BELLE2_ARCH"], "common")
+    else:
+        unsetup_externals(location, True)
+        subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
+                                os.environ['BELLE2_SUBDIR'])
 
     # externals
     remove_path('PATH', os.path.join(location, subdir, 'bin'))
     remove_path(lib_path_name, os.path.join(location, subdir, 'lib'))
+    remove_path(lib_path_name, os.path.join(location, subdir, 'lib64'))
 
     # geant4
     for var in os.environ.keys():
@@ -41,17 +46,13 @@ def unsetup_externals(location):
     env_vars['BELLE_POSTGRES_SERVER'] = ''
 
 
-def setup_externals(location, fallback=False):
+def setup_externals(location, common=False):
     """function to setup an externals directory"""
 
-    option = os.environ["BELLE2_EXTERNALS_OPTION"]
-
-    if option == "debug":
-        setup_externals(location, True)
-
-    if fallback:
-        subdir = os.path.join(os.environ["BELLE2_ARCH"], "opt")
+    if common:
+        subdir = os.path.join(os.environ["BELLE2_ARCH"], "common")
     else:
+        setup_externals(location, True)
         subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
                                 os.environ['BELLE2_SUBDIR'])
 
@@ -60,15 +61,18 @@ def setup_externals(location, fallback=False):
     add_path(lib_path_name, os.path.join(location, subdir, 'lib64'))
 
     # geant4
-    if option != "debug":
-        source_scripts.append([os.path.join(location, subdir, 'bin', 'geant4.sh'),
-                               os.path.join(location, subdir, 'bin', 'geant4.csh')])
+    geant4_dir = os.path.join(location, subdir, 'bin')
+    if os.path.isfile(os.path.join(geant4_dir, 'geant4.sh')):
+        source_scripts.append([os.path.join(geant4_dir, 'geant4.sh'),
+                               os.path.join(geant4_dir, 'geant4.csh')])
     # root
     root_dir = os.path.join(location, subdir, "root", "bin")
-    source_scripts.append([os.path.join(root_dir, "thisroot.sh"),
-                           os.path.join(root_dir, "thisroot.csh")])
+    if os.path.isfile(os.path.join(root_dir, "thisroot.sh")):
+        source_scripts.append([os.path.join(root_dir, "thisroot.sh"),
+                               os.path.join(root_dir, "thisroot.csh")])
 
-    if fallback:
+    # ok, the rest is stuff we don't need fallback for
+    if common:
         return
 
     # pythia
@@ -108,18 +112,19 @@ def config_externals(conf):
 
     # fix externals directories
     conf.env.Replace(
-        EXTINCDIR=os.path.join('$EXTDIR', subdir, 'include'),
+        EXTINCDIR=os.path.join('$EXTDIR', 'include'),
         EXTLIBDIR=os.path.join('$EXTDIR', subdir, 'lib'),
         EXTBINDIR=os.path.join('$EXTDIR', subdir, 'bin'),
     )
 
+    def add_incdir(*components):
+        conf.env.Append(CCFLAGS="-isystem%s" % os.path.join(*components))
+
     # CLHEP
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'CLHEP'))
+    add_incdir(conf.env['EXTINCDIR'], 'CLHEP')
 
     # geant4
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'Geant4'))
+    add_incdir(conf.env['EXTINCDIR'], 'Geant4')
     conf.env['GEANT4_LIBS'] = [
         'G4digits_hits',
         'G4error_propagation',
@@ -154,14 +159,12 @@ def config_externals(conf):
     if conf.CheckLibWithHeader('pqxx', 'pgsql/pg_config.h', 'C++'):
         conf.env['HAS_PGSQL'] = True
         conf.env.Append(CPPDEFINES='-DHAS_PGSQL')
-        conf.env.Append(CCFLAGS='-isystem' + (subprocess.Popen(['pg_config',
-                                                                '--includedir'],
-                                                               stdout=subprocess.PIPE).communicate()[0])[:-1])
+        add_incdir(subprocess.Popen(['pg_config', '--includedir'],
+                                    stdout=subprocess.PIPE).communicate()[0].strip())
         conf.env['PGSQL_LIBS'] = ['pqxx', 'pq']
 
     # root
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTDIR'],
-                                                      subdir, 'root', 'include'))
+    add_incdir(conf.env['EXTINCDIR'], 'root')
 
     conf.env['ROOT_LIBS'] = conf.env['ROOT_GLIBS'] = []
     if conf.CheckConfigTool('root-config'):
@@ -172,30 +175,24 @@ def config_externals(conf):
         conf.env['ROOT_GLIBS'] = root_env['LIBS']
 
     # HepMC
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'HepMC'))
+    add_incdir(conf.env['EXTINCDIR'], 'HepMC')
 
     # Photos
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'Photos'))
+    add_incdir(conf.env['EXTINCDIR'], 'Photos')
 
     # Tauola
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'Tauola'))
+    add_incdir(conf.env['EXTINCDIR'], 'Tauola')
 
     # Rave
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
 
     # FLC
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'FLC'))
+    add_incdir(conf.env['EXTINCDIR'], 'FLC')
 
     # eigen
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'Eigen'))
+    add_incdir(conf.env['EXTINCDIR'], 'Eigen')
 
     # belle_legacy
-    conf.env.Append(CCFLAGS='-isystem' + os.path.join(conf.env['EXTINCDIR'],
-                                                      'belle_legacy'))
+    add_incdir(conf.env['EXTINCDIR'], 'belle_legacy')
 
     return True

@@ -562,10 +562,11 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # automatic dependency (like gviz) is not found. So for the time being we would
 # have to disable all options by hand and reenable them when needed. While this
 # is doable a -Dminimal=ON and then enable what we need would be much
-# preferrable. Once this works we can use this. Probably needs pgsql library path
+# preferrable. Once this works we can use this. Probably needs pgsql library path, need to check
+# Fixes are already in root master and should be available with 6.04.04
 #	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 #	    -DPython_ADDITIONAL_VERSIONS=3.4 -Dminimal=ON -Dfail-on-missing=ON -Dgsl_shared=ON \
-#	    -Droofit=ON -Dxrootd=ON -Dpgsql=ON -Dbuiltin_gsl=ON $(ROOT_OPTION) $(ROOTCONFIG_EXTRA)
+#	    -Droofit=ON -Dxrootd=ON -Dpgsql=ON -Dbuiltin_gsl=ON -Dmathmore=ON $(ROOT_OPTION) $(ROOTCONFIG_EXTRA)
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
 	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \
 	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit \
@@ -998,7 +999,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.2.0.tar.gz http://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
+	@$(DOWNLOAD) eigen eigen_3.2.5.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
@@ -1021,7 +1022,7 @@ vc.src: $(EXTSRCDIR)/vc
 
 # vc download
 $(EXTSRCDIR)/vc:
-	@$(DOWNLOAD) vc Vc-0.7.1.tar.gz http://code.compeng.uni-frankfurt.de/attachments/download/161/Vc-0.7.1.tar.gz
+	@$(DOWNLOAD) vc Vc-0.7.5.tar.gz https://github.com/VcDevel/Vc/releases/download/0.7.5/Vc-0.7.5.tar.gz
 
 # vc build
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
@@ -1099,7 +1100,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.41.0.tar.gz http://curl.haxx.se/download/curl-7.41.0.tar.gz
+	@$(DOWNLOAD) curl curl-7.44.0.tar.gz http://curl.haxx.se/download/curl-7.44.0.tar.gz
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README

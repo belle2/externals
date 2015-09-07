@@ -129,9 +129,11 @@ pkg-config: $(EXTBINDIR)/pkg-config
 $(EXTBINDIR)/pkg-config:
 	install pkg-config $@
 
-#Fix absolute paths in .pc files for pkg-config
+#Fix absolute paths in .pc files for pkg-config and in python scripts
 relocatable_fixes:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
+	#Fix absolute paths in pip packages and other python scripts
+	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`
 
 # create directories
 $(DIRECTORIES):
@@ -251,8 +253,6 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $< && ./configure --enable-shared --without-pymalloc --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
-	#Fix absolute paths in pip packages and other python scripts
-	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb

@@ -13,19 +13,16 @@ import os
 import itertools
 import re
 
-version = "%d.%dm" % (sys.version_info.major, sys.version_info.minor)
-DIST_BINARIES = [e % v for e, v in itertools.product(
-    ["python%s", "python%s-config"],
-    ["", version[0], version[:-1], version],
-)]
 
-
-def fixup_scripts():
+def fixup_scripts(path):
+    """Go through a directory and make the #!...python shebang line relocatable
+    by replacing an absolute path to the interpreter with a short version with
+    the correct version
+    """
     re_shebang = re.compile("^#!.*python.*")
-    new_shebang = "#!/usr/bin/env python%s" % version[:-1]
-    bin_dir = os.path.join(os.environ["BELLE2_EXTERNALS_DIR"], os.environ["BELLE2_EXTERNALS_SUBDIR"], "bin")
-    for filename in os.listdir(bin_dir):
-        filename = os.path.join(bin_dir, filename)
+    new_shebang = "#!/usr/bin/env python%d.%d%s" % (sys.version_info.major, sys.version_info.minor, sys.abiflags)
+    for filename in os.listdir(path):
+        filename = os.path.join(path, filename)
         if not os.path.isfile(filename):
             # ignore subdirs, e.g. .svn ones.
             continue
@@ -45,23 +42,24 @@ def fixup_scripts():
         old_shebang = lines[0].strip()
         if old_shebang != new_shebang and re_shebang.match(old_shebang):
             # has a python shebang which is different from what it should be, fix it
-            print("%s: changing shebang from '%s' to '%s'" % (filename, old_shebang, new_shebang))
+            # print("%s: changing shebang from '%s' to '%s'" % (filename, old_shebang, new_shebang))
+            print("making %s relocatable" % filename)
             lines[0] = new_shebang
             with open(filename, 'wb') as f:
                 f.write("\n".join(lines).encode('utf-8'))
 
 
-def fixup_pth_and_egg_link():
+def fixup_pth_and_egg_link(basedir):
     """Makes .pth and .egg-link files use relative paths"""
-    home_dir = os.path.normcase(os.path.abspath(os.path.join(os.environ["BELLE2_EXTERNALS_DIR"],
-                                                             os.environ["BELLE2_EXTERNALS_SUBDIR"])))
     for path in sys.path:
         if not path or not os.path.isdir(path):
             continue
         path = os.path.normcase(os.path.abspath(path))
-        if not path.startswith(home_dir):
+        if not path.startswith(basedir):
             # print('Skipping system (non-environment) directory %s' % path)
             continue
+
+        fixup_scripts(path)
         for filename in os.listdir(path):
             filename = os.path.join(path, filename)
             if filename.endswith('.pth'):
@@ -142,5 +140,11 @@ def make_relative_path(source, dest, dest_is_directory=True):
 
 
 if __name__ == "__main__":
-    fixup_scripts()
-    fixup_pth_and_egg_link()
+    if len(sys.argv) < 2:
+        print("Usage: %s $PREFIX [$BINDIR] [additional dirs...]" % sys.argv[0])
+        sys.exit(1)
+    # fix absolute links and references in the full sys.path that is inside the base dir
+    fixup_pth_and_egg_link(os.path.abspath(sys.argv[1]))
+    # amd also fixup scripts in bin dir
+    for path in sys.argv[2:]:
+        fixup_scripts(path)

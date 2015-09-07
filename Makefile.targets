@@ -97,17 +97,18 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
 
+# check whether geant4 data files are already installed
+GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
+ifneq ($(GEANT4_DATA_EXISTS),0)
+  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
+endif
+
 # check for graphics packages
 GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
-# check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d $(EXTDIR)/share/Geant4-9.6.2/data/G4EMLOW6.32; echo $$?)
-ifneq ($(GEANT4_DATA_EXISTS),0)
-  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
-endif
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)

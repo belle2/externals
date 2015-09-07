@@ -227,6 +227,9 @@ $(EXTSRCDIR)/bzip2:
 $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
 	@cd $< && make install PREFIX=$(EXTDIR)
+	# make links relative
+	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep &&\
+	    ln -fs bzgrep bzegrep && ln -fs bzmore bzless
 
 python: $(EXTBINDIR)/python3
 python.src: $(EXTSRCDIR)/python

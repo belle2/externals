@@ -186,7 +186,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-5.2.0.tar.bz2 ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.2.0/gcc-5.2.0.tar.bz2
+	@$(DOWNLOAD) gcc gcc-5.2.0.tar.bz2 http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2
 	# download prerequisites automatically
 	@cd $(EXTSRCDIR)/gcc && contrib/download_prerequisites
 

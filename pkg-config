@@ -14,4 +14,4 @@ export PKG_CONFIG_PATH=$BELLE2_EXTERNALS_DIR/$BELLE2_SUBDIR/lib/pkgconfig:$BELLE
 # pkg-config`" does not work on SL5. Also, the extra variable needs to be the
 # last argument on SL5. As first it screws up variable queries like pkg-config
 # --variable prefix freetype2 as used by freetype-config.
-/usr/bin/pkg-config "$@" --define-variable=BELLE2_EXTERNALS_DIR=$BELLE2_EXTERNALS_DIR "$@"
+/usr/bin/pkg-config "$@" --define-variable=BELLE2_EXTERNALS_DIR=$BELLE2_EXTERNALS_DIR

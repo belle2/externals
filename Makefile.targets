@@ -137,12 +137,13 @@ ifeq ($(shell uname -m),x86_64)
 endif
 
 # pkg config wrapper using correct paths and being relocatable (if .pc files are fixed)
-pkg-config: $(EXTBINDIR)/pkg-config
+pkg-config-wrapper: $(EXTBINDIR)/pkg-config
 # nothing to do for src
-pkg-config.src: ;
+pkg-config-wrapper.src: ;
 
-$(EXTBINDIR)/pkg-config:
-	install pkg-config $@
+$(EXTBINDIR)/pkg-config: pkg-config
+	@echo "Installing pkg-config wrapper"
+	@install $< $@
 
 #Fix absolute paths in .pc files for pkg-config and in python scripts
 relocatable_fixes:

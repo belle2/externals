@@ -1146,3 +1146,17 @@ $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(FANN_OPTION) $(EXTSRCDIR)/fann && \
 	    make -j $(NPROCESSES); make install
+
+# astyle: C/C++ code beautifier
+astyle: $(EXTBINDIR)/astyle
+astyle.src: $(EXTSRCDIR)/astyle/build/gcc/Makefile
+astyle.touch:
+	@rm -f $(EXTBINDIR)/astyle
+
+$(EXTSRCDIR)/astyle/build/gcc/Makefile:
+	@$(DOWNLOAD) astyle astyle_2.05.1_linux.tar.gz http://downloads.sourceforge.net/project/astyle/astyle/astyle%202.05.1/astyle_2.05.1_linux.tar.gz
+
+$(EXTBINDIR)/astyle: $(EXTSRCDIR)/astyle/build/gcc/Makefile
+	@echo "building astyle"
+	@cp -fa $(EXTSRCDIR)/astyle/ $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/astyle/build/gcc && make -j $(NPROCESSES) && make prefix=$(EXTDIR) install

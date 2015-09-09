@@ -1132,14 +1132,17 @@ curl.touch:
 
 # FANN: Fast Artificial Neural Network Library
 fann: $(EXTLIBDIR)/libfann.so
-fann.src: $(EXTSRCDIR)/fann/README.txt
+fann.src: $(EXTSRCDIR)/fann/README.md
 fann.touch:
 	@rm -f $(EXTLIBDIR)/libfann.so
 
-$(EXTSRCDIR)/fann/README.txt:
-	@$(DOWNLOAD) fann fann-2.2.0.tar.gz https://github.com/libfann/fann/archive/2.2.0.tar.gz
+# FANN 2.2.0 is outdated so get 2.2.0 plus the changes up to commit 0e6fa25 and
+# apply pull requests 40 and 43 as patch
+$(EXTSRCDIR)/fann/README.md:
+	@$(DOWNLOAD) fann fann-2.2.0+git0e6fa25.tar.gz https://github.com/libfann/fann/tarball/0e6fa25
+	cd $(EXTSRCDIR)/fann && patch -p1 < $(PATCHDIR)/fann.patch
 
-$(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.txt
+$(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(FANN_OPTION) $(EXTSRCDIR)/fann && \
 	    make -j $(NPROCESSES); make install

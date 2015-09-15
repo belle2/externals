@@ -17,8 +17,8 @@ endif
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=gcc binutils zlib bzip2 python gdb libxml2 cmake boost gtest \
-    pkg-config-wrapper eigen astyle scons
+COMMON_PACKAGES:=gcc binutils zlib bzip2 libxml2 libxslt python gdb cmake \
+    boost gtest pkg-config-wrapper eigen astyle scons
 
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
@@ -26,7 +26,8 @@ PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbd
     flc vc nsm2 belle_legacy curl fann
 
 # python packages to be included with the python package
-export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1
+export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 pep8==1.5.7 autopep8==1.1 \
+    lxml==3.4.4 requests==2.7.0
 
 # as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets

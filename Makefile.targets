@@ -214,11 +214,30 @@ $(EXTSRCDIR)/libxml2:
 	@$(DOWNLOAD) libxml2 libxml2-2.9.2.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
-	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --with-python=$(EXTBINDIR)/python3 && \
+	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xml2Conf.sh
+
+libxslt: $(EXTBINDIR)/xslt-config
+libxslt.src: $(EXTSRCDIR)/libxslt
+
+libxslt.clean:
+	@rm -fr $(EXTSRCDIR)/libxml
+
+libxslt.touch:
+	@rm $(EXTBINDIR)/xslt-config
+
+$(EXTSRCDIR)/libxslt:
+	@$(DOWNLOAD) libxslt libxslt-1.1.28.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.28.tar.gz
+
+$(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
+	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
+	    make -j $(NPROCESSES) && make install
+	#Fix absolute path in xslt-config and lib/xsltConf.sh
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xsltConf.sh
 
 zlib: $(EXTLIBDIR)/libz.so
 zlib.src: $(EXTSRCDIR)/zlib

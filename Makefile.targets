@@ -1178,7 +1178,11 @@ $(EXTSRCDIR)/astyle/build/gcc/Makefile:
 $(EXTBINDIR)/astyle: $(EXTSRCDIR)/astyle/build/gcc/Makefile
 	@echo "building astyle"
 	@cp -fa $(EXTSRCDIR)/astyle/ $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/astyle/build/gcc && make -j $(NPROCESSES) && make prefix=$(EXTDIR) install
+# astyle tries to install with $(USER) as owner and group which does not work
+# everywhere so we override it's install command to not include ownership
+# arguments.
+	@cd $(EXTBUILDDIR)/astyle/build/gcc && make -j $(NPROCESSES) && \
+	    make prefix=$(EXTDIR) INSTALL=install install
 
 # SCons: python build system
 # FIXME: SCons does not support pyton3 yet. Once it does we can remove this

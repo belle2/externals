@@ -262,7 +262,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.4.3.tgz https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz
+	@$(DOWNLOAD) python Python-3.5.0.tgz https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -271,8 +271,6 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure --enable-shared --without-pymalloc \
 	    --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
-# problem with pip 6.08 on SL5, upgrade to newer version before trying to install other packages
-	@$(EXTBINDIR)/pip3 --disable-pip-version-check --trusted-host pypi.python.org install -U pip==7.1.2
 # now intall all python packages defined in Makefile
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
 
@@ -532,7 +530,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 # support for now. But let's leave the flags in so that it doesn't get lost
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
 	    -DENABLE_PYTHON=OFF \
-	    -DPython_ADDITIONAL_VERSIONS=3.4 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
 
@@ -573,7 +571,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # preferrable. Once this works we can use this. Probably needs pgsql library path, need to check
 # Fixes are already in root master and should be available with 6.04.04
 #	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-#	    -DPython_ADDITIONAL_VERSIONS=3.4 -Dminimal=ON -Dfail-on-missing=ON -Dgsl_shared=ON \
+#	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dminimal=ON -Dfail-on-missing=ON -Dgsl_shared=ON \
 #	    -Droofit=ON -Dxrootd=ON -Dpgsql=ON -Dbuiltin_gsl=ON -Dmathmore=ON $(ROOT_OPTION) $(ROOTCONFIG_EXTRA)
 	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
 	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \

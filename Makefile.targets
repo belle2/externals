@@ -290,8 +290,10 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure --enable-shared --without-pymalloc \
 	    --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
-# now intall all python packages defined in Makefile
-	@$(EXTBINDIR)/pip3 --disable-pip-version-check install $(PYTHON_PACKAGES)
+# now intall all python packages defined in Makefile. To avoid problems with
+# SSL Certificate validation on some older machines we supply the certificate
+# we expect from pypi.python.org directly
+	@$(EXTBINDIR)/pip3 --disable-pip-version-check --cert=python-digicert.pem install $(PYTHON_PACKAGES)
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb

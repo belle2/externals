@@ -193,7 +193,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	@mkdir -p $(EXTBUILDDIR)/gcc
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --prefix=$(EXTDIR) \
-	    --enable-languages=c,c++,fortran --without-system-libz && \
+	    --enable-languages=c,c++,fortran --without-system-libz --with-default-libstdcxx-abi=gcc4-compatible && \
 	    make -j $(NPROCESSES) && make install
 
 gcc.clean:

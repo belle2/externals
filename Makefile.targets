@@ -294,6 +294,10 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # SSL Certificate validation on some older machines we supply the certificate
 # we expect from pypi.python.org directly
 	@$(EXTBINDIR)/pip3 --disable-pip-version-check --cert=python-digicert.pem install $(PYTHON_PACKAGES)
+# now let's configure pep8 to ignore E402 by default. It's not always possible
+# to have all imports at the beginning of the file
+	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \
+	    $(EXTLIBDIR)/python3.5/site-packages/pep8.py
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb

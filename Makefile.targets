@@ -889,6 +889,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	    cp -fr lib/* $(EXTLIBDIR) && \
 	    cp -fr EvtGen EvtGenBase EvtGenModels EvtGenExternal $(EXTINCDIR) && \
 	    mkdir -p $(EXTDIR)/share/evtgen && cp -fr *.DEC *.XML evt.pdl $(EXTDIR)/share/evtgen
+	@cd $(EXTDIR)/share/evtgen && cp DECAY_2010.DEC DECAY.DEC
 
 # EvtGen clean
 evtgen.clean:

@@ -1,5 +1,5 @@
---- a/bindings/pyroot/src/Pythonize.cxx	2015-09-16 11:57:17.325612136 +0200
-+++ b/bindings/pyroot/src/Pythonize.cxx	2015-09-16 11:56:17.221103980 +0200
+--- a/bindings/pyroot/src/Pythonize.cxx
++++ b/bindings/pyroot/src/Pythonize.cxx
 @@ -2392,7 +2392,11 @@
  
     if ( name.find( "iterator" ) != std::string::npos ) {
@@ -24,3 +24,17 @@
  
        return kTRUE;
     }
+--- a/bindings/pyroot/src/Utility.cxx
++++ b/bindings/pyroot/src/Utility.cxx
+@@ -219,8 +219,10 @@ Bool_t PyROOT::Utility::AddToClass(
+ Bool_t PyROOT::Utility::AddToClass( PyObject* pyclass, const char* label, const char* func )
+ {
+    PyObject* pyfunc = PyObject_GetAttrString( pyclass, const_cast< char* >( func ) );
+-   if ( ! pyfunc )
++   if ( ! pyfunc ) {
++      PyErr_Clear();
+       return kFALSE;
++   }
+ 
+    Bool_t isOk = PyObject_SetAttrString( pyclass, const_cast< char* >( label ), pyfunc ) == 0;
+ 

@@ -32,6 +32,10 @@ def fixup_scripts(path):
         if os.path.basename(filename).startswith("scons"):
             continue
 
+        # FIXME: same for madgraph
+        if os.path.basename(filename) == "mg5_aMC":
+            continue
+
         with open(filename, 'rb') as f:
             try:
                 lines = f.read().decode('utf-8').splitlines()

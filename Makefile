@@ -18,11 +18,11 @@ endif
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=gcc binutils zlib bzip2 libxml2 libxslt python gdb cmake \
-    boost gtest pkg-config-wrapper eigen astyle scons
+    boost gtest pkg-config-wrapper eigen astyle scons madgraph
 
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
-    vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara madgraph cry \
+    vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
     flc vc nsm2 belle_legacy curl fann
 
 # python packages to be included with the python package

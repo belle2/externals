@@ -932,14 +932,21 @@ phokhara.touch:
 
 
 # dependencies for MadGraph
-madgraph: $(EXTDIR)/madgraph/bin/mg5 $(EXTLIBDIR)/libExRootAnalysis.so
-madgraph.src: $(EXTDIR)/madgraph/bin/mg5 $(EXTSRCDIR)/ExRootAnalysis/Makefile
+madgraph: $(EXTBINDIR)/mg5_aMC
+madgraph.src: $(EXTBINDIR)/mg5_aMC
 
-# MadGraph developer's kit installation
-$(EXTDIR)/madgraph/bin/mg5:
-	@echo "downloading MadGraph"
+exrootanalysis: $(EXTLIBDIR)/libExRootAnalysis.so
+exrootanalysis.src: $(EXTSRCDIR)/ExRootAnalysis/Makefile
+
+# MadGraph developer's kit installation.
+$(EXTBINDIR)/mg5_aMC:
 	@$(DOWNLOAD) madgraph MG5_aMC_v2.2.2.tar.gz
 	@mv $(EXTSRCDIR)/madgraph $(EXTDIR)/madgraph
+	# add symlink in bin dir
+	@cd $(EXTBINDIR) && ln -sf ../madgraph/bin/mg5_aMC
+
+madgraph.clean madgraph.touch:
+	@rm -fr $(EXTDIR)/madgraph $(EXTBINDIR)/mg5_aMC
 
 # MadGraph ExRootAnalysis download
 $(EXTSRCDIR)/ExRootAnalysis/Makefile:
@@ -955,13 +962,13 @@ $(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
 	@cp -a $(EXTBUILDDIR)/ExRootAnalysis/ExRootAnalysis $(EXTINCDIR)/
 
 # MadGraph clean
-madgraph.clean:
-	@echo "cleaning MadGraph"
+exrootanalysis.clean:
+	@echo "cleaning ExRootAnalysis"
 	@-cd $(EXTBUILDDIR)/ExRootAnalysis 2>/dev/null && make clean
 	@rm -rf $(EXTLIBDIR)/libExRootAnalysis.so $(EXTBINDIR)/Ex*Converter $(EXTINCDIR)/ExRootAnalysis
 
 # MadGraph touch
-madgraph.touch:
+exrootanalysis.touch:
 	@rm -f $(EXTLIBDIR)/libExRootAnalysis.so
 
 

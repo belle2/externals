@@ -76,7 +76,7 @@ def setup_externals(location, common=False):
         return
 
     # pythia
-    env_vars['PYTHIA8DATA'] = os.path.join(location, 'share', 'pythia')
+    env_vars['PYTHIA8DATA'] = os.path.join(location, 'share', 'Pythia8', 'xmldoc')
 
     # panther
     env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'belle_legacy', 'panther')

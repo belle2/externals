@@ -528,6 +528,9 @@ $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/READM
 	    $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
 	@$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
 	@cp $(EXTSRCDIR)/neurobayes/`uname -m`/* $(EXTLIBDIR)/
+	# install also header files in the include directory, so ROOT's autoparser can find it
+	# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
+	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
 
 # NeuroBayes clean command
 neurobayes.clean:
@@ -654,6 +657,9 @@ $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/r
 	@echo "building FastBDT TMVA plugin"
 	@cp -fa $(EXTSRCDIR)/FastBDT $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/FastBDT && make && make install && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
+# install also header files in the include directory, so ROOT's autoparser can find it
+# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
+	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/FastBDT/inc/FBDT.h $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/FastBDT/inc/MethodFastBDT.h $(EXTINCDIR)/inc/
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:

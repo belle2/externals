@@ -586,7 +586,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	# make root/include directory a symlink to include/root
 	@mkdir -p $(EXTINCDIR)/root $(ROOTSYS)
 	# FIXME: dynamic relpath?
-	@cd $(ROOTSYS) && ln -sf ../../../include/root include
+	@cd $(ROOTSYS) && ln -sfT ../../../include/root include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
 # FIXME: cmake is not quite working how we want it: -Dminimal=ON is ignored and

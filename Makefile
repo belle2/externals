@@ -25,12 +25,20 @@ PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbd
     vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
     flc vc nsm2 belle_legacy curl fann
 
-# python packages to be included with the python package
-# Sadly autopep8 and are not yet released with support for python 3.5 so we
-# take the latest development from github
-export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 lxml==3.4.4 requests==2.7.0 \
-    https://github.com/PyCQA/pep8/tarball/b1bde9f2bb \
-    https://github.com/hhatto/autopep8/tarball/7244270035
+# python packages to be included with the python package. This list is created
+# from pip3 freeze to include all dependencies
+export PYTHON_PACKAGES:=autopep8==1.2.1a0 decorator==4.0.4 ipython==4.0.0 \
+    ipython-genutils==0.1.0 lxml==3.4.4 numpy==1.9.2 path.py==8.1.1 pep8==1.6.3a0 \
+    pexpect==3.3 pickleshare==0.5 requests==2.7.0 simplegeneric==0.8.1 \
+    traitlets==4.0.0
+
+# extern archives we cannot get from pypi. Or in the case of simplegeneric,
+# there doesn't seem to be a .tar.gz so we need to specifiy the archive name
+# manually. Form is package==version?url[?archive_name]
+export PYTHON_EXTERN_ARCHIVES:=\
+    autopep8==1.2.1a0?https://github.com/hhatto/autopep8/tarball/7244270035 \
+    pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb \
+    simplegeneric==0.8.1?https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip?simplegeneric-0.8.1.zip
 
 # as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets

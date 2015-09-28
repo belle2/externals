@@ -37,18 +37,22 @@ export PYTHON_PACKAGES:=ipython==4.0.0 numpy==1.9.2 lxml==3.4.4 requests==2.7.0 
 # are not passed to sub make with the catch all pattern rule below
 all: $(BELLE2_EXTERNALS_OPTION) ;
 
+dirs:
+	@$(MAKE) -f Makefile.targets BELLE2_EXTERNALS_OPTION=common dirs
+	@$(MAKE) -f Makefile.targets dirs
+
 # common needs to compile the common packages. And we need directories first
-common:
-	@$(MAKE) -f Makefile.targets dirs $(COMMON_PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
+common: dirs
+	@$(MAKE) -f Makefile.targets $(COMMON_PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
 # compile specifically in given mode
 opt debug intel: common
-	@$(MAKE) -f Makefile.targets dirs $(PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
+	@$(MAKE) -f Makefile.targets $(PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
 # let touch, src and clean only run on the non-common stuff to avoid expensive
 # recompilation of common packages by mistake.
 touch: $(foreach package,$(PACKAGES),$(package).touch) ;
-src: $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
+src: dirs $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
 clean: $(foreach package,$(PACKAGES),$(package).clean) ;
 
 # so far so good, just running make should now do the correct thing but we want

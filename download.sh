@@ -25,6 +25,11 @@ get_archive () {
     check_archive || return 1
   fi
 
+  # if we don't need to extract then all is done
+  if [ -n "$DOWNLOAD_ONLY" ]; then
+      return 0;
+  fi
+
   # get file extension
   EXTENSION=`echo ${URL} | awk -F. '{print $NF}'`
   # extract in temp dir and move to final destination name
@@ -66,20 +71,22 @@ FILENAME=$2
 shift 2
 RESULT=1
 
-while [ $# -gt 0 ]; do
-  URL=$1
-  PROTOCOL=`echo ${URL} | awk -F: '{print $1}'`
-  shift
-  if [ "${PROTOCOL}" = "svn" ]; then
-    get_svn $URL
-  else
-    get_archive ${URL}
-  fi
-  RESULT=$?
-  if [ "${RESULT}" = "0" ]; then
-    break
-  fi
-done
+if [ -z "$USE_BELLE2SERVER" ]; then
+    while [ $# -gt 0 ]; do
+        URL=$1
+        PROTOCOL=`echo ${URL} | awk -F: '{print $1}'`
+        shift
+        if [ "${PROTOCOL}" = "svn" ]; then
+            get_svn $URL
+        else
+            get_archive ${URL}
+        fi
+        RESULT=$?
+        if [ "${RESULT}" = "0" ]; then
+            break
+        fi
+    done
+fi
 
 # if none succeeded use the Belle II web server
 if [ "${RESULT}" -ne "0" ]; then

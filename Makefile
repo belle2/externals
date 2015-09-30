@@ -17,8 +17,8 @@ endif
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=gcc binutils zlib bzip2 libxml2 libxslt python gdb cmake \
-    boost gtest pkg-config-wrapper eigen astyle scons madgraph
+COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 libxml2 libxslt \
+    python gdb cmake boost gtest eigen astyle scons madgraph
 
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \

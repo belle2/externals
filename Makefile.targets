@@ -191,15 +191,32 @@ $(EXTSRCDIR)/gcc:
 $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	@echo "building gcc"
 	@mkdir -p $(EXTBUILDDIR)/gcc
-	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --prefix=$(EXTDIR) \
-	    --enable-languages=c,c++,fortran --without-system-libz --with-default-libstdcxx-abi=gcc4-compatible && \
+# note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
+# Also, gcc will *always* consider $prefix/include as system include dir and
+# put it *after* /usr/local/include which breaks things. So, we choose another
+# prefix but adjust the other directories to be like we want them. However,
+# these directories need to be inside prefix. Since prefix cannot be EXTDIR or
+# BELLE2_EXTERNALS_DIR as both contain an include dir the only option is
+# $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH). As nothing gets installed in the
+# prefix anymore this should be fine. It's not pretty though but
+# alternatives are installing gcc completely separately or patching it.
+# Now ROOT needs to see a c++ in the search path, otherwise it thinks there are
+# no c++ std includes so we install the c++ includes in $(EXTINCDIR)/c++ but
+# skip the version: there's only one gcc version per external version.
+	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib \
+	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
+	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz \
+	    --with-default-libstdcxx-abi=gcc4-compatible && \
 	    make -j $(NPROCESSES) && make install
+# now remove the bloody empty directory gcc creates in prefix. but make sure
+# it's actually empty
+	@[ $$(ls -A $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/include 2>/dev/null) ] && \
+	    { echo "$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/include not empty, something is wrong"; exit 1; } || exit 0
+	@rm -fr $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/include
 
 gcc.clean:
 	@echo "cleaning gcc"
-	@rm -rf $(EXTSRCDIR)/gcc
-	#@rm -rf $(EXTDIR)/gcc
+	@rm -rf $(EXTBUILDDIR)/gcc
 
 libxml2: $(EXTBINDIR)/xml2-config
 libxml2.src: $(EXTSRCDIR)/libxml2

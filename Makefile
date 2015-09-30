@@ -63,6 +63,11 @@ touch: $(foreach package,$(PACKAGES),$(package).touch) ;
 src: dirs $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
 clean: $(foreach package,$(PACKAGES),$(package).clean) ;
 
+# make all targets and src targets depend on dirs, otherwise some symlinks
+# might not be created, e.g. when creating a new checkout and running make gcc
+$(COMMON_PACKAGES) $(foreach package,$(COMMON_PACKAGES),$(package).src): dirs
+$(PACKAGES) $(foreach package,$(PACKAGES),$(package).src): dirs
+
 # so far so good, just running make should now do the correct thing but we want
 # to be able to call make gcc and he should do the correct thing. So every
 # other target we just pass to the sub make but we override the

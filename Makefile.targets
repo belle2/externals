@@ -333,6 +333,7 @@ $(EXTSRCDIR)/python:
 # download all python archives using normal download script to provide belle2.kek.cc.jp mirror capabilities
 	$(foreach archive,$(PYTHON_ARCHIVES),DOWNLOAD_ONLY=yes $(DOWNLOAD) $(firstword $(subst ?, ,$(archive))) $(call python_filename_url,$(archive)) &&) true
 
+PIP3=$(EXTBINDIR)/pip3 --disable-pip-version-check install --no-index --no-deps -f $(EXTSRCDIR)
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 #FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
@@ -340,8 +341,10 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure --enable-shared --without-pymalloc \
 	    --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
+# setuptools-scm must be installed before path.py because it needs it ... and *some* machines are not allowed to use https
+	@$(PIP3) $(filter setuptools-scm==%, $(PYTHON_PACKAGES))
 # intall all python packages defined in Makefile from the pre downloaded archives
-	@$(EXTBINDIR)/pip3 --disable-pip-version-check install --no-index -f $(EXTSRCDIR) $(PYTHON_PACKAGES)
+	@$(PIP3) $(PYTHON_PACKAGES)
 # now let's configure pep8 to ignore E402 by default. It's not always possible
 # to have all imports at the beginning of the file
 	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \

@@ -90,3 +90,9 @@ $(foreach package,$(COMMON_PACKAGES),$(package).clean): override BELLE2_EXTERNAL
 # make new checksum file
 checksum:
 	sha256sum -b $(sort $(foreach ext,zip bz2 gz tgz,$(wildcard src/*.$(ext)))) > sha256sum.txt
+
+# minimal rules to get fixstyle running: we just need python3 with pep8 +
+# autopep8 and astyle and we just use the system compiler
+fixstyle: override PYTHON_PACKAGES:=$(filter pep8% autopep8%, $(PYTHON_PACKAGES))
+fixstyle: 
+	@$(MAKE) -f Makefile.targets dirs python astyle relocatable_fixes BELLE2_EXTERNALS_OPTION=common

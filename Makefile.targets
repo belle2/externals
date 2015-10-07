@@ -330,10 +330,14 @@ python_filename_url= $(call python_url,$1,$(call python_filename,$1))
 
 $(EXTSRCDIR)/python:
 	@$(DOWNLOAD) python Python-3.5.0.tgz https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
-# download all python archives using normal download script to provide belle2.kek.cc.jp mirror capabilities
-	$(foreach archive,$(PYTHON_ARCHIVES),DOWNLOAD_ONLY=yes $(DOWNLOAD) $(firstword $(subst ?, ,$(archive))) $(call python_filename_url,$(archive)) &&) true
+# download all python archives using normal download script to provide
+# belle2.kek.cc.jp mirror capabilities. We override EXTSRCDIR here to download
+# them in a separate directory
+	@mkdir -p $(EXTSRCDIR)/python-packages/
+	$(foreach archive,$(PYTHON_ARCHIVES),DOWNLOAD_ONLY=yes EXTSRCDIR=$(EXTSRCDIR)/python-packages \
+	    $(DOWNLOAD) $(firstword $(subst ?, ,$(archive))) $(call python_filename_url,$(archive)) &&) true
 
-PIP3=$(EXTBINDIR)/pip3 --disable-pip-version-check install --no-index --no-deps -f $(EXTSRCDIR)
+PIP3=$(EXTBINDIR)/pip3 --disable-pip-version-check install --no-index --no-deps -f $(EXTSRCDIR)/python-packages
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 #FIXME: ROOT configure does not work with default, so let's disable pymalloc for now

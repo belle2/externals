@@ -649,6 +649,7 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@$(DOWNLOAD) root root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-nonbash.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

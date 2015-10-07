@@ -16,6 +16,17 @@ export ROOTSYS := $(EXTDIR)/root
 # download script to get and extract sources
 export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 
+# function to get a relative path in a recipe. This will return a backtick
+# string to be expanded by the shell which is needed to get the current shell
+# directory. Relpath has been added to python2.6 so we should be fine
+#  - $(call relpath,$(EXTSRCDIR)) returns a shell expression to evaluate
+#    $EXTSRCDIR relative to the current directory
+#  - $(call relpath,$(EXTINCDIR),$(EXTDIR)) returns a shell expression to
+#    evaluate $EXTINCDIR relative to $EXTDIR
+# if needed as make variable wrap it in a shell echo call $(shell echo $(call
+# relpath,...))
+relpath=`python -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
+
 # get rid of localization
 export LANG=C
 
@@ -159,9 +170,8 @@ $(DIRECTORIES):
 # create shared directories
 $(SHARED_DIRECTORIES):
 	@echo "create shared $@"
-	@mkdir -p $(BELLE2_EXTERNALS_DIR)/`basename $@`
-	# TODO: make relpath dynamic?
-	@cd `dirname $@` && ln -sf ../../`basename $@`
+	@mkdir -p $(BELLE2_EXTERNALS_DIR)/$(notdir $@)
+	@cd $(dir $@) && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/$(notdir $@))
 
 binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils
@@ -645,8 +655,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@echo "building root"
 	# make root/include directory a symlink to include/root
 	@mkdir -p $(EXTINCDIR)/root $(ROOTSYS)
-	# FIXME: dynamic relpath?
-	@cd $(ROOTSYS) && ln -sfT ../../../include/root include
+	@cd $(ROOTSYS) && ln -sfT $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
 # FIXME: cmake is not quite working how we want it: -Dminimal=ON is ignored and
@@ -764,13 +773,12 @@ rave.src: $(EXTSRCDIR)/rave/README
 
 # rave download
 $(EXTSRCDIR)/rave/README:
-	@echo "downloading rave"
 	@$(DOWNLOAD) rave rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
-	@cd $(EXTSRCDIR)/rave/src && ln -s ../../../include/boost boost
-	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -fs $(ROOTSYS)/include/Math Math
-	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -fs $(ROOTSYS)/include/Math Math
-	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -fs $(ROOTSYS)/include/Math Math
+	@cd $(EXTSRCDIR)/rave/src && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/boost)
+	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
+	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
+	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
 # rave build

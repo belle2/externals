@@ -44,14 +44,23 @@ export PYTHON_EXTERN_ARCHIVES:=\
     pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb \
     simplegeneric==0.8.1?https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip?simplegeneric-0.8.1.zip
 
+# check if any of the big "do all" targets is supplied on the commmand line
+DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))
+# if so, dirs will create the targets for all specified targets, otherwise just
+# for common and the current option
+ifeq (,$(DIRTARGETS))
+    DIRTARGETS=$(BELLE2_EXTERNALS_OPTION)
+endif
+
 # as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets
 # are not passed to sub make with the catch all pattern rule below
 all: $(BELLE2_EXTERNALS_OPTION) ;
 
+# make the directories for all options we need
 dirs:
-	@$(MAKE) -f Makefile.targets BELLE2_EXTERNALS_OPTION=common dirs
-	@$(MAKE) -f Makefile.targets dirs
+	@$(foreach option,common $(DIRTARGETS),$(MAKE) -f Makefile.targets \
+	    BELLE2_EXTERNALS_OPTION=$(option) dirs &&) true
 
 # common needs to compile the common packages. And we need directories first
 common: dirs
@@ -94,5 +103,5 @@ checksum:
 # minimal rules to get fixstyle running: we just need python3 with pep8 +
 # autopep8 and astyle and we just use the system compiler
 fixstyle: override PYTHON_PACKAGES:=$(filter pep8% autopep8%, $(PYTHON_PACKAGES))
-fixstyle: 
+fixstyle:
 	@$(MAKE) -f Makefile.targets dirs python astyle relocatable_fixes BELLE2_EXTERNALS_OPTION=common

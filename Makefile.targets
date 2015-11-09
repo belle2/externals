@@ -650,6 +650,11 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-nonbash.patch
+	# patch for a ROOT crash, if libCling has been unloaded already but some dictionaries are still
+	# loaded and trying to use it
+	# This code change will be included in ROOT releases > 6.04.08 and the patch can then be
+	# removed here
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-unloading-fix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

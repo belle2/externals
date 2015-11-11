@@ -1,3 +1,15 @@
+Index src/photos-fortran/photosC.cxx
+--- src/photos-fortran/photosC.cxx
++++ src/photos-fortran/photosC.cxx
+@@ -1911,7 +1911,7 @@
+   if(phokey_.iexp){           // IEXP
+     phoexp_.nchan=phoexp_.nchan+1;
+     if(phoexp_.expini){    // EXPINI
+-      phoexp_.pro[phoexp_.nchan-i]=PRHARD+0.05*(1.0+phokey_.fint); // we store hard photon emission prob 
++      phoexp_.pro[phoexp_.nchan-i]=PRHARD+0.25*(1.0+phokey_.fint); // we store hard photon emission prob 
+ 	                                                           //for leg phoexp_.nchan
+       PRHARD=0.0;                                                // to kill emission at initialization call
+       phopro_.probh=PRHARD;
 Index src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx
 --- src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx
 +++ src/eventRecordInterfaces/PhotosHEPEVTEvent.cxx

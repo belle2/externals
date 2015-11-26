@@ -60,7 +60,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export ROOT_OPTION=--build=debug
+  export ROOT_OPTION=-DCMAKE_BUILD_TYPE=Debug
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
   export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -92,10 +92,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc
   export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export ROOT_OPTION=linuxicc
-  ifeq ($(shell uname -m),x86_64)
-    export ROOT_OPTION=linuxx8664icc
-  endif
+  export ROOT_OPTION=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
   export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -107,9 +104,12 @@ endif
 endif
 
 ifdef ORACLE_HOME
-  ROOT_OPTION += --with-oracle-libdir=$(ORACLE_HOME) --with-oracle-incdir=$(ORACLE_HOME)/sdk/include/
+  ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-ROOT_OPTION += --with-pgsql-libdir=$(EXTLIBDIR) --with-pgsql-incdir=$(EXTINCDIR)/pgsql/
+# NOTE: Starting with ROOT 6.06 branch "-DPOSTGRESQL_LIBRARIES" will be renamed to "-DPOSTGRESQL_LIBRARY" 
+# https://sft.its.cern.ch/jira/browse/ROOT-7816
+# oracle must be explicitly disabled here
+ROOT_OPTION += -Doracle=OFF -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
 
 # check whether geant4 data files are already installed
 GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
@@ -646,15 +646,15 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
-	@$(DOWNLOAD) root root_v6.04.02.source.tar.gz https://root.cern.ch/download/root_v6.04.02.source.tar.gz
+	@$(DOWNLOAD) root root_v6.04.10.source.tar.gz https://root.cern.ch/download/root_v6.04.10.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-nonbash.patch
+	#@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-nonbash.patch
 	# patch for a ROOT crash, if libCling has been unloaded already but some dictionaries are still
 	# loaded and trying to use it
 	# This code change will be included in ROOT releases > 6.04.08 and the patch can then be
 	# removed here
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-unloading-fix.patch
+	#@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-unloading-fix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -664,19 +664,17 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sfT $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-# FIXME: cmake is not quite working how we want it: -Dminimal=ON is ignored and
-# -Dfail-on-missing=ON leads to all kinds of trouble as it also fails if an
-# automatic dependency (like gviz) is not found. So for the time being we would
-# have to disable all options by hand and reenable them when needed. While this
-# is doable a -Dminimal=ON and then enable what we need would be much
-# preferrable. Once this works we can use this. Probably needs pgsql library path, need to check
-# Fixes are already in root master and should be available with 6.04.04
-#	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-#	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dminimal=ON -Dfail-on-missing=ON -Dgsl_shared=ON \
-#	    -Droofit=ON -Dxrootd=ON -Dpgsql=ON -Dbuiltin_gsl=ON -Dmathmore=ON $(ROOT_OPTION) $(ROOTCONFIG_EXTRA)
-	@cd $(EXTBUILDDIR)/root && $(EXTSRCDIR)/root/configure --fail-on-missing --with-xrootd=$(EXTDIR) \
-	    --with-pgsql-incdir=$(EXTINCDIR)/pgsql --with-pgsql-libdir=$(EXTLIBDIR) --disable-mysql \
-	    --enable-python --with-python=`which python3` --enable-gsl_shared --enable-roofit \
+# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
+# build
+# At this time, the -Dminimal=ON option cannot be used to disable all root components and enable them 
+# selectively, therefore unwanted components are disabled explicitly
+# Once https://sft.its.cern.ch/jira/browse/ROOT-7710 is fixed, this can be moved to using -Dminimal=ON
+	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgsl_shared=ON -Dfail-on-missing=ON \
+	    -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON \
+	    -Dgviz=OFF -Dbonjour=OFF -Dkrb5=OFF -Dcastor=OFF -Drfio=OFF -Dmysql=OFF -Dodbc=OFF \
+	    -Dpythia6=OFF -Dfftw3=OFF -Dgfal=OFF -Dglite=OFF -Ddcache=OFF -Dldap=OFF -Dchirp=OFF \
+	    -Dhdfs=OFF -Dbuiltin_glew=OFF -Dbuiltin_gsl=OFF -Dmathmore=OFF -Dopengl=OFF -Dpythia8=OFF\
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva

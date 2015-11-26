@@ -674,7 +674,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON \
 	    -Dgviz=OFF -Dbonjour=OFF -Dkrb5=OFF -Dcastor=OFF -Drfio=OFF -Dmysql=OFF -Dodbc=OFF \
 	    -Dpythia6=OFF -Dfftw3=OFF -Dgfal=OFF -Dglite=OFF -Ddcache=OFF -Dldap=OFF -Dchirp=OFF \
-	    -Dhdfs=OFF -Dbuiltin_glew=OFF -Dbuiltin_gsl=OFF -Dmathmore=OFF -Dopengl=OFF -Dpythia8=OFF\
+	    -Dhdfs=OFF -Dbuiltin_glew=OFF -Dbuiltin_gsl=OFF -Dmathmore=OFF -Dpythia8=OFF\
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva

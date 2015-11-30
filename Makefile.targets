@@ -666,9 +666,15 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@mkdir -p $(EXTBUILDDIR)/root
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
-# At this time, the -Dminimal=ON option cannot be used to disable all root components and enable them 
+# At this time, the -Dgminimal=ON option cannot be used to disable all root components and enable them 
 # selectively, therefore unwanted components are disabled explicitly
-# Once https://sft.its.cern.ch/jira/browse/ROOT-7710 is fixed, this can be moved to using -Dminimal=ON
+# Bug https://sft.its.cern.ch/jira/browse/ROOT-7710 is fixed in ROOT 6.06, this can be moved to using -Dgminimal=ON with 
+# the following cmake call once thi ROOT version is released and used by basf2
+#	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
+#	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
+#	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
+#	    -Dopengl=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dsqlite=ON \
+#	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON \
 	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgsl_shared=ON -Dfail-on-missing=ON \
 	    -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON \

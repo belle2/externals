@@ -675,6 +675,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 #	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
 #	    -Dopengl=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dsqlite=ON \
 #	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON \
+#
 	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgsl_shared=ON -Dfail-on-missing=ON \
 	    -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON \

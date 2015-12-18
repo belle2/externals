@@ -708,6 +708,9 @@ $(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(RO
 	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && \
 	    make install
 	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
+# install also header files in the include directory, so ROOT's autoparser can find it
+# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
+	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/neurobayes/TMVAPlugin/inc/MethodNeuroBayes.h $(EXTINCDIR)/inc/
 
 # NeuroBayes TMVA plugin clean command
 nbplugin.clean:

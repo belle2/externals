@@ -650,6 +650,7 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-pymva.patch
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-pyroot-short.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

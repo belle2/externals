@@ -1,0 +1,32 @@
+From 4caf4989ad22c491cdd6891d87aea886c64f6900 Mon Sep 17 00:00:00 2001
+From: Thomas Hauth <Thomas.Hauth@kit.edu>
+Date: Wed, 16 Dec 2015 19:55:59 +0100
+Subject: [PATCH] disabled pymva
+
+---
+ tmva/CMakeLists.txt | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/tmva/CMakeLists.txt b/tmva/CMakeLists.txt
+index 25c514e..4cab8af 100644
+--- a/tmva/CMakeLists.txt
++++ b/tmva/CMakeLists.txt
+@@ -1,9 +1,12 @@
+ 
+ add_subdirectory(tmva)
+ add_subdirectory(tmvagui)
+-if(python AND NUMPY_FOUND)
+-   add_subdirectory(pymva)
+-endif()
++
++# disable pymva, because it is not supporting 
++# python3 used by Belle II
++#if(python AND NUMPY_FOUND)
++#   add_subdirectory(pymva)
++#endif()
+ if(r)
+ add_subdirectory(rmva)
+ endif()
+-- 
+1.9.1
+

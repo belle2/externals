@@ -646,15 +646,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
-	@$(DOWNLOAD) root root_v6.04.10.source.tar.gz https://root.cern.ch/download/root_v6.04.10.source.tar.gz
+	@$(DOWNLOAD) root root_v6.06.00.source.tar.gz https://root.cern.ch/download/root_v6.06.00.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
-	#@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-nonbash.patch
-	# patch for a ROOT crash, if libCling has been unloaded already but some dictionaries are still
-	# loaded and trying to use it
-	# This code change will be included in ROOT releases > 6.04.08 and the patch can then be
-	# removed here
-	#@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-unloading-fix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -666,22 +660,11 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@mkdir -p $(EXTBUILDDIR)/root
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
-# At this time, the -Dgminimal=ON option cannot be used to disable all root components and enable them 
-# selectively, therefore unwanted components are disabled explicitly
-# Bug https://sft.its.cern.ch/jira/browse/ROOT-7710 is fixed in ROOT 6.06, this can be moved to using -Dgminimal=ON with 
-# the following cmake call once thi ROOT version is released and used by basf2
-#	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-#	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
-#	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
-#	    -Dopengl=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dsqlite=ON \
-#	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON \
-#
 	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgsl_shared=ON -Dfail-on-missing=ON \
-	    -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON \
-	    -Dgviz=OFF -Dbonjour=OFF -Dkrb5=OFF -Dcastor=OFF -Drfio=OFF -Dmysql=OFF -Dodbc=OFF \
-	    -Dpythia6=OFF -Dfftw3=OFF -Dgfal=OFF -Dglite=OFF -Ddcache=OFF -Dldap=OFF -Dchirp=OFF \
-	    -Dhdfs=OFF -Dbuiltin_glew=OFF -Dbuiltin_gsl=OFF -Dmathmore=OFF -Dpythia8=OFF\
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
+	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
+	    -Dopengl=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dsqlite=ON \
+	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva

@@ -37,7 +37,7 @@ CMAKE:=cmake
 ifeq ($(shell uname),Darwin)
   NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
 else
-  NPROCESSES=$(shell grep "physical id.*0" /proc/cpuinfo 2> /dev/null | wc -l)
+  NPROCESSES=$(shell grep "physical id" /proc/cpuinfo 2> /dev/null | wc -l)
   ifeq ($(NPROCESSES),0)
     NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
   endif

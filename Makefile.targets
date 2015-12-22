@@ -106,10 +106,14 @@ endif
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-# NOTE: Starting with ROOT 6.06 branch "-DPOSTGRESQL_LIBRARIES" will be renamed to "-DPOSTGRESQL_LIBRARY" 
-# https://sft.its.cern.ch/jira/browse/ROOT-7816
-# oracle must be explicitly disabled here
-ROOT_OPTION += -Doracle=OFF -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
+ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
+
+# check for graphics packages needed to built ROOT's OpenGL support
+GL_GLU_EXISTS=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
+ifeq ($(GL_GLU_EXISTS),0)
+  ROOT_OPTION+= -Dopengl=ON -Dbuiltin_glew=ON
+endif
+
 
 # check whether geant4 data files are already installed
 GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
@@ -665,7 +669,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
-	    -Dopengl=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON \
+	    -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install

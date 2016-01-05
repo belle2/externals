@@ -865,8 +865,7 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@$(DOWNLOAD) pythia pythia8209.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8209.tgz
-	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia.patch
+	@$(DOWNLOAD) pythia pythia8215.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8215.tgz
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure

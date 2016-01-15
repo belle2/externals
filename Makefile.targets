@@ -653,9 +653,12 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@$(DOWNLOAD) root root_v6.06.00.source.tar.gz https://root.cern.ch/download/root_v6.06.00.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
+	# disable PyMVA, which does not support python3 at this time
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-pymva.patch
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-pyroot-short.patch
-# patch cmake problem, already fixed upstream so not necessary with next ROOT version
+	# fix 32-bit compile probem of root, will be fixed in next ROOT release
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-minmax-engine-32bit.patch
+	# patch cmake problem, already fixed upstream so not necessary with next ROOT version
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile.patch
 
 # root build

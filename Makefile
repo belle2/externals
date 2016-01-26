@@ -31,7 +31,7 @@ PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbd
 # on the fly and removes it later but this doesn't work if internet connection
 # is off.  So to be able to install without internet after make src we install
 # it manually
-export PYTHON_PACKAGES:=autopep8==1.2.1a0 decorator==4.0.4 ipython==4.0.0 \
+export PYTHON_PACKAGES:=autopep8==1.2.1a0 CherryPy==4.0.0 decorator==4.0.4 ipython==4.0.0 \
     ipython-genutils==0.1.0 lxml==3.4.4 numpy==1.9.2 path.py==8.1.1 pep8==1.6.3a0 \
     pexpect==3.3 pickleshare==0.5 requests==2.7.0 simplegeneric==0.8.1 setuptools-scm==1.7.0  \
     traitlets==4.0.0

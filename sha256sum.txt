@@ -33,6 +33,7 @@ b160043289cfbf2a186d3b12f9976b6914e76d918d3d4469ff408bd199bbb8ed *src/libpqxx-4.
 f0840edcfc7780c44079740921cf9b51b37ae2835580edf478e8f03841166a2f *src/postgresql-9.2.4.tar.gz
 1b654ac3bf9254055052d1741c07b84c822bd6f349fa52068b5b4a25794d097e *src/pythia8215.tgz
 0400bf512c0257481f27f32eeb5a6c3ec28d43bc597e8cf826fda6169161dc58 *src/python-packages/autopep8-1.2.1a0.tar.gz
+73ad4f8870b5a3e9988a7778b5d3003a390d440527ec3458a0c7e58865d2611a *src/python-packages/CherryPy-4.0.0.tar.gz
 5ad0c10fad31648cffa15ee0640eee04bbb1b843a02de26ad3700740768cc3e1 *src/python-packages/decorator-4.0.4.tar.gz
 2fd276c407fb0b29e5d4884a7029a2c27fef0a06fd7a34924cce69b7cc43f4da *src/python-packages/ipython-4.0.0.tar.gz
 3a0624a251a26463c9dfa0ffa635ec51c4265380980d9a50d65611c3c2bd82a6 *src/python-packages/ipython_genutils-0.1.0.tar.gz

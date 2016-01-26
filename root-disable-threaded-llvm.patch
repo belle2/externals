@@ -1,0 +1,30 @@
+From 0d5a1dffae726046c8b2e2c38330cd3f213fde7b Mon Sep 17 00:00:00 2001
+From: Thomas Hauth <Thomas.Hauth@kit.edu>
+Date: Tue, 26 Jan 2016 20:56:24 +0100
+Subject: [PATCH] use OFF as default value for LLVM_ENABLE_THREADS to evade
+ inconsistencies in the build process
+
+---
+ interpreter/llvm/src/CMakeLists.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/interpreter/llvm/src/CMakeLists.txt b/interpreter/llvm/src/CMakeLists.txt
+index 23cdffd..59f89dd 100644
+--- a/interpreter/llvm/src/CMakeLists.txt
++++ b/interpreter/llvm/src/CMakeLists.txt
+@@ -206,7 +206,11 @@ set(LLVM_TARGET_ARCH "host"
+ 
+ option(LLVM_ENABLE_TERMINFO "Use terminfo database if available." ON)
+ 
+-option(LLVM_ENABLE_THREADS "Use threads if available." ON)
++# ROOT6 does not use threaded LLVM as this feature is explicitly
++# disabled here: interpreter/CMakeLists.txt
++# Set default value here to OFF, otherwise ROOT's setting gets 
++# overwritten on the first cmake execution
++option(LLVM_ENABLE_THREADS "Use threads if available." OFF)
+ 
+ option(LLVM_ENABLE_ZLIB "Use zlib for compression/decompression if available." ON)
+ 
+-- 
+1.9.1
+

@@ -783,13 +783,12 @@ rave.src: $(EXTSRCDIR)/rave/README
 
 # rave download
 $(EXTSRCDIR)/rave/README:
-	@$(DOWNLOAD) rave rave-0.6.24.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.24.tar.gz
+	@$(DOWNLOAD) rave rave-0.6.25.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.25.tar.gz
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
 	@cd $(EXTSRCDIR)/rave/src && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/boost)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
-	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

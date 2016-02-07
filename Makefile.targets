@@ -726,16 +726,12 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
-	@$(DOWNLOAD) FastBDT FastBDT-1.2.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-2.0.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
-	@cp -fa $(EXTSRCDIR)/FastBDT $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/FastBDT && make && make install && cp TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
-# install also header files in the include directory, so ROOT's autoparser can find it
-# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
-	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/FastBDT/inc/FBDT.h $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/FastBDT/inc/MethodFastBDT.h $(EXTINCDIR)/inc/
+	@mkdir -p $(EXTBUILDDIR)/FastBDT && cd $(EXTBUILDDIR)/FastBDT && cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/FastBDT && make install && cp $(EXTBUILDDIR)/FastBDT/TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:

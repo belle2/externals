@@ -35,6 +35,9 @@ def unsetup_externals(location, common=False):
     remove_path('PATH', os.path.join(root_dir, 'bin'))
     remove_path(lib_path_name, os.path.join(root_dir, 'lib'))
     remove_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
+    # remove root 6 include paths again
+    remove_path('ROOT_INCLUDE_PATH', root_dir)
+    remove_path('ROOT_INCLUDE_PATH', os.path.join(root_dir, 'include'))
 
     # pythia
     env_vars['PYTHIA8DATA'] = ''
@@ -70,6 +73,9 @@ def setup_externals(location, common=False):
     if os.path.isfile(os.path.join(root_dir, "thisroot.sh")):
         source_scripts.append([os.path.join(root_dir, "thisroot.sh"),
                                os.path.join(root_dir, "thisroot.csh")])
+    # add include path so ROOT is able to find dictionary headers
+    add_path('ROOT_INCLUDE_PATH', location)
+    add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
 
     # ok, the rest is stuff we don't need fallback for
     if common:

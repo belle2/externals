@@ -63,7 +63,6 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export ROOT_OPTION=-DCMAKE_BUILD_TYPE=Debug
   export PYTHIA_OPTION=--enable-debug
   export EVTGEN_OPTION=--enable-debug
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export FANN_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
 else
 # make if (option=opt or option=common) using the filter: filter will only
@@ -78,7 +77,6 @@ ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export ROOT_OPTION=-DCMAKE_BUILD_TYPE=Release
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
   export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
 ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
@@ -95,7 +93,6 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export ROOT_OPTION=
   export PYTHIA_OPTION=
   export EVTGEN_OPTION=
-  export VC_OPTION=-DCMAKE_BUILD_TYPE=Release
   export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
 else
   $(error Unknown externals build option. Please source the setup_belle2 script.)
@@ -1130,32 +1127,6 @@ eigen.clean:
 eigen.touch:
 	@rm -rf $(EXTSRCDIR)/Eigen/Eigen
 
-
-# dependencies for vc
-vc: $(EXTLIBDIR)/libVc.a
-vc.src: $(EXTSRCDIR)/vc
-
-# vc download
-$(EXTSRCDIR)/vc:
-	@$(DOWNLOAD) vc Vc-0.7.5.tar.gz https://github.com/VcDevel/Vc/releases/download/0.7.5/Vc-0.7.5.tar.gz
-
-# vc build
-$(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/vc
-	@echo "installing vc"
-	@mkdir -p $(EXTBUILDDIR)/vc
-	@cd $(EXTBUILDDIR)/vc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DBUILD_TESTING=OFF $(VC_OPTION) $(EXTSRCDIR)/vc && \
-	    make -j $(NPROCESSES) && make install
-	#Fix absolute path in .cmake file/RaveConfig.cmake:
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/Vc/VcConfig.cmake
-
-# vc clean
-vc.clean:
-	@echo "cleaning vc"
-	@rm -rf $(EXTBUILDDIR)/vc $(EXTINCDIR)/Vc $(EXTLIBDIR)/libVc.a
-
-# vc touch
-vc.touch:
-	@rm -rf $(EXTLIBDIR)/libVc.a
 
 
 # dependencies for nsm2

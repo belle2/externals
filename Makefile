@@ -23,7 +23,7 @@ COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 libxml2 libxslt \
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
     vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
-    flc vc nsm2 belle_legacy curl fann
+    flc nsm2 belle_legacy curl fann
 
 # python packages to be included with the python package. This list is created
 # from pip3 freeze to include all dependencies. In addition to pip3 freeze,

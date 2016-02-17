@@ -1,0 +1,58 @@
+From f16a9c4d621f55011c6c2eb6b09de9700731d64e Mon Sep 17 00:00:00 2001
+From: Thomas Hauth <Thomas.Hauth@kit.edu>
+Date: Tue, 16 Feb 2016 17:06:03 +0100
+Subject: [PATCH] using relative path to generate ROOT dictionaries so a
+ compiled dictionary library can be relocated
+
+---
+ CMakeLists.txt       | 7 ++++++-
+ cmake/FindROOT.cmake | 8 +++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 842e583..4f254f9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,7 +69,12 @@ find_package(ROOT)
+ if(ROOT_FOUND)
+   separate_arguments(ROOT_CXX_FLAGS)
+   if (ROOT_VERSION_MAJOR GREATER 5)
+-    ROOT_GENERATE_DICTIONARY(TMVA_FastBDT_Dict ${FastBDT_HEADERS} "${PROJECT_SOURCE_DIR}/include/MethodFastBDT.h" LINKDEF "${PROJECT_SOURCE_DIR}/include/LinkDef.h")
++    # copy header with dictionary to the build folder so we can use relative include Path
++    # this is the only way to have ROOT not store the full path and have a release which is relocate-able
++    # also copy inside of the include/root folder to allow to use the headers if they get placed inside 
++    # of the root include folder of a release
++    file( COPY "${PROJECT_SOURCE_DIR}/include/MethodFastBDT.h" DESTINATION "${PROJECT_BINARY_DIR}/include/root/" )
++    ROOT_GENERATE_DICTIONARY(TMVA_FastBDT_Dict "include/root/MethodFastBDT.h" LINKDEF "${PROJECT_SOURCE_DIR}/include/LinkDef.h")
+     add_library(TMVAFastBDT SHARED TMVA_FastBDT_Dict.cxx ${FastBDT_SOURCES} "${PROJECT_SOURCE_DIR}/include/MethodFastBDT.h" "${PROJECT_SOURCE_DIR}/src/MethodFastBDT.cxx" ${FastBDT_HEADERS})
+     target_compile_options(TMVAFastBDT PUBLIC ${ROOT_CXX_FLAGS})
+     target_include_directories(TMVAFastBDT PUBLIC ${ROOT_INCLUDE_DIR}) 
+diff --git a/cmake/FindROOT.cmake b/cmake/FindROOT.cmake
+index 864e12f..773e735 100644
+--- a/cmake/FindROOT.cmake
++++ b/cmake/FindROOT.cmake
+@@ -109,8 +109,10 @@ if(ROOT_CONFIG_EXECUTABLE)
+           endif()
+         endforeach()
+       else()
+-        find_file(headerFile ${fp} HINTS ${incdirs} PATHS "/")
+-        set(headerfiles ${headerfiles} ${headerFile})
++        # disabled so the full path to the dictionary is not resolved, otherwise
++        # ROOT will not load the header files from paths given via ROOT_INCLUDE_PATH env variable
++        # find_file(headerFile ${fp} HINTS ${incdirs} PATHS "/")
++        set(headerfiles ${headerfiles} ${fp})
+         unset(headerFile CACHE)
+       endif()
+     endforeach()
+@@ -125,7 +127,7 @@ if(ROOT_CONFIG_EXECUTABLE)
+     add_custom_command(OUTPUT ${dictionary}.cxx
+                        COMMAND ${ROOTCINT_EXECUTABLE} -cint -f  ${dictionary}.cxx
+                                             -c ${ARG_OPTIONS} ${includedirs} ${headerfiles} ${linkdefs}
+-                       DEPENDS ${headerfiles} ${linkdefs} VERBATIM)
++                       VERBATIM)
+   endfunction()
+ 
+   #----------------------------------------------------------------------------
+-- 
+1.9.1
+

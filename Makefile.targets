@@ -55,7 +55,7 @@ export CXX:=g++
 
 # set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
-  export CXXFLAGS=-g
+  export CONFIGURE_CXXFLAGS=-g
   export BOOST_OPTION=variant=debug
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -69,7 +69,7 @@ else
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
 # anything else we get an empty string
 ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
-  export CXXFLAGS=-O3
+  export CONFIGURE_CXXFLAGS=-O3
   export BOOST_OPTION=variant=release
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
   export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
@@ -535,7 +535,7 @@ $(EXTSRCDIR)/postgresql/configure:
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@mkdir -p $(EXTBUILDDIR)/postgresql
-	@cd $(EXTBUILDDIR)/postgresql && $(EXTSRCDIR)/postgresql/configure --prefix=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/postgresql && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/postgresql/configure --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 
@@ -562,7 +562,7 @@ $(EXTSRCDIR)/libpqxx/configure:
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
 	@mkdir -p $(EXTBUILDDIR)/libpqxx
-	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config $(EXTSRCDIR)/libpqxx/configure --enable-shared \
+	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config CXXFLAGS="$(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/libpqxx/configure --enable-shared \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pqxx-config
@@ -788,7 +788,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CXXFLAGS)" $(EXTSRCDIR)/rave/configure \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/rave/configure \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -818,7 +818,7 @@ $(EXTSRCDIR)/MillepedeII/WIKI:
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
 	@echo "building MillepedeII"
 	@cp -fa $(EXTSRCDIR)/MillepedeII $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/MillepedeII && make pede && cp pede $(EXTBINDIR)/
+	@cd $(EXTBUILDDIR)/MillepedeII && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" make pede && cp pede $(EXTBINDIR)/
 
 # MillepedeII clean
 MillepedeII.clean:
@@ -870,7 +870,7 @@ $(EXTSRCDIR)/pythia/configure:
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cp -fa $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/pythia && ./configure --prefix=$(EXTDIR) --enable-shared \
+	@cd $(EXTBUILDDIR)/pythia && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --enable-shared \
 	    --with-hepmc2=$(EXTDIR) $(PYTHIA_OPTION) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pythia8-config and make it executable
@@ -902,7 +902,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cp -fa $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/PHOTOS && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
+	@cd $(EXTBUILDDIR)/PHOTOS && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 
 # Photos clean
@@ -928,7 +928,7 @@ $(EXTSRCDIR)/TAUOLA/configure:
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
 	@cp -fa $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/TAUOLA && ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
+	@cd $(EXTBUILDDIR)/TAUOLA && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
 
 # Tauola clean
 tauola.clean:
@@ -956,7 +956,7 @@ $(EXTSRCDIR)/evtgen/configure:
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cp -fa $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/evtgen && ./configure --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/evtgen && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
 	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) && \
 	    make -j $(NPROCESSES) lib_shared && make all
 	# install ourselves as evtgen stuff is expected in share/evtgen but
@@ -992,7 +992,7 @@ $(EXTSRCDIR)/phokhara/Makefile:
 $(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
 	@echo "building Phokhara"
 	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && make
+	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" make
 	@cp $(EXTBUILDDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
 	@mkdir -p $(EXTDIR)/share/phokhara && cp $(EXTSRCDIR)/phokhara/const_and_model_paramall9.1.dat $(EXTDIR)/share/phokhara/
 
@@ -1061,7 +1061,7 @@ $(EXTSRCDIR)/cry/README:
 $(EXTLIBDIR)/libCRY.a: $(EXTSRCDIR)/cry/README
 	@echo "building CRY"
 	@cp -fa $(EXTSRCDIR)/cry $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/cry && make
+	@cd $(EXTBUILDDIR)/cry && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" make
 	@cp $(EXTBUILDDIR)/cry/lib/libCRY.* $(EXTLIBDIR)/
 	@mkdir -p $(EXTINCDIR)/cry && cp -a $(EXTBUILDDIR)/cry/src/*.h $(EXTINCDIR)/cry/
 
@@ -1089,7 +1089,7 @@ $(EXTSRCDIR)/FLC/README:
 $(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
 	@echo "building FLC"
 	@cp -fa $(EXTSRCDIR)/FLC $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
+	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CONFIGURE_CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
 	@cp $(EXTBUILDDIR)/FLC/lib/* $(EXTLIBDIR)/
 	@cp -a $(EXTBUILDDIR)/FLC/include $(EXTINCDIR)
 

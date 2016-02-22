@@ -723,8 +723,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
-	@$(DOWNLOAD) FastBDT FastBDT-2.0.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-relative-rootcling-headers.patch
+	@$(DOWNLOAD) FastBDT FastBDT-2.1.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root

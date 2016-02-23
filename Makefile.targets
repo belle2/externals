@@ -723,7 +723,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
-	@$(DOWNLOAD) FastBDT FastBDT-2.1.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-2.2.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
@@ -736,6 +736,7 @@ fastbdt.clean:
 	@-cd $(EXTBUILDDIR)/FastBDT 2>/dev/null && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
 	@rm -f $(ROOTSYS)/lib/TMVA_FastBDT_Dict_rdict.pcm
+	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT.h
 
 # FastBDT TMVA plugin touch command
 fastbdt.touch:

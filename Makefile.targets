@@ -783,6 +783,7 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

@@ -481,6 +481,19 @@ boost.clean:
 boost.touch:
 	@rm -f $(EXTLIBDIR)/libboost_system.so
 
+# cppcheck
+cppcheck: $(EXTBINDIR)/cppcheck
+cppcheck.src: $(EXTSRCDIR)/cppcheck
+cppcheck.touch:
+	@rm -fr $(EXTBINDIR)/cppcheck
+
+$(EXTSRCDIR)/cppcheck:
+	@$(DOWNLOAD) cppcheck cppcheck-1.72.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/cppcheck-1.72.tar.bz2
+$(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
+	@echo "building cppcheck"
+	@mkdir -p $(EXTBUILDDIR)/cppcheck
+	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DCMAKE_BUILD_TYPE=Release $(EXTSRCDIR)/cppcheck && \
+	    make -j $(NPROCESSES) && make install
 
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config

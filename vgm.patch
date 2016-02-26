@@ -37,17 +37,3 @@ Index: packages/BaseVGM/source/materials/VMaterialFactory.cxx
 +
    return true;
  }  
-Index: packages/BaseVGM/source/materials/VMaterialFactory.cxx
-===================================================================
---- CMakeLists.txt	2015-06-10 14:44:47.146665457 +0200
-+++ CMakeLists.txt	2012-12-04 17:28:30.601034000 +0100
-@@ -20,6 +20,9 @@
- #
- project(VGM)
- 
-+# compile the whole vgm code with c++11 to work nicely with ROOT 6
-+add_definitions("-std=c++11")
-+
- #---CMake Module Path-----------------------------------------------------------
- set(CMAKE_MODULE_PATH 
-     ${CMAKE_SOURCE_DIR}/cmake

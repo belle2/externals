@@ -1219,8 +1219,7 @@ fann.touch:
 # FANN 2.2.0 is outdated so get 2.2.0 plus the changes up to commit 0e6fa25 and
 # apply pull requests 40 and 43 as patch
 $(EXTSRCDIR)/fann/README.md:
-	@$(DOWNLOAD) fann fann-2.2.0+git0e6fa25.tar.gz https://github.com/libfann/fann/tarball/0e6fa25
-	cd $(EXTSRCDIR)/fann && patch -p1 < $(PATCHDIR)/fann.patch
+	@$(DOWNLOAD) fann fann-2.2.0+git8ae6bb0.tar.gz https://github.com/libfann/fann/tarball/8ae6bb0
 
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann

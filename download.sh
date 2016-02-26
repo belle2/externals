@@ -39,6 +39,8 @@ get_archive () {
     EXTRACT="unzip"
   elif [ "${EXTENSION}" == "bz2" ]; then
     EXTRACT="tar xjf"
+  elif [ "${EXTENSION}" == "xz" ]; then
+    EXTRACT="tar xJf"
   fi
 
   pushd ${TMPDIR} &> /dev/null

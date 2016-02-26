@@ -20,6 +20,8 @@ endif
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 libxml2 libxslt \
     python gdb cmake boost gtest eigen astyle scons madgraph
 
+COMMON_OPTIONAL:=clang
+
 # external packages
 PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
     vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
@@ -78,17 +80,17 @@ clean: $(foreach package,$(PACKAGES),$(package).clean) ;
 
 # make all targets and src targets depend on dirs, otherwise some symlinks
 # might not be created, e.g. when creating a new checkout and running make gcc
-$(COMMON_PACKAGES) $(foreach package,$(COMMON_PACKAGES),$(package).src): dirs
+$(COMMON_PACKAGES) $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).src): dirs
 $(PACKAGES) $(foreach package,$(PACKAGES),$(package).src): dirs
 
 # so far so good, just running make should now do the correct thing but we want
 # to be able to call make gcc and he should do the correct thing. So every
 # other target we just pass to the sub make but we override the
 # BELLE2_EXTERNALS_OPTION for the $(COMMON_PACKAGES) targets
-$(COMMON_PACKAGES): override BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).touch): override BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).src): override BELLE2_EXTERNALS_OPTION=common
-$(foreach package,$(COMMON_PACKAGES),$(package).clean): override BELLE2_EXTERNALS_OPTION=common
+$(COMMON_PACKAGES) $(COMMON_OPTIONAL): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).touch): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).src): override BELLE2_EXTERNALS_OPTION=common
+$(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): override BELLE2_EXTERNALS_OPTION=common
 
 # all targets not otherwise defined re executed with the option they got by
 # calling make on the targets file.  Specifying the option here is not

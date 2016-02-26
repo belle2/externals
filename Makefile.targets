@@ -55,6 +55,10 @@ export CXX:=g++
 
 # set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
+  # suffix for the install target when running "make install". For opt/common
+  # mode this can be set to "-strip" to install stripped versions of the programs
+  # to greatly reduce disk size, especially for gcc
+  export INSTALL_TARGET_SUFFIX=
   export CONFIGURE_CXXFLAGS=-g
   export BOOST_OPTION=variant=debug
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -69,6 +73,7 @@ else
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
 # anything else we get an empty string
 ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
+  export INSTALL_TARGET_SUFFIX=-strip
   export CONFIGURE_CXXFLAGS=-O3
   export BOOST_OPTION=variant=release
   export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
@@ -186,7 +191,7 @@ $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure --disable-werror --disable-multilib \
 	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
-	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install
+	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install$(INSTALL_TARGET_SUFFIX)
 
 binutils.clean:
 	@echo "cleaning binutils"
@@ -218,7 +223,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
 	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz \
 	    --with-default-libstdcxx-abi=gcc4-compatible && \
-	    make -j $(NPROCESSES) && make install
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 # now remove the bloody empty directory gcc creates in prefix. but make sure
 # it's actually empty
 	@[ $$(ls -A $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/include 2>/dev/null) ] && \
@@ -259,7 +264,7 @@ $(EXTSRCDIR)/libxml2:
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
-	    make -j $(NPROCESSES) && make install
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 	#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xml2Conf.sh
@@ -278,7 +283,7 @@ $(EXTSRCDIR)/libxslt:
 
 $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
-	    make -j $(NPROCESSES) && make install
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 	#Fix absolute path in xslt-config and lib/xsltConf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xsltConf.sh
@@ -392,7 +397,7 @@ $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
 	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR) --with-python=python3 && \
-	    make -j $(NPROCESSES) && make -j $(NPROCESSES) install
+	    make -j $(NPROCESSES) && make install
 
 gdb.clean:
 	@echo "cleaning gdb"

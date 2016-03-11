@@ -818,6 +818,8 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
+	# --binary option neeed, because the rave file to patch is stored with windows file endings convention
+	@cd $(EXTSRCDIR)/rave/ && patch --binary -p0 -i $(PATCHDIR)/rave-silence-cout.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

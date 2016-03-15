@@ -110,6 +110,13 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
 
+# check whether tar support xz
+TAR_NOXZ=$(shell tar --help | grep J; echo $$?)
+TARXZ=xz
+ifeq ($(TAR_NOXZ),1)
+  TARXZ=bz2
+endif
+
 # check for graphics packages needed to built ROOT's OpenGL support
 GL_GLU_EXISTS=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
 ifeq ($(GL_GLU_EXISTS),0)
@@ -236,12 +243,17 @@ gcc.clean:
 
 clang: $(EXTBINDIR)/clang++
 clang.src: $(EXTSRCDIR)/llvm
+
+clang.clean:
+	@cd $(EXTBUILDDIR)/llvm && make clean
+	@rm -rf $(EXTBINDIR)/clang* $(EXTBINDIR)/llvm* $(EXTLIBDIR)/libLLVM* $(EXTLIBDIR)/libclang* $(EXTLIBDIR)/clang $(EXTINCDIR)/llvm* $(EXTINCDIR)/clang*
+
 clang.touch:
-	rm -fr $(EXTBINDIR)/clang++
+	@rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/cfe-3.8.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-3.8.0.src.tar.$(TARXZ) http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang cfe-3.8.0.src.tar.$(TARXZ) http://llvm.org/releases/3.8.0/cfe-3.8.0.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"

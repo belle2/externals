@@ -703,6 +703,7 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-minmax-engine-32bit.patch
 	# patch cmake problem, already fixed upstream so not necessary with next ROOT version
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile.patch
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile2.patch
 	# disable threaded LLVM explicitly, ROOT's cmake scripts try to do that, but not consistently
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-threaded-llvm.patch
 

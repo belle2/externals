@@ -14,6 +14,10 @@ check_archive() {
   fi
 }
 
+tarJx () {
+  xz --decompress --stdout $1 | tar x
+}
+
 get_archive () {
   URL=$1
   shift
@@ -40,7 +44,7 @@ get_archive () {
   elif [ "${EXTENSION}" == "bz2" ]; then
     EXTRACT="tar xjf"
   elif [ "${EXTENSION}" == "xz" ]; then
-    EXTRACT="tar xJf"
+    EXTRACT="tarJx"
   fi
 
   pushd ${TMPDIR} &> /dev/null

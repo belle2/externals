@@ -1,0 +1,105 @@
+diff --git a/source/persistency/gdml/include/G4GDMLWrite.hh b/source/persistency/gdml/include/G4GDMLWrite.hh
+index c50ea8e..805316a 100644
+--- a/source/persistency/gdml/include/G4GDMLWrite.hh
++++ b/source/persistency/gdml/include/G4GDMLWrite.hh
+@@ -123,7 +123,8 @@ class G4GDMLWrite
+     static G4bool addPointerToName;
+     xercesc::DOMDocument* doc;
+     xercesc::DOMElement* extElement;
+-    XMLCh tempStr[10000];
++    enum { MAX_STR_LEN = 10000 };
++    XMLCh tempStr[MAX_STR_LEN];
+ 
+ };
+ 
+diff --git a/source/persistency/gdml/src/G4GDMLWrite.cc b/source/persistency/gdml/src/G4GDMLWrite.cc
+index b63ce77..511cd51 100644
+--- a/source/persistency/gdml/src/G4GDMLWrite.cc
++++ b/source/persistency/gdml/src/G4GDMLWrite.cc
+@@ -54,7 +54,7 @@ G4GDMLWrite::~G4GDMLWrite()
+ G4bool G4GDMLWrite::FileExists(const G4String& fname) const
+ {
+   struct stat FileInfo;
+-  return (stat(fname.c_str(),&FileInfo) == 0); 
++  return (stat(fname.c_str(),&FileInfo) == 0);
+ }
+ 
+ G4GDMLWrite::VolumeMapType& G4GDMLWrite::VolumeMap()
+@@ -103,9 +103,9 @@ G4String G4GDMLWrite::GenerateName(const G4String& name, const void* const ptr)
+ xercesc::DOMAttr* G4GDMLWrite::NewAttribute(const G4String& name,
+                                             const G4String& value)
+ {
+-   xercesc::XMLString::transcode(name,tempStr,99);
++   xercesc::XMLString::transcode(name,tempStr,MAX_STR_LEN-1);
+    xercesc::DOMAttr* att = doc->createAttribute(tempStr);
+-   xercesc::XMLString::transcode(value,tempStr,99);
++   xercesc::XMLString::transcode(value,tempStr,MAX_STR_LEN-1);
+    att->setValue(tempStr);
+    return att;
+ }
+@@ -113,20 +113,20 @@ xercesc::DOMAttr* G4GDMLWrite::NewAttribute(const G4String& name,
+ xercesc::DOMAttr* G4GDMLWrite::NewAttribute(const G4String& name,
+                                             const G4double& value)
+ {
+-   xercesc::XMLString::transcode(name,tempStr,99);
++   xercesc::XMLString::transcode(name,tempStr,MAX_STR_LEN-1);
+    xercesc::DOMAttr* att = doc->createAttribute(tempStr);
+    std::ostringstream ostream;
+    ostream.precision(15);
+    ostream << value;
+    G4String str = ostream.str();
+-   xercesc::XMLString::transcode(str,tempStr,99);
++   xercesc::XMLString::transcode(str,tempStr,MAX_STR_LEN-1);
+    att->setValue(tempStr);
+    return att;
+ }
+ 
+ xercesc::DOMElement* G4GDMLWrite::NewElement(const G4String& name)
+ {
+-   xercesc::XMLString::transcode(name,tempStr,99);
++   xercesc::XMLString::transcode(name,tempStr,MAX_STR_LEN-1);
+    return doc->createElement(tempStr);
+ }
+ 
+@@ -141,23 +141,23 @@ G4Transform3D G4GDMLWrite::Write(const G4String& fname,
+ 
+    if (depth==0) { G4cout << "G4GDML: Writing '" << fname << "'..." << G4endl; }
+    else   { G4cout << "G4GDML: Writing module '" << fname << "'..." << G4endl; }
+-   
++
+    if (FileExists(fname))
+    {
+      G4String ErrorMessage = "File '"+fname+"' already exists!";
+      G4Exception("G4GDMLWrite::Write()", "InvalidSetup",
+                  FatalException, ErrorMessage);
+    }
+-   
++
+    VolumeMap().clear(); // The module map is global for all modules,
+                         // so clear it only at once!
+ 
+-   xercesc::XMLString::transcode("LS", tempStr, 99);
++   xercesc::XMLString::transcode("LS", tempStr, MAX_STR_LEN-1);
+      xercesc::DOMImplementationRegistry::getDOMImplementation(tempStr);
+-   xercesc::XMLString::transcode("Range", tempStr, 99);
++   xercesc::XMLString::transcode("Range", tempStr, MAX_STR_LEN-1);
+    xercesc::DOMImplementation* impl =
+      xercesc::DOMImplementationRegistry::getDOMImplementation(tempStr);
+-   xercesc::XMLString::transcode("gdml", tempStr, 99);
++   xercesc::XMLString::transcode("gdml", tempStr, MAX_STR_LEN-1);
+    doc = impl->createDocument(0,tempStr,0);
+    xercesc::DOMElement* gdml = doc->getDocumentElement();
+ 
+@@ -224,10 +224,10 @@ G4Transform3D G4GDMLWrite::Write(const G4String& fname,
+       return G4Transform3D::Identity;
+    }
+    catch (...)
+-   {   
++   {
+       G4cout << "G4GDML: Unexpected Exception!" << G4endl;
+       return G4Transform3D::Identity;
+-   }        
++   }
+ 
+    delete myFormTarget;
+    writer->release();

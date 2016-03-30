@@ -1,0 +1,73 @@
+diff --git a/source/geometry/navigation/src/G4Navigator.cc b/source/geometry/navigation/src/G4Navigator.cc
+index 15e96c6..417de8b 100644
+--- a/source/geometry/navigation/src/G4Navigator.cc
++++ b/source/geometry/navigation/src/G4Navigator.cc
+@@ -1026,7 +1026,9 @@ G4double G4Navigator::ComputeStep( const G4ThreeVector &pGlobalpoint,
+               << "        in volume -" << motherPhysical->GetName()
+               << "- at point " << pGlobalpoint << G4endl
+               << "        direction: " << pDirection << ".";
++#ifdef G4VERBOSE
+       motherPhysical->CheckOverlaps(5000, false);
++#endif
+       G4Exception("G4Navigator::ComputeStep()", "GeomNav0003",
+                   EventMustBeAborted, message);
+     }
+diff --git a/source/materials/src/G4SurfaceProperty.cc b/source/materials/src/G4SurfaceProperty.cc
+index d501c19..608b736 100644
+--- a/source/materials/src/G4SurfaceProperty.cc
++++ b/source/materials/src/G4SurfaceProperty.cc
+@@ -106,7 +106,9 @@ void G4SurfaceProperty::DumpTableInfo()
+ 
+ void G4SurfaceProperty::CleanSurfacePropertyTable()
+ {
++#ifdef G4VERBOSE
+   DumpTableInfo();
++#endif
+   G4SurfacePropertyTable::iterator pos;
+   for(pos=theSurfacePropertyTable.begin();
+       pos!=theSurfacePropertyTable.end(); pos++)
+@@ -114,5 +116,7 @@ void G4SurfaceProperty::CleanSurfacePropertyTable()
+     if (*pos) delete *pos;
+   }
+   theSurfacePropertyTable.clear();
++#ifdef G4VERBOSE
+   DumpTableInfo();
++#endif
+ }
+diff --git a/source/physics_lists/lists/include/FTFP_BERT.icc b/source/physics_lists/lists/include/FTFP_BERT.icc
+index d5ca11d..a89d612 100644
+--- a/source/physics_lists/lists/include/FTFP_BERT.icc
++++ b/source/physics_lists/lists/include/FTFP_BERT.icc
+@@ -72,8 +72,8 @@ template<class T> TFTFP_BERT<T>::TFTFP_BERT(G4int ver):  T()
+   // default cut value  (1.0mm) 
+   // defaultCutValue = 1.0*CLHEP::mm;
+   G4DataQuestionaire it(photon);
+-  G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT 2.0"<<G4endl;
+-  G4cout <<G4endl;
++  if(ver>0) G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT 2.0"<<G4endl;
++  if(ver>0) G4cout <<G4endl;
+   this->defaultCutValue = 0.7*CLHEP::mm;  
+   this->SetVerboseLevel(ver);
+ 
+diff --git a/source/physics_lists/lists/src/G4PhysListFactory.cc b/source/physics_lists/lists/src/G4PhysListFactory.cc
+index 3e0e2e7..47dff87 100644
+--- a/source/physics_lists/lists/src/G4PhysListFactory.cc
++++ b/source/physics_lists/lists/src/G4PhysListFactory.cc
+@@ -168,7 +168,7 @@ G4PhysListFactory::GetReferencePhysList(const G4String& name)
+ 	   << G4endl;
+   }
+   if(p) {
+-    G4cout << "<<< Reference Physics List " << had_name
++    if(verbose>0) G4cout << "<<< Reference Physics List " << had_name
+ 	   << em_name << " is built" << G4endl;
+     G4int ver = p->GetVerboseLevel();
+     p->SetVerboseLevel(0);
+@@ -189,7 +189,7 @@ G4PhysListFactory::GetReferencePhysList(const G4String& name)
+     }
+     p->SetVerboseLevel(ver);
+   }
+-  G4cout << G4endl;
++  if(verbose>0) G4cout << G4endl;
+   return p;
+ }
+   

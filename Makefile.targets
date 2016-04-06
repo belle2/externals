@@ -1257,8 +1257,13 @@ fann.src: $(EXTSRCDIR)/fann/README.md
 fann.touch:
 	@rm -f $(EXTLIBDIR)/libfann.so
 
-# FANN 2.2.0 is outdated so get 2.2.0 plus the changes up to commit 0e6fa25 and
-# apply pull requests 40 and 43 as patch
+# remove FANN, run in bash to have brace expansion
+fann.clean:
+	@bash -c "rm -fr $(EXTBUILDDIR)/fann $(EXTINCDIR)/{,fixed,float,double,parallel_}fann.h* \
+	    $(EXTINCDIR)/fann_*.h $(EXTLIBDIR)/lib{,fixed,float,double}fann*.so \
+	    $(EXTLIBDIR)/pkgconfig/fann.pc $(EXTLIBDIR)/cmake/fann"
+
+# FANN 2.2.0 is outdated so get 2.2.0 plus the changes up to commit 8ae6bb0
 $(EXTSRCDIR)/fann/README.md:
 	@$(DOWNLOAD) fann fann-2.2.0+git8ae6bb0.tar.gz https://github.com/libfann/fann/tarball/8ae6bb0
 

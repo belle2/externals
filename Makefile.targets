@@ -113,7 +113,7 @@ ifeq ($(GL_XMU_EXISTS),0)
 endif
 
 # cmake executable including common options
-CMAKE:=cmake $(CMAKE_COMMON_FLAGS)
+CMAKE:=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
@@ -234,7 +234,7 @@ $(EXTSRCDIR)/llvm:
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
-	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles"  \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 $(EXTSRCDIR)/llvm && \
 	    make -j $(NPROCESSES) && make install
 
@@ -318,7 +318,7 @@ $(EXTSRCDIR)/freetype:
 $(EXTINCDIR)/freetype2: $(EXTSRCDIR)/freetype
 	@echo "building freetype"
 	@mkdir -p $(EXTBUILDDIR)/freetype
-	@cd $(EXTBUILDDIR)/freetype && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/freetype && $(CMAKE) \
 	    -DBUILD_SHARED_LIBS:BOOL=true -DWITH_ZLIB=ON -DWITH_BZip2=ON \
 	    -DWITH_PNG=OFF -DWITH_HarfBuzz=OFF $(EXTSRCDIR)/freetype && \
 	    make -j $(NPROCESSES) && make install
@@ -500,7 +500,7 @@ $(EXTSRCDIR)/cppcheck:
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
-	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/cppcheck && \
+	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck && \
 	    make -j $(NPROCESSES) && make install
 
 # dependencies for CLHEP
@@ -515,7 +515,7 @@ $(EXTSRCDIR)/CLHEP:
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/CLHEP
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/CLHEP/CLHEP && \
+	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) $(EXTSRCDIR)/CLHEP/CLHEP && \
 	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
@@ -544,7 +544,7 @@ $(EXTSRCDIR)/geant4:
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@echo "building geant4"
 	@mkdir -p $(EXTBUILDDIR)/geant4
-	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(GEANT4_OPTION) \
+	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) $(GEANT4_OPTION) \
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
 	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && \
 	    make -j $(NPROCESSES) && make install
@@ -665,7 +665,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 # FIXME: python support for version 3 seems to be broken so we disable python
 # support for now. But let's leave the flags in so that it doesn't get lost
-	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
 	    -DENABLE_PYTHON=OFF \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
@@ -771,7 +771,7 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
 	@mkdir -p $(EXTBUILDDIR)/FastBDT
-	cd $(EXTBUILDDIR)/FastBDT && cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/FastBDT && \
+	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT && \
 	    make install && cp $(EXTBUILDDIR)/FastBDT/TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
@@ -800,7 +800,7 @@ $(EXTSRCDIR)/vgm:
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DCLHEP_DIR=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR) \
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    make -j $(NPROCESSES) && make install
@@ -893,7 +893,7 @@ $(EXTSRCDIR)/hepmc:
 $(EXTLIBDIR)/libHepMC.so: $(EXTSRCDIR)/hepmc
 	@echo "building HepMC"
 	@mkdir -p $(EXTBUILDDIR)/hepmc
-	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) \
 	    -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
 	    make -j $(NPROCESSES) && make install
 
@@ -1279,7 +1279,7 @@ $(EXTSRCDIR)/fann/README.md:
 
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
-	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/fann && \
+	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann && \
 	    make -j $(NPROCESSES); make install
 
 # astyle: C/C++ code beautifier

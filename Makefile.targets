@@ -500,6 +500,12 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    --libdir=$(EXTLIBDIR) --without-icu --with-python=python3 && \
 	    ./b2 install -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
+# remove libboost_python3.so, it conflicts with libboost_python.so as they
+# contain the same symbols. So we want to remove it to make sure only one of
+# them is used and create symlinks so that nobody will pick up a system library by mistake
+	@rm -fr $(EXTLIBDIR)/libboost_python3.*
+	@for file in $(EXTLIBDIR)/libboost_python*; do \
+	    ln -sf $$file `echo $$file | sed s/python/python3/g`; done
 
 # boost clean
 boost.clean:

@@ -93,6 +93,12 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
 
+# check for xerces xml library to enable GDML persistency in geant4 which is a
+# useful but not necessary tool to track changes in the geometry
+ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
+  GEANT4_OPTION+= -DGEANT4_USE_GDML=ON
+endif
+
 # check for graphics packages needed to built ROOT's OpenGL support
 GL_GLU_EXISTS=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
 ifeq ($(GL_GLU_EXISTS),0)

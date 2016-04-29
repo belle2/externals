@@ -92,20 +92,19 @@ def fixup_pth_file(filename):
     f.close()
     for line in prev_lines:
         line = line.strip()
-        if (not line or line.startswith('#') or line.startswith('import ')
-                or os.path.abspath(line) != line):
-            lines.append(line)
+        if (not line or line.startswith('#') or line.startswith('import ') or os.path.abspath(line) != line):
+            lines.append(line + "\n")
         else:
             new_value = make_relative_path(filename, line)
             if line != new_value:
                 print('Rewriting path %s as %s (in %s)' % (line, new_value, filename))
-            lines.append(new_value)
+            lines.append(new_value + "\n")
     if lines == prev_lines:
-        print('No changes to .pth file %s' % filename)
+        # print('No changes to .pth file %s' % filename)
         return
     print('Making paths in .pth file %s relative' % filename)
     f = open(filename, 'w')
-    f.write('\n'.join(lines) + '\n')
+    f.writelines(lines)
     f.close()
 
 

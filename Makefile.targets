@@ -183,7 +183,7 @@ binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.25.1.tar.gz http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz
+	@$(DOWNLOAD) binutils binutils-2.26.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"

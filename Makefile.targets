@@ -30,9 +30,6 @@ relpath=`python -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $
 # get rid of localization
 export LANG=C
 
-# cmake executable
-CMAKE:=cmake
-
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
   NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
@@ -60,29 +57,20 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   # to greatly reduce disk size, especially for gcc
   export INSTALL_TARGET_SUFFIX=
   export CONFIGURE_CXXFLAGS=-g
+  export CONFIGURE_COMMON_FLAGS=--enable-debug
+  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=RelWithDebInfo
   export BOOST_OPTION=variant=debug
-  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export ROOT_OPTION=-DCMAKE_BUILD_TYPE=Debug
-  export PYTHIA_OPTION=--enable-debug
-  export EVTGEN_OPTION=--enable-debug
-  export FANN_OPTION=-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  export GEANT4_OPTION=
 else
 # make if (option=opt or option=common) using the filter: filter will only
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
 # anything else we get an empty string
 ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export INSTALL_TARGET_SUFFIX=-strip
-  export CONFIGURE_CXXFLAGS=-O3
+  export CONFIGURE_COMMON_FLAGS=
+  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=Release
   export BOOST_OPTION=variant=release
-  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
-  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export ROOT_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export PYTHIA_OPTION=
-  export EVTGEN_OPTION=
-  export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
+  export GEANT4_OPTION=-DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
 ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export CC=icc
@@ -92,19 +80,14 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export AR=xiar
   export LD=xild
   export BOOST_OPTION=variant=release toolset=intel
-  export CLHEP_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export GEANT4_OPTION=-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc
-  export XROOTD_OPTION=-DCMAKE_BUILD_TYPE=Release
-  export ROOT_OPTION=
-  export PYTHIA_OPTION=
-  export EVTGEN_OPTION=
-  export FANN_OPTION=-DCMAKE_BUILD_TYPE=Release
+  export GEANT4_OPTION=-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
   $(error Unknown externals build option. Please source the setup_belle2 script.)
 endif
 endif
 endif
 
+export ROOT_OPTION:=
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
@@ -129,6 +112,8 @@ ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
+# cmake executable including common options
+CMAKE:=cmake $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
@@ -181,6 +166,8 @@ $(SHARED_DIRECTORIES):
 
 binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils
+binutils.touch:
+	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
 	@$(DOWNLOAD) binutils binutils-2.26.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2
@@ -189,8 +176,9 @@ $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
 	@mkdir -p $(EXTBUILDDIR)/binutils
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure --disable-werror --disable-multilib \
-	    --enable-shared --prefix=$(EXTDIR) && make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
+	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --disable-werror --disable-multilib --enable-shared --prefix=$(EXTDIR) && \
+	    make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install$(INSTALL_TARGET_SUFFIX)
 
 binutils.clean:
@@ -247,7 +235,7 @@ $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
 	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
-	    -DCMAKE_BUILD_TYPE=Release -DPython_ADDITIONAL_VERSIONS=3.5 $(EXTSRCDIR)/llvm && \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 $(EXTSRCDIR)/llvm && \
 	    make -j $(NPROCESSES) && make install
 
 libxml2: $(EXTBINDIR)/xml2-config
@@ -263,7 +251,7 @@ $(EXTSRCDIR)/libxml2:
 	@$(DOWNLOAD) libxml2 libxml2-2.9.2.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
-	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
+	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 	#Fix absolute path in xml2-config and lib/xml2Conf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
@@ -282,7 +270,7 @@ $(EXTSRCDIR)/libxslt:
 	@$(DOWNLOAD) libxslt libxslt-1.1.28.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.28.tar.gz
 
 $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
-	@cd $< && ./configure --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
+	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 	#Fix absolute path in xslt-config and lib/xsltConf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
@@ -298,7 +286,8 @@ $(EXTSRCDIR)/zlib:
 
 # zlib: so basic that we only want it it common so we just do an in source build
 $(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib
-	@cd $(EXTSRCDIR)/zlib && ./configure --prefix=$(EXTDIR) && \
+	@cp -fa $(EXTSRCDIR)/zlib $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/zlib && ./configure --prefix=$(EXTDIR) && \
 	    make -j $(NPROCESSES) install
 
 bzip2: $(EXTBINDIR)/bzip2
@@ -374,7 +363,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 #FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
 	@mkdir -p $(EXTBUILDDIR)/python
-	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure --enable-shared --without-pymalloc \
+	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared --without-pymalloc \
 	    --prefix=$(EXTDIR) --with-ensurepip=install --with-cxx-main=g++ && \
 	    make -j $(NPROCESSES) && make install
 # setuptools-scm must be installed before path.py because it needs it ... and *some* machines are not allowed to use https
@@ -396,7 +385,7 @@ $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure --prefix=$(EXTDIR) --with-python=python3 && \
+	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-python=python3 && \
 	    make -j $(NPROCESSES) && make install
 
 gdb.clean:
@@ -497,7 +486,7 @@ $(EXTSRCDIR)/cppcheck:
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
-	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DCMAKE_BUILD_TYPE=Release $(EXTSRCDIR)/cppcheck && \
+	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/cppcheck && \
 	    make -j $(NPROCESSES) && make install
 
 # dependencies for CLHEP
@@ -512,7 +501,7 @@ $(EXTSRCDIR)/CLHEP:
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/CLHEP
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CLHEP_OPTION) $(EXTSRCDIR)/CLHEP/CLHEP && \
+	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/CLHEP/CLHEP && \
 	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
@@ -573,7 +562,7 @@ $(EXTSRCDIR)/postgresql/configure:
 $(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@mkdir -p $(EXTBUILDDIR)/postgresql
-	@cd $(EXTBUILDDIR)/postgresql && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/postgresql/configure --prefix=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/postgresql && $(EXTSRCDIR)/postgresql/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 
@@ -600,8 +589,8 @@ $(EXTSRCDIR)/libpqxx/configure:
 $(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
 	@echo "building libpqxx"
 	@mkdir -p $(EXTBUILDDIR)/libpqxx
-	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config CXXFLAGS="$(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/libpqxx/configure --enable-shared \
-	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
+	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config $(EXTSRCDIR)/libpqxx/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --enable-shared --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pqxx-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
@@ -665,7 +654,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) \
 	    -DENABLE_PYTHON=OFF \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` \
-	    $(XROOTD_OPTION) $(EXTSRCDIR)/xrootd && \
+	    $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
 
 # xrootd clean command
@@ -709,7 +698,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@mkdir -p $(EXTBUILDDIR)/root
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
-	@cd $(EXTBUILDDIR)/root && cmake $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
+	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
 	    -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON \
@@ -767,7 +756,9 @@ $(EXTSRCDIR)/FastBDT/Makefile:
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root
 	@echo "building FastBDT TMVA plugin"
-	@mkdir -p $(EXTBUILDDIR)/FastBDT && cd $(EXTBUILDDIR)/FastBDT && cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/FastBDT && make install && cp $(EXTBUILDDIR)/FastBDT/TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
+	@mkdir -p $(EXTBUILDDIR)/FastBDT
+	cd $(EXTBUILDDIR)/FastBDT && cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/FastBDT && \
+	    make install && cp $(EXTBUILDDIR)/FastBDT/TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:
@@ -833,7 +824,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11 $(CONFIGURE_CXXFLAGS)" $(EXTSRCDIR)/rave/configure \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -915,8 +906,8 @@ $(EXTSRCDIR)/pythia/configure:
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cp -fa $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/pythia && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --enable-shared \
-	    --with-hepmc2=$(EXTDIR) $(PYTHIA_OPTION) && \
+	@cd $(EXTBUILDDIR)/pythia && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
+	    --enable-shared --with-hepmc2=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -947,7 +938,7 @@ $(EXTSRCDIR)/PHOTOS/configure:
 $(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cp -fa $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/PHOTOS && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
+	@cd $(EXTBUILDDIR)/PHOTOS && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 
 # Photos clean
@@ -973,7 +964,8 @@ $(EXTSRCDIR)/TAUOLA/configure:
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
 	@cp -fa $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/TAUOLA && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && make && make install
+	@cd $(EXTBUILDDIR)/TAUOLA && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
+	    make && make install
 
 # Tauola clean
 tauola.clean:
@@ -1001,8 +993,9 @@ $(EXTSRCDIR)/evtgen/configure:
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
 	@echo "building EvtGen"
 	@cp -fa $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/evtgen && CXXFLAGS=$(CONFIGURE_CXXFLAGS) ./configure --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
-	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) $(EVTGEN_OPTION) && \
+	@cd $(EXTBUILDDIR)/evtgen && ./configure $(CONFIGURE_COMMON_FLAGS) \
+	    --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
+	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) && \
 	    make -j $(NPROCESSES) lib_shared && make all
 	# install ourselves as evtgen stuff is expected in share/evtgen but
 	# evtgen has no option to install that way
@@ -1237,7 +1230,8 @@ $(EXTSRCDIR)/curl/README:
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@echo "building curl"
 	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/curl && ./configure --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	@cd $(EXTBUILDDIR)/curl && ./configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
 	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in curl-config
@@ -1271,7 +1265,7 @@ $(EXTSRCDIR)/fann/README.md:
 
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
-	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(FANN_OPTION) $(EXTSRCDIR)/fann && \
+	@cd $(EXTBUILDDIR)/fann && $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(EXTSRCDIR)/fann && \
 	    make -j $(NPROCESSES); make install
 
 # astyle: C/C++ code beautifier

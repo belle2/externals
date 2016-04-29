@@ -238,6 +238,22 @@ $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	    -DPython_ADDITIONAL_VERSIONS=3.5 $(EXTSRCDIR)/llvm && \
 	    make -j $(NPROCESSES) && make install
 
+valgrind: $(EXTBINDIR)/valgrind
+valgrind.src: $(EXTSRCDIR)/valgrind
+valgrind.touch:
+	@rm -fr $(EXTBINDIR)/valgrind
+
+$(EXTSRCDIR)/valgrind:
+	@$(DOWNLOAD) valgrind valgrind-3.11.0.tar.bz2 http://valgrind.org/downloads/valgrind-3.11.0.tar.bz2
+	# disable advertisement of RDRAND instruction: https://bugs.kde.org/show_bug.cgi?id=353370
+	@cd $@ && patch -p1 < $(PATCHDIR)/valgrind-disable-rdrand.patch
+
+$(EXTBINDIR)/valgrind: $(EXTSRCDIR)/valgrind
+	@echo "building valgrind"
+	@cp -fa $< $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/valgrind && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 libxml2: $(EXTBINDIR)/xml2-config
 libxml2.src: $(EXTSRCDIR)/libxml2
 

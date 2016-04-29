@@ -36,7 +36,8 @@ PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbd
 export PYTHON_PACKAGES:=autopep8==1.2.1a0 CherryPy==4.0.0 decorator==4.0.4 ipython==4.0.0 \
     ipython-genutils==0.1.0 lxml==3.4.4 numpy==1.9.2 path.py==8.1.1 pep8==1.6.3a0 \
     pexpect==3.3 pickleshare==0.5 requests==2.7.0 simplegeneric==0.8.1 setuptools-scm==1.7.0  \
-    traitlets==4.0.0
+    traitlets==4.0.0 cycler==0.10.0 matplotlib==1.5.1 pyparsing==2.1.0 python-dateutil==2.5.0 \
+    pytz==2015.7 six==1.10.0
 
 # extern archives we cannot get from pypi. Or in the case of simplegeneric,
 # there doesn't seem to be a .tar.gz so we need to specifiy the archive name
@@ -44,7 +45,9 @@ export PYTHON_PACKAGES:=autopep8==1.2.1a0 CherryPy==4.0.0 decorator==4.0.4 ipyth
 export PYTHON_EXTERN_ARCHIVES:=\
     autopep8==1.2.1a0?https://github.com/hhatto/autopep8/tarball/7244270035 \
     pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb \
-    simplegeneric==0.8.1?https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip?simplegeneric-0.8.1.zip
+    simplegeneric==0.8.1?https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip?simplegeneric-0.8.1.zip \
+    cycler==0.10.0?https://pypi.python.org/packages/source/C/Cycler/cycler-0.10.0.tar.gz \
+    python-dateutil==2.5.0?https://pypi.python.org/packages/source/p/python-dateutil/python-dateutil-2.5.0.tar.gz
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))

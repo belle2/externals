@@ -825,6 +825,8 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 	# --binary option neeed, because the rave file to patch is stored with windows file endings convention
 	@cd $(EXTSRCDIR)/rave/ && patch --binary -p0 -i $(PATCHDIR)/rave-silence-cout.patch
+	# add std:: to isnan
+	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

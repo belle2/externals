@@ -407,16 +407,22 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
+gdb.touch:
+	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-7.8.2.tar.gz http://ftp.gnu.org/gnu/gdb/gdb-7.8.2.tar.gz
+	@$(DOWNLOAD) gdb gdb-7.11.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-7.11.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
-	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
-	#note: GDB must be built inside source directory, otherwise it wants to build info manuals (makeinfo might not be installed)
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-python=python3 && \
-	    make -j $(NPROCESSES) && make install
+# note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
+# also touch all .info files and their prerequisites to make sure they are up to
+# date, otherwise makeinfo might be called on "make install" and we don't want to require that
+	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --with-python=python3 && \
+	    make -j $(NPROCESSES) && \
+	    touch gdb/doc/version.subst gdb/doc/GDBvn.texi gdb/doc/*.info && \
+	    make install
 
 gdb.clean:
 	@echo "cleaning gdb"

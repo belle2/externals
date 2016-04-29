@@ -1,0 +1,60 @@
+From 40a1dc765b3f98a35001d6b60ff1b2eff3a5dc04 Mon Sep 17 00:00:00 2001
+From: David Abdurachmanov <David.Abdurachmanov@cern.ch>
+Date: Fri, 1 Apr 2016 15:46:51 +0200
+Subject: [PATCH] Replace 0x1p-61 (GNU or C++1z) with pow(2, -61)
+
+We cannot use `0x1p-61` when compiling with -std=c++11 or -std=c++14.
+This is only available starting -std=c++1z or if GNU extensions are
+enabled. This was a recent change in GCC 6.0.0 (Tue Mar 15 12:08:31
+2016).
+
+See 14c36b1402b82304739e865a27cb1aed0d87ec73 (GIT) or r234213 (SVN)
+
+Quick test:
+
+    #include <cstdio>
+    #include <cmath>
+    int main(void) {
+        double d = 0x1p-61;
+        printf("0x1p-61     : %a\n", d);
+        printf("0x1p-61     : %e\n", d);
+        printf("pow(2, -61) : %a\n", pow(2, -61));
+        printf("pow(2, -61) : %e\n", pow(2, -61));
+        return 0;
+    }
+
+    0x1p-61     : 0x1p-61
+    0x1p-61     : 4.336809e-19
+    pow(2, -61) : 0x1p-61
+    pow(2, -61) : 4.336809e-19
+
+Signed-off-by: David Abdurachmanov <David.Abdurachmanov@cern.ch>
+---
+ math/mathcore/src/mixmax.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/math/mathcore/src/mixmax.h b/math/mathcore/src/mixmax.h
+index 4a68f94..0b16276 100644
+--- a/math/mathcore/src/mixmax.h
++++ b/math/mathcore/src/mixmax.h
+@@ -33,7 +33,7 @@
+ 
+ #include <stdio.h>
+ #include <stdint.h>
+-
++#include <math.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -129,7 +129,7 @@ void branch_inplace( rng_state_t* Xin, myID_t* ID ); // almost the same as apply
+ #define MOD_REM(k) ((k) % MERSBASE )  // latest Intel CPU is supposed to do this in one CPU cycle, but on my machines it seems to be 20% slower than the best tricks
+ #define MOD_MERSENNE(k) MOD_PAYNE(k)
+ 
+-#define INV_MERSBASE (0x1p-61)
++#define INV_MERSBASE pow(2, -61)
+ 
+ 
+ // the charpoly is irreducible for the combinations of N and SPECIAL and has maximal period for N=508, 256, half period for 1260, and 1/12 period for 3150
+-- 
+1.7.1
+

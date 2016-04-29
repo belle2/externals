@@ -704,6 +704,8 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile2.patch
 	# disable threaded LLVM explicitly, ROOT's cmake scripts try to do that, but not consistently
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-threaded-llvm.patch
+	# get rid of hexfloat in minmax.h which triggers errors in GCC 6: https://sft.its.cern.ch/jira/browse/ROOT-8094
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-mixmax-nohexfloat.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

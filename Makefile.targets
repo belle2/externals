@@ -563,7 +563,6 @@ geant4.clean:
 geant4.touch:
 	@rm -f $(EXTBINDIR)/geant4.sh
 
-
 # dependencies for PostgreSql
 postgresql: $(EXTBINDIR)/psql
 postgresql.src: $(EXTSRCDIR)/postgresql/configure
@@ -589,36 +588,6 @@ postgresql.clean:
 # PostgreSql touch
 postgresql.touch:
 	@rm -f $(EXTBINDIR)/psql
-
-
-# dependencies for libpqxx
-libpqxx: $(EXTBINDIR)/pqxx-config
-libpqxx.src: $(EXTSRCDIR)/libpqxx/configure
-
-# libpqxx download
-$(EXTSRCDIR)/libpqxx/configure:
-	@$(DOWNLOAD) libpqxx libpqxx-4.0.tar.gz http://pqxx.org/download/software/libpqxx/libpqxx-4.0.tar.gz
-
-# libpqxx build, FIXME: pg_config could be in common? use `which pg_config`?
-$(EXTBINDIR)/pqxx-config: $(EXTSRCDIR)/libpqxx/configure
-	@echo "building libpqxx"
-	@mkdir -p $(EXTBUILDDIR)/libpqxx
-	@cd $(EXTBUILDDIR)/libpqxx && PG_CONFIG=$(EXTBINDIR)/pg_config $(EXTSRCDIR)/libpqxx/configure $(CONFIGURE_COMMON_FLAGS) \
-	    --enable-shared --prefix=$(EXTDIR) --includedir=$(EXTINCDIR)/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
-	    make -j $(NPROCESSES) && make install
-	#Fix absolute path in pqxx-config
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
-
-# libpqxx clean
-libpqxx.clean:
-	@echo "cleaning libpqxx"
-	@-cd $(EXTBUILDDIR)/libpqxx 2>/dev/null && make clean
-	@rm -rf $(EXTINCDIR)/pqxx $(EXTBINDIR)/pqxx-config
-
-# libpqxx touch
-libpqxx.touch:
-	@rm -f $(EXTBINDIR)/pqxx-config
-
 
 # dependencies for NeuroBayes
 neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so

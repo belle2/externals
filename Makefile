@@ -23,8 +23,8 @@ COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 libxml2 libxslt \
 COMMON_OPTIONAL:=clang cppcheck
 
 # external packages
-PACKAGES:=clhep geant4 postgresql libpqxx neurobayes xrootd root nbplugin fastbdt \
-    vgm rave MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
+PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
+    MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
     flc nsm2 belle_legacy curl fann
 
 # python packages to be included with the python package. This list is created

@@ -710,6 +710,8 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_fftw3=ON \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
+	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
+	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
 
 # root clean command

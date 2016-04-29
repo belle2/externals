@@ -1,0 +1,44 @@
+From 81093f072b272163ddcb3d0c69d8546812a5dd06 Mon Sep 17 00:00:00 2001
+From: Martin Ritter <martin.ritter@lmu.de>
+Date: Mon, 11 Apr 2016 14:00:11 +0200
+Subject: [PATCH] Emit warning when ClassImp is used
+
+otherwise we'll never get rid of them ...
+---
+ include/root/Rtypes.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/root/Rtypes.h b/include/root/Rtypes.h
+index 276ea6c..e8e97d2 100644
+--- a/include/root/Rtypes.h
++++ b/include/root/Rtypes.h
+@@ -267,7 +267,7 @@ public: \
+    class _NAME2_(name,_c) { public: _NAME2_(name,_c)() { if (name) { } } }
+ 
+ 
+-#define ClassImpUnique(name,key) \
++#define ClassImpUnique(name,key) _Pragma("GCC warning \"ClassImp is not needed, please remove it\"")  \
+    namespace ROOT { \
+       TGenericClassInfo *GenerateInitInstance(const name*); \
+       namespace { \
+@@ -280,7 +280,7 @@ public: \
+ 
+ // Macro for Namespace
+ 
+-#define NamespaceImpUnique(name,key) \
++#define NamespaceImpUnique(name,key) _Pragma("GCC warning \"NamespaceImp is not needed, please remove it\"") \
+    namespace name { \
+       namespace ROOT { \
+          ::ROOT::TGenericClassInfo *GenerateInitInstance(); \
+@@ -316,7 +316,7 @@ public: \
+ 
+ 
+ 
+-#define templateClassImpUnique(name,key) \
++#define templateClassImpUnique(name,key) _Pragma("GCC warning \"templateClassImp is not needed, please remove it\"") \
+    namespace ROOT { \
+       static TNamed *_R__UNIQUE_(_NAME2_(R__dummyholder,key)) = \
+          ROOT::RegisterClassTemplate(_QUOTE_(name), __FILE__, __LINE__); \
+-- 
+1.9.1
+

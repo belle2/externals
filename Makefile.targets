@@ -772,7 +772,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/Makefile
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/Makefile:
-	@$(DOWNLOAD) FastBDT FastBDT-2.2.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-3.1.tar.gz https://github.com/thomaskeck/FastBDT/archive/v3.1.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/Makefile $(ROOTSYS)/bin/root

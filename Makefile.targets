@@ -1219,7 +1219,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-1.5.tgz svn:checkout:26900:https://belle2.cc.kek.jp/svn/groups/belle_legacy
+	@$(DOWNLOAD) belle_legacy belle_legacy-da5ca4a.zip git:da5ca4a:https://stash.desy.de/scm/b2g/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

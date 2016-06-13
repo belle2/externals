@@ -66,6 +66,16 @@ get_svn () {
   svn ${COMMAND} -r${REVISION} ${LINK} ${DIRNAME}
 }
 
+get_git() {
+  URL=$1
+  TREEISH=`echo ${URL} | awk -F: '{print $2}'`
+  LINK=`echo ${URL} | sed 's;git:\w*:;;'`
+  git clone $LINK $DIRNAME || return 1
+  if [[ -n "${TREEISH}" ]]; then
+      cd $DIRNAME && git checkout -b BELL2_EXTERNALS_BUILD $TREEISH || return 1
+  fi
+}
+
 if [ $# -lt 2 ]; then
   echo "Usage: $0 DIRNAME FILENAME [URL...]"
   exit 1
@@ -84,6 +94,8 @@ if [ -z "$USE_BELLE2SERVER" ]; then
         shift
         if [ "${PROTOCOL}" = "svn" ]; then
             get_svn $URL
+        elif [ "${PROTOCOL}" = "git" ]; then
+            get_git $URL
         else
             get_archive ${URL}
         fi

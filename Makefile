@@ -17,7 +17,7 @@ endif
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 libxml2 libxslt \
+COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
     cmake freetype python gdb boost gtest eigen astyle scons madgraph
 
 COMMON_OPTIONAL:=clang cppcheck valgrind
@@ -25,7 +25,7 @@ COMMON_OPTIONAL:=clang cppcheck valgrind
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
-    flc nsm2 belle_legacy curl fann
+    flc nsm2 belle_legacy fann
 
 # python packages to be included with the python package. This list is created
 # from pip3 freeze to include all dependencies. In addition to pip3 freeze,

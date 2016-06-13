@@ -1268,6 +1268,27 @@ curl.clean:
 curl.touch:
 	@rm -rf $(EXTLIBDIR)/libcurl.so
 
+git: $(EXTBINDIR)/git
+git.src: $(EXTSRCDIR)/git
+git.touch:
+	@rm -f $(EXTBINDIR)/git
+git.clean:
+	@rm -fr $(EXTBUILDDIR)/git
+
+$(EXTSRCDIR)/git:
+	@$(DOWNLOAD) git git-2.8.4.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.8.4.tar.xz
+
+# compile git but we don't want to require gettext to be installed so we
+# compile without localization support by setting NO_GETTEXT=yes for
+# compilation and installation (otherwise git sill see that flags have changed
+# and recompile)
+$(EXTBINDIR)/git:
+	@echo "building git"
+	@cp -fa $(EXTSRCDIR)/git $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/git && ./configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) && \
+	    make -j $(NPROCESSES) NO_GETTEXT=yes && make NO_GETTEXT=yes install
+
 # FANN: Fast Artificial Neural Network Library
 fann: $(EXTLIBDIR)/libfann.so
 fann.src: $(EXTSRCDIR)/fann/README.md

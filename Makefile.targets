@@ -1188,7 +1188,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.2.5.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
+	@$(DOWNLOAD) eigen eigen_3.2.8.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.2.8.tar.bz2
 
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
@@ -1202,7 +1202,7 @@ eigen.clean:
 
 # eigen touch
 eigen.touch:
-	@rm -rf $(EXTSRCDIR)/Eigen/Eigen
+	@rm -rf $(EXTINCDIR)/Eigen/Eigen
 
 
 

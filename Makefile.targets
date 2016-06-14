@@ -11,6 +11,7 @@ export EXTBUILDDIR := $(BELLE2_EXTERNALS_DIR)/build/$(BELLE2_EXTERNALS_SUBDIR)
 export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib
 export EXTBINDIR := $(EXTDIR)/bin
+export EXTCOMDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common
 export ROOTSYS := $(EXTDIR)/root
 
 # download script to get and extract sources

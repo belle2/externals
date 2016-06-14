@@ -458,12 +458,13 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@$(DOWNLOAD) cmake cmake-3.3.1.tar.gz http://www.cmake.org/files/v3.3/cmake-3.3.1.tar.gz
+	@$(DOWNLOAD) cmake cmake-3.5.2.tar.gz http://www.cmake.org/files/v3.5/cmake-3.5.2.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
 	@echo "building cmake"
-	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR) && \
+	@cd $(EXTSRCDIR)/cmake && ./bootstrap --prefix=$(EXTDIR) --system-curl \
+	    --system-bzip2 --system-zlib --parallel=$(NPROCESSES) && \
 	    sed -i 's/BUILD_CursesDialog\:BOOL=ON/BUILD_CursesDialog\:BOOL=OFF/g' CMakeCache.txt && \
 	    make -j $(NPROCESSES) && make install
 

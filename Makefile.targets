@@ -331,6 +331,8 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	# make links relative
 	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep && \
 	    ln -fs bzgrep bzegrep && ln -fs bzmore bzless
+	# add symlink to find library
+	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.6 libbz2.so
 
 freetype: $(EXTINCDIR)/freetype2
 freetype.src: $(EXTSRCDIR)/freetype

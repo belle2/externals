@@ -18,7 +18,7 @@ endif
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
-    cmake freetype python gdb boost gtest eigen astyle scons madgraph
+    cmake freetype sqlite python gdb boost gtest eigen astyle scons madgraph
 
 COMMON_OPTIONAL:=clang cppcheck valgrind
 

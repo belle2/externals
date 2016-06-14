@@ -345,6 +345,22 @@ $(EXTINCDIR)/freetype2: $(EXTSRCDIR)/freetype
 	    -DWITH_PNG=OFF -DWITH_HarfBuzz=OFF $(EXTSRCDIR)/freetype && \
 	    make -j $(NPROCESSES) && make install
 
+sqlite: $(EXTBINDIR)/sqlite3
+sqlite.src: $(EXTSRCDIR)/sqlite
+sqlite.clean:
+	@rm -fr $(EXTBUILDDIR)/sqlite
+sqlite.touch:
+	@rm -fr $(EXTBINDIR)/sqlite3
+
+$(EXTSRCDIR)/sqlite:
+	$(DOWNLOAD) sqlite sqlite-autoconf-3130000.tar.gz https://www.sqlite.org/2016/sqlite-autoconf-3130000.tar.gz
+$(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
+	@echo "building sqlite"
+	@mkdir -p $(EXTBUILDDIR)/sqlite
+	@cd $(EXTBUILDDIR)/sqlite && $(EXTSRCDIR)/sqlite/configure --prefix=$(EXTDIR) \
+	    --enable-json1 --enable-fts5 --enable-session --enable-silent-rules && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 python: $(EXTBINDIR)/python3
 python.src: $(EXTSRCDIR)/python
 

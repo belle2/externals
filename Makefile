@@ -103,7 +103,11 @@ $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): overr
 
 # make new checksum file
 checksum:
-	sha256sum -b $(sort $(foreach ext,zip bz2 gz tgz,$(wildcard src/*.$(ext)))) > sha256sum.txt
+	sha256sum -b $(sort $(foreach ext,zip bz2 gz tgz xz,$(wildcard src/*.$(ext)))) > sha256sum.txt
+
+sort_checksum:
+	LC_ALL=C sort -u -f -k 2 -o sha256sum.txt sha256sum.txt
+
 
 # minimal rules to get fixstyle running: we just need python3 with pep8 +
 # autopep8 and astyle and we just use the system compiler

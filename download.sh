@@ -69,7 +69,7 @@ get_svn () {
 get_git() {
   URL=$1
   TREEISH=`echo ${URL} | awk -F: '{print $2}'`
-  LINK=`echo ${URL} | sed 's;git:\w*:;;'`
+  LINK=`echo ${URL} | sed 's;git:[^:]*:;;'`
   git clone $LINK $DIRNAME || return 1
   if [[ -n "${TREEISH}" ]]; then
       cd $DIRNAME && git checkout -b BELL2_EXTERNALS_BUILD $TREEISH || return 1

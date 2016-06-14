@@ -1292,13 +1292,13 @@ git.clean:
 	@rm -fr $(EXTBUILDDIR)/git
 
 $(EXTSRCDIR)/git:
-	@$(DOWNLOAD) git git-2.8.4.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.8.4.tar.xz
+	@$(DOWNLOAD) git git-2.9.0.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.9.0.tar.xz
 
 # compile git but we don't want to require gettext to be installed so we
 # compile without localization support by setting NO_GETTEXT=yes for
 # compilation and installation (otherwise git sill see that flags have changed
 # and recompile)
-$(EXTBINDIR)/git:
+$(EXTBINDIR)/git: $(EXTSRCDIR)/git
 	@echo "building git"
 	@cp -fa $(EXTSRCDIR)/git $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/git && ./configure $(CONFIGURE_COMMON_FLAGS) \

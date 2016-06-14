@@ -7,7 +7,7 @@ index e6c4d25..b5293d4 100644
    // edm::LogError("GsfVertexWeightCalculator") << "w=" << weight << " chi=" << chi << " sigmaDet=" << sigmaDet;
  
 -  if (::isnan(weight) || sigmaDet<=0.) {
-+  if (isnan(weight) || sigmaDet<=0.) {
++  if (std::isnan(weight) || sigmaDet<=0.) {
      edm::LogWarning("GsfVertexWeightCalculator") << "Weight is NaN";
      return 0.;
      // return -1.;

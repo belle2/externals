@@ -1,6 +1,6 @@
 fbdfc6f1966a972d19a215927266c76d4183eee235ed1e2bd7ec551c2a270eac *src/astyle_2.05.1_linux.tar.gz
 80ce2dfd20a73f34a3b233643ffdd7a8ca7b687ca128546167fd6bdbaf7597e0 *src/BELLE_FLC_1.1.tar.gz
-f4ab4a633e7a967e7baf5b107f393da8e1e3bbd48ac595d8ef32c1bb5804254e *src/belle_legacy-da5ca4a.tar.gz
+b24792442ab50d1e917cfae44de0a0d17861b0431abb48ea3dff51db221b2788 *src/belle_legacy-v1.6.tar.gz
 c2ace41809542f5237afc7e3b8f32bb92bc7bc53c6232a84463c423b0714ecd9 *src/binutils-2.26.tar.bz2
 727a932322d94287b62abb1bd2d41723eec4356a7728909e38adb65ca25241ca *src/boost_1_59_0.tar.bz2
 a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd *src/bzip2-1.0.6.tar.gz

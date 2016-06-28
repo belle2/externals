@@ -1057,35 +1057,6 @@ evtgen.touch:
 	@rm -f $(EXTLIBDIR)/libEvtGen.so
 
 
-# dependencies for Phokhara
-phokhara: $(EXTLIBDIR)/libeemmg5.so
-phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
-
-# Phokhara download
-$(EXTSRCDIR)/phokhara/Makefile:
-	@$(DOWNLOAD) phokhara PH9.1b.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH9.1b.tar.gz
-	@cd $(EXTSRCDIR)/phokhara/eemmg-lib && rm -f */*.o && make clean
-	@cd $(EXTSRCDIR)/phokhara && patch -Np0 < $(PATCHDIR)/phokhara.patch
-
-# Phokhara build
-$(EXTLIBDIR)/libeemmg5.so: $(EXTSRCDIR)/phokhara/Makefile
-	@echo "building Phokhara"
-	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" make
-	@cp $(EXTBUILDDIR)/phokhara/eemmg-lib/lib*.so $(EXTLIBDIR)/
-	@mkdir -p $(EXTDIR)/share/phokhara && cp $(EXTSRCDIR)/phokhara/const_and_model_paramall9.1.dat $(EXTDIR)/share/phokhara/
-
-# Phokhara clean
-phokhara.clean:
-	@echo "cleaning Phokhara"
-	@-cd $(EXTBUILDDIR)/phokhara/eemmg-lib 2>/dev/null && make clean
-	@rm -rf $(EXTSRCDIR)/phokhara/eemmg-lib/*/*.o $(EXTLIBDIR)/libeemmg*.so $(EXTLIBDIR)/libqcdloop1.so $(EXTLIBDIR)/libpjfry.so
-
-# Phokhara touch
-phokhara.touch:
-	@rm -f $(EXTLIBDIR)/libeemmg5.so
-
-
 # dependencies for MadGraph
 madgraph: $(EXTBINDIR)/mg5_aMC
 madgraph.src: $(EXTBINDIR)/mg5_aMC

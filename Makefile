@@ -24,7 +24,7 @@ COMMON_OPTIONAL:=clang cppcheck valgrind
 
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
-    MillepedeII hepmc pythia photos tauola evtgen phokhara cry exrootanalysis \
+    MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
     flc nsm2 belle_legacy fann
 
 # python packages to be included with the python package. This list is created

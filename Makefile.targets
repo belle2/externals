@@ -1210,7 +1210,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.6.zip git:tags/v1.6:https://stash.desy.de/scm/b2g/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.6.zip git:tags/v1.6:ssh://git@stash.desy.de:7999/b2g/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

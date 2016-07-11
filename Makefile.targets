@@ -183,7 +183,7 @@ binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.25.1.tar.gz http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz
+	@$(DOWNLOAD) binutils binutils-2.26.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
@@ -825,6 +825,8 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
 	# --binary option neeed, because the rave file to patch is stored with windows file endings convention
 	@cd $(EXTSRCDIR)/rave/ && patch --binary -p0 -i $(PATCHDIR)/rave-silence-cout.patch
+	# add std:: to isnan
+	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

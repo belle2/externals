@@ -1272,12 +1272,14 @@ $(EXTSRCDIR)/git:
 # compile git but we don't want to require gettext to be installed so we
 # compile without localization support by setting NO_GETTEXT=yes for
 # compilation and installation (otherwise git sill see that flags have changed
-# and recompile)
+# and recompile). Also, add --with-tcltk. This will actually check if tcl/tk is
+# installed and only build gui if so. Without this flag the gui is always built
+# but needs gettext to compile if tcl/tk cannot be found
 $(EXTBINDIR)/git: $(EXTSRCDIR)/git
 	@echo "building git"
 	@cp -fa $(EXTSRCDIR)/git $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/git && ./configure $(CONFIGURE_COMMON_FLAGS) \
-	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) && \
+	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) --with-tcltk && \
 	    make -j $(NPROCESSES) NO_GETTEXT=yes && make NO_GETTEXT=yes install
 
 # FANN: Fast Artificial Neural Network Library

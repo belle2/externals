@@ -1331,7 +1331,7 @@ scons.touch:
 	rm -f $(EXTBINDIR)/scons
 
 $(EXTSRCDIR)/scons/README.txt:
-	@$(DOWNLOAD) scons scons-2.5.0.tar.gz http://prdownloads.sourceforge.net/scons/scons-2.5.0.tar.gz
+	@$(DOWNLOAD) scons scons-2.3.6.tar.gz http://prdownloads.sourceforge.net/scons/scons-2.3.6.tar.gz
 
 $(EXTBINDIR)/scons: $(EXTSRCDIR)/scons/README.txt
 	@cp -fa $(EXTSRCDIR)/scons $(EXTBUILDDIR)

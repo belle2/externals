@@ -108,7 +108,7 @@ fi
 
 # if none succeeded use the Belle II web server
 if [ "${RESULT}" -ne "0" ]; then
-  get_archive https://belle2.cc.kek.jp/download/${FILENAME} --user=belle2 --password=Aith4tee
+  get_archive --no-check-certificate https://b2-master.belle2.org/download/${FILENAME} --user=belle2 --password=Aith4tee
   RESULT=$?
 fi
 

@@ -1336,6 +1336,7 @@ scons.touch:
 
 $(EXTSRCDIR)/scons/README.txt:
 	@$(DOWNLOAD) scons scons-2.3.6.tar.gz http://prdownloads.sourceforge.net/scons/scons-2.3.6.tar.gz
+	@cd src/scons && patch -p1 < $(PATCHDIR)/scons-Keep-executor-info-in-Nodes.patch
 
 $(EXTBINDIR)/scons: $(EXTSRCDIR)/scons/README.txt
 	@cp -fa $(EXTSRCDIR)/scons $(EXTBUILDDIR)

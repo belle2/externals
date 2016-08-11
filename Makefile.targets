@@ -1214,7 +1214,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.6.zip git:tags/v1.6:$(BELLE2_GIT_SERVER)/b2g/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.7.zip git:tags/v1.7:$(BELLE2_GIT_SERVER)/b2g/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

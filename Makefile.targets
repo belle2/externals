@@ -971,7 +971,7 @@ pythia.touch:
 
 
 # dependencies for Photos
-photos: $(EXTLIBDIR)/libPhotosCxxInterface.so
+photos: $(EXTLIBDIR)/libPhotospp.so
 photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
 # Photos download

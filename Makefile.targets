@@ -555,11 +555,12 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-1.73.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.73/cppcheck-1.73.tar.bz2
+	@$(DOWNLOAD) cppcheck cppcheck-1.75.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.75/cppcheck-1.75.tar.bz2
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
-	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck && \
+	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
 # dependencies for CLHEP

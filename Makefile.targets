@@ -242,7 +242,8 @@ $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
 	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles"  \
-	    -DPython_ADDITIONAL_VERSIONS=3.5 $(EXTSRCDIR)/llvm && \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` \
+	    $(EXTSRCDIR)/llvm && \
 	    make -j $(NPROCESSES) && make install
 
 valgrind: $(EXTBINDIR)/valgrind

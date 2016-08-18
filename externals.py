@@ -39,6 +39,13 @@ def unsetup_externals(location, common=False):
     remove_path('ROOT_INCLUDE_PATH', root_dir)
     remove_path('ROOT_INCLUDE_PATH', os.path.join(root_dir, 'include'))
 
+    # remove git
+    if common:
+        env_vars['GIT_EXEC_PATH'] = ''
+        env_vars['GIT_TEMPLATE_DIR'] = ''
+        env_vars['GIT_GUI_LIB_DIR'] = ''
+        env_vars['GITPERLLIB'] = ''
+
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
@@ -77,8 +84,19 @@ def setup_externals(location, common=False):
     add_path('ROOT_INCLUDE_PATH', location)
     add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
 
-    # ok, the rest is stuff we don't need fallback for
     if common:
+        # we have to setup git to be relocatable. Inspired by bin-wrappers/git in the git build
+        # directory
+        env_vars['GIT_EXEC_PATH'] = os.path.join(location, subdir, 'libexec', 'git-core')
+        env_vars['GIT_TEMPLATE_DIR'] = os.path.join(location, 'share', 'git-core', 'templates')
+        env_vars['GIT_GUI_LIB_DIR'] = os.path.join(location, 'share', 'git-gui', 'lib')
+        # set up perl path
+        perllib = os.path.join(location, subdir, 'share', 'perl')
+        perl_version = os.listdir(perllib)
+        if len(perl_version) == 1:
+            env_vars['GITPERLLIB'] = os.path.join(perllib, perl_version[0])
+
+        # ok, the rest is stuff we don't need fallbacks so we can return
         return
 
     # pythia

@@ -90,11 +90,26 @@ def setup_externals(location, common=False):
         env_vars['GIT_EXEC_PATH'] = os.path.join(location, subdir, 'libexec', 'git-core')
         env_vars['GIT_TEMPLATE_DIR'] = os.path.join(location, 'share', 'git-core', 'templates')
         env_vars['GIT_GUI_LIB_DIR'] = os.path.join(location, 'share', 'git-gui', 'lib')
-        # set up perl path
-        perllib = os.path.join(location, subdir, 'share', 'perl')
-        perl_version = os.listdir(perllib)
-        if len(perl_version) == 1:
-            env_vars['GITPERLLIB'] = os.path.join(perllib, perl_version[0])
+        # set up perl path for git-svn. Sadly this directory is somewhere
+        # depending on the distribution (centos 5:
+        # $BELLE2_ARCH/common/lib/perl5/site_perl/5.8.8/, centos 6,7:
+        # share/perl5, ubuntu: share/perl/$VERSION/ ...
+        # So let's do the lazy approach and find it by looking at all
+        # possible directories and looking for Git.pm in there
+        def find_perl():
+            """small helper to find the correct perl directory where the Git.pm is installed"""
+            for base in ["share/perl", "share/perl5", os.path.join(subdir, "lib/perl"), os.path.join(subdir, "lib/perl5")]:
+                abs_base = os.path.join(location, base)
+                for dirname, dirs, filenames in os.walk(abs_base):
+                    if "Git.pm" in filenames:
+                        return os.path.join(abs_base, dirname)
+            # nothing found ... let's not set it, only git-cvsexportcommit,
+            # git-svn, git-send-email, git-difftool, git-cvsimport and git-add
+            # --interactive seem to use it so this does not seem to be fatal.
+            sys.stderr.write("Warning: can not find Git perl bindings, some git commands might not work\n")
+            return ""
+
+        env_vars['GITPERLLIB'] = find_perl()
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

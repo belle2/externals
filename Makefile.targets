@@ -798,7 +798,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
-	@$(DOWNLOAD) FastBDT FastBDT-3.1.tar.gz https://github.com/thomaskeck/FastBDT/archive/v3.1.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-3.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v3.2.tar.gz
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/README.md $(ROOTSYS)/bin/root

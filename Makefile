@@ -20,7 +20,7 @@ endif
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
     cmake freetype sqlite python gdb boost gtest eigen astyle scons madgraph
 
-COMMON_OPTIONAL:=clang cppcheck valgrind
+COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \

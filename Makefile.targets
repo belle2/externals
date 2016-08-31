@@ -563,6 +563,21 @@ $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
+# doxygen
+doxygen: $(EXTBINDIR)/doxygen
+doxygen.src: $(EXTSRCDIR)/doxygen
+doxygen.touch:
+	@rm -fr $(EXTBINDIR)/doxygen
+
+$(EXTSRCDIR)/doxygen:
+	@$(DOWNLOAD) doxygen doxygen-1.8.11.src.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.11.src.tar.gz
+$(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
+	@echo "building doxygen"
+	@mkdir -p $(EXTBUILDDIR)/doxygen
+	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` && \
+	    make -j $(NPROCESSES) && make install
+
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config
 clhep.src: $(EXTSRCDIR)/CLHEP

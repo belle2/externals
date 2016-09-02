@@ -99,7 +99,7 @@ $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): overr
 # calling make on the targets file.  Specifying the option here is not
 # necessary but helps with debugging
 %:
-	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
+	@$(MAKE) -f Makefile.targets $@ relocatable_fixes BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
 
 # make new checksum file
 checksum:

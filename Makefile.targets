@@ -12,6 +12,7 @@ export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib
 export EXTBINDIR := $(EXTDIR)/bin
 export EXTCOMDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common
+export EXTSHRDIR := $(BELLE2_EXTERNALS_DIR)/share
 export ROOTSYS := $(EXTDIR)/root
 
 # download script to get and extract sources
@@ -159,6 +160,8 @@ relocatable_fixes:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
 	#Fix absolute paths in pip packages and other python scripts
 	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`
+# Replace hardlinks by symlinks as cvmfs complains about hardlinks
+	@$(BELLE2_EXTERNALS_DIR)/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR)
 
 # create directories
 $(DIRECTORIES):
@@ -1301,7 +1304,8 @@ $(EXTBINDIR)/git: $(EXTSRCDIR)/git
 	@cp -fa $(EXTSRCDIR)/git $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/git && ./configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) --with-tcltk && \
-	    make -j $(NPROCESSES) NO_GETTEXT=yes && make NO_GETTEXT=yes install
+	    make -j $(NPROCESSES) NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes && \
+	    make NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes install
 
 # FANN: Fast Artificial Neural Network Library
 fann: $(EXTLIBDIR)/libfann.so

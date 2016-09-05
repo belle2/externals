@@ -559,6 +559,8 @@ cppcheck.touch:
 
 $(EXTSRCDIR)/cppcheck:
 	@$(DOWNLOAD) cppcheck cppcheck-1.75.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.75/cppcheck-1.75.tar.bz2
+	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
+
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck

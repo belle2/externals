@@ -158,8 +158,8 @@ $(EXTBINDIR)/pkg-config: pkg-config
 #Fix absolute paths in .pc files for pkg-config and in python scripts
 relocatable_fixes:
 	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
-	#Fix absolute paths in pip packages and other python scripts
-	@$(BELLE2_EXTERNALS_DIR)/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`
+	#Fix absolute paths in pip packages and other python scripts id python is installed
+	@if which python3-config > /dev/null; then $(BELLE2_EXTERNALS_DIR)/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 	@$(BELLE2_EXTERNALS_DIR)/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR)
 

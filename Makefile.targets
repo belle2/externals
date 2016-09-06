@@ -739,21 +739,11 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
-	@$(DOWNLOAD) root root_v6.06.00.source.tar.gz https://root.cern.ch/download/root_v6.06.00.source.tar.gz
+	@$(DOWNLOAD) root root_v6.06.08.source.tar.gz https://root.cern.ch/download/root_v6.06.08.source.tar.gz
 	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
+# fix python import error (ROOT-7640) and iteration with classes inheriting
+# from std::iterator (ROOT-7638) which is closed in master but not in patches for 6.06)
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
-	# disable PyMVA, which does not support python3 at this time
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-pymva.patch
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-pyroot-short.patch
-	# fix 32-bit compile probem of root, will be fixed in next ROOT release
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-minmax-engine-32bit.patch
-	# patch cmake problem, already fixed upstream so not necessary with next ROOT version
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile.patch
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-davixcompile2.patch
-	# disable threaded LLVM explicitly, ROOT's cmake scripts try to do that, but not consistently
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-disable-threaded-llvm.patch
-	# get rid of hexfloat in minmax.h which triggers errors in GCC 6: https://sft.its.cern.ch/jira/browse/ROOT-8094
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-mixmax-nohexfloat.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -769,7 +759,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
 	    -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_fftw3=ON \
+	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON\
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
@@ -877,9 +867,9 @@ rave.src: $(EXTSRCDIR)/rave/README
 # rave download
 $(EXTSRCDIR)/rave/README:
 	@$(DOWNLOAD) rave rave-0.6.25.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.25.tar.gz
-	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math
+	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math $(EXTSRCDIR)/rave/src/ROOT/genvector
 	@cd $(EXTSRCDIR)/rave/src && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/boost)
-	@cd $(EXTSRCDIR)/rave/src/ROOT/genvector && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
+	@cd $(EXTSRCDIR)/rave/src/ROOT && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) genvector
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch
@@ -892,7 +882,7 @@ $(EXTSRCDIR)/rave/README:
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
-	@cd $(EXTBUILDDIR)/rave && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
+	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
 	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \

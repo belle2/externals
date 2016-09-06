@@ -1,0 +1,57 @@
+From 856222c896d16371df8e64ffc827c2d20cb7b734 Mon Sep 17 00:00:00 2001
+From: Martin Ritter <martin.ritter@lmu.de>
+Date: Mon, 5 Sep 2016 15:21:30 +0200
+Subject: [PATCH] Make CppCheck relocatable
+
+cmake compilation adds an absolute path to the configuration files which
+we don't want. This patch replaces this by looking for the
+$BELLE2_EXTERNALS_DIR environment variable to find the config files.
+---
+ cli/cppcheckexecutor.cpp | 6 +++---
+ lib/library.cpp          | 6 +++++-
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/cli/cppcheckexecutor.cpp b/cli/cppcheckexecutor.cpp
+index 3867bcf..378cda6 100644
+--- a/cli/cppcheckexecutor.cpp
++++ b/cli/cppcheckexecutor.cpp
+@@ -781,9 +781,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
+         const std::list<ErrorLogger::ErrorMessage::FileLocation> callstack;
+         const std::string msg("Failed to load " + std::string(!std ? "std.cfg" : !posix ? "posix.cfg" : "windows.cfg") + ". Your Cppcheck installation is broken, please re-install.");
+ #ifdef CFGDIR
+-        const std::string details("The Cppcheck binary was compiled with CFGDIR set to \"" +
+-                                  std::string(CFGDIR) + "\" and will therefore search for "
+-                                  "std.cfg in that path.");
++        const std::string details("The Cppcheck binary was compiled for the Belle2 externals, "
++                                  "please make sure the externals are setup using setuprel "
++                                  "or setupext and $BELLE2_EXTERNALS_DIR is set correctly.");
+ #else
+         const std::string cfgfolder(Path::fromNativeSeparators(Path::getPathFromFilename(argv[0])) + "cfg");
+         const std::string details("The Cppcheck binary was compiled without CFGDIR set. Either the "
+diff --git a/lib/library.cpp b/lib/library.cpp
+index 711fe44..b82e738 100644
+--- a/lib/library.cpp
++++ b/lib/library.cpp
+@@ -26,6 +26,7 @@
+ #include "astutils.h"
+ 
+ #include <string>
++#include <cstdlib>
+ 
+ static std::vector<std::string> getnames(const char *names)
+ {
+@@ -76,7 +77,10 @@ Library::Error Library::load(const char exename[], const char path[])
+ 
+         std::list<std::string> cfgfolders;
+ #ifdef CFGDIR
+-        cfgfolders.push_back(CFGDIR);
++        char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
++        if(extDir){
++            cfgfolders.push_back(std::string(extDir) + "/share/CppCheck");
++        }
+ #endif
+         if (exename) {
+             const std::string exepath(Path::fromNativeSeparators(Path::getPathFromFilename(exename)));
+-- 
+2.9.0
+

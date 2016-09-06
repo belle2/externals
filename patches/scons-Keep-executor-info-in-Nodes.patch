@@ -1,0 +1,30 @@
+From d30412cc0fc53be2ac8408351dc6f95f42dafff9 Mon Sep 17 00:00:00 2001
+From: Martin Ritter <martin.ritter@lmu.de>
+Date: Wed, 3 Aug 2016 13:45:05 +0200
+Subject: [PATCH] Keep executor info in Nodes
+
+This circumvents a problem with SCons >= 2.3.1 and Repository builds
+that sometimes a node is checked if it has been changed after it is
+marked as finished. Normally the executor info is stipped to save memory
+but we just keep it now, should not have any effect except for slightly
+smaller memory consumption
+---
+ engine/SCons/Node/FS.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/engine/SCons/Node/FS.py b/engine/SCons/Node/FS.py
+index 57085ec..3889145 100644
+--- a/engine/SCons/Node/FS.py
++++ b/engine/SCons/Node/FS.py
+@@ -2811,7 +2811,8 @@ class File(Base):
+             self.get_contents_sig()
+             self.get_build_env()
+             # Now purge unneeded stuff to free memory...
+-            self.executor = None
++            # but not the executor, this seems to be needed again in rare cases
++            # self.executor = None
+             self._memo.pop('rfile', None)
+             self.prerequisites = None
+             # Cleanup lists, but only if they're empty
+-- 
+1.9.1

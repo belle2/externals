@@ -20,7 +20,7 @@ endif
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
     cmake freetype sqlite python gdb boost gtest eigen astyle scons madgraph
 
-COMMON_OPTIONAL:=clang cppcheck valgrind
+COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
@@ -68,18 +68,21 @@ dirs:
 	    BELLE2_EXTERNALS_OPTION=$(option) dirs &&) true
 
 # common needs to compile the common packages. And we need directories first
-common: dirs
+common: dirs ;
 	@$(MAKE) -f Makefile.targets $(COMMON_PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
 # compile specifically in given mode
-opt debug intel: common
+opt debug intel: common ;
 	@$(MAKE) -f Makefile.targets $(PACKAGES) relocatable_fixes BELLE2_EXTERNALS_OPTION=$@
 
 # let touch, src and clean only run on the non-common stuff to avoid expensive
 # recompilation of common packages by mistake.
-touch: $(foreach package,$(PACKAGES),$(package).touch) ;
-src: dirs $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
-clean: $(foreach package,$(PACKAGES),$(package).clean) ;
+touch: ;
+	@$(MAKE) -f Makefile.targets $(foreach package,$(PACKAGES),$(package).touch)
+src: dirs ;
+	@$(MAKE) -f Makefile.targets $(foreach package,$(COMMON_PACKAGES) $(PACKAGES),$(package).src) ;
+clean: ;
+	@$(MAKE) -f Makefile.targets $(foreach package,$(PACKAGES),$(package).clean) ;
 
 # make all targets and src targets depend on dirs, otherwise some symlinks
 # might not be created, e.g. when creating a new checkout and running make gcc
@@ -99,7 +102,7 @@ $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): overr
 # calling make on the targets file.  Specifying the option here is not
 # necessary but helps with debugging
 %:
-	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
+	@$(MAKE) -f Makefile.targets $@ relocatable_fixes BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
 
 # make new checksum file
 checksum:

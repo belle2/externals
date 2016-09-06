@@ -240,8 +240,8 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/cfe-3.8.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang cfe-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/cfe-3.9.0.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"

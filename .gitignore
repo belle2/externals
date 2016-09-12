@@ -1,0 +1,6 @@
+*.pyc
+/build/
+/include/
+/share/
+/src/
+/Linux*/

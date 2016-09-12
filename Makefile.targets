@@ -240,8 +240,8 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-3.8.0.src.tar.xz http://llvm.org/releases/3.8.0/cfe-3.8.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang cfe-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/cfe-3.9.0.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
@@ -494,22 +494,19 @@ cmake.touch:
 
 # dependencies for google test
 gtest: $(EXTLIBDIR)/libgtest.a
-gtest.src: $(EXTSRCDIR)/gtest/README
+gtest.src: $(EXTSRCDIR)/gtest/README.md
 
 # google test download
-$(EXTSRCDIR)/gtest/README:
-	@$(DOWNLOAD) gtest gtest-1.7.0.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
+$(EXTSRCDIR)/gtest/README.md:
+	@$(DOWNLOAD) gtest gtest-1.8.0.tar.gz https://github.com/google/googletest/archive/release-1.8.0.tar.gz
 
 # google test build
-$(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README
+$(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README.md
 	@echo "building gtest"
-	@mkdir -p $(EXTINCDIR)/gtest/internal
-	@cp -a $(EXTSRCDIR)/gtest/include/gtest/*.h $(EXTINCDIR)/gtest/
-	@cp -a $(EXTSRCDIR)/gtest/include/gtest/internal/*.h $(EXTINCDIR)/gtest/internal/
 	@mkdir -p $(EXTBUILDDIR)/gtest
-	$(CXX) -I$(EXTINCDIR) -I$(EXTSRCDIR)/gtest -c $(EXTSRCDIR)/gtest/src/gtest-all.cc -o $(EXTBUILDDIR)/gtest/gtest-all.o
-	$(CXX) -I$(EXTINCDIR) -I$(EXTSRCDIR)/gtest -c $(EXTSRCDIR)/gtest/src/gtest_main.cc -o $(EXTBUILDDIR)/gtest/gtest_main.o
-	@$(AR) -rv $(EXTLIBDIR)/libgtest.a $(EXTBUILDDIR)/gtest/gtest-all.o $(EXTBUILDDIR)/gtest/gtest_main.o
+	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
+	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` && \
+	    make -j $(NPROCESSES) && make install
 
 # google test clean
 gtest.clean:

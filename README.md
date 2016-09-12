@@ -63,7 +63,7 @@ the externals.
 | [PYTHIA](http://home.thep.lu.se/~torbjorn/Pythia.html)                       | 8.215            |
 | [Python](https://www.python.org/)                                            | 3.5.2            |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25           |
-| [ROOT](https://root.cern.ch/)                                                | 6.06/00          |
+| [ROOT](https://root.cern.ch/)                                                | 6.06/08          |
 | [SCons](http://scons.org/)                                                   | 2.3.6            |
 | [SQLite](https://www.sqlite.org/)                                            | 3.13             |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4            |

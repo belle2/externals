@@ -494,10 +494,10 @@ cmake.touch:
 
 # dependencies for google test
 gtest: $(EXTLIBDIR)/libgtest.a
-gtest.src: $(EXTSRCDIR)/gtest/README
+gtest.src: $(EXTSRCDIR)/gtest/README.md
 
 # google test download
-$(EXTSRCDIR)/gtest/README:
+$(EXTSRCDIR)/gtest/README.md:
 	@$(DOWNLOAD) gtest gtest-1.8.0.tar.gz https://github.com/google/googletest/archive/release-1.8.0.tar.gz
 
 # google test build

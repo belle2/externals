@@ -744,6 +744,8 @@ $(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
 # fix python import error (ROOT-7640) and iteration with classes inheriting
 # from std::iterator (ROOT-7638) which is closed in master but not in patches for 6.06)
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
+# some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

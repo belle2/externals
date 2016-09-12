@@ -86,7 +86,7 @@ To compile any of these just go into the external directory and type
 |------------------------------------------------------------------------------|------------------|
 | [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 1.75             |
 | [Doxygen](http://www.doxygen.org)                                            | 1.8.11           |
-| [LLVM/Clang](http://llvm.org/)                                               | 3.8.0            |
+| [LLVM/Clang](http://llvm.org/)                                               | 3.9.0            |
 | [Valgrind](http://valgrind.org/)                                             | 3.11             |
 
 

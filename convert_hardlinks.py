@@ -24,7 +24,11 @@ for argument in sys.argv[1:]:
     for dirname, dirnames, filenames in os.walk(argument):
         for filename in filenames:
             full_path = os.path.abspath(os.path.join(dirname, filename))
-            stat = os.stat(full_path)
+            try:
+                stat = os.stat(full_path)
+            except FileNotFoundError as e:
+                print("Warning: cannot stat %s, broken link?" % full_path)
+                continue
             if stat.st_nlink > 1:
                 # found a hardlink, remember inode -> [filenames,...] and the
                 # amount of links we should find

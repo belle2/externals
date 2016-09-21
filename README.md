@@ -98,7 +98,7 @@ externals
 
 | Python Package                                                               | Version          |
 |------------------------------------------------------------------------------|------------------|
-| [autopep8 ](https://pypi.python.org/pypi/autopep8 )                          | 1.2.1a0          |
+| [autopep8](https://pypi.python.org/pypi/autopep8)                            | 1.2.1            |
 | [CherryPy](https://pypi.python.org/pypi/CherryPy)                            | 4.0.0            |
 | [cycler](https://pypi.python.org/pypi/cycler)                                | 0.10.0           |
 | [decorator](https://pypi.python.org/pypi/decorator)                          | 4.0.4            |
@@ -108,16 +108,13 @@ externals
 | [matplotlib](https://pypi.python.org/pypi/matplotlib)                        | 1.5.1            |
 | [numpy](https://pypi.python.org/pypi/numpy)                                  | 1.9.2            |
 | [path.py](https://pypi.python.org/pypi/path.py)                              | 8.1.1            |
-| [pep8](https://pypi.python.org/pypi/pep8)                                    | 1.6.3a0          |
+| [pep8](https://pypi.python.org/pypi/pep8)                                    | 1.7.0            |
 | [pexpect](https://pypi.python.org/pypi/pexpect)                              | 3.3              |
 | [pickleshare](https://pypi.python.org/pypi/pickleshare)                      | 0.5              |
-| [pip](https://pypi.python.org/pypi/pip)                                      | 7.1.2            |
 | [pyparsing](https://pypi.python.org/pypi/pyparsing)                          | 2.1.0            |
 | [python-dateutil](https://pypi.python.org/pypi/python-dateutil)              | 2.5.0            |
 | [pytz](https://pypi.python.org/pypi/pytz)                                    | 2015.7           |
 | [requests](https://pypi.python.org/pypi/requests)                            | 2.7.0            |
-| [setuptools](https://pypi.python.org/pypi/setuptools)                        | 18.2             |
-| [setuptools-scm](https://pypi.python.org/pypi/setuptools-scm)                | 1.7.0            |
 | [simplegeneric](https://pypi.python.org/pypi/simplegeneric)                  | 0.8.1            |
 | [six](https://pypi.python.org/pypi/six)                                      | 1.10.0           |
 | [traitlets](https://pypi.python.org/pypi/traitlets)                          | 4.0.0            |

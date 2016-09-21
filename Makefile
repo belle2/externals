@@ -18,7 +18,7 @@ endif
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
-    cmake freetype sqlite python gdb boost gtest eigen astyle scons madgraph
+    cmake freetype sqlite python python-packages gdb boost gtest eigen astyle scons madgraph
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
@@ -26,28 +26,6 @@ COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
     flc nsm2 belle_legacy fann
-
-# python packages to be included with the python package. This list is created
-# from pip3 freeze to include all dependencies. In addition to pip3 freeze,
-# setuptools-scm is needed to install some packages. Normally pip installs it
-# on the fly and removes it later but this doesn't work if internet connection
-# is off.  So to be able to install without internet after make src we install
-# it manually
-export PYTHON_PACKAGES:=autopep8==1.2.1a0 CherryPy==4.0.0 decorator==4.0.4 ipython==4.0.0 \
-    ipython-genutils==0.1.0 lxml==3.4.4 numpy==1.9.2 path.py==8.1.1 pep8==1.6.3a0 \
-    pexpect==3.3 pickleshare==0.5 requests==2.7.0 simplegeneric==0.8.1 setuptools-scm==1.7.0  \
-    traitlets==4.0.0 cycler==0.10.0 matplotlib==1.5.1 pyparsing==2.1.0 python-dateutil==2.5.0 \
-    pytz==2015.7 six==1.10.0
-
-# extern archives we cannot get from pypi. Or in the case of simplegeneric,
-# there doesn't seem to be a .tar.gz so we need to specifiy the archive name
-# manually. Form is package==version?url[?archive_name]
-export PYTHON_EXTERN_ARCHIVES:=\
-    autopep8==1.2.1a0?https://github.com/hhatto/autopep8/tarball/7244270035 \
-    pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb \
-    simplegeneric==0.8.1?https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip?simplegeneric-0.8.1.zip \
-    cycler==0.10.0?https://pypi.python.org/packages/source/C/Cycler/cycler-0.10.0.tar.gz \
-    python-dateutil==2.5.0?https://pypi.python.org/packages/source/p/python-dateutil/python-dateutil-2.5.0.tar.gz
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))
@@ -111,9 +89,7 @@ checksum:
 sort_checksum:
 	LC_ALL=C sort -u -f -k 2 -o sha256sum.txt sha256sum.txt
 
-
-# minimal rules to get fixstyle running: we just need python3 with pep8 +
-# autopep8 and astyle and we just use the system compiler
-fixstyle: override PYTHON_PACKAGES:=$(filter pep8% autopep8%, $(PYTHON_PACKAGES))
+# minimal rules to get fixstyle running: we just need python3 with all packages
+# and astyle and we just use the system compiler
 fixstyle:
-	@$(MAKE) -f Makefile.targets dirs python astyle relocatable_fixes BELLE2_EXTERNALS_OPTION=common
+	@$(MAKE) -f Makefile.targets dirs python python-packages astyle relocatable_fixes BELLE2_EXTERNALS_OPTION=common

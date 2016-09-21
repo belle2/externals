@@ -416,14 +416,7 @@ python_filename_url= $(call python_url,$1,$(call python_filename,$1))
 
 $(EXTSRCDIR)/python:
 	@$(DOWNLOAD) python Python-3.5.2.tgz https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
-# download all python archives using normal download script to provide
-# belle2.kek.cc.jp mirror capabilities. We override EXTSRCDIR here to download
-# them in a separate directory
-	@mkdir -p $(EXTSRCDIR)/python-packages/
-	$(foreach archive,$(PYTHON_ARCHIVES),DOWNLOAD_ONLY=yes EXTSRCDIR=$(EXTSRCDIR)/python-packages \
-	    $(DOWNLOAD) $(firstword $(subst ?, ,$(archive))) $(call python_filename_url,$(archive)) &&) true
 
-PIP3=$(EXTBINDIR)/pip3 --disable-pip-version-check install --no-index --no-deps -f $(EXTSRCDIR)/python-packages
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 #FIXME: ROOT configure does not work with default, so let's disable pymalloc for now
@@ -431,12 +424,31 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared --without-pymalloc \
 	    --prefix=$(EXTDIR) --with-ensurepip=install && \
 	    make -j $(NPROCESSES) && make install
-# setuptools-scm must be installed before path.py because it needs it ... and *some* machines are not allowed to use https
-	@$(PIP3) $(filter setuptools-scm==%, $(PYTHON_PACKAGES))
-# intall all python packages defined in Makefile from the pre downloaded archives
-	@$(PIP3) $(PYTHON_PACKAGES)
-# now let's configure pep8 to ignore E402 by default. It's not always possible
 # to have all imports at the beginning of the file
+
+# not very nice but pip only can handle one pem file at a time, so concatenate
+# the tools pem file and the official one
+# TODO: a more automatic way to find the pip cacert.pem?
+.pip-certchain.pem: $(BELLE2_TOOLS)/certchain.pem $(EXTCOMDIR)/lib/python3.5/site-packages/pip/_vendor/requests/cacert.pem
+	cat $? > $@
+
+PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
+	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
+
+# download the source for the python packages. This is only called directly or
+# with make src and it will download src and binary package versions
+python-packages.src: $(EXTBINDIR)/ipython .pip-certchain.pem
+	pip3 download -d src/python-packages $(PIP3OPTIONS) --no-binary=:all: -r pip-requirements.txt
+	pip3 download -d src/python-packages $(PIP3OPTIONS) -r pip-requirements.txt
+
+# install all required python packages. setuptools-scm used to be required by
+# path.py but for newer versions we can just install the wheel which doesn't
+# need that. For now we ignore this dependency and assume easy_install will do
+# it correctly.
+python-packages: .pip-certchain.pem
+	pip3 install --upgrade --find-links=src/python-packages $(PIP3OPTIONS) \
+	    -r pip-requirements.txt
+# update default settings for pep8
 	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \
 	    $(EXTLIBDIR)/python3.5/site-packages/pep8.py
 

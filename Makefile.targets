@@ -437,16 +437,20 @@ PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.
 
 # download the source for the python packages. This is only called directly or
 # with make src and it will download src and binary package versions
-python-packages.src: $(EXTBINDIR)/ipython .pip-certchain.pem
+python-packages.src: .pip-certchain.pem
 	pip3 download -d src/python-packages $(PIP3OPTIONS) --no-binary=:all: -r pip-requirements.txt
 	pip3 download -d src/python-packages $(PIP3OPTIONS) -r pip-requirements.txt
+
+# python packages will install ipython so use this as prerequisite and actual
+# target. needs to be updated if ipython is removed
+python-packages: $(EXTBINDIR)/ipython
 
 # install all required python packages. setuptools-scm used to be required by
 # path.py but for newer versions we can just install the wheel which doesn't
 # need that. For now we ignore this dependency and assume easy_install will do
 # it correctly.
-python-packages: .pip-certchain.pem
-	pip3 install --upgrade --find-links=src/python-packages $(PIP3OPTIONS) \
+$(EXTBINDIR)/ipython: .pip-certchain.pem
+	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r pip-requirements.txt
 # update default settings for pep8
 	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \

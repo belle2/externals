@@ -671,11 +671,6 @@ postgresql.touch:
 # dependencies for NeuroBayes
 neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
 
-# NeuroBayes download
-#$(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
-#	@$(DOWNLOAD) neurobayes NeuroBayes_3.7.0_nbpluginfix.tgz
-#	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
-
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesExpertCPP.so:
 	@echo "building NeuroBayes"

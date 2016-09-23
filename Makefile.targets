@@ -670,9 +670,14 @@ postgresql.touch:
 
 # dependencies for NeuroBayes
 neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
+neurobayes.src: $(EXTSRCDIR)/neurobayes/Makefile
+
+# NeuroBayes download
+$(EXTSRCDIR)/neurobayes/Makefile:
+	@$(DOWNLOAD) neurobayes neurobayes-4.2-1.tar.gz
 
 # NeuroBayes build
-$(EXTLIBDIR)/libNeuroBayesExpertCPP.so:
+$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/Makefile
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
 	@$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \

@@ -54878,3 +54878,13 @@
   Memcheck:Cond
   fun:_ZN7TObjectaSERKS_
 }
+
+{
+  Uninitialised value used in clang::ASTDeclReader::VisitFriendDecl(), see also: https://sft.its.cern.ch/jira/browse/ROOT-8289
+  Memcheck:Cond
+  fun:_ZN5clang13ASTDeclReader15VisitFriendDeclEPNS_10FriendDeclE
+  fun:_ZN5clang11declvisitor4BaseINS0_8make_ptrENS_13ASTDeclReaderEvE5VisitEPNS_4DeclE
+  fun:_ZN5clang13ASTDeclReader5VisitEPNS_4DeclE
+  fun:_ZN5clang9ASTReader14ReadDeclRecordEj
+  fun:_ZN5clang9ASTReader7GetDeclEj
+}

@@ -96,6 +96,7 @@ def setup_externals(location, common=False):
         # share/perl5, ubuntu: share/perl/$VERSION/ ...
         # So let's do the lazy approach and find it by looking at all
         # possible directories and looking for Git.pm in there
+
         def find_perl():
             """small helper to find the correct perl directory where the Git.pm is installed"""
             for base in ["share/perl", "share/perl5", os.path.join(subdir, "lib/perl"), os.path.join(subdir, "lib/perl5")]:
@@ -110,6 +111,11 @@ def setup_externals(location, common=False):
             return ""
 
         env_vars['GITPERLLIB'] = find_perl()
+
+        # set path to the GCC c++ includes for intel compiler. Seems to be
+        # needed in rare cases to avoid "icpc: error #10001: could not find
+        # directory in which the set of libstdc++ include files resides"
+        env_vars['GXX_INCLUDE'] = os.path.join(location, 'include', 'c++')
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

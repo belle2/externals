@@ -1305,8 +1305,6 @@ $(EXTBINDIR)/git: $(EXTSRCDIR)/git
 	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) --with-tcltk && \
 	    make -j $(NPROCESSES) NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes && \
 	    make NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes install
-# add subtree script from contrib/, needed by genfit
-	@cd $(EXTBUILDDIR)/git/contrib/subtree && make install
 
 # FANN: Fast Artificial Neural Network Library
 fann: $(EXTLIBDIR)/libfann.so

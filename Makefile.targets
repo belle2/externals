@@ -1208,6 +1208,7 @@ nsm2.src: $(EXTSRCDIR)/nsm2
 # nsm2 download
 $(EXTSRCDIR)/nsm2:
 	@$(DOWNLOAD) nsm2 nsm2.1.9.27.tgz
+	@cd src/nsm2 && patch -p1 < $(PATCHDIR)/nsm-gcc6fixes.patch
 
 # nsm2 build
 $(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
@@ -1304,6 +1305,8 @@ $(EXTBINDIR)/git: $(EXTSRCDIR)/git
 	    --prefix=$(EXTDIR) --with-curl=$(EXTDIR) --with-tcltk && \
 	    make -j $(NPROCESSES) NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes && \
 	    make NO_GETTEXT=yes NO_INSTALL_HARDLINKS=yes install
+# add subtree script from contrib/, needed by genfit
+	@cd $(EXTBUILDDIR)/git/contrib/subtree && make install
 
 # FANN: Fast Artificial Neural Network Library
 fann: $(EXTLIBDIR)/libfann.so

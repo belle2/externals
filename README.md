@@ -76,7 +76,7 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 | Software Package                                                             | Version          |
 |------------------------------------------------------------------------------|------------------|
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.0.3            |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.4            |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.5            |
 | [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.1            |
 | [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.17.1           |
 

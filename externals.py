@@ -39,12 +39,14 @@ def unsetup_externals(location, common=False):
     remove_path('ROOT_INCLUDE_PATH', root_dir)
     remove_path('ROOT_INCLUDE_PATH', os.path.join(root_dir, 'include'))
 
-    # remove git
     if common:
+        # remove git
         env_vars['GIT_EXEC_PATH'] = ''
         env_vars['GIT_TEMPLATE_DIR'] = ''
         env_vars['GIT_GUI_LIB_DIR'] = ''
         env_vars['GITPERLLIB'] = ''
+        # and also intel compiler specific variable
+        env_vars['GXX_INCLUDE'] = ''
 
     # pythia
     env_vars['PYTHIA8DATA'] = ''

@@ -670,21 +670,20 @@ postgresql.touch:
 
 # dependencies for NeuroBayes
 neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
-neurobayes.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
+neurobayes.src: $(EXTSRCDIR)/neurobayes/Makefile
 
 # NeuroBayes download
-$(EXTSRCDIR)/neurobayes/TMVAPlugin/README:
-	@$(DOWNLOAD) neurobayes NeuroBayes_3.7.0_nbpluginfix.tgz
-	@cd $(EXTSRCDIR)/neurobayes/TMVAPlugin && patch -Np1 < $(PATCHDIR)/neurobayes.patch
+$(EXTSRCDIR)/neurobayes/Makefile:
+	@$(DOWNLOAD) neurobayes neurobayes-4.2-1.tar.gz
 
 # NeuroBayes build
-$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
+$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/Makefile
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
 	@$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
 	    $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
 	@$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
-	@cp $(EXTSRCDIR)/neurobayes/`uname -m`/* $(EXTLIBDIR)/
+	@cp $(EXTSRCDIR)/neurobayes/lib/* $(EXTLIBDIR)/
 	# install also header files in the include directory, so ROOT's autoparser can find it
 	# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
 	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
@@ -692,7 +691,7 @@ $(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/TMVAPlugin/READM
 # NeuroBayes clean command
 neurobayes.clean:
 	@echo "cleaning NeuroBayes"
-	@rm -rf $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(EXTLIBDIR)/libdsa.so $(EXTINCDIR)/neurobayes
+	@rm -rf $(EXTLIBDIR)/libNeuroBayesExpertCPP.so* $(EXTLIBDIR)/libnb_fortran.so* $(EXTLIBDIR)/libphitlicense.so* $(EXTINCDIR)/neurobayes
 
 # NeuroBayes touch command
 neurobayes.touch:
@@ -735,9 +734,8 @@ root: $(ROOTSYS)/bin/root
 root.src: $(EXTSRCDIR)/root/README
 
 # root download
-$(EXTSRCDIR)/root/README: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
+$(EXTSRCDIR)/root/README:
 	@$(DOWNLOAD) root root_v6.06.08.source.tar.gz https://root.cern.ch/download/root_v6.06.08.source.tar.gz
-	@cp $(EXTSRCDIR)/neurobayes/TMVAPlugin/addinMethod/MethodPlugins.cxx $(EXTSRCDIR)/root/tmva/tmva/src/
 # fix python import error (ROOT-7640) and iteration with classes inheriting
 # from std::iterator (ROOT-7638) which is closed in master but not in patches for 6.06)
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
@@ -774,33 +772,6 @@ root.clean:
 # root touch command
 root.touch:
 	@rm -f $(ROOTSYS)/bin/root
-
-
-# dependencies for NeuroBayes TMVA plugin
-nbplugin: $(ROOTSYS)/lib/libTMVANeuroBayes.so
-nbplugin.src: $(EXTSRCDIR)/neurobayes/TMVAPlugin/README
-
-# NeuroBayes TMVA plugin build
-$(ROOTSYS)/lib/libTMVANeuroBayes.so: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so $(ROOTSYS)/bin/root
-	@echo "building NeuroBayes TMVA plugin"
-	@cp -fa $(EXTSRCDIR)/neurobayes $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && make NEUROBAYES_INC=$(EXTINCDIR)/neurobayes NEUROBAYES_LIB=$(EXTLIBDIR) && \
-	    make install
-	@cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin && cp TMVA_NeuroBayes_Dict_rdict.pcm $(ROOTSYS)/lib/
-# install also header files in the include directory, so ROOT's autoparser can find it
-# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
-	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTBUILDDIR)/neurobayes/TMVAPlugin/inc/MethodNeuroBayes.h $(EXTINCDIR)/inc/
-
-# NeuroBayes TMVA plugin clean command
-nbplugin.clean:
-	@echo "cleaning NeuroBayes TMVA plugin"
-	@-cd $(EXTBUILDDIR)/neurobayes/TMVAPlugin 2>/dev/null && make clean
-	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
-	@rm -f $(ROOTSYS)/lib/TMVA_NeuroBayes_Dict_rdict.pcm
-
-# NeuroBayes TMVA plugin touch command
-nbplugin.touch:
-	@rm -f $(ROOTSYS)/lib/libTMVANeuroBayes.so
 
 
 # dependencies for FastBDT TMVA plugin

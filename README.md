@@ -32,7 +32,7 @@ the externals.
 |------------------------------------------------------------------------------|------------------|
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1           |
 | `BELLE_FLC`                                                                  | ?                |
-| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.7              |
+| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.8              |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.26             |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.61             |
 | [bzip2](http://www.bzip.org/)                                                | 1.06             |
@@ -46,7 +46,7 @@ the externals.
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0 |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2              |
 | [FreeType](http://www.freetype.org/)                                         | 2.6.3            |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 5.2              |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.2              |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.11             |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02        |
 | [git](https://git-scm.com/)                                                  | 2.9.0            |
@@ -71,6 +71,14 @@ the externals.
 | [XRootD](http://xrootd.org/)                                                 | 4.3.0            |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.8            |
 
+GCC requires some additional libraries which are downloaded as part of the GCC compilation:
+
+| Software Package                                                             | Version          |
+|------------------------------------------------------------------------------|------------------|
+| [GNU MPC](http://www.multiprecision.org/)                                    | 1.0.3            |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.5            |
+| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.1            |
+| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.17.1           |
 
 Optional Package
 ----------------

@@ -23,7 +23,7 @@ COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 lib
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
 # external packages
-PACKAGES:=clhep geant4 postgresql neurobayes xrootd root nbplugin fastbdt vgm rave \
+PACKAGES:=clhep geant4 postgresql neurobayes xrootd root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
     flc nsm2 belle_legacy fann
 

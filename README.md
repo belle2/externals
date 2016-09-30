@@ -94,30 +94,34 @@ Python Packages
 ---------------
 
 This section lists all the python packages which are currently included in the
-externals
+externals.
 
-| Python Package                                                               | Version          |
-|------------------------------------------------------------------------------|------------------|
-| [autopep8 ](https://pypi.python.org/pypi/autopep8 )                          | 1.2.1a0          |
-| [CherryPy](https://pypi.python.org/pypi/CherryPy)                            | 4.0.0            |
-| [cycler](https://pypi.python.org/pypi/cycler)                                | 0.10.0           |
-| [decorator](https://pypi.python.org/pypi/decorator)                          | 4.0.4            |
-| [ipython](https://pypi.python.org/pypi/ipython)                              | 4.0.0            |
-| [ipython-genutils](https://pypi.python.org/pypi/ipython-genutils)            | 0.1.0            |
-| [lxml](https://pypi.python.org/pypi/lxml)                                    | 3.4.4            |
-| [matplotlib](https://pypi.python.org/pypi/matplotlib)                        | 1.5.1            |
-| [numpy](https://pypi.python.org/pypi/numpy)                                  | 1.9.2            |
-| [path.py](https://pypi.python.org/pypi/path.py)                              | 8.1.1            |
-| [pep8](https://pypi.python.org/pypi/pep8)                                    | 1.6.3a0          |
-| [pexpect](https://pypi.python.org/pypi/pexpect)                              | 3.3              |
-| [pickleshare](https://pypi.python.org/pypi/pickleshare)                      | 0.5              |
-| [pip](https://pypi.python.org/pypi/pip)                                      | 7.1.2            |
-| [pyparsing](https://pypi.python.org/pypi/pyparsing)                          | 2.1.0            |
-| [python-dateutil](https://pypi.python.org/pypi/python-dateutil)              | 2.5.0            |
-| [pytz](https://pypi.python.org/pypi/pytz)                                    | 2015.7           |
-| [requests](https://pypi.python.org/pypi/requests)                            | 2.7.0            |
-| [setuptools](https://pypi.python.org/pypi/setuptools)                        | 18.2             |
-| [setuptools-scm](https://pypi.python.org/pypi/setuptools-scm)                | 1.7.0            |
-| [simplegeneric](https://pypi.python.org/pypi/simplegeneric)                  | 0.8.1            |
-| [six](https://pypi.python.org/pypi/six)                                      | 1.10.0           |
-| [traitlets](https://pypi.python.org/pypi/traitlets)                          | 4.0.0            |
+| Name                                                              | Summary                                                                                          | Version |
+|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|---------|
+| [autopep8](https://pypi.python.org/pypi/autopep8)                 | A tool that automatically formats Python code to conform to the PEP 8 style guide                | 1.2.1   |
+| [CherryPy](https://pypi.python.org/pypi/CherryPy)                 | Object-Oriented HTTP framework                                                                   | 4.0.0   |
+| [cycler](https://pypi.python.org/pypi/cycler)                     | Composable style cycles                                                                          | 0.10.0  |
+| [decorator](https://pypi.python.org/pypi/decorator)               | Better living through Python with decorators                                                     | 4.0.4   |
+| [ipython](https://pypi.python.org/pypi/ipython)                   | IPython: Productive Interactive Computing                                                        | 4.0.0   |
+| [ipython-genutils](https://pypi.python.org/pypi/ipython-genutils) | Vestigial utilities from IPython                                                                 | 0.1.0   |
+| [lxml](https://pypi.python.org/pypi/lxml)                         | Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API. | 3.4.4   |
+| [matplotlib](https://pypi.python.org/pypi/matplotlib)             | Python plotting package                                                                          | 1.5.1   |
+| [numpy](https://pypi.python.org/pypi/numpy)                       | NumPy: array processing for numbers, strings, records, and objects.                              | 1.9.2   |
+| [path.py](https://pypi.python.org/pypi/path.py)                   | A module wrapper for os.path                                                                     | 8.1.1   |
+| [pep8](https://pypi.python.org/pypi/pep8)                         | Python style guide checker                                                                       | 1.7.0   |
+| [pexpect](https://pypi.python.org/pypi/pexpect)                   | Pexpect allows easy control of interactive console applications.                                 | 3.3     |
+| [pickleshare](https://pypi.python.org/pypi/pickleshare)           | Tiny 'shelve'-like database with concurrency support                                             | 0.5     |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing)               | Python parsing module                                                                            | 2.1.0   |
+| [python-dateutil](https://pypi.python.org/pypi/python-dateutil)   | Extensions to the standard Python datetime module                                                | 2.5.0   |
+| [pytz](https://pypi.python.org/pypi/pytz)                         | World timezone definitions, modern and historical                                                | 2015.7  |
+| [requests](https://pypi.python.org/pypi/requests)                 | Python HTTP for Humans.                                                                          | 2.7.0   |
+| [simplegeneric](https://pypi.python.org/pypi/simplegeneric)       | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                    | 0.8.1   |
+| [six](https://pypi.python.org/pypi/six)                           | Python 2 and 3 compatibility utilities                                                           | 1.10.0  |
+| [traitlets](https://pypi.python.org/pypi/traitlets)               | Traitlets Python config system                                                                   | 4.0.0   |
+
+These packages are a result of running
+
+    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests
+
+All other packages are just dependencies of these and versions between them are
+fixed in the externals.

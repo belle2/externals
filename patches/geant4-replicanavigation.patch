@@ -22,7 +22,7 @@ index a8902d3..bd3b1e3 100644
      compE = -sinSPhi*localDirection.x()-cosSPhi*localDirection.y();
  
 -    if ( (pDistS<=0)&&(pDistE<=0) )
-+    if ( (pDistS<=halfkCarTolerance)&&(pDistE<=halfkCarTolerance) )
++    if ( (pDistS<=0.5*kCarTolerance)&&(pDistE<=0.5*kCarTolerance) )
      {
        // Inside both phi *full* planes
        //

@@ -1,0 +1,31 @@
+From df21bd92ea5c7aa87d151b86120653f2df55fa35 Mon Sep 17 00:00:00 2001
+From: Martin Ritter <martin.ritter@desy.de>
+Date: Fri, 28 Oct 2016 14:45:41 +0200
+Subject: [PATCH] Fix rounding problem in G4ReplicaNavigation
+
+The patch should avoid situation when point is exactly on phi side of
+replicated volume and due to rounding errors it is always outside of phi
+wedge.
+
+Reported by Alexei Sibidanov to Geant4:
+https://bugzilla-geant4.kek.jp/show_bug.cgi?id=1902
+---
+ source/geometry/navigation/src/G4ReplicaNavigation.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/geometry/navigation/src/G4ReplicaNavigation.cc b/source/geometry/navigation/src/G4ReplicaNavigation.cc
+index a8902d3..bd3b1e3 100644
+--- a/source/geometry/navigation/src/G4ReplicaNavigation.cc
++++ b/source/geometry/navigation/src/G4ReplicaNavigation.cc
+@@ -352,7 +352,7 @@ G4ReplicaNavigation::DistanceToOutPhi(const G4ThreeVector &localPoint,
+     compS = -sinSPhi*localDirection.x()+cosSPhi*localDirection.y();
+     compE = -sinSPhi*localDirection.x()-cosSPhi*localDirection.y();
+ 
+-    if ( (pDistS<=0)&&(pDistE<=0) )
++    if ( (pDistS<=halfkCarTolerance)&&(pDistE<=halfkCarTolerance) )
+     {
+       // Inside both phi *full* planes
+       //
+-- 
+2.9.0
+

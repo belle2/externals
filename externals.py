@@ -47,6 +47,8 @@ def unsetup_externals(location, common=False):
         env_vars['GITPERLLIB'] = ''
         # and also intel compiler specific variable
         env_vars['GXX_INCLUDE'] = ''
+        # and the valgrind tool directory
+        env_vars['VALGRIND_LIB'] = ''
 
     # pythia
     env_vars['PYTHIA8DATA'] = ''
@@ -118,6 +120,11 @@ def setup_externals(location, common=False):
         # needed in rare cases to avoid "icpc: error #10001: could not find
         # directory in which the set of libstdc++ include files resides"
         env_vars['GXX_INCLUDE'] = os.path.join(location, 'include', 'c++')
+
+        # another one: Valgrind has an absolute path to the tools compiled in
+        # (at least as far as I could find) so we have to set the environment
+        # correctly
+        env_vars['VALGRIND_LIB'] = os.path.join(location, subdir, 'lib', 'valgrind')
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

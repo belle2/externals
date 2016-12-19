@@ -1388,11 +1388,7 @@ cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 # cppzmq download
 $(EXTSRCDIR)/cppzmq/zmq.hpp:
-	@echo "downloading cppzmq"
-	@mkdir -p $(EXTSRCDIR)/cppzmq
-	# cppzmq has neither tags nor releases on github so no tar.gz download but a direct
-	# raw download of the one header file required
-	@cd $(EXTSRCDIR)/cppzmq && wget https://raw.githubusercontent.com/zeromq/cppzmq/6c9103433f978e2c190c806a98c53f5cee4744f9/zmq.hpp
+	$(DOWNLOAD) cppzmq cppzmq-6c91034.tar.gz https://github.com/zeromq/cppzmq/archive/6c91034.tar.gz
 
 # cppzmq copy .hpp file to include folder
 $(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp

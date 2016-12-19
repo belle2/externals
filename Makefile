@@ -18,14 +18,15 @@ endif
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
-    cmake freetype sqlite python python-packages gdb boost gtest eigen astyle scons madgraph
+    cmake freetype sqlite python python-packages gdb boost gtest eigen astyle scons madgraph \
+    zeromq cppzmq
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
-    flc nsm2 belle_legacy fann zeromq cppzmq
+    flc nsm2 belle_legacy fann
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))

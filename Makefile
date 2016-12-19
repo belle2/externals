@@ -25,7 +25,7 @@ COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
-    flc nsm2 belle_legacy fann
+    flc nsm2 belle_legacy fann zeromq cppzmq
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))

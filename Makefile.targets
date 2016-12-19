@@ -1354,3 +1354,56 @@ $(EXTSRCDIR)/scons/README.txt:
 $(EXTBINDIR)/scons: $(EXTSRCDIR)/scons/README.txt
 	@cp -fa $(EXTSRCDIR)/scons $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/scons && python setup.py install --prefix=$(EXTDIR)
+
+
+# dependencies for zeromq
+zeromq: $(EXTLIBDIR)/libzmq.so
+zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
+
+# zeromq download
+$(EXTSRCDIR)/zeromq/INSTALL:
+	@$(DOWNLOAD) zeromq zeromq-4.2.0.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
+
+# zeromq build
+$(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL
+	@echo "building zeromq"
+	@cp -fa $(EXTSRCDIR)/zeromq $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/zeromq && ./configure $(CONFIGURE_COMMON_FLAGS) \
+		--prefix=$(EXTDIR) && \
+		make -j $(NPROCESSES) install
+
+# zeromq clean
+zeromq.clean:
+	@echo "cleaning zeromq"
+	@rm -rf $(EXTBUILDDIR)/zeromq
+
+# zeromq touch
+zeromq.touch:
+	@rm -f $(EXTLIBDIR)/libzmq.so
+
+
+#depenedcies for cppzmq, the C++ bindings for zeromq
+cppzmq: $(EXTINCDIR)/zmq.hpp
+cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
+
+# cppzmq download
+$(EXTSRCDIR)/cppzmq/zmq.hpp:
+	@echo "downloading cppzmq"
+	@mkdir -p $(EXTSRCDIR)/cppzmq
+	# cppzmq has neither tags nor releases on github so no tar.gz download but a direct
+	# raw download of the one header file required
+	@cd $(EXTSRCDIR)/cppzmq && wget https://raw.githubusercontent.com/zeromq/cppzmq/6c9103433f978e2c190c806a98c53f5cee4744f9/zmq.hpp
+
+# cppzmq copy .hpp file to include folder
+$(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp
+	@echo "installing cppzmq"
+	@cp -f $(EXTSRCDIR)/cppzmq/zmq.hpp $(EXTINCDIR)/zmq.hpp
+
+# remove installed .hpp file
+cppzmq.touch:
+	@rm -rf $(EXTINCDIR)/zmq.hpp
+
+# remove downloaded header file
+cppzmq.clean:
+	@echo "cleaning cppzmq"
+	@rm -rf $(EXTSRCDIR)/cppzmq/zmq.hpp

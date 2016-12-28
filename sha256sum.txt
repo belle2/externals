@@ -53,3 +53,4 @@ fb52fff3aa32e78d7576569113743af1f0868a5dc7b5c055e2ea0e6c1c49d070 *src/rave-0.6.2
 27a8e4ef1e6bb6bfe076fef50afe474870edd198699d43359ef01de2f446c670 *src/xrootd-4.5.0.tar.gz
 53b83bf0ee978931f76fa9cb46ad4affea65787264a5f3d140bc743412d0c117 *src/zeromq-4.2.0.tar.gz
 c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1 *src/zlib-1.2.11.tar.gz
+a7aea63e9718d2f1adf81d87e3df3cb1b58deb86fc77bad5d702c4c59687b033 *src/jemalloc-4.4.0.tar.bz2

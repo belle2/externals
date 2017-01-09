@@ -40,7 +40,7 @@ the externals.
 | [CMake](https://cmake.org/)                                                  | 3.5.2            |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7              |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034       |
-| [curl](https://curl.haxx.se/)                                                | 7.49.1           |
+| [curl](https://curl.haxx.se/)                                                | 7.52.1           |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.2.8            |
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00        |
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2            |

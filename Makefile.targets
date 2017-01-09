@@ -1253,7 +1253,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.49.1.tar.gz http://curl.haxx.se/download/curl-7.49.1.tar.gz
+	@$(DOWNLOAD) curl curl-7.52.1.tar.bz2 http://curl.haxx.se/download/curl-7.52.1.tar.bz2
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README

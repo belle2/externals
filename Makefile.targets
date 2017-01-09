@@ -388,37 +388,6 @@ python.clean:
 python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
-# filter the PYTHON_PACKAGES variable and check if any package has en explicit URL in PYTHON_EXTERN_ARCHIVES.
-# result is the content of PYTHON_PACKAGES but each entry which exists in PYTHON_EXTERN_ARCHIVES is replaced by that word
-PYTHON_ARCHIVES:=$(foreach pkg,$(PYTHON_PACKAGES),$(or $(filter $(pkg)?%, $(PYTHON_EXTERN_ARCHIVES)), $(pkg)))
-# function to create archive name from package name: if the package name is
-# explicitly specified in PYTHON_EXTERN_ARCHIVES use that, otherwise replace -
-# in package name with _, == with - and add .tar.gz. For example
-#   $(call python_filename,ipython-genutils==0.1.0) returns
-#   ipython_genutils-0.1.0.tar.gz
-python_filename=$(or $(word 3,$(subst ?, ,$1)), $(subst ==,-,$(firstword $(subst ?, ,$(subst -,_,$1))).tar.gz))
-# funtion to construct pypi source url from package name. If explicit archive
-# name is given as second field in PYTHON_EXTERN_ARCHIVES use that, otherwise
-# construct pypi url from archive name
-# first argument is requirements line, optionally with url and archive name, e.g.
-# pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb?pep8-1.6.3a0.tar.gz
-# second argument is python filename, aka return value from $(call python_filename,$1)
-# returns python filename (aka second argument) followed by full url, for example
-#   $(call python_url,ipython-genutils==0.1.0,ipython_genutils-0.1.0.tar.gz) returns
-#   ipython_genutils-0.1.0.tar.gz https://pypi.python.org/packages/source/i/ipython_genutils/ipython_genutils-0.1.0.tar.gz
-python_url=$2 $(or $(word 2,$(subst ?, ,$1)), https://pypi.python.org/packages/source/$(shell echo $2 | head -c 1)/$(firstword $(subst -, ,$2))/$2)
-# combine both functions above into one call with requirements line, optional
-# followed by archive url and archive name (separated by ?). Returns archive
-# name followed by full url, for example
-#   $(call python_filename_url,ipython-genutils==0.1.0) returns
-#   ipython_genutils-0.1.0.tar.gz https://pypi.python.org/packages/source/i/ipython_genutils/ipython_genutils-0.1.0.tar.gz
-#   $(call python_filename_url,pep8==1.6.3a0?https://github.com/PyCQA/pep8/tarball/b1bde9f2bb) returns
-#   pep8-1.6.3a0.tar.gz https://github.com/PyCQA/pep8/tarball/b1bde9f2bb
-#   $(call python_filename_url,simplegeneric==0.8.1??simplegeneric-0.8.1.zip) returns
-#   simplegeneric-0.8.1.zip https://pypi.python.org/packages/source/s/simplegeneric/simplegeneric-0.8.1.zip
-python_filename_url= $(call python_url,$1,$(call python_filename,$1))
-
-
 $(EXTSRCDIR)/python:
 	@$(DOWNLOAD) python Python-3.5.2.tgz https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
 
@@ -436,6 +405,9 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # TODO: a more automatic way to find the pip cacert.pem?
 .pip-certchain.pem: $(BELLE2_TOOLS)/certchain.pem $(EXTCOMDIR)/lib/python3.5/site-packages/pip/_vendor/requests/cacert.pem
 	cat $? > $@
+
+# make sure the certificate get's recreated each time
+.PHONY: .pip-certchain.pem
 
 PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/

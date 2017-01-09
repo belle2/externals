@@ -1,6 +1,9 @@
 # shut up sub makes
 MAKEFLAGS+=-s
 
+# make sure this file is not executed in parallel
+.NOTPARALLEL:
+
 # downloading now checks the sha256sum of the downloaded files. If you want to
 # skip this (to upgrade packages or if sha256sum is not installed on your
 # system) then comment out the following line

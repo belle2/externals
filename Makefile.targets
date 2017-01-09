@@ -1,6 +1,9 @@
 # reset makeflags for sub make calls
 override MAKEFLAGS:=
 
+# make sure this file is not executed in parallel
+.NOTPARALLEL:
+
 # define directories
 export BELLE2_EXTERNALS_DIR := $(shell pwd)
 export BELLE2_EXTERNALS_SUBDIR := $(BELLE2_ARCH)/$(BELLE2_EXTERNALS_OPTION)

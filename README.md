@@ -48,7 +48,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2              |
 | [FreeType](http://www.freetype.org/)                                         | 2.6.3            |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.3              |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.11             |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.12             |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02        |
 | [git](https://git-scm.com/)                                                  | 2.11.0           |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.0            |

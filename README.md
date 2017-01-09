@@ -47,7 +47,7 @@ the externals.
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0 |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2              |
 | [FreeType](http://www.freetype.org/)                                         | 2.6.3            |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.2              |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.3              |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.11             |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02        |
 | [git](https://git-scm.com/)                                                  | 2.9.0            |
@@ -79,8 +79,8 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 |------------------------------------------------------------------------------|------------------|
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.0.3            |
 | [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.5            |
-| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.1            |
-| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.17.1           |
+| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.2            |
+| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.18             |
 
 Optional Package
 ----------------

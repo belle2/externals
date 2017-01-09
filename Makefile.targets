@@ -319,7 +319,7 @@ zlib.touch:
 	@rm -f $(EXTLIBDIR)/libz.so
 
 $(EXTSRCDIR)/zlib:
-	@$(DOWNLOAD) zlib zlib-1.2.8.tar.gz http://zlib.net/zlib-1.2.8.tar.gz
+	@$(DOWNLOAD) zlib zlib-1.2.10.tar.gz http://zlib.net/zlib-1.2.10.tar.gz
 
 # zlib: so basic that we only want it it common so we just do an in source build
 $(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib

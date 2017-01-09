@@ -66,7 +66,7 @@ the externals.
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25           |
 | [ROOT](https://root.cern.ch/)                                                | 6.06/08          |
 | [SCons](http://scons.org/)                                                   | 2.3.6            |
-| [SQLite](https://www.sqlite.org/)                                            | 3.13             |
+| [SQLite](https://www.sqlite.org/)                                            | 3.16.2           |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4            |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3              |
 | [XRootD](http://xrootd.org/)                                                 | 4.3.0            |

@@ -41,7 +41,7 @@ the externals.
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7              |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034       |
 | [curl](https://curl.haxx.se/)                                                | 7.52.1           |
-| [Eigen](http://eigen.tuxfamily.org/)                                         | 3.2.8            |
+| [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.1            |
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00        |
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2            |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0 |

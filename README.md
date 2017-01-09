@@ -37,7 +37,7 @@ the externals.
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.63             |
 | [bzip2](http://www.bzip.org/)                                                | 1.06             |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4          |
-| [CMake](https://cmake.org/)                                                  | 3.5.2            |
+| [CMake](https://cmake.org/)                                                  | 3.7.1            |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7              |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034       |
 | [curl](https://curl.haxx.se/)                                                | 7.52.1           |

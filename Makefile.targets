@@ -521,14 +521,15 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_61_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.61.0/boost_1_61_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_63_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
-	@cd $(EXTSRCDIR)/boost && ./bootstrap.sh --includedir=$(EXTINCDIR) \
-	    --libdir=$(EXTLIBDIR) --without-icu --with-python=python3 && \
-	    ./b2 install -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
+	cd $(EXTSRCDIR)/boost && ./bootstrap.sh --prefix=$(EXTDIR) \
+	    --includedir=$(EXTINCDIR) --with-python=python3 --without-icu && \
+	    ./b2 install -sZLIB_INCLUDE=$(EXTINCDIR) -sZLIB_LIBPATH=$(EXTLIBDIR) \
+	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 # remove libboost_python3.so, it conflicts with libboost_python.so as they
 # contain the same symbols. So we want to remove it to make sure only one of

@@ -248,8 +248,8 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-3.9.0.src.tar.xz http://llvm.org/releases/3.9.0/cfe-3.9.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/llvm-3.9.1.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang cfe-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/cfe-3.9.1.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
@@ -265,9 +265,7 @@ valgrind.touch:
 	@rm -fr $(EXTBINDIR)/valgrind
 
 $(EXTSRCDIR)/valgrind:
-	@$(DOWNLOAD) valgrind valgrind-3.11.0.tar.bz2 http://valgrind.org/downloads/valgrind-3.11.0.tar.bz2
-	# disable advertisement of RDRAND instruction: https://bugs.kde.org/show_bug.cgi?id=353370
-	@cd $@ && patch -p1 < $(PATCHDIR)/valgrind-disable-rdrand.patch
+	@$(DOWNLOAD) valgrind valgrind-3.12.0.tar.bz2 http://valgrind.org/downloads/valgrind-3.12.0.tar.bz2
 
 $(EXTBINDIR)/valgrind: $(EXTSRCDIR)/valgrind
 	@echo "building valgrind"
@@ -558,7 +556,7 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-1.75.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.75/cppcheck-1.75.tar.bz2
+	@$(DOWNLOAD) cppcheck cppcheck-1.77.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.77/cppcheck-1.77.tar.bz2
 	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
@@ -575,7 +573,7 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.8.11.src.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.11.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.8.13.src.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen

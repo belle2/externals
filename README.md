@@ -94,10 +94,10 @@ To compile any of these just go into the external directory and type
 
 | Software Package                                                             | Version          |
 |------------------------------------------------------------------------------|------------------|
-| [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 1.75             |
-| [Doxygen](http://www.doxygen.org)                                            | 1.8.11           |
-| [LLVM/Clang](http://llvm.org/)                                               | 3.9.0            |
-| [Valgrind](http://valgrind.org/)                                             | 3.11             |
+| [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 1.77             |
+| [Doxygen](http://www.doxygen.org)                                            | 1.8.13           |
+| [LLVM/Clang](http://llvm.org/)                                               | 3.9.1            |
+| [Valgrind](http://valgrind.org/)                                             | 3.12             |
 
 
 Python Packages

@@ -96,7 +96,7 @@ export ROOT_OPTION:=
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARIES=$(EXTLIBDIR)/libpq.so
+ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so
 
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry

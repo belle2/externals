@@ -39,6 +39,7 @@ the externals.
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4          |
 | [CMake](https://cmake.org/)                                                  | 3.5.2            |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7              |
+| [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034       |
 | [curl](https://curl.haxx.se/)                                                | 7.49.1           |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.2.8            |
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00        |
@@ -69,6 +70,7 @@ the externals.
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4            |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3              |
 | [XRootD](http://xrootd.org/)                                                 | 4.3.0            |
+| [zeromq](http://www.zeromq.org/)                                             | 4.2.0            |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.8            |
 
 GCC requires some additional libraries which are downloaded as part of the GCC compilation:

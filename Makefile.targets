@@ -705,7 +705,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-4.3.0.tar.gz http://xrootd.org/download/v4.3.0/xrootd-4.3.0.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-4.5.0.tar.gz http://xrootd.org/download/v4.5.0/xrootd-4.5.0.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
@@ -714,7 +714,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 # FIXME: python support for version 3 seems to be broken so we disable python
 # support for now. But let's leave the flags in so that it doesn't get lost
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
-	    -DENABLE_PYTHON=OFF \
+	    -DENABLE_PYTHON=OFF -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
@@ -758,7 +758,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
 	    -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON\
-	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -DXROOTD_ROOT_DIR=$(EXTDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch

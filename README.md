@@ -69,7 +69,7 @@ the externals.
 | [SQLite](https://www.sqlite.org/)                                            | 3.16.2           |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4            |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3              |
-| [XRootD](http://xrootd.org/)                                                 | 4.3.0            |
+| [XRootD](http://xrootd.org/)                                                 | 4.5.0            |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.0            |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.8            |
 

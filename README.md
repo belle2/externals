@@ -46,7 +46,7 @@ the externals.
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2            |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0 |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2              |
-| [FreeType](http://www.freetype.org/)                                         | 2.6.3            |
+| [FreeType](http://www.freetype.org/)                                         | 2.7.1            |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.3              |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.12             |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02        |

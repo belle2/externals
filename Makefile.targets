@@ -354,7 +354,7 @@ freetype.clean:
 	rm -fr $(EXTBUILDDIR)/freetype
 
 $(EXTSRCDIR)/freetype:
-	@$(DOWNLOAD) freetype freetype-2.6.3.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-2.6.3.tar.bz2
+	@$(DOWNLOAD) freetype freetype-2.7.1.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-2.7.1.tar.bz2
 
 $(EXTINCDIR)/freetype2: $(EXTSRCDIR)/freetype
 	@echo "building freetype"

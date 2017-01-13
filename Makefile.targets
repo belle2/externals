@@ -670,33 +670,30 @@ postgresql.touch:
 	@rm -f $(EXTBINDIR)/psql
 
 # dependencies for NeuroBayes
-neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
-neurobayes.src: $(EXTSRCDIR)/neurobayes/Makefile
+neurobayes: $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so
+neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
-$(EXTSRCDIR)/neurobayes/Makefile:
-	@$(DOWNLOAD) neurobayes neurobayes-4.2-1.tar.gz
+$(EXTSRCDIR)/neurobayes/CMakeLists.txt:
+	@git clone https://github.com/thomaskeck/NeurobayesCppInterface neurobayes
 
 # NeuroBayes build
-$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/Makefile
+$(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 	@echo "building NeuroBayes"
-	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
-	@$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
-	    $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
-	@$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
-	@cp $(EXTSRCDIR)/neurobayes/lib/* $(EXTLIBDIR)/
+	@mkdir -p $(EXTBUILDDIR)/neurobayes
+	@cd $(EXTBUILDDIR)/neurobayes && cmake $(EXTSRCDIR)/neurobayes/ -DCMAKE_INSTALL_PREFIX=$(EXTDIR) && make && make install
 	# install also header files in the include directory, so ROOT's autoparser can find it
 	# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
-	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
+	#@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
 
 # NeuroBayes clean command
 neurobayes.clean:
 	@echo "cleaning NeuroBayes"
-	@rm -rf $(EXTLIBDIR)/libNeuroBayesExpertCPP.so* $(EXTLIBDIR)/libnb_fortran.so* $(EXTLIBDIR)/libphitlicense.so* $(EXTINCDIR)/neurobayes
+	@rm -rf $(EXTBUILDDIR)/neurobayes
 
 # NeuroBayes touch command
 neurobayes.touch:
-	@rm -f $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
+	@rm -f $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so
 
 
 # dependencies for xrootd

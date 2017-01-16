@@ -71,7 +71,7 @@ the externals.
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3              |
 | [XRootD](http://xrootd.org/)                                                 | 4.5.0            |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.0            |
-| [zlib](http://www.zlib.net/)                                                 | 1.2.8            |
+| [zlib](http://www.zlib.net/)                                                 | 1.2.11           |
 
 GCC requires some additional libraries which are downloaded as part of the GCC compilation:
 

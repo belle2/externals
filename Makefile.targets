@@ -849,7 +849,7 @@ $(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
 	@mkdir -p $(EXTBUILDDIR)/jemalloc
 	@cd $(EXTBUILDDIR)/jemalloc && $(EXTSRCDIR)/jemalloc/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) && \
+	    --bindir=$(EXTBINDIR) --enable-prof && \
 	    make -j $(NPROCESSES) && make install_lib install_bin install_include
 
 # jemalloc clean

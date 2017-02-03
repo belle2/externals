@@ -746,6 +746,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
+# celebrating the 5 year anniversary of https://sft.its.cern.ch/jira/browse/ROOT-4568
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-fixsigpipe.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

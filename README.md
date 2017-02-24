@@ -53,6 +53,7 @@ the externals.
 | [git](https://git-scm.com/)                                                  | 2.11.0           |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.0            |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09          |
+| [jemalloc memory allocator](http://jemalloc.net/)                            | 4.4.0            |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.4            |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29           |
 | [MG5\_aMC](https://launchpad.net/mg5amcnlo)                                  | 2.2.2            |

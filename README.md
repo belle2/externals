@@ -32,7 +32,7 @@ the externals.
 |------------------------------------------------------------------------------|------------------|
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1           |
 | `BELLE_FLC`                                                                  | ?                |
-| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.8              |
+| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9              |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.27             |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.63             |
 | [bzip2](http://www.bzip.org/)                                                | 1.06             |
@@ -58,7 +58,7 @@ the externals.
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29           |
 | [MG5\_aMC](https://launchpad.net/mg5amcnlo)                                  | 2.2.2            |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-04        |
-| [NeuroBayes](http://neurobayes.phi-t.de/)                                    | 4.2-1            |
+| [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | d1cf3d2        |
 | `nsm2`                                                                       | 2.1.9.27         |
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56             |
 | [PostgreSQL](http://www.postgresql.org/)                                     | 9.2.4            |

@@ -32,7 +32,7 @@ the externals.
 |------------------------------------------------------------------------------|------------------|
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1           |
 | `BELLE_FLC`                                                                  | ?                |
-| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.8              |
+| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9              |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.27             |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.63             |
 | [bzip2](http://www.bzip.org/)                                                | 1.06             |

@@ -8,7 +8,7 @@ latest available version
 import pip
 
 if __name__ == "__main__":
-    pip_args = ['install', '-U']
+    pip_args = ['install', '-U', '--upgrade-strategy=only-if-needed']
     for pkg in sorted(pip.get_installed_distributions(), key=lambda x: x.project_name.lower()):
         # skip pip
         if pkg.project_name in ["pip", "setuptools"]:

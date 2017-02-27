@@ -110,28 +110,32 @@ externals.
 | Name                                                              | Summary                                                                                          | Version |
 |-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|---------|
 | [autopep8](https://pypi.python.org/pypi/autopep8)                 | A tool that automatically formats Python code to conform to the PEP 8 style guide                | 1.2.4   |
-| [CherryPy](https://pypi.python.org/pypi/CherryPy)                 | Object-Oriented HTTP framework                                                                   | 8.8.0   |
+| [cheroot](https://pypi.python.org/pypi/cheroot)                   | Highly-optimized, pure-python HTTP server                                                        | 5.1.0   |
+| [CherryPy](https://pypi.python.org/pypi/CherryPy)                 | Object-Oriented HTTP framework                                                                   | 10.1.1  |
 | [cycler](https://pypi.python.org/pypi/cycler)                     | Composable style cycles                                                                          | 0.10.0  |
-| [decorator](https://pypi.python.org/pypi/decorator)               | Better living through Python with decorators                                                     | 4.0.10  |
+| [decorator](https://pypi.python.org/pypi/decorator)               | Better living through Python with decorators                                                     | 4.0.11  |
 | [ipython](https://pypi.python.org/pypi/ipython)                   | IPython: Productive Interactive Computing                                                        | 5.1.0   |
 | [ipython-genutils](https://pypi.python.org/pypi/ipython-genutils) | Vestigial utilities from IPython                                                                 | 0.1.0   |
-| [lxml](https://pypi.python.org/pypi/lxml)                         | Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API. | 3.7.2   |
-| [matplotlib](https://pypi.python.org/pypi/matplotlib)             | Python plotting package                                                                          | 1.5.3   |
-| [numpy](https://pypi.python.org/pypi/numpy)                       | NumPy: array processing for numbers, strings, records, and objects.                              | 1.11.3  |
-| [path.py](https://pypi.python.org/pypi/path.py)                   | A module wrapper for os.path                                                                     | 10.0    |
+| [lxml](https://pypi.python.org/pypi/lxml)                         | Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API. | 3.7.3   |
+| [matplotlib](https://pypi.python.org/pypi/matplotlib)             | Python plotting package                                                                          | 2.0.0   |
+| [numpy](https://pypi.python.org/pypi/numpy)                       | NumPy: array processing for numbers, strings, records, and objects.                              | 1.12.0  |
+| [path.py](https://pypi.python.org/pypi/path.py)                   | A module wrapper for os.path                                                                     | 10.1    |
 | [pep8](https://pypi.python.org/pypi/pep8)                         | Python style guide checker                                                                       | 1.7.0   |
 | [pexpect](https://pypi.python.org/pypi/pexpect)                   | Pexpect allows easy control of interactive console applications.                                 | 4.2.1   |
 | [pickleshare](https://pypi.python.org/pypi/pickleshare)           | Tiny 'shelve'-like database with concurrency support                                             | 0.7.4   |
-| [prompt-toolkit](https://pypi.python.org/pypi/prompt-toolkit)     | Library for building powerful interactive command lines in Python                                | 1.0.9   |
+| [portend](https://pypi.python.org/pypi/portend)                   | TCP port monitoring utilities                                                                    | 1.8     |
+| [prompt-toolkit](https://pypi.python.org/pypi/prompt-toolkit)     | Library for building powerful interactive command lines in Python                                | 1.0.13  |
 | [ptyprocess](https://pypi.python.org/pypi/ptyprocess)             | Run a subprocess in a pseudo terminal                                                            | 0.5.1   |
-| [Pygments](https://pypi.python.org/pypi/Pygments)                 | Pygments is a syntax highlighting package written in Python.                                     | 2.1.3   |
+| [Pygments](https://pypi.python.org/pypi/Pygments)                 | Pygments is a syntax highlighting package written in Python.                                     | 2.2.0   |
 | [pyparsing](https://pypi.python.org/pypi/pyparsing)               | Python parsing module                                                                            | 2.1.10  |
 | [python-dateutil](https://pypi.python.org/pypi/python-dateutil)   | Extensions to the standard Python datetime module                                                | 2.6.0   |
 | [pytz](https://pypi.python.org/pypi/pytz)                         | World timezone definitions, modern and historical                                                | 2016.10 |
-| [requests](https://pypi.python.org/pypi/requests)                 | Python HTTP for Humans.                                                                          | 2.12.4  |
+| [requests](https://pypi.python.org/pypi/requests)                 | Python HTTP for Humans.                                                                          | 2.13.0  |
 | [simplegeneric](https://pypi.python.org/pypi/simplegeneric)       | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                    | 0.8.1   |
 | [six](https://pypi.python.org/pypi/six)                           | Python 2 and 3 compatibility utilities                                                           | 1.10.0  |
+| [tempora](https://pypi.python.org/pypi/tempora)                   | Objects and routines pertaining to date and time (tempora)                                       | 1.6.1   |
 | [traitlets](https://pypi.python.org/pypi/traitlets)               | Traitlets Python config system                                                                   | 4.3.1   |
+| [wcwidth](https://pypi.python.org/pypi/wcwidth)                   | Measures number of Terminal column cells of wide-character codes                                 | 0.1.7   |
 
 These packages are a result of running
 

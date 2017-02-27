@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 """
-This script will loop over all installed pip packages except pip and setuptools
-and create a requirements file including hashes
+This script will loop over all installed pip packages and create a requirements
+file including hashes
 """
 
 import tempfile
@@ -27,9 +27,6 @@ if __name__ == "__main__":
     download_args = ['download', '--disable-pip-version-check', '-d', '.', '--no-deps']
     with open(sys.argv[1], "w") as output:
         for pkg in sorted(pip.get_installed_distributions(), key=lambda x: x.project_name.lower()):
-            # skip pip
-            if pkg.project_name in ["pip", "setuptools"]:
-                continue
             name = "%s==%s" % (pkg.project_name, pkg.version)
             lines = [name]
             with clean_working_directory():

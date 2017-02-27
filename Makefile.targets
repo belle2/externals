@@ -249,6 +249,10 @@ clang.touch:
 $(EXTSRCDIR)/llvm:
 	@$(DOWNLOAD) llvm llvm-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/llvm-3.9.1.src.tar.xz
 	@$(DOWNLOAD) llvm/tools/clang cfe-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/cfe-3.9.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/compiler-rt-3.9.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxx libcxx-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/libcxx-3.9.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/libcxxabi-3.9.1.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-3.9.1.src.tar.xz http://llvm.org/releases/3.9.1/clang-tools-extra-3.9.1.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
@@ -316,7 +320,7 @@ zlib.touch:
 	@rm -f $(EXTLIBDIR)/libz.so
 
 $(EXTSRCDIR)/zlib:
-	@$(DOWNLOAD) zlib zlib-1.2.10.tar.gz http://zlib.net/zlib-1.2.10.tar.gz
+	@$(DOWNLOAD) zlib zlib-1.2.11.tar.gz http://zlib.net/zlib-1.2.11.tar.gz
 
 # zlib: so basic that we only want it it common so we just do an in source build
 $(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib
@@ -406,10 +410,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 .pip-certchain.pem: $(BELLE2_TOOLS)/certchain.pem $(EXTCOMDIR)/lib/python3.5/site-packages/pip/_vendor/requests/cacert.pem
 	cat $? > $@
 
-# make sure the certificate get's recreated each time
-.PHONY: .pip-certchain.pem
-
-PIP3OPTIONS=-q --disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
+PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
 ifneq ($(USE_BELLE2SERVER),)
@@ -669,33 +670,30 @@ postgresql.touch:
 	@rm -f $(EXTBINDIR)/psql
 
 # dependencies for NeuroBayes
-neurobayes: $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
-neurobayes.src: $(EXTSRCDIR)/neurobayes/Makefile
+neurobayes: $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so
+neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
-$(EXTSRCDIR)/neurobayes/Makefile:
-	@$(DOWNLOAD) neurobayes neurobayes-4.2-1.tar.gz
+$(EXTSRCDIR)/neurobayes/CMakeLists.txt:
+	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-d1cf3d2.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/d1cf3d2.tar.gz
 
 # NeuroBayes build
-$(EXTLIBDIR)/libNeuroBayesExpertCPP.so: $(EXTSRCDIR)/neurobayes/Makefile
+$(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 	@echo "building NeuroBayes"
-	@mkdir -p $(EXTINCDIR)/neurobayes && cp $(EXTSRCDIR)/neurobayes/include/* $(EXTINCDIR)/neurobayes/
-	@$(CXX) $(CXXFLAGS) -c -fPIC -I$(EXTINCDIR)/neurobayes -o $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o \
-	    $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.cc
-	@$(CXX) -shared -o $(EXTLIBDIR)/libNeuroBayesTeacherCPP.so $(EXTSRCDIR)/neurobayes/src/NeuroBayesTeacherDummy.o
-	@cp $(EXTSRCDIR)/neurobayes/lib/* $(EXTLIBDIR)/
+	@mkdir -p $(EXTBUILDDIR)/neurobayes
+	@cd $(EXTBUILDDIR)/neurobayes && cmake $(EXTSRCDIR)/neurobayes/ -DCMAKE_INSTALL_PREFIX=$(EXTDIR) && make && make install
 	# install also header files in the include directory, so ROOT's autoparser can find it
 	# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
-	@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
+	#@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
 
 # NeuroBayes clean command
 neurobayes.clean:
 	@echo "cleaning NeuroBayes"
-	@rm -rf $(EXTLIBDIR)/libNeuroBayesExpertCPP.so* $(EXTLIBDIR)/libnb_fortran.so* $(EXTLIBDIR)/libphitlicense.so* $(EXTINCDIR)/neurobayes
+	@rm -rf $(EXTBUILDDIR)/neurobayes
 
 # NeuroBayes touch command
 neurobayes.touch:
-	@rm -f $(EXTLIBDIR)/libNeuroBayesExpertCPP.so
+	@rm -f $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so
 
 
 # dependencies for xrootd
@@ -738,6 +736,8 @@ $(EXTSRCDIR)/root/README:
 	@$(DOWNLOAD) root root_v6.08.04.source.tar.gz https://root.cern.ch/download/root_v6.08.04.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
+# celebrating the 5 year anniversary of https://sft.its.cern.ch/jira/browse/ROOT-4568
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-fixsigpipe.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -829,6 +829,31 @@ vgm.clean:
 vgm.touch:
 	@rm -f $(EXTLIBDIR)/libBaseVGM.so
 
+# dependencies for jemalloc
+jemalloc: $(EXTLIBDIR)/libjemalloc.so
+jemalloc.src: $(EXTSRCDIR)/jemalloc
+
+# jemalloc download
+$(EXTSRCDIR)/jemalloc:
+	@$(DOWNLOAD) jemalloc jemalloc-4.4.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.4.0/jemalloc-4.4.0.tar.bz2
+
+# jemalloc build
+$(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
+	@echo "building jemalloc"
+	@mkdir -p $(EXTBUILDDIR)/jemalloc
+	@cd $(EXTBUILDDIR)/jemalloc && $(EXTSRCDIR)/jemalloc/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --enable-prof && \
+	    make -j $(NPROCESSES) && make install_lib install_bin install_include
+
+# jemalloc clean
+jemalloc.clean:
+	@echo "cleaning jemalloc"
+	@rm -rf $(EXTBUILDDIR)/jemalloc $(EXTDIR)/jemalloc $(EXTINCDIR)/jemalloc $(EXTLIBDIR)/libjemalloc*
+
+# jemalloc touch
+jemalloc.touch:
+	@rm -f $(EXTLIBDIR)/libjemalloc.so
 
 # dependencies for rave
 rave: $(EXTLIBDIR)/libRaveBase.so
@@ -1199,7 +1224,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.8.tar.gz git:tags/v1.8:$(BELLE2_GIT_SERVER)/b2g/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.9.tar.gz git:tags/v1.9:$(BELLE2_GIT_SERVER)/b2g/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

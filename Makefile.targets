@@ -837,6 +837,31 @@ vgm.clean:
 vgm.touch:
 	@rm -f $(EXTLIBDIR)/libBaseVGM.so
 
+# dependencies for jemalloc
+jemalloc: $(EXTLIBDIR)/libjemalloc.so
+jemalloc.src: $(EXTSRCDIR)/jemalloc
+
+# jemalloc download
+$(EXTSRCDIR)/jemalloc:
+	@$(DOWNLOAD) jemalloc jemalloc-4.4.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.4.0/jemalloc-4.4.0.tar.bz2
+
+# jemalloc build
+$(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
+	@echo "building jemalloc"
+	@mkdir -p $(EXTBUILDDIR)/jemalloc
+	@cd $(EXTBUILDDIR)/jemalloc && $(EXTSRCDIR)/jemalloc/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --enable-prof && \
+	    make -j $(NPROCESSES) && make install_lib install_bin install_include
+
+# jemalloc clean
+jemalloc.clean:
+	@echo "cleaning jemalloc"
+	@rm -rf $(EXTBUILDDIR)/jemalloc $(EXTDIR)/jemalloc $(EXTINCDIR)/jemalloc $(EXTLIBDIR)/libjemalloc*
+
+# jemalloc touch
+jemalloc.touch:
+	@rm -f $(EXTLIBDIR)/libjemalloc.so
 
 # dependencies for rave
 rave: $(EXTLIBDIR)/libRaveBase.so

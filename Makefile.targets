@@ -411,10 +411,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 .pip-certchain.pem: $(BELLE2_TOOLS)/certchain.pem $(EXTCOMDIR)/lib/python3.5/site-packages/pip/_vendor/requests/cacert.pem
 	cat $? > $@
 
-# make sure the certificate get's recreated each time
-.PHONY: .pip-certchain.pem
-
-PIP3OPTIONS=-q --disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
+PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
 ifneq ($(USE_BELLE2SERVER),)

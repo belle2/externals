@@ -57,7 +57,7 @@ the externals.
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29           |
 | [MG5\_aMC](https://launchpad.net/mg5amcnlo)                                  | 2.2.2            |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-04        |
-| [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | fef278b        |
+| [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | d1cf3d2        |
 | `nsm2`                                                                       | 2.1.9.27         |
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56             |
 | [PostgreSQL](http://www.postgresql.org/)                                     | 9.2.4            |

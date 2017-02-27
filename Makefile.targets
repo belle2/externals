@@ -675,7 +675,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/CMakeLists.txt:
-	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-fef278b.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/fef278b.tar.gz
+	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-d1cf3d2.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/d1cf3d2.tar.gz
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt

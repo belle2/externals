@@ -229,7 +229,8 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 # skip the version: there's only one gcc version per external version.
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib \
 	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
-	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz && \
+	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz \
+	    --with-default-libstdcxx-abi=gcc4-compatible && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 # now remove the bloody empty directory gcc creates in prefix. but make sure
 # it's actually empty

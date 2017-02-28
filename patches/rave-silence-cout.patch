@@ -9,3 +9,14 @@
    myEllipsoid=ell;
    if ( mySpot ) delete mySpot;
    if ( !(ell.isValid()) )
+--- src/RecoVertex/VertexTools/src/SequentialVertexFitter.cc	2015-08-14 17:05:48.749219356 +0200
++++ src/RecoVertex/VertexTools/src/SequentialVertexFitter.cc	2016-04-19 19:21:15.957063000 +0200
+@@ -149,7 +149,7 @@
+ 			       const BeamSpot& beamSpot) const
+ {
+   VertexState beamSpotState(beamSpot);
+-  cout << "sigma(yy) [mu]=" << 10000.*sqrt ( beamSpotState.error().cyy() ) << endl;
++//  cout << "sigma(yy) [mu]=" << 10000.*sqrt ( beamSpotState.error().cyy() ) << endl;
+   vector<RefCountedVertexTrack> vtContainer;
+ 
+   if (tracks.size() > 1) {

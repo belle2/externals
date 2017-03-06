@@ -107,39 +107,47 @@ Python Packages
 This section lists all the python packages which are currently included in the
 externals.
 
-| Name                                                              | Summary                                                                                          | Version |
-|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|---------|
-| [autopep8](https://pypi.python.org/pypi/autopep8)                 | A tool that automatically formats Python code to conform to the PEP 8 style guide                | 1.2.4   |
-| [cheroot](https://pypi.python.org/pypi/cheroot)                   | Highly-optimized, pure-python HTTP server                                                        | 5.1.0   |
-| [CherryPy](https://pypi.python.org/pypi/CherryPy)                 | Object-Oriented HTTP framework                                                                   | 10.1.1  |
-| [cycler](https://pypi.python.org/pypi/cycler)                     | Composable style cycles                                                                          | 0.10.0  |
-| [decorator](https://pypi.python.org/pypi/decorator)               | Better living through Python with decorators                                                     | 4.0.11  |
-| [ipython](https://pypi.python.org/pypi/ipython)                   | IPython: Productive Interactive Computing                                                        | 5.1.0   |
-| [ipython-genutils](https://pypi.python.org/pypi/ipython-genutils) | Vestigial utilities from IPython                                                                 | 0.1.0   |
-| [lxml](https://pypi.python.org/pypi/lxml)                         | Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API. | 3.7.3   |
-| [matplotlib](https://pypi.python.org/pypi/matplotlib)             | Python plotting package                                                                          | 2.0.0   |
-| [numpy](https://pypi.python.org/pypi/numpy)                       | NumPy: array processing for numbers, strings, records, and objects.                              | 1.12.0  |
-| [path.py](https://pypi.python.org/pypi/path.py)                   | A module wrapper for os.path                                                                     | 10.1    |
-| [pep8](https://pypi.python.org/pypi/pep8)                         | Python style guide checker                                                                       | 1.7.0   |
-| [pexpect](https://pypi.python.org/pypi/pexpect)                   | Pexpect allows easy control of interactive console applications.                                 | 4.2.1   |
-| [pickleshare](https://pypi.python.org/pypi/pickleshare)           | Tiny 'shelve'-like database with concurrency support                                             | 0.7.4   |
-| [portend](https://pypi.python.org/pypi/portend)                   | TCP port monitoring utilities                                                                    | 1.8     |
-| [prompt-toolkit](https://pypi.python.org/pypi/prompt-toolkit)     | Library for building powerful interactive command lines in Python                                | 1.0.13  |
-| [ptyprocess](https://pypi.python.org/pypi/ptyprocess)             | Run a subprocess in a pseudo terminal                                                            | 0.5.1   |
-| [Pygments](https://pypi.python.org/pypi/Pygments)                 | Pygments is a syntax highlighting package written in Python.                                     | 2.2.0   |
-| [pyparsing](https://pypi.python.org/pypi/pyparsing)               | Python parsing module                                                                            | 2.1.10  |
-| [python-dateutil](https://pypi.python.org/pypi/python-dateutil)   | Extensions to the standard Python datetime module                                                | 2.6.0   |
-| [pytz](https://pypi.python.org/pypi/pytz)                         | World timezone definitions, modern and historical                                                | 2016.10 |
-| [requests](https://pypi.python.org/pypi/requests)                 | Python HTTP for Humans.                                                                          | 2.13.0  |
-| [simplegeneric](https://pypi.python.org/pypi/simplegeneric)       | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                    | 0.8.1   |
-| [six](https://pypi.python.org/pypi/six)                           | Python 2 and 3 compatibility utilities                                                           | 1.10.0  |
-| [tempora](https://pypi.python.org/pypi/tempora)                   | Objects and routines pertaining to date and time (tempora)                                       | 1.6.1   |
-| [traitlets](https://pypi.python.org/pypi/traitlets)               | Traitlets Python config system                                                                   | 4.3.1   |
-| [wcwidth](https://pypi.python.org/pypi/wcwidth)                   | Measures number of Terminal column cells of wide-character codes                                 | 0.1.7   |
+| Name                                                              | Summary                                                                                                        | Version |
+|-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|---------|
+| [alabaster](https://pypi.python.org/pypi/alabaster)               | A configurable sidebar-enabled Sphinx theme                                                                    | 0.7.10  |
+| [autopep8](https://pypi.python.org/pypi/autopep8)                 | A tool that automatically formats Python code to conform to the PEP 8 style guide                              | 1.2.4   |
+| [Babel](https://pypi.python.org/pypi/Babel)                       | Internationalization utilities                                                                                 | 2.3.4   |
+| [cheroot](https://pypi.python.org/pypi/cheroot)                   | Highly-optimized, pure-python HTTP server                                                                      | 5.1.0   |
+| [CherryPy](https://pypi.python.org/pypi/CherryPy)                 | Object-Oriented HTTP framework                                                                                 | 10.1.1  |
+| [cycler](https://pypi.python.org/pypi/cycler)                     | Composable style cycles                                                                                        | 0.10.0  |
+| [decorator](https://pypi.python.org/pypi/decorator)               | Better living through Python with decorators                                                                   | 4.0.11  |
+| [docutils](https://pypi.python.org/pypi/docutils)                 | Docutils -- Python Documentation Utilities                                                                     | 0.13.1  |
+| [imagesize](https://pypi.python.org/pypi/imagesize)               | Getting image size from png/jpeg/jpeg2000/gif file                                                             | 0.7.1   |
+| [ipython](https://pypi.python.org/pypi/ipython)                   | IPython: Productive Interactive Computing                                                                      | 5.1.0   |
+| [ipython-genutils](https://pypi.python.org/pypi/ipython-genutils) | Vestigial utilities from IPython                                                                               | 0.1.0   |
+| [Jinja2](https://pypi.python.org/pypi/Jinja2)                     | A small but fast and easy to use stand-alone template engine written in pure python.                           | 2.9.5   |
+| [lxml](https://pypi.python.org/pypi/lxml)                         | Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.               | 3.7.3   |
+| [MarkupSafe](https://pypi.python.org/pypi/MarkupSafe)             | Implements a XML/HTML/XHTML Markup safe string for Python                                                      | 0.23    |
+| [matplotlib](https://pypi.python.org/pypi/matplotlib)             | Python plotting package                                                                                        | 2.0.0   |
+| [numpy](https://pypi.python.org/pypi/numpy)                       | NumPy: array processing for numbers, strings, records, and objects.                                            | 1.12.0  |
+| [path.py](https://pypi.python.org/pypi/path.py)                   | A module wrapper for os.path                                                                                   | 10.1    |
+| [pep8](https://pypi.python.org/pypi/pep8)                         | Python style guide checker                                                                                     | 1.7.0   |
+| [pexpect](https://pypi.python.org/pypi/pexpect)                   | Pexpect allows easy control of interactive console applications.                                               | 4.2.1   |
+| [pickleshare](https://pypi.python.org/pypi/pickleshare)           | Tiny 'shelve'-like database with concurrency support                                                           | 0.7.4   |
+| [portend](https://pypi.python.org/pypi/portend)                   | TCP port monitoring utilities                                                                                  | 1.8     |
+| [prompt-toolkit](https://pypi.python.org/pypi/prompt-toolkit)     | Library for building powerful interactive command lines in Python                                              | 1.0.13  |
+| [ptyprocess](https://pypi.python.org/pypi/ptyprocess)             | Run a subprocess in a pseudo terminal                                                                          | 0.5.1   |
+| [Pygments](https://pypi.python.org/pypi/Pygments)                 | Pygments is a syntax highlighting package written in Python.                                                   | 2.2.0   |
+| [pyparsing](https://pypi.python.org/pypi/pyparsing)               | Python parsing module                                                                                          | 2.1.10  |
+| [python-dateutil](https://pypi.python.org/pypi/python-dateutil)   | Extensions to the standard Python datetime module                                                              | 2.6.0   |
+| [pytz](https://pypi.python.org/pypi/pytz)                         | World timezone definitions, modern and historical                                                              | 2016.10 |
+| [requests](https://pypi.python.org/pypi/requests)                 | Python HTTP for Humans.                                                                                        | 2.13.0  |
+| [simplegeneric](https://pypi.python.org/pypi/simplegeneric)       | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                                  | 0.8.1   |
+| [six](https://pypi.python.org/pypi/six)                           | Python 2 and 3 compatibility utilities                                                                         | 1.10.0  |
+| [snowballstemmer](https://pypi.python.org/pypi/snowballstemmer)   | This package provides 16 stemmer algorithms (15 + Poerter English stemmer) generated from Snowball algorithms. | 1.2.1   |
+| [Sphinx](https://pypi.python.org/pypi/Sphinx)                     | Python documentation generator                                                                                 | 1.5.3   |
+| [tempora](https://pypi.python.org/pypi/tempora)                   | Objects and routines pertaining to date and time (tempora)                                                     | 1.6.1   |
+| [traitlets](https://pypi.python.org/pypi/traitlets)               | Traitlets Python config system                                                                                 | 4.3.1   |
+| [wcwidth](https://pypi.python.org/pypi/wcwidth)                   | Measures number of Terminal column cells of wide-character codes                                               | 0.1.7   |
 
 These packages are a result of running
 
-    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests
+    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx
 
 All other packages are just dependencies of these and versions between them are
 fixed in the externals.

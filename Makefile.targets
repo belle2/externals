@@ -1405,9 +1405,9 @@ cppzmq.clean:
 	@rm -rf $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 gsl: $(EXTBINDIR)/gsl-config
-gsl.src: $(EXTSRCDIR)/gsl/INSTALL
+gsl.src: $(EXTSRCDIR)/gsl
 
-$(EXTSRCDIR)/gsl/INSTALL:
+$(EXTSRCDIR)/gsl:
 	$(DOWNLOAD) gsl gsl-2.3.tar.gz http://ftpmirror.gnu.org/gsl/gsl-2.3.tar.gz
 
 $(EXTBINDIR)/gsl-config: $(EXTSRCDIR)/gsl

@@ -739,6 +739,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 # celebrating the 5 year anniversary of https://sft.its.cern.ch/jira/browse/ROOT-4568
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-fixsigpipe.patch
+# fix thisroot.sh/csh breaking the LD_LIBRARY_PATH and others in some circumstances
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8704-thisroot-matching.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

@@ -734,14 +734,13 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.06.08.source.tar.gz https://root.cern.ch/download/root_v6.06.08.source.tar.gz
-# fix python import error (ROOT-7640) and iteration with classes inheriting
-# from std::iterator (ROOT-7638) which is closed in master but not in patches for 6.06)
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-python3.patch
+	@$(DOWNLOAD) root root_v6.08.06.source.tar.gz https://root.cern.ch/download/root_v6.08.06.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 # celebrating the 5 year anniversary of https://sft.its.cern.ch/jira/browse/ROOT-4568
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-fixsigpipe.patch
+# fix thisroot.sh/csh breaking the LD_LIBRARY_PATH and others in some circumstances
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8704-thisroot-matching.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -755,6 +754,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.5 -Dgminimal=ON -Dfail-on-missing=ON \
+	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON \
 	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON\
@@ -783,6 +783,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 $(EXTSRCDIR)/FastBDT/README.md:
 	@$(DOWNLOAD) FastBDT FastBDT-3.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v3.2.tar.gz
 	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-cint_to_cling.patch
+	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-root608-interface.patch
 
 # FastBDT TMVA plugin build
 $(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/README.md $(ROOTSYS)/bin/root

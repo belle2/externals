@@ -51,6 +51,7 @@ the externals.
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.12             |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02        |
 | [git](https://git-scm.com/)                                                  | 2.11.0           |
+| [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.3              |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.0            |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09          |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 4.4.0            |

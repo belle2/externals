@@ -743,6 +743,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8704-thisroot-matching.patch
 # fix "using namespace" in TMVA include which screwed up CDCValidation.C
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8713-tmva-using-namespace.patch
+# make JupyROOT it python3 compatible, patch from LCG_88 provided by Danilo
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-Make-JuPyROOT-and-JSMVA-Python3-compatible.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

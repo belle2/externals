@@ -438,6 +438,8 @@ $(EXTBINDIR)/ipython: .pip-certchain.pem
 # update default settings for pep8
 	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \
 	    $(EXTLIBDIR)/python3.5/site-packages/pep8.py
+# register widget extension in jupyter
+	jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb

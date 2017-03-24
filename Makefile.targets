@@ -421,8 +421,10 @@ endif
 # download the source for the python packages. This is only called directly or
 # with make src and it will download src and binary package versions
 python-packages.src: .pip-certchain.pem
-	pip3 download -d src/python-packages $(PIP3OPTIONS) --no-binary=:all: -r pip-requirements.txt
-	pip3 download -d src/python-packages $(PIP3OPTIONS) -r pip-requirements.txt
+	while read line; do \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
+	done < pip-requirements.txt
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed

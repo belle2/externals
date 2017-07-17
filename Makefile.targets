@@ -407,9 +407,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
-# TODO: a more automatic way to find the pip cacert.pem?
-.pip-certchain.pem: $(BELLE2_TOOLS)/certchain.pem $(EXTCOMDIR)/lib/python3.6/site-packages/pip/_vendor/requests/cacert.pem
-	cat $? > $@
+CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/requests/cacert.pem > .pip-certchain.pem"
 
 PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
@@ -420,7 +418,8 @@ endif
 
 # download the source for the python packages. This is only called directly or
 # with make src and it will download src and binary package versions
-python-packages.src: .pip-certchain.pem
+python-packages.src:
+	eval $(CREATE_PIP_CERTCHAIN)
 	while read line; do \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
@@ -434,7 +433,8 @@ python-packages: $(EXTBINDIR)/ipython
 # path.py but for newer versions we can just install the wheel which doesn't
 # need that. For now we ignore this dependency and assume easy_install will do
 # it correctly.
-$(EXTBINDIR)/ipython: .pip-certchain.pem
+$(EXTBINDIR)/ipython:
+	eval $(CREATE_PIP_CERTCHAIN)
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r pip-requirements.txt
 # update default settings for pep8

@@ -108,7 +108,11 @@ Python Packages
 This section lists all the python packages which are currently included in the
 externals. These packages are a result of running
 
-    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx jupyter widgetsnbextension javascript scipy pandas keras tensorflow
+    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx jupyter widgetsnbextension javascript scipy pandas keras tensorflow CommonMark
+
+The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is
+included in a modified version containing some patches not yet included
+upstream (found in `src/sphinx-argparse`).
 
 All other packages are just dependencies of these and versions between them are
 fixed in the externals.
@@ -124,10 +128,12 @@ fixed in the externals.
 | [chardet](https://pypi.python.org/pypi/chardet)                       | Universal encoding detector for Python 2 and 3                                                                 | 3.0.4       | LGPL                                                         |
 | [cheroot](https://pypi.python.org/pypi/cheroot)                       | Highly-optimized, pure-python HTTP server                                                                      | 5.7.0       | UNKNOWN                                                      |
 | [CherryPy](https://pypi.python.org/pypi/CherryPy)                     | Object-Oriented HTTP framework                                                                                 | 11.0.0      | BSD                                                          |
+| [CommonMark](https://pypi.python.org/pypi/CommonMark)                 | Python parser for the CommonMark Markdown spec                                                                 | 0.7.3       | BSD License                                                  |
 | [cycler](https://pypi.python.org/pypi/cycler)                         | Composable style cycles                                                                                        | 0.10.0      | BSD                                                          |
 | [decorator](https://pypi.python.org/pypi/decorator)                   | Better living through Python with decorators                                                                   | 4.1.1       | new BSD License                                              |
 | [docutils](https://pypi.python.org/pypi/docutils)                     | Docutils -- Python Documentation Utilities                                                                     | 0.13.1      | public domain, Python, 2-Clause BSD, GPL 3 (see COPYING.txt) |
 | [entrypoints](https://pypi.python.org/pypi/entrypoints)               | Discover and load entry points from installed packages.                                                        | 0.2.3       | UNKNOWN                                                      |
+| [future](https://pypi.python.org/pypi/future)                         | Clean single-source support for Python 3 and 2                                                                 | 0.16.0      | MIT                                                          |
 | [html5lib](https://pypi.python.org/pypi/html5lib)                     | HTML parser based on the WHATWG HTML specification                                                             | 0.999999999 | MIT License                                                  |
 | [idna](https://pypi.python.org/pypi/idna)                             | Internationalized Domain Names in Applications (IDNA)                                                          | 2.5         | BSD-like                                                     |
 | [imagesize](https://pypi.python.org/pypi/imagesize)                   | Getting image size from png/jpeg/jpeg2000/gif file                                                             | 0.7.1       | MIT                                                          |

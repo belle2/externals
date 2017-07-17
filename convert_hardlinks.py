@@ -25,7 +25,7 @@ for argument in sys.argv[1:]:
         for filename in filenames:
             full_path = os.path.abspath(os.path.join(dirname, filename))
             try:
-                stat = os.stat(full_path)
+                stat = os.stat(full_path, follow_symlinks=False)
             except FileNotFoundError as e:
                 print("Warning: cannot stat %s, broken link?" % full_path)
                 continue
@@ -40,6 +40,8 @@ for inode, files in links.items():
     if len(files) != counts[inode]:
         print("ERROR: inode %d has link count %d but only %d links have been found" %
               (inode, counts[inode], len(files)))
+        for filename in files:
+            print(filename)
         sys.exit(1)
     # sort the links. We will pick the first as source for all links. In
     # principle it's not important which order we choose but when sorting by

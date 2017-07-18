@@ -54,7 +54,7 @@ the externals.
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.3             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.0           | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
-| [jemalloc memory allocator](http://jemalloc.net/)                            | 4.4.0           | BSD-style  |
+| [jemalloc memory allocator](http://jemalloc.net/)                            | 5.0.1           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.4           | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29          | MIT        |
 | [MG5\_aMC](https://launchpad.net/mg5amcnlo)                                  | 2.2.2           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |

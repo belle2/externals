@@ -77,9 +77,6 @@ def unsetup_externals(location, common=False):
     # panther
     env_vars['PANTHER_TABLE_DIR'] = ''
 
-    # pntdb
-    env_vars['BELLE_POSTGRES_SERVER'] = ''
-
 
 def setup_externals(location, common=False):
     """function to setup an externals directory"""
@@ -166,9 +163,6 @@ def setup_externals(location, common=False):
 
     # panther
     env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'belle_legacy', 'panther')
-
-    # pntdb
-    env_vars['BELLE_POSTGRES_SERVER'] = 'ekpbelle.physik.uni-karlsruhe.de'
 
 
 def check_externals(location):

@@ -1205,33 +1205,6 @@ eigen.touch:
 	@rm -rf $(EXTINCDIR)/Eigen/Eigen
 
 
-
-# dependencies for nsm2
-nsm2: $(EXTBINDIR)/nsmd2
-nsm2.src: $(EXTSRCDIR)/nsm2
-
-# nsm2 download
-$(EXTSRCDIR)/nsm2:
-	@$(DOWNLOAD) nsm2 nsm2.1.9.27.tgz
-	@cd src/nsm2 && patch -p1 < $(PATCHDIR)/nsm-gcc6fixes.patch
-
-# nsm2 build
-$(EXTBINDIR)/nsmd2: $(EXTSRCDIR)/nsm2
-	@echo "installing nsm2"
-	@cp -fa $(EXTSRCDIR)/nsm2 $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/nsm2 && make && make install
-
-# nsm2 clean
-nsm2.clean:
-	@echo "cleaning nsm2"
-	@-cd $(EXTBUILDDIR)/nsm2 && make clean
-	@rm -rf $(EXTINCDIR)/nsm2 $(EXTBINDIR)/nsm*2 $(EXTLIBDIR)/libnsm2*
-
-# nsm2 touch
-nsm2.touch:
-	@rm -rf $(EXTBINDIR)/nsmd2
-
-
 # dependencies for belle_legacy
 belle_legacy: $(EXTLIBDIR)/libbelle_legacy.so
 belle_legacy.src: $(EXTSRCDIR)/belle_legacy

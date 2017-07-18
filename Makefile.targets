@@ -1186,7 +1186,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.3.1.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.3.1.tar.bz2
+	@$(DOWNLOAD) eigen eigen_3.3.4.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2
 
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL

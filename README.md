@@ -71,7 +71,7 @@ the externals.
 | [SQLite](https://www.sqlite.org/)                                            | 3.16.2          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
-| [XRootD](http://xrootd.org/)                                                 | 4.5.0           | LGPLv3     |
+| [XRootD](http://xrootd.org/)                                                 | 4.6.1           | LGPLv3     |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.0           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 

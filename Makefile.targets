@@ -744,10 +744,31 @@ xrootd.clean:
 	@-cd $(EXTBUILDDIR)/xrootd 2>/dev/null && make clean
 	@rm -rf $(EXTBUILDDIR)/xrootd $(EXTDIR)/xrootd $(EXTINCDIR)/xrootd $(EXTLIBDIR)/libXrd* $(EXTBINDIR)/xrd* $(EXTBINDIR)/xrootd
 
-# root touch command
 xrootd.touch:
 	@rm -f $(EXTBINDIR)/xrootd
 
+davix: $(EXTLIBDIR)/libdavix.so
+davix.src: $(EXTSRCDIR)/davix/README.md
+
+$(EXTSRCDIR)/davix/README.md:
+	@$(DOWNLOAD) davix davix-0.6.6.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.6.6/davix-0.6.6.tar.gz
+# davix doesn't find uuid if it's not in /usr/include, https://github.com/cern-it-sdc-id/davix/pull/20
+	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-uuid-includepath.patch
+
+$(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
+	@echo "building davix"
+	@mkdir -p $(EXTBUILDDIR)/davix
+	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
+	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so && \
+	    make -j $(NPROCESSES) && make install
+
+davix.clean:
+	@echo "cleaning davix"
+	@-cd $(EXTBUILDDIR)/davix 2>/dev/null && make clean
+	@rm -rf $(EXTBUILDDIR)/davix $(EXTINCDIR)/davix $(EXTLIBDIR)/libdavix* $(EXTBINDIR)/davix*
+
+davix.touch:
+	@rm -f $(EXTLIBDIR)/libdavix.so
 
 # dependencies for root
 root: $(ROOTSYS)/bin/root
@@ -781,10 +802,10 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
+	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix  \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=ON -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON \
+	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
+	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON \
 	    -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used

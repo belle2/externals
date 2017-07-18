@@ -8,6 +8,21 @@ from setup_tools import env_vars, source_scripts, add_path, remove_path, \
     lib_path_name
 
 
+def get_python_incdir(bin_dir, lib_dir):
+    """Determine the python include directory.
+    :param str bin_dir: directory containing the python executable
+    """
+    script = os.path.join(bin_dir, "python3")
+    env = dict(os.environ)
+    env["LD_LIBRARY_PATH"] = lib_dir
+    proc = subprocess.Popen([script, "-c", "import sysconfig; print(sysconfig.get_path('include'))"],
+                            stdout=subprocess.PIPE, env=env)
+    stdout = proc.communicate()[0]
+    if proc.returncode != 0:
+        raise RuntimeError("Cannot determine python include directory" + script)
+    return stdout.strip()
+
+
 def unsetup_externals(location, common=False):
     """function to unsetup an externals directory"""
 
@@ -19,11 +34,15 @@ def unsetup_externals(location, common=False):
                                 os.environ['BELLE2_SUBDIR'])
 
     # externals
-    remove_path('PATH', os.path.join(location, subdir, 'bin'))
-    remove_path(lib_path_name, os.path.join(location, subdir, 'lib'))
-    remove_path(lib_path_name, os.path.join(location, subdir, 'lib64'))
+    bin_dir = os.path.join(location, subdir, 'bin')
+    lib_dir = os.path.join(location, subdir, 'lib')
+    remove_path('PATH', bin_dir)
+    remove_path(lib_path_name, lib_dir)
+    remove_path(lib_path_name, lib_dir + '64')
 
     # geant4
+    remove_path("ROOT_INCLUDE_PATH", os.path.join(location, "include", "Geant4"))
+    remove_path("ROOT_INCLUDE_PATH", os.path.join(location, "include", "CLHEP"))
     for var in os.environ.keys():
         if var.startswith('G4'):
             env_vars[var] = ''
@@ -36,8 +55,8 @@ def unsetup_externals(location, common=False):
     remove_path(lib_path_name, os.path.join(root_dir, 'lib'))
     remove_path('PYTHONPATH', os.path.join(root_dir, 'lib'))
     # remove root 6 include paths again
-    remove_path('ROOT_INCLUDE_PATH', root_dir)
-    remove_path('ROOT_INCLUDE_PATH', os.path.join(root_dir, 'include'))
+    remove_path('ROOT_INCLUDE_PATH', location)
+    remove_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
 
     if common:
         # remove git
@@ -49,15 +68,14 @@ def unsetup_externals(location, common=False):
         env_vars['GXX_INCLUDE'] = ''
         # and the valgrind tool directory
         env_vars['VALGRIND_LIB'] = ''
+        # and remove python include path for all root classes which need python
+        remove_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
 
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
     # panther
     env_vars['PANTHER_TABLE_DIR'] = ''
-
-    # pntdb
-    env_vars['BELLE_POSTGRES_SERVER'] = ''
 
 
 def setup_externals(location, common=False):
@@ -70,23 +88,31 @@ def setup_externals(location, common=False):
         subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
                                 os.environ['BELLE2_SUBDIR'])
 
-    add_path('PATH', os.path.join(location, subdir, 'bin'))
-    add_path(lib_path_name, os.path.join(location, subdir, 'lib'))
-    add_path(lib_path_name, os.path.join(location, subdir, 'lib64'))
+    bin_dir = os.path.join(location, subdir, 'bin')
+    lib_dir = os.path.join(location, subdir, 'lib')
+    add_path('PATH', bin_dir)
+    add_path(lib_path_name, lib_dir)
+    add_path(lib_path_name, lib_dir + '64')
+
+    # add include path so ROOT is able to find dictionary headers
+    add_path('ROOT_INCLUDE_PATH', location)
+    add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
 
     # geant4
     geant4_dir = os.path.join(location, subdir, 'bin')
     if os.path.isfile(os.path.join(geant4_dir, 'geant4.sh')):
         source_scripts.append([os.path.join(geant4_dir, 'geant4.sh'),
                                os.path.join(geant4_dir, 'geant4.csh')])
+        # make sure Geant4 includes are also found by ROOT in case someone
+        # includes those in a dataobject class
+        add_path("ROOT_INCLUDE_PATH", os.path.join(location, "include", "Geant4"))
+        add_path("ROOT_INCLUDE_PATH", os.path.join(location, "include", "CLHEP"))
+
     # root
     root_dir = os.path.join(location, subdir, "root", "bin")
     if os.path.isfile(os.path.join(root_dir, "thisroot.sh")):
         source_scripts.append([os.path.join(root_dir, "thisroot.sh"),
                                os.path.join(root_dir, "thisroot.csh")])
-    # add include path so ROOT is able to find dictionary headers
-    add_path('ROOT_INCLUDE_PATH', location)
-    add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
 
     if common:
         # we have to setup git to be relocatable. Inspired by bin-wrappers/git in the git build
@@ -126,6 +152,9 @@ def setup_externals(location, common=False):
         # correctly
         env_vars['VALGRIND_LIB'] = os.path.join(location, subdir, 'lib', 'valgrind')
 
+        # and also add the python include path for all root classes which need python
+        add_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
+
         # ok, the rest is stuff we don't need fallbacks so we can return
         return
 
@@ -134,9 +163,6 @@ def setup_externals(location, common=False):
 
     # panther
     env_vars['PANTHER_TABLE_DIR'] = os.path.join(location, 'share', 'belle_legacy', 'panther')
-
-    # pntdb
-    env_vars['BELLE_POSTGRES_SERVER'] = 'ekpbelle.physik.uni-karlsruhe.de'
 
 
 def check_externals(location):
@@ -237,23 +263,8 @@ def config_externals(conf):
         root_env.ParseConfig('root-config --glibs')
         conf.env['ROOT_GLIBS'] = root_env['LIBS']
 
-    # HepMC
-    add_incdir(conf.env['EXTINCDIR'], 'HepMC')
-
-    # Photos
-    add_incdir(conf.env['EXTINCDIR'], 'Photos')
-
-    # Tauola
-    add_incdir(conf.env['EXTINCDIR'], 'Tauola')
-
     # Rave
     conf.env.Append(CPPDEFINES={'RaveDllExport': ''})
-
-    # FLC
-    add_incdir(conf.env['EXTINCDIR'], 'FLC')
-
-    # eigen
-    add_incdir(conf.env['EXTINCDIR'], 'Eigen')
 
     # belle_legacy
     add_incdir(conf.env['EXTINCDIR'], 'belle_legacy')

@@ -1293,7 +1293,7 @@ git.clean:
 	@rm -fr $(EXTBUILDDIR)/git
 
 $(EXTSRCDIR)/git:
-	@$(DOWNLOAD) git git-2.11.0.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.11.0.tar.xz
+	@$(DOWNLOAD) git git-2.13.3.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.13.3.tar.xz
 
 # compile git but we don't want to require gettext to be installed so we
 # compile without localization support by setting NO_GETTEXT=yes for

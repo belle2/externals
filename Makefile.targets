@@ -185,7 +185,7 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.27.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.bz2
+	@$(DOWNLOAD) binutils binutils-2.28.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.28.tar.bz2
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"

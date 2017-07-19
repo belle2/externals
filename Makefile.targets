@@ -914,13 +914,15 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@$(DOWNLOAD) MillepedeII MillepedeII_V04-03-04.tgz svn:checkout:150:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-04
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-03-07.tgz svn:checkout:156:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-07
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
 	@echo "building MillepedeII"
 	@cp -fa $(EXTSRCDIR)/MillepedeII $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/MillepedeII && CXXFLAGS="$(CONFIGURE_CXXFLAGS)" make pede && cp pede $(EXTBINDIR)/
+	@cd $(EXTBUILDDIR)/MillepedeII && make pede CXXFLAGS="$(CONFIGURE_CXXFLAGS)" \
+	  ZLIB_INCLUDES_DIR=$(EXTINCDIR) ZLIB_LIBS_DIR=$(EXTLIBDIR) && \
+	  cp pede $(EXTBINDIR)/
 
 # MillepedeII clean
 MillepedeII.clean:

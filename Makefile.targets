@@ -552,6 +552,24 @@ boost.clean:
 boost.touch:
 	@rm -f $(EXTLIBDIR)/libboost_system.so
 
+libuuid: $(EXTINCDIR)/uuid/uuid.h
+libuuid.src: $(EXTSRCDIR)/util-linux/README
+libuuid.clean:
+	@rm -fr $(EXTINCDIR)/uuid $(EXTLIBDIR)/libuuid* $(EXTLIBDIR)/pkgconfig/uuid.pc
+libuuid.touch: libuuid.clean
+
+$(EXTSRCDIR)/util-linux/README:
+	@$(DOWNLOAD) util-linux util-linux-2.30.tar.xz https://www.kernel.org/pub/linux/utils/util-linux/v2.30/util-linux-2.30.tar.xz
+
+$(EXTINCDIR)/uuid/uuid.h: $(EXTSRCDIR)/util-linux/README
+	@echo "building libuuid"
+	@mkdir -p $(EXTBUILDDIR)/util-linux
+	@cd $(EXTBUILDDIR)/util-linux && $(EXTSRCDIR)/util-linux/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --disable-all-programs --enable-libuuid --enable-libuuid-force-uuidd \
+	    --disable-bash-completion && \
+	    make -j $(NPROCESSES) && make install
+
 # cppcheck
 cppcheck: $(EXTBINDIR)/cppcheck
 cppcheck.src: $(EXTSRCDIR)/cppcheck

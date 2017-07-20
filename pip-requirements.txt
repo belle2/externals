@@ -180,9 +180,14 @@ qtconsole==4.2.1 \
 requests==2.18.1 \
     --hash=sha256:6afd3371c1f4c1970497cdcace5c5ecbbe58267bf05ca1abd93d99d170803ab7 \
     --hash=sha256:c6f3bdf4a4323ac7b45d01e04a6f6c20e32a052cd04de81e05103abc049ad9b9
+scikit-learn==0.18.2 \
+    --hash=sha256:31789ed71ddb4facf7b47d6396da7d5485f434ff499ad09e061d67c6b292ff4b \
+    --hash=sha256:f78c3e11bf38838eaf637cdd9e8d6b575a4a4048d1670a03a72b0d00d3f39ffa
 scipy==0.19.1 \
     --hash=sha256:4de84e3870228e8afd55a6e63e762aa7c9d1e3bd9a9ef5ab716835a69c77d257 \
     --hash=sha256:a19a2ca7a7336495ec180adeaa0dfdcf41e96dbbee90d51c3ed828ba570884e6
+seaborn==0.8 \
+    --hash=sha256:732d08306449e3f041ed9f0c3cfadaf5480c8d352c2321b58f71e26607e34dfc
 setuptools==36.2.0 \
     --hash=sha256:4c2bda3829c9dbbe9c2b33d89c4b1cb6d45813615ab8e248ad352e3697a96d81 \
     --hash=sha256:8dbfb44a16b73ea756edfe8805a25338eead94bd2426b64374a7f6a7a125028d

@@ -404,6 +404,8 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	    make -j $(NPROCESSES) && make install
 # make symlink from $(VERSION)m to $(VERSION) as some programs don't find the includes otherwise. Done by Debian as well
 	@cd $(EXTINCDIR) && ln -sfT python3.6m python3.6
+# add customization to the site directories so that we can also install packages into the other lib directories
+	@cp sitecustomize.py $(EXTLIBDIR)/python3.6/site-packages
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
@@ -444,6 +446,25 @@ $(EXTBINDIR)/ipython:
 	jupyter nbextension enable --py --sys-prefix widgetsnbextension
 # install our own version of sphinx-argparse
 	pip3 install -U --no-deps src/sphinx-argparse
+
+root-python-packages.src:
+	eval $(CREATE_PIP_CERTCHAIN)
+	while read line; do \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
+	done < root-pip-requirements.txt
+
+root-python-packages: $(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py
+
+$(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py:
+	eval $(CREATE_PIP_CERTCHAIN)
+	pip3 install --prefix=$(EXTDIR) --find-links=src/python-packages $(PIP3OPTIONS) \
+	    --no-deps -r root-pip-requirements.txt
+
+root-python-packages.clean:
+	@rm -fr $(EXTLIBDIR)/python3.6/site-packages/
+
+root-python-packages.touch: root-python-packages.clean
 
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb

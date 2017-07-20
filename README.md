@@ -1,7 +1,7 @@
 Belle II Externals
 ==================
 
-This repository contains the external software needed to compile the 
+This repository contains the external software needed to compile the Belle II software.
 
 To compile them just source `setup_belle2` from the
 [tools](https://stash.desy.de/projects/B2/repos/tools/), go into the externals
@@ -26,7 +26,7 @@ Included Software Packages
 --------------------------
 
 This section lists all the software packages which are currently included in
-the externals. 
+the externals.
 
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
@@ -182,6 +182,8 @@ fixed in the externals.
 | [pyzmq](https://pypi.python.org/pypi/pyzmq)                           | Python bindings for 0MQ                                                                                        | 16.0.2      | LGPL+BSD                                                     |
 | [qtconsole](https://pypi.python.org/pypi/qtconsole)                   | Jupyter Qt console                                                                                             | 4.2.1       | BSD                                                          |
 | [requests](https://pypi.python.org/pypi/requests)                     | Python HTTP for Humans.                                                                                        | 2.18.1      | Apache 2.0                                                   |
+| [root-numpy](https://pypi.python.org/pypi/root-numpy)                 | The interface between ROOT and NumPy                                                                           | 4.7.2       | new BSD                                                      |
+| [root-pandas](https://pypi.python.org/pypi/root-pandas)               | Read and save DataFrames from and to ROOT files                                                                | 0.1.1       | MIT                                                          |
 | [scipy](https://pypi.python.org/pypi/scipy)                           | SciPy: Scientific Library for Python                                                                           | 0.19.1      | BSD                                                          |
 | [simplegeneric](https://pypi.python.org/pypi/simplegeneric)           | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                                  | 0.8.1       | ZPL 2.1                                                      |
 | [six](https://pypi.python.org/pypi/six)                               | Python 2 and 3 compatibility utilities                                                                         | 1.10.0      | MIT                                                          |

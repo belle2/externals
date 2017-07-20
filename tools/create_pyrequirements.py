@@ -25,8 +25,11 @@ def clean_working_directory():
 
 if __name__ == "__main__":
     download_args = ['download', '--disable-pip-version-check', '-d', '.', '--no-deps']
+    package_filter = sys.argv[2:]
     with open(sys.argv[1], "w") as output:
         for pkg in sorted(pip.get_installed_distributions(), key=lambda x: x.project_name.lower()):
+            if package_filter and pkg.project_name not in package_filter:
+                continue
             name = "%s==%s" % (pkg.project_name, pkg.version)
             lines = [name]
             with clean_working_directory():

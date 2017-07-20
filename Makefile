@@ -29,7 +29,7 @@ COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd davix root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
-    flc belle_legacy fann
+    flc belle_legacy fann root-python-packages
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))

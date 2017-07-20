@@ -6,14 +6,16 @@ and create a requirements file including hashes
 """
 
 import pip
+import glob
 
 
 def externals_packages():
     """Get the list of packages from the requirement file"""
     packages = set()
-    for line in open("pip-requirements.txt"):
-        if line.find("==") > 0:
-            packages.add(line.split("==")[0].strip())
+    for filename in glob.glob("*-requirements.txt"):
+        for line in open(filename):
+            if line.find("==") > 0:
+                packages.add(line.split("==")[0].strip())
     return packages
 
 

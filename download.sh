@@ -24,7 +24,7 @@ get_archive () {
   # only download if not present or wrong checksum
   check_archive
   if [ $? -ne 0 ]; then
-    wget --tries=3 -O ${EXTSRCDIR}/${FILENAME} "$@" ${URL} || { rm -fr ${EXTSRCDIR}/${FILENAME}; return 1; }
+    wget -T 60 --tries=3 -O ${EXTSRCDIR}/${FILENAME} "$@" ${URL} || { rm -fr ${EXTSRCDIR}/${FILENAME}; return 1; }
     # check again
     check_archive || return 1
   fi

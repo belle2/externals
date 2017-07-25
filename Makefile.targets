@@ -444,6 +444,8 @@ $(EXTBINDIR)/ipython:
 	    $(EXTLIBDIR)/python3.6/site-packages/pep8.py
 # register widget extension in jupyter
 	jupyter nbextension enable --py --sys-prefix widgetsnbextension
+# make sure our own python3 kernel has precedence over /usr/share/jupyter/kernels/python3
+	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # install our own version of sphinx-argparse
 	pip3 install -U --no-deps src/sphinx-argparse
 

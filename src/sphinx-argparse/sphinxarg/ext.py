@@ -319,10 +319,9 @@ class ArgParseDirective(Directive):
                             desc.append(s)
                         elif classifier == '@before':
                             desc.insert(0, s)
-                    term = ', '.join(entry['name'])
+                    term = [nodes.option('', nodes.option_string(text=e)) for e in entry['name']]
 
-                    n = nodes.option_list_item('',
-                                               nodes.option_group('', nodes.option_string(text=term)),
+                    n = nodes.option_list_item('', nodes.option_group('', *term),
                                                nodes.description('', *self._renderList(desc)))
                     items.append(n)
 

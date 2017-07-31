@@ -814,6 +814,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-Make-JuPyROOT-and-JSMVA-Python3-compatible.patch
 # fix numpy search path to make sure the correct includes are found
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-numpy-search-path.patch
+# disable "from ROOT import *" in python 3.6
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8931-segfault-importstar.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

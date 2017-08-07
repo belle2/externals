@@ -17,7 +17,7 @@ def get_python_incdir(bin_dir, lib_dir):
     env["LD_LIBRARY_PATH"] = lib_dir
     proc = subprocess.Popen([script, "-c", "import sysconfig; print(sysconfig.get_path('include'))"],
                             stdout=subprocess.PIPE, env=env)
-    stdout = proc.communicate()[0]
+    stdout = str(proc.communicate()[0].decode())
     if proc.returncode != 0:
         raise RuntimeError("Cannot determine python include directory" + script)
     return stdout.strip()

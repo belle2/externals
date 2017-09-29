@@ -205,8 +205,10 @@ Sphinx==1.5.3 \
 tempora==1.8 \
     --hash=sha256:e831172d71a4eb00f2d53abfb1efc11ffcb78e8516a27cb599fd580b3f602737 \
     --hash=sha256:848291f4c447e99c89031381fbf198fbe360e14c91fbff67f2b54094536849ac
-tensorflow==1.2.1 \
-    --hash=sha256:653b892b24475de4f74fa019ef8467e6305cfb701eee331b7cedd95f5a600055
+tensorflow==1.3.0 \
+    --hash=sha256:a535a4a32aaaf5c59dc582ed472f321a86bf1786d17931c017c0ec7c8f1a1c02
+tensorflow-tensorboard==0.1.7 \
+    --hash=sha256:43cced82ff466c788d35057f87b551c7785682f53acaa05597e202e62ee9c07f
 terminado==0.6 \
     --hash=sha256:2c0ba1f624067dccaaead7d2247cfe029806355cef124dc2ccb53c83229f0126
 testpath==0.3.1 \

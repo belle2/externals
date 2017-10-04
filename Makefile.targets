@@ -888,6 +888,7 @@ vgm.src: $(EXTSRCDIR)/vgm
 $(EXTSRCDIR)/vgm:
 	@$(DOWNLOAD) vgm vgm.4.3.tar.gz  http://ivana.home.cern.ch/ivana/vgm.4.3.tar.gz
 	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(PATCHDIR)/vgm.patch
+	@cd $(EXTSRCDIR)/vgm && patch -p1 < $(PATCHDIR)/vgm-cpp14.patch
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm

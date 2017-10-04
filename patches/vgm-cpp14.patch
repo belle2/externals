@@ -1,0 +1,13 @@
+diff --git a/cmake/FindROOT.cmake b/cmake/FindROOT.cmake
+index 693ade6..25ae6c8 100644
+--- a/cmake/FindROOT.cmake
++++ b/cmake/FindROOT.cmake
+@@ -95,7 +95,7 @@ endif()
+ if(ROOT_FOUND)
+   # ROOT 6 requires C++11 support
+   if (ROOT_FOUND_VERSION GREATER 59999)
+-     add_definitions(-std=c++11)
++     add_definitions(-std=c++14)
+   endif()
+   set(LD_LIBRARY_PATH ${LD_LIBRARY_PATH} ${ROOT_LIBRARY_DIR})
+   if(NOT ROOT_FIND_QUIETLY)

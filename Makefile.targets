@@ -828,10 +828,11 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -Dcxx14=ON \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix  \
+	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so \
+	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR)/fftw3 -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=ON -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=ON -Dbuiltin_lzma=ON \
+	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
+	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=ON \
 	    -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
@@ -893,7 +894,7 @@ $(EXTSRCDIR)/vgm:
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR) \
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR) -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    make -j $(NPROCESSES) && make install

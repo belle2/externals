@@ -48,7 +48,7 @@ the externals.
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2             | GPLv3      |
 | [FreeType](http://www.freetype.org/)                                         | 2.7.1           | FTL/GPLv2  |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 6.3             | GPLv2/GPLv3 + Runtime library Exception |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.2             | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.12            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.13.3          | GPLv2      |
@@ -81,7 +81,7 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.0.3           | LGPLv3+    |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.5           | LGPLv3+    |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.6           | LGPLv3+    |
 | [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.2           | LGPLv3 + GPLv2 |
 | [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.18            | MIT        |
 
@@ -192,7 +192,7 @@ fixed in the externals.
 | [snowballstemmer](https://pypi.python.org/pypi/snowballstemmer)       | This package provides 16 stemmer algorithms (15 + Poerter English stemmer) generated from Snowball algorithms. | 1.2.1       | BSD                                                          |
 | [Sphinx](https://pypi.python.org/pypi/Sphinx)                         | Python documentation generator                                                                                 | 1.5.3       | BSD                                                          |
 | [tempora](https://pypi.python.org/pypi/tempora)                       | Objects and routines pertaining to date and time (tempora)                                                     | 1.8         | UNKNOWN                                                      |
-| [tensorflow](https://pypi.python.org/pypi/tensorflow)                 | TensorFlow helps the tensors flow                                                                              | 1.2.1       | Apache 2.0                                                   |
+| [tensorflow](https://pypi.python.org/pypi/tensorflow)                 | TensorFlow helps the tensors flow                                                                              | 1.3.0       | Apache 2.0                                                   |
 | [terminado](https://pypi.python.org/pypi/terminado)                   | Terminals served to term.js using Tornado websockets                                                           | 0.6         | UNKNOWN                                                      |
 | [testpath](https://pypi.python.org/pypi/testpath)                     | Test utilities for code working with files and commands                                                        | 0.3.1       | UNKNOWN                                                      |
 | [Theano](https://pypi.python.org/pypi/Theano)                         | Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs.                                  | 0.9.0       | BSD                                                          |

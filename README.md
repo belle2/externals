@@ -49,7 +49,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2             | GPLv3      |
 | [FreeType](http://www.freetype.org/)                                         | 2.7.1           | FTL/GPLv2  |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.2             | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 7.12            | GPLv2      |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.0.1           | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.13.3          | GPLv2      |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.3             | GPLv3      |

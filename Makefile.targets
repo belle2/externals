@@ -1260,7 +1260,9 @@ $(EXTSRCDIR)/eigen/INSTALL:
 # eigen build
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@echo "installing eigen"
-	@cp -a $(EXTSRCDIR)/eigen/Eigen $(EXTINCDIR)/
+	@mkdir -p $(EXTBUILDDIR)/eigen
+	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=$(EXTINCDIR) && \
+	    make -j $(NPROCESSES); make install
 
 # eigen clean
 eigen.clean:

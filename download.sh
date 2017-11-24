@@ -35,7 +35,7 @@ get_archive () {
   fi
 
   # get file extension
-  EXTENSION=`echo ${URL} | awk -F. '{print $NF}'`
+  EXTENSION=`echo ${FILENAME} | awk -F. '{print $NF}'`
   # extract in temp dir and move to final destination name
   TMPDIR=`mktemp -d belle2_tmp.XXXX`
   EXTRACT="tar zxf"

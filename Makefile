@@ -22,14 +22,14 @@ endif
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 curl git libxml2 libxslt \
     cmake freetype sqlite python python-packages gdb boost gtest eigen astyle scons madgraph \
-    zeromq cppzmq jemalloc gsl libuuid
+    zeromq cppzmq jemalloc gsl libuuid fftw3 hdf5 yaml-cpp
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
 # external packages
 PACKAGES:=clhep geant4 postgresql neurobayes xrootd davix root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry exrootanalysis \
-    flc belle_legacy fann root-python-packages
+    flc belle_legacy fann root-python-packages eos
 
 # check if any of the big "do all" targets is supplied on the commmand line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))

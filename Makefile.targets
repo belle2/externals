@@ -1472,3 +1472,75 @@ gsl.touch:
 
 gsl.clean:
 	@rm -fr $(EXTBINDIR)/gsl-* $(EXTLIBDIR)/libgsl* $(EXTINCDIR)/gsl
+
+hdf5.src: $(EXTSRCDIR)/hdf5/CMakeLists.txt
+hdf5: $(EXTBINDIR)/h5ls
+hdf5.touch:
+	@rm -fr $(EXTBINDIR)/h5*
+hdf5.clean:
+	@rm -fr $(EXTBINDIR)/h5* $(EXTLIBDIR)/libhdf5* $(EXTINCDIR)/hdf5
+
+$(EXTSRCDIR)/hdf5/CMakeLists.txt:
+	$(DOWNLOAD) hdf5 hdf5-1.10.1.tar.bz2 https://www.hdfgroup.org/package/source-bzip2/?wpdmdl=4300
+
+$(EXTBINDIR)/h5ls: $(EXTSRCDIR)/hdf5/CMakeLists.txt
+	@echo "installing hdf5"
+	@mkdir -p $(EXTBUILDDIR)/hdf5
+	@cd $(EXTBUILDDIR)/hdf5 && $(CMAKE) $(EXTSRCDIR)/hdf5 && \
+	    make -j $(NPROCESSES); make install
+
+fftw3.src: $(EXTSRCDIR)/fftw3/configure
+fftw3: $(EXTBINDIR)/fftw-wisdom
+fftw3.touch:
+	@rm -fr $(EXTBINDIR)/fftw-wisdom
+fftw3.clean:
+	@rm -fr $(EXTBINDIR)/fftw-wisdom $(EXTLIBDIR)/libfftw* $(EXTINCDIR)/fftw3
+
+$(EXTSRCDIR)/fftw3/configure:
+	$(DOWNLOAD) fftw3 fftw-3.3.7.tar.gz http://www.fftw.org/fftw-3.3.7.tar.gz
+
+$(EXTBINDIR)/fftw-wisdom: $(EXTSRCDIR)/fftw3/configure
+	@mkdir -p $(EXTBUILDDIR)/fftw3
+	@cd $(EXTBUILDDIR)/fftw3 && $(EXTSRCDIR)/fftw3/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --enable-shared --enable-silent-rules \
+	    --enable-sse2 --enable-avx --enable-avx2 \
+	    --enable-avx512 --enable-avx-128-fma && \
+	    make -j $(NPROCESSES); make install$(INSTALL_TARGET_SUFFIX)
+
+yaml-cpp.src: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
+yaml-cpp: $(EXTLIBDIR)/libyaml-cpp.so
+yaml-cpp.touch:
+	@rm -fr $(EXTLIBDIR)/libyaml-cpp.so
+yaml-cpp.clean:
+	@rm -fr $(EXTLIBDIR)/libyaml-cpp* $(EXTINCDIR)/yaml-cpp
+
+$(EXTSRCDIR)/yaml-cpp/CMakeLists.txt:
+	$(DOWNLOAD) yaml-cpp yaml-cpp-0.5.3.tar.gz https://github.com/jbeder/yaml-cpp/archive/release-0.5.3.tar.gz
+
+$(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
+	@echo "installing yaml-cpp"
+	@mkdir -p $(EXTBUILDDIR)/yaml-cpp
+	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp -DBUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
+	    make -j $(NPROCESSES); make install
+
+eos: $(EXTLIBDIR)/libeos.so
+eos.src: $(EXTSRCDIR)/eos/configure
+eos.touch:
+	@rm -fr $(EXTLIBDIR)/libeos.so
+eos.clean:
+	@rm -fr $(EXTBINDIR)/eos-* $(EXTLIBDIR)/libeos* $(EXTINCDIR)/eos
+
+$(EXTSRCDIR)/eos/configure:
+	$(DOWNLOAD) eos eos-2a4e9d8.tar.gz https://github.com/eos/eos/archive/2a4e9d8.tar.gz
+	cd $(EXTSRCDIR)/eos && ./autogen.bash
+
+# needs gsl, hdf5 yaml-cpp fftw3
+$(EXTLIBDIR)/libeos.so: $(EXTSRCDIR)/eos/configure
+	@echo "building eos"
+	@mkdir -p $(EXTBUILDDIR)/eos
+	@cd $(EXTBUILDDIR)/eos && $(EXTSRCDIR)/eos/configure $(CONFIGURE_COMMON_FLAGS) \
+	    PYTHON=python3 --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
+	    --bindir=$(EXTBINDIR) --disable-pmc --with-minuit2=$(ROOTSYS) --enable-python \
+	    --enable-silent-rules && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)

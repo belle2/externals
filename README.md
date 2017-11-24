@@ -43,10 +43,12 @@ the externals.
 | [curl](https://curl.haxx.se/)                                                | 7.54.1          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
 | [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.6.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.4           | MPLv2      |
+| [EOS](https://eos.github.io/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.886055.svg)](https://doi.org/10.5281/zenodo.886055) | 0.0+git2a4e9d8 | GPLv2 |
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00       | -          |
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2           | -          |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2             | GPLv3      |
+| [FFTW3](http://fftw.org/)                                                    | 3.3.7           | GPL        |
 | [FreeType](http://www.freetype.org/)                                         | 2.7.1           | FTL/GPLv2  |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.2             | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.0.1           | GPLv2      |
@@ -54,6 +56,7 @@ the externals.
 | [git](https://git-scm.com/)                                                  | 2.13.3          | GPLv2      |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.3             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.0           | BSD |
+| [HDF5](https://www.hdfgroup.org/)                                            | 1.10.1          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.0.1           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.4           | MIT        |
@@ -73,6 +76,7 @@ the externals.
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.30     | BSD        |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.7.1           | LGPLv3     |
+| [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.5.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.0           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 

@@ -67,7 +67,8 @@ def unsetup_externals(location, common=False):
         # and also intel compiler specific variable
         env_vars['GXX_INCLUDE'] = ''
         # and the valgrind tool directory
-        env_vars['VALGRIND_LIB'] = ''
+        if os.path.exists(os.path.join(bin_dir, "valgrind")):
+            env_vars['VALGRIND_LIB'] = ''
         # and remove python include path for all root classes which need python
         remove_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
 
@@ -150,7 +151,8 @@ def setup_externals(location, common=False):
         # another one: Valgrind has an absolute path to the tools compiled in
         # (at least as far as I could find) so we have to set the environment
         # correctly
-        env_vars['VALGRIND_LIB'] = os.path.join(location, subdir, 'lib', 'valgrind')
+        if os.path.exists(os.path.join(bin_dir, "valgrind")):
+            env_vars['VALGRIND_LIB'] = os.path.join(location, subdir, 'lib', 'valgrind')
 
         # and also add the python include path for all root classes which need python
         add_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))

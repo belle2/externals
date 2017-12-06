@@ -77,7 +77,7 @@ the externals.
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.7.1           | LGPLv3     |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.5.3           | MIT        |
-| [zeromq](http://www.zeromq.org/)                                             | 4.2.0           | LGPLv3 + static link exception, intent to move to MPLv2  |
+| [zeromq](http://www.zeromq.org/)                                             | 4.2.1           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 
 GCC requires some additional libraries which are downloaded as part of the GCC compilation:

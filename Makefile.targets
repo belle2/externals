@@ -1127,6 +1127,7 @@ $(EXTSRCDIR)/evtgen/configure:
 	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen.pdl.patch
 
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure

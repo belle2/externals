@@ -72,6 +72,10 @@ def unsetup_externals(location, common=False):
         # and remove python include path for all root classes which need python
         remove_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
 
+        # remove epics vars
+        env_vars['EPICS_BASE'] = ''
+        env_vars['EPICS_HOST_ARCH'] = ''
+
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
@@ -157,6 +161,10 @@ def setup_externals(location, common=False):
 
         # and also add the python include path for all root classes which need python
         add_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
+
+        # set epics vars
+        env_vars['EPICS_BASE'] = os.path.join(location, subdir, 'epics')
+        env_vars['EPICS_HOST_ARCH'] = 'linux-x86_64'
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

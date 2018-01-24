@@ -44,6 +44,7 @@ the externals.
 | [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.6.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.4           | MPLv2      |
 | [EOS](https://eos.github.io/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.886055.svg)](https://doi.org/10.5281/zenodo.886055) | 0.0+git2a4e9d8 | GPLv2 |
+| [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.1.1         | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00       | -          |
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2           | -          |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |

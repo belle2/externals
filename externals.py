@@ -98,6 +98,7 @@ def setup_externals(location, common=False):
     # add include path so ROOT is able to find dictionary headers
     add_path('ROOT_INCLUDE_PATH', location)
     add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include'))
+    add_path('ROOT_INCLUDE_PATH', os.path.join(location, 'include', 'libxml2'))
 
     # geant4
     geant4_dir = os.path.join(location, subdir, 'bin')

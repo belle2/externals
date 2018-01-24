@@ -855,21 +855,19 @@ root.touch:
 
 
 # dependencies for FastBDT TMVA plugin
-fastbdt: $(ROOTSYS)/lib/libTMVAFastBDT.so
+fastbdt: $(EXTLIBDIR)/libFastBDT_shared.so
 fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
-	@$(DOWNLOAD) FastBDT FastBDT-3.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v3.2.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-cint_to_cling.patch
-	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-root608-interface.patch
+	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
 
 # FastBDT TMVA plugin build
-$(ROOTSYS)/lib/libTMVAFastBDT.so: $(EXTSRCDIR)/FastBDT/README.md $(ROOTSYS)/bin/root
+$(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
 	@echo "building FastBDT TMVA plugin"
 	@mkdir -p $(EXTBUILDDIR)/FastBDT
 	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT && \
-	    make install && cp $(EXTBUILDDIR)/FastBDT/TMVA_FastBDT_Dict_rdict.pcm $(ROOTSYS)/lib/
+	    make install
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:

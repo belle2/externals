@@ -47,7 +47,7 @@ the externals.
 | [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00       | -          |
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2           | -          |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
-| [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 3.2             | GPLv3      |
+| [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.7           | GPL        |
 | [FreeType](http://www.freetype.org/)                                         | 2.7.1           | FTL/GPLv2  |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.2             | GPLv2/GPLv3 + Runtime library Exception |

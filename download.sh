@@ -53,7 +53,12 @@ get_archive () {
   # Remove old dir
   rm -fr ${DIRNAME}
   # Rename the directory in the tmpdir to what we want
-  mv -T * ${DIRNAME}
+  if [ `ls | wc -l` == 1 ]; then
+    mv -T * ${DIRNAME}
+  else
+    mkdir -p ${DIRNAME}
+    mv -t ${DIRNAME} *
+  fi
   popd &> /dev/null
   rm -fr ${TMPDIR}
 }

@@ -75,6 +75,7 @@ def unsetup_externals(location, common=False):
         # remove epics vars
         env_vars['EPICS_BASE'] = ''
         env_vars['EPICS_HOST_ARCH'] = ''
+        remove_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
 
     # pythia
     env_vars['PYTHIA8DATA'] = ''
@@ -165,6 +166,7 @@ def setup_externals(location, common=False):
         # set epics vars
         env_vars['EPICS_BASE'] = os.path.join(location, subdir, 'epics')
         env_vars['EPICS_HOST_ARCH'] = 'linux-x86_64'
+        add_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

@@ -51,7 +51,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.7           | GPL        |
 | [FreeType](http://www.freetype.org/)                                         | 2.7.1           | FTL/GPLv2  |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.2             | GPLv2/GPLv3 + Runtime library Exception |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 7.3             | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.0.1           | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.13.3          | GPLv2      |
@@ -85,8 +85,8 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
-| [GNU MPC](http://www.multiprecision.org/)                                    | 1.0.3           | LGPLv3+    |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 3.1.6           | LGPLv3+    |
+| [GNU MPC](http://www.multiprecision.org/)                                    | 1.1.0           | LGPLv3+    |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.0.1           | LGPLv3+    |
 | [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.1.2           | LGPLv3 + GPLv2 |
 | [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.18            | MIT        |
 

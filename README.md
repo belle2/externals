@@ -114,7 +114,7 @@ Python Packages
 This section lists all the python packages which are currently included in the
 externals. These packages are a result of running
 
-    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx jupyter widgetsnbextension scipy pandas keras tensorflow CommonMark
+    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx jupyter widgetsnbextension scipy pandas keras tensorflow CommonMark metakernel
     pip3 install root-numpy root-pandas
 
 The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is
@@ -160,6 +160,7 @@ fixed in the externals.
 | [MarkupSafe](https://pypi.python.org/pypi/MarkupSafe)                             | Implements a XML/HTML/XHTML Markup safe string for Python                                                      | 1.0       | BSD                                                          |
 | [matplotlib](https://pypi.python.org/pypi/matplotlib)                             | Python plotting package                                                                                        | 2.1.2     | BSD                                                          |
 | [mccabe](https://pypi.python.org/pypi/mccabe)                                     | McCabe checker, plugin for flake8                                                                              | 0.6.1     | Expat license                                                |
+| [metakernel](https://pypi.python.org/pypi/metakernel)                             | Metakernel for Jupyter                                                                                         | 0.20.14   | UNKNOWN                                                      |
 | [mistune](https://pypi.python.org/pypi/mistune)                                   | The fastest markdown parser in pure Python                                                                     | 0.8.3     | BSD                                                          |
 | [more-itertools](https://pypi.python.org/pypi/more-itertools)                     | More routines for operating on iterables, beyond itertools                                                     | 4.1.0     | MIT                                                          |
 | [nbconvert](https://pypi.python.org/pypi/nbconvert)                               | Converting Jupyter Notebooks                                                                                   | 5.3.1     | BSD                                                          |

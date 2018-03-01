@@ -62,7 +62,8 @@ the externals.
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.0.1           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.4           | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29          | MIT        |
-| [MG5\_aMC](https://launchpad.net/mg5amcnlo)                                  | 2.6.1           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
+| [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.1           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
+| Madgraph [EEISR](https://arxiv.org/abs/1705.04486) by [Qiang Li](mailto:qliphy@gmail.com) | ???             | ???        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-07       | GPLv2      |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | 627381c       | MIT        |
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56            | partly GPLv2? |

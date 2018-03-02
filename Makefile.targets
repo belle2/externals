@@ -247,12 +247,12 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/llvm-4.0.1.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/cfe-4.0.1.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/compiler-rt-4.0.1.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxx libcxx-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/libcxx-4.0.1.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/libcxxabi-4.0.1.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-4.0.1.src.tar.xz http://llvm.org/releases/4.0.1/clang-tools-extra-4.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/llvm-5.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang cfe-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/cfe-5.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/compiler-rt-5.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxx libcxx-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/libcxx-5.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/libcxxabi-5.0.1.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-5.0.1.src.tar.xz http://llvm.org/releases/5.0.1/clang-tools-extra-5.0.1.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"

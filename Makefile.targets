@@ -667,6 +667,8 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-replicanavigation.patch
 	# fix irreproducibility reported by Kirill (BII-2433)
 	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-1990-cascade_rotation.patch
+	# fix rounding problem in SubtractionSolid by porting 10.4 version
+	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-subtractionSolid-backport10.4.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4

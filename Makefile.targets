@@ -352,24 +352,6 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	# add symlink to find library
 	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.6 libbz2.so
 
-freetype: $(EXTINCDIR)/freetype2
-freetype.src: $(EXTSRCDIR)/freetype
-freetype.touch:
-	rm -fr $(EXTINCDIR)/freetype2 $(EXTBINDIR)/freetype-config
-freetype.clean:
-	rm -fr $(EXTBUILDDIR)/freetype
-
-$(EXTSRCDIR)/freetype:
-	@$(DOWNLOAD) freetype freetype-2.7.1.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-2.7.1.tar.bz2
-
-$(EXTINCDIR)/freetype2: $(EXTSRCDIR)/freetype
-	@echo "building freetype"
-	@cp -fa $(EXTSRCDIR)/freetype $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/freetype && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
-	    --enable-shared --with-zlib=$(EXTDIR) --with-bzip2=$(EXTDIR) --with-png=yes && \
-	    make -j $(NPROCESSES) && make install
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/freetype-config
-
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:

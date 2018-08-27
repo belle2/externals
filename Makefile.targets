@@ -125,6 +125,9 @@ endif
 
 # cmake executable including common options
 CMAKE:=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
+# cmake command without setting the installation prefix, eigen package
+# needs a special setting for header installation
+CMAKE_NO_PREFIX:=cmake $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
@@ -1269,7 +1272,7 @@ $(EXTSRCDIR)/eigen/INSTALL:
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@echo "installing eigen"
 	@mkdir -p $(EXTBUILDDIR)/eigen
-	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=$(EXTINCDIR) && \
+	@cd $(EXTBUILDDIR)/eigen && $(CMAKE_NO_PREFIX) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=$(EXTINCDIR) && \
 	    make -j $(NPROCESSES); make install
 
 # eigen clean

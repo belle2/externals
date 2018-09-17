@@ -60,8 +60,8 @@ the externals.
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.1          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.0.1           | BSD-style  |
-| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.4           | MIT        |
-| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.29          | MIT        |
+| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.8           | MIT        |
+| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.32          | MIT        |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.1           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | 8e324ea         | BSD        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-08       | GPLv2      |

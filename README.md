@@ -33,7 +33,7 @@ the externals.
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1          | MIT        |
 | `BELLE_FLC`                                                                  | ?               | -          |
 | [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9             | -          |
-| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.28            | GPLv2      |
+| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.31.1          | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.64            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](http://www.bzip.org/)                                                | 1.06            | BSD-style  |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |

@@ -208,7 +208,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-7.3.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-8.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz
 # and also download the prerequisites in their latest version
 	@$(DOWNLOAD) gcc/gmp gmp-6.1.2.tar.xz https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz
 	@$(DOWNLOAD) gcc/mpfr mpfr-4.0.1.tar.xz http://www.mpfr.org/mpfr-4.0.1/mpfr-4.0.1.tar.xz

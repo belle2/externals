@@ -1317,7 +1317,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.54.1.tar.bz2 http://curl.haxx.se/download/curl-7.54.1.tar.bz2
+	@$(DOWNLOAD) curl curl-7.61.1.tar.bz2 http://curl.haxx.se/download/curl-7.61.1.tar.bz2
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README

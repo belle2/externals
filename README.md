@@ -40,7 +40,7 @@ the externals.
 | [CMake](https://cmake.org/)                                                  | 3.7.1           | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034      | MIT-style  |
-| [curl](https://curl.haxx.se/)                                                | 7.54.1          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
+| [curl](https://curl.haxx.se/)                                                | 7.61.1          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
 | [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.6.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.4           | MPLv2      |
 | [EOS](https://eos.github.io/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.886055.svg)](https://doi.org/10.5281/zenodo.886055) | 0.0+git2a4e9d8 | GPLv2 |

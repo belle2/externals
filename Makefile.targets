@@ -785,21 +785,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.08.06.source.tar.gz https://root.cern.ch/download/root_v6.08.06.source.tar.gz
+	@$(DOWNLOAD) root root_v6.14.04.source.tar.gz https://root.cern.ch/download/root_v6.14.04.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
-# celebrating the 5 year anniversary of https://sft.its.cern.ch/jira/browse/ROOT-4568
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-fixsigpipe.patch
-# fix thisroot.sh/csh breaking the LD_LIBRARY_PATH and others in some circumstances
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8704-thisroot-matching.patch
-# fix "using namespace" in TMVA include which screwed up CDCValidation.C
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8713-tmva-using-namespace.patch
-# make JupyROOT it python3 compatible, patch from LCG_88 provided by Danilo
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-Make-JuPyROOT-and-JSMVA-Python3-compatible.patch
-# fix numpy search path to make sure the correct includes are found
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-numpy-search-path.patch
-# disable "from ROOT import *" in python 3.6
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8931-segfault-importstar.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -812,7 +800,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -Dcxx14=ON \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -Dcxx17=ON \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so \
 	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR)/fftw3 -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON \

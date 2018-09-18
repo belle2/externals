@@ -1,0 +1,38 @@
+commit 0550abfa234495aaecc2968c2633245ef724a4b2
+Author: Martin Ritter <martin.ritter@lmu.de>
+Date:   Mon Sep 24 10:36:47 2018 +0200
+
+    Fix finding of libuuid
+    
+    * There is some weird CMake behavior where cmake is unable to check for
+      the existence of directories in some cases
+    * If UUID_LIBRARY is given and _uuid_head_only is not set the
+      UUID_LIBRARIES variable was never set, leading to undefined symbols
+
+diff --git a/cmake/modules/Finduuid.cmake b/cmake/modules/Finduuid.cmake
+index 94b97a9..6bc8a82 100644
+--- a/cmake/modules/Finduuid.cmake
++++ b/cmake/modules/Finduuid.cmake
+@@ -34,16 +34,19 @@ if(NOT UUID_INCLUDE_DIR)
+   find_path(UUID_INCLUDE_DIR uuid/uuid.h)
+ endif()
+ 
+-if(EXISTS UUID_INCLUDE_DIR)
++if(EXISTS "${UUID_INCLUDE_DIR}")
+   set(UUID_INCLUDE_DIRS ${UUID_INCLUDE_DIR})
+   set(CMAKE_REQUIRED_INCLUDES ${UUID_INCLUDE_DIRS})
+   check_cxx_symbol_exists("uuid_generate_random" "uuid/uuid.h" _uuid_header_only)
++  MESSAGE(STATUS "why the efff ${_uuid_header_only}")
+ endif()
+ 
+-if(NOT _uuid_header_only AND NOT UUID_LIBRARY)
++if(NOT _uuid_header_only)
+   check_library_exists("uuid" "uuid_generate_random" "" _have_libuuid)
+   if(_have_libuuid)
+-    set(UUID_LIBRARY "uuid")
++    if(NOT UUID_LIBRARY)
++      set(UUID_LIBRARY "uuid")
++    endif()
+     set(UUID_LIBRARIES ${UUID_LIBRARY})
+   endif()
+ endif()

@@ -761,9 +761,8 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.6.6.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.6.6/davix-0.6.6.tar.gz
-# davix doesn't find uuid if it's not in /usr/include, https://github.com/cern-it-sdc-id/davix/pull/20
-	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-uuid-includepath.patch
+	@$(DOWNLOAD) davix davix-0.6.8.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.6.8/davix-0.6.8.tar.gz
+	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-finduuid.patch
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"

@@ -735,16 +735,15 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-4.7.1.tar.gz http://xrootd.org/download/v4.7.1/xrootd-4.7.1.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-4.8.4.tar.gz http://xrootd.org/download/v4.8.4/xrootd-4.8.4.tar.gz
+	@cd $(EXTSRCDIR)/xrootd && patch -p1 < $(PATCHDIR)/xrootd-gcc8.patch
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
-# FIXME: python support for version 3 seems to be broken so we disable python
-# support for now. But let's leave the flags in so that it doesn't get lost
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
-	    -DENABLE_PYTHON=OFF -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
+	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install

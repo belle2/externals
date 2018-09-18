@@ -1148,13 +1148,15 @@ exrootanalysis.src: $(EXTSRCDIR)/ExRootAnalysis/Makefile
 
 # MadGraph developer's kit installation.
 $(EXTBINDIR)/mg5_aMC:
-	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.1.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.1.tar.gz
+	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.3.2.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.3.2.tar.gz
 	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git8e324ea.tar.gz https://github.com/qliphy/MGISR/tarball/8e324ea
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 	@rm -fr $(EXTDIR)/madgraph
 	@mv $(EXTSRCDIR)/madgraph $(EXTDIR)/madgraph
 	# add symlink in bin dir
 	@cd $(EXTBINDIR) && ln -sf ../madgraph/bin/mg5_aMC
+# run madgraph once to create the config files it needs ... cvmfs is read only after all
+	$(EXTBINDIR)/mg5_aMC < /dev/null
 
 madgraph.clean madgraph.touch:
 	@rm -fr $(EXTDIR)/madgraph $(EXTBINDIR)/mg5_aMC

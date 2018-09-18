@@ -708,9 +708,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/CMakeLists.txt:
-	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-627381c.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/627381c.tar.gz
-# provide a nicer error message on dummy invocation
-	@cd $(EXTSRCDIR)/neurobayes && patch -p1 < $(PATCHDIR)/neurobayes-nicer-error.patch
+	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-c7d36c5.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/c7d36c5.tar.gz
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt

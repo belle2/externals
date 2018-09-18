@@ -601,8 +601,8 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.8.13.src.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz
-	@cd $(EXTSRCDIR)/doxygen && patch -p1 < $(PATCHDIR)/doxygen-bug776791-xml-segfault.patch
+	@$(DOWNLOAD) doxygen doxygen-1.8.14.src.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.14.src.tar.gz
+
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen

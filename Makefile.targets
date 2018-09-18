@@ -1127,9 +1127,6 @@ evtgen.touch:
 madgraph: $(EXTBINDIR)/mg5_aMC
 madgraph.src: $(EXTBINDIR)/mg5_aMC
 
-exrootanalysis: $(EXTLIBDIR)/libExRootAnalysis.so
-exrootanalysis.src: $(EXTSRCDIR)/ExRootAnalysis/Makefile
-
 # MadGraph developer's kit installation.
 $(EXTBINDIR)/mg5_aMC:
 	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.3.2.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.3.2.tar.gz
@@ -1145,30 +1142,6 @@ $(EXTBINDIR)/mg5_aMC:
 
 madgraph.clean madgraph.touch:
 	@rm -fr $(EXTDIR)/madgraph $(EXTBINDIR)/mg5_aMC
-
-# MadGraph ExRootAnalysis download
-$(EXTSRCDIR)/ExRootAnalysis/Makefile:
-	@$(DOWNLOAD) ExRootAnalysis ExRootAnalysis_V1.1.2.tar.gz
-
-# MadGraph ExRootAnalysis build
-$(EXTLIBDIR)/libExRootAnalysis.so: $(EXTSRCDIR)/ExRootAnalysis/Makefile
-	@echo "building ExRootAnalysis"
-	@cp -fa $(EXTSRCDIR)/ExRootAnalysis $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/ExRootAnalysis && make
-	@cp $(EXTBUILDDIR)/ExRootAnalysis/lib*.so $(EXTLIBDIR)/
-	@cp $(EXTBUILDDIR)/ExRootAnalysis/Ex*Converter $(EXTBINDIR)/
-	@cp -a $(EXTBUILDDIR)/ExRootAnalysis/ExRootAnalysis $(EXTINCDIR)/
-
-# MadGraph clean
-exrootanalysis.clean:
-	@echo "cleaning ExRootAnalysis"
-	@-cd $(EXTBUILDDIR)/ExRootAnalysis 2>/dev/null && make clean
-	@rm -rf $(EXTLIBDIR)/libExRootAnalysis.so $(EXTBINDIR)/Ex*Converter $(EXTINCDIR)/ExRootAnalysis
-
-# MadGraph touch
-exrootanalysis.touch:
-	@rm -f $(EXTLIBDIR)/libExRootAnalysis.so
-
 
 # dependencies for CRY
 cry: $(EXTLIBDIR)/libCRY.a

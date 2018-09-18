@@ -54,7 +54,7 @@ the externals.
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.1.1           | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.19.0          | GPLv2      |
-| [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.3             | GPLv3      |
+| [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.5             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.1           | BSD |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.1          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |

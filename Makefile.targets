@@ -1387,24 +1387,6 @@ $(EXTBINDIR)/astyle: $(EXTSRCDIR)/astyle/build/gcc/Makefile
 	@cd $(EXTBUILDDIR)/astyle/build/gcc && make -j $(NPROCESSES) && \
 	    make prefix=$(EXTDIR) INSTALL=install install
 
-# SCons: python build system
-# FIXME: SCons does not support pyton3 yet. Once it does we can remove this
-# part and install it via pip3 as normal python package. Once that's the case
-# we can also remove the FIXME in python_relocate.py
-scons: $(EXTBINDIR)/scons
-scons.src: $(EXTSRCDIR)/scons/README.txt
-scons.touch:
-	rm -f $(EXTBINDIR)/scons
-
-$(EXTSRCDIR)/scons/README.txt:
-	@$(DOWNLOAD) scons scons-2.3.6.tar.gz http://prdownloads.sourceforge.net/scons/scons-2.3.6.tar.gz
-	@cd src/scons && patch -p1 < $(PATCHDIR)/scons-Keep-executor-info-in-Nodes.patch
-
-$(EXTBINDIR)/scons: $(EXTSRCDIR)/scons/README.txt
-	@cp -fa $(EXTSRCDIR)/scons $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/scons && python setup.py install --prefix=$(EXTDIR)
-
-
 # dependencies for zeromq
 zeromq: $(EXTLIBDIR)/libzmq.so
 zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL

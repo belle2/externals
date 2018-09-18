@@ -71,7 +71,6 @@ the externals.
 | [Python](https://www.python.org/)                                            | 3.6.2           | PSFL (BSD-style)  |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [ROOT](https://root.cern.ch/)                                                | 6.08/06         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [SCons](http://scons.org/)                                                   | 2.3.6           | MIT        |
 | [SQLite](https://www.sqlite.org/)                                            | 3.25.0          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.30     | BSD        |
@@ -207,6 +206,7 @@ fixed in the externals.
 | [requests](https://pypi.python.org/pypi/requests)                                           | Python HTTP for Humans.                                                                                        | 2.19.1    | Apache 2.0                                                   |
 | [scikit-learn](https://pypi.python.org/pypi/scikit-learn)                                   | A set of python modules for machine learning and data mining                                                   | 0.19.2    | new BSD                                                      |
 | [scipy](https://pypi.python.org/pypi/scipy)                                                 | SciPy: Scientific Library for Python                                                                           | 1.1.0     | BSD                                                          |
+| [scons](https://pypi.python.org/pypi/scons)                                                 | Open Source next-generation build tool.                                                                        | 3.0.1     | UNKNOWN                                                      |
 | [seaborn](https://pypi.python.org/pypi/seaborn)                                             | seaborn: statistical data visualization                                                                        | 0.9.0     | BSD (3-clause)                                               |
 | [Send2Trash](https://pypi.python.org/pypi/Send2Trash)                                       | Send file to trash natively under Mac OS X, Windows and Linux.                                                 | 1.5.0     | BSD License                                                  |
 | [simplegeneric](https://pypi.python.org/pypi/simplegeneric)                                 | Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)                                  | 0.8.1     | ZPL 2.1                                                      |

@@ -27,11 +27,6 @@ def fixup_scripts(path):
             # ignore subdirs, e.g. .svn ones.
             continue
 
-        # FIXME: ignore scons for now, scons does not work with python3 yet.
-        # Remove once scons is python3 compatible
-        if os.path.basename(filename).startswith("scons"):
-            continue
-
         # FIXME: same for madgraph
         if os.path.basename(filename) == "mg5_aMC":
             continue

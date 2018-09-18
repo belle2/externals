@@ -901,7 +901,7 @@ jemalloc.src: $(EXTSRCDIR)/jemalloc
 
 # jemalloc download
 $(EXTSRCDIR)/jemalloc:
-	@$(DOWNLOAD) jemalloc jemalloc-5.0.1.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.0.1/jemalloc-5.0.1.tar.bz2
+	@$(DOWNLOAD) jemalloc jemalloc-5.1.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.1.0/jemalloc-5.1.0.tar.bz2
 
 # jemalloc build
 $(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
@@ -909,7 +909,7 @@ $(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
 	@mkdir -p $(EXTBUILDDIR)/jemalloc
 	@cd $(EXTBUILDDIR)/jemalloc && $(EXTSRCDIR)/jemalloc/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) --enable-prof && \
+	    --bindir=$(EXTBINDIR) --enable-prof --disable-initial-exec-tls && \
 	    make -j $(NPROCESSES) && make install_lib install_bin install_include
 
 # jemalloc clean

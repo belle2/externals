@@ -540,8 +540,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_64_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.64.0/boost_1_64_0.tar.bz2
-	@cd $(EXTSRCDIR)/boost && patch -p2 < $(PATCHDIR)/boost-array_wrapper.patch
+	@$(DOWNLOAD) boost boost_1_68_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.68.0/boost_1_68_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -551,7 +550,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    ./b2 install -sZLIB_INCLUDE=$(EXTINCDIR) -sZLIB_LIBPATH=$(EXTLIBDIR) \
 	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
-	@cd $(EXTLIBDIR) && ln -sfT libboost_python3.so libboost_python.so
+	@cd $(EXTLIBDIR) && ln -sfT libboost_python36.so libboost_python.so
 
 # boost clean
 boost.clean:

@@ -1,4 +1,4 @@
 root-numpy==4.7.3 \
     --hash=sha256:af033c8e84301034c3005cf92c12f7c3eaa8b61be442c2bc21dbb5362baec66f
-root-pandas==0.3.1 \
-    --hash=sha256:346b5bbe0f678cce908416f89e0e878ac2e170acfe1cce6dfc77ef916120ff3f
+root-pandas==0.6.0 \
+    --hash=sha256:8ef57baeeb47dc77e3ba1262e866abe35a9e69d94d860492523f3cbe2804e981

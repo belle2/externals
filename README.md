@@ -39,7 +39,7 @@ the externals.
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.12.2          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
-| [cppzmq](https://github.com/zeromq/cppzmq)                                   | git6c91034      | MIT-style  |
+| [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.3.0           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.61.1          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
 | [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.6.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.5           | MPLv2      |
@@ -77,7 +77,7 @@ the externals.
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.7.1           | LGPLv3     |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.5.3           | MIT        |
-| [zeromq](http://www.zeromq.org/)                                             | 4.2.1           | LGPLv3 + static link exception, intent to move to MPLv2  |
+| [zeromq](http://www.zeromq.org/)                                             | 4.2.5           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 
 GCC requires some additional libraries which are downloaded as part of the GCC compilation:

@@ -1395,7 +1395,7 @@ zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
 
 # zeromq download
 $(EXTSRCDIR)/zeromq/INSTALL:
-	@$(DOWNLOAD) zeromq zeromq-4.2.1.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.2.1/zeromq-4.2.1.tar.gz
+	@$(DOWNLOAD) zeromq zeromq-4.2.5.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.2.5/zeromq-4.2.5.tar.gz
 
 # zeromq build
 $(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL
@@ -1421,12 +1421,12 @@ cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 # cppzmq download
 $(EXTSRCDIR)/cppzmq/zmq.hpp:
-	$(DOWNLOAD) cppzmq cppzmq-6c91034.tar.gz https://github.com/zeromq/cppzmq/archive/6c91034.tar.gz
+	$(DOWNLOAD) cppzmq cppzmq-v4.3.0.tar.gz https://github.com/zeromq/cppzmq/archive/v4.3.0.tar.gz
 
 # cppzmq copy .hpp file to include folder
 $(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp
 	@echo "installing cppzmq"
-	@cp -f $(EXTSRCDIR)/cppzmq/zmq.hpp $(EXTINCDIR)/zmq.hpp
+	@cp -f $(EXTSRCDIR)/cppzmq/zmq*.hpp $(EXTINCDIR)/
 
 # remove installed .hpp file
 cppzmq.touch:

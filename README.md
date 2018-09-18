@@ -76,7 +76,7 @@ the externals.
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.32.1   | BSD        |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.7.1           | LGPLv3     |
-| [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.5.3           | MIT        |
+| [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.2           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.5           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 

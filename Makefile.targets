@@ -1498,7 +1498,7 @@ yaml-cpp.clean:
 	@rm -fr $(EXTLIBDIR)/libyaml-cpp* $(EXTINCDIR)/yaml-cpp
 
 $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt:
-	$(DOWNLOAD) yaml-cpp yaml-cpp-0.5.3.tar.gz https://github.com/jbeder/yaml-cpp/archive/release-0.5.3.tar.gz
+	$(DOWNLOAD) yaml-cpp yaml-cpp-0.6.2.tar.gz https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.2.tar.gz
 
 $(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
 	@echo "installing yaml-cpp"

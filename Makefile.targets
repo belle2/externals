@@ -514,7 +514,7 @@ gtest.src: $(EXTSRCDIR)/gtest/README.md
 
 # google test download
 $(EXTSRCDIR)/gtest/README.md:
-	@$(DOWNLOAD) gtest gtest-1.8.0.tar.gz https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+	@$(DOWNLOAD) gtest gtest-1.8.1.tar.gz https://github.com/google/googletest/archive/release-1.8.1.tar.gz
 
 # google test build
 $(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README.md

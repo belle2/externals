@@ -1,0 +1,19 @@
+commit c85ceaf61cd41783cc7ed2c73e6d29cf2f5fb0ff
+Author: Martin Ritter <martin.ritter@lmu.de>
+Date:   Tue Sep 18 13:51:40 2018 +0200
+
+    Fix relative INCLUDE_INSTALL_DIR
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 48a574f..3a8e30e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -376,7 +376,7 @@ endif()
+ if(EIGEN_INCLUDE_INSTALL_DIR AND NOT INCLUDE_INSTALL_DIR)
+   set(INCLUDE_INSTALL_DIR ${EIGEN_INCLUDE_INSTALL_DIR}
+       CACHE PATH "The directory relative to CMAKE_PREFIX_PATH where Eigen header files are installed")
+-else()
++elseif(NOT INCLUDE_INSTALL_DIR)
+   set(INCLUDE_INSTALL_DIR
+       "${CMAKE_INSTALL_INCLUDEDIR}/eigen3"
+       CACHE PATH "The directory relative to CMAKE_PREFIX_PATH where Eigen header files are installed"

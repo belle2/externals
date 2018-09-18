@@ -49,7 +49,7 @@ the externals.
 | [ExRootAnalysis](http://madgraph.hep.uiuc.edu/Downloads/ExRootAnalysis/)     | 1.1.2           | -          |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
-| [FFTW3](http://fftw.org/)                                                    | 3.3.7           | GPL        |
+| [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 8.2             | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.1.1           | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |

@@ -1479,7 +1479,7 @@ fftw3.clean:
 	@rm -fr $(EXTBINDIR)/fftw-wisdom $(EXTLIBDIR)/libfftw* $(EXTINCDIR)/fftw3
 
 $(EXTSRCDIR)/fftw3/configure:
-	$(DOWNLOAD) fftw3 fftw-3.3.7.tar.gz http://www.fftw.org/fftw-3.3.7.tar.gz
+	$(DOWNLOAD) fftw3 fftw-3.3.8.tar.gz http://www.fftw.org/fftw-3.3.8.tar.gz
 
 $(EXTBINDIR)/fftw-wisdom: $(EXTSRCDIR)/fftw3/configure
 	@mkdir -p $(EXTBUILDDIR)/fftw3

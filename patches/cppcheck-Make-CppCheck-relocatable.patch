@@ -32,14 +32,6 @@ diff --git a/lib/library.cpp b/lib/library.cpp
 index 711fe44..b82e738 100644
 --- a/lib/library.cpp
 +++ b/lib/library.cpp
-@@ -26,6 +26,7 @@
- #include "astutils.h"
- 
- #include <string>
-+#include <cstdlib>
- 
- static std::vector<std::string> getnames(const char *names)
- {
 @@ -76,7 +77,10 @@ Library::Error Library::load(const char exename[], const char path[])
  
          std::list<std::string> cfgfolders;

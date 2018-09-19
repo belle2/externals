@@ -1,0 +1,10 @@
+--- vendor/CutTools/makefile.orig       2018-06-18 13:24:17.164637074 +0200
++++ vendor/CutTools/makefile    2018-06-18 13:24:27.756740547 +0200
+@@ -9,7 +9,7 @@
+ ifeq ($(wildcard ../make_opts), ../make_opts)
+   include ../make_opts
+ else
+-  FFLAGS = 
++  FFLAGS = -std=legacy
+   FC=gfortran
+ endif

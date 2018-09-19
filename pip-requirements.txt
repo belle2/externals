@@ -284,6 +284,8 @@ tornado==5.1.1 \
 traitlets==4.3.2 \
     --hash=sha256:9c4bd2d267b7153df9152698efb1050a5d84982d3384a37b2c1f7723ba3e7835 \
     --hash=sha256:c6cb5e6f57c5a9bdaa40fa71ce7b4af30298fbab9ece9815b5d995ab6217c7d9
+uncertainties==3.0.2 \
+    --hash=sha256:91db922d54dff6094b4ea0d6e058f713a992cdf42e3ebaf73278e1893bfa2942
 uproot==2.9.11 \
     --hash=sha256:cda96d7556015b9446bea7d67391e80132b1fc01674bd1cb87c8455e92013d73 \
     --hash=sha256:da71e9e239129ec2ae7a62f9d35aebd46456f05e000ef14f32fe2c9fa8ec92c2

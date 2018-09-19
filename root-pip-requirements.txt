@@ -1,3 +1,5 @@
+pyroofit==0.9.4 \
+    --hash=sha256:598034231579f600c8d45ec815fd5c23e16975c8e2f3acaebae01b4f6491345d
 root-numpy==4.7.3 \
     --hash=sha256:af033c8e84301034c3005cf92c12f7c3eaa8b61be442c2bc21dbb5362baec66f
 root-pandas==0.6.0 \

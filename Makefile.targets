@@ -1501,3 +1501,18 @@ $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	cd $(EXTBUILDDIR)/epics && \
 	    sed -i -e "s|#INSTALL_LOCATION.*|INSTALL_LOCATION=$(EXTDIR)/epics|g" configure/CONFIG_SITE && \
 	    make -j $(NPROCESSES)
+
+rclone.src: $(EXTSRCDIR)/rclone/README.txt
+rclone: $(EXTBINDIR)/rclone
+rclone.touch:
+	@rm -fr $(EXTBINDIR)/rclone
+rclone.clean:
+	@rm -fr $(EXTBINDIR)/rclone $(EXTDIR)/share/man/man1/rclone.1
+
+$(EXTSRCDIR)/rclone/README.txt:
+	$(DOWNLOAD) rclone rclone-v1.43.1-linux-amd64.zip https://downloads.rclone.org/v1.43.1/rclone-v1.43.1-linux-amd64.zip
+
+$(EXTBINDIR)/rclone: $(EXTSRCDIR)/rclone/README.txt
+	@echo "installing rclone"
+	@install -s $(EXTSRCDIR)/rclone/rclone $(EXTBINDIR)
+	@install -m 644 $(EXTSRCDIR)/rclone/rclone.1 $(EXTDIR)/share/man/man1

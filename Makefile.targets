@@ -1518,3 +1518,19 @@ $(EXTBINDIR)/rclone: $(EXTSRCDIR)/rclone/README.txt
 	@echo "installing rclone"
 	@install -s $(EXTSRCDIR)/rclone/rclone $(EXTBINDIR)
 	@install -m 644 $(EXTSRCDIR)/rclone/rclone.1 $(EXTDIR)/share/man/man1
+
+git-lfs.src: $(EXTSRCDIR)/git-lfs/README.md
+git-lfs: $(EXTBINDIR)/git-lfs
+git-lfs.touch:
+	@rm -fr $(EXTBINDIR)/git-lfs
+git-lfs.clean:
+	@rm -fr $(EXTBINDIR)/git-lfs
+
+$(EXTSRCDIR)/git-lfs/README.md:
+	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.5.2.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.5.2/git-lfs-linux-amd64-v2.5.2.tar.gz
+
+$(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
+	@echo "installing git-lfs"
+	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
+# install the filters system wide but not in the current directory otherwise it adds hooks to .git
+	@cd /tmp && git lfs install --system

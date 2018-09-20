@@ -1,0 +1,56 @@
+diff --git a/source/processes/hadronic/models/cascade/cascade/src/G4GDecay3.cc b/source/processes/hadronic/models/cascade/cascade/src/G4GDecay3.cc
+index 0943b67..d64f966 100644
+--- a/source/processes/hadronic/models/cascade/cascade/src/G4GDecay3.cc
++++ b/source/processes/hadronic/models/cascade/cascade/src/G4GDecay3.cc
+@@ -34,6 +34,7 @@
+ //
+ // 20130620  Address Coverity #51433, initializing all data members
+ // 20141201  Fix error message text to show correct class name
++// 20150608  M. Kelsey -- Label all while loops as terminating.
+ 
+ #include "G4GDecay3.hh"
+ #include "G4PhysicalConstants.hh"
+@@ -41,15 +42,14 @@
+ 
+ G4GDecay3::G4GDecay3(const G4double& pMass, const G4double& dMass0,
+                      const G4double& dMass1, const G4double& dMass2)
+- : loopMax(100), parentMass(pMass), mDaughter0(dMass0), mDaughter1(dMass1),
+-   mDaughter2(dMass2), pDaughter0(0.), pDaughter1(0.), pDaughter2(0.) {;}
+-
++ : loopMax(100), mDaughter0(dMass0), mDaughter1(dMass1),
++   mDaughter2(dMass2), pDaughter0(0.), pDaughter1(0.), pDaughter2(0.) 
++{
++  parentMass = std::max(pMass, mDaughter0 + mDaughter1 + mDaughter2 + CLHEP::keV);
++}
+ 
+ G4bool G4GDecay3::CalculateMomentumMagnitudes()
+ {
+-  G4int looper = 0;
+-  G4bool status;
+-
+   G4double rndm;
+   G4double rndm1;
+   G4double rndm2;
+@@ -59,7 +59,7 @@ G4bool G4GDecay3::CalculateMomentumMagnitudes()
+   G4double energy;
+ 
+   G4double availableE = parentMass - mDaughter0 - mDaughter1 - mDaughter2;
+-  do {
++  do {				/* Loop checking 08.06.2015 MHK */
+     rndm1 = G4UniformRand();
+     rndm2 = G4UniformRand();
+     if (rndm2 > rndm1) {
+@@ -88,11 +88,9 @@ G4bool G4GDecay3::CalculateMomentumMagnitudes()
+     pDaughter2 = std::sqrt(energy*energy + 2.0*energy*mDaughter2);
+     if (pDaughter2 > momentummax) momentummax = pDaughter2;
+     momentumsum += pDaughter2;
+-    looper++;
+-    status = looper < loopMax;
+-  } while ((momentummax > momentumsum - momentummax) && status);
++  } while (momentummax > momentumsum - momentummax);
+ 
+-  return status;
++  return true;
+ }
+ 
+ 

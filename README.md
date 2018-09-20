@@ -61,6 +61,7 @@ the externals.
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.1.0           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.8           | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.32          | MIT        |
+| [LZ4](https://lz4.github.io/lz4/)                                            | 1.8.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.3.2         | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | 8e324ea         | BSD        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-10       | GPLv2      |
@@ -77,6 +78,7 @@ the externals.
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.32.1   | BSD        |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.8.4           | LGPLv3     |
+| [xz](https://tukaani.org/xz/)                                                | 5.2.4           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.2           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.2.5           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |

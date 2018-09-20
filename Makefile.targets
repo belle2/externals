@@ -350,6 +350,45 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	# add symlink to find library
 	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.6 libbz2.so
 
+xz: $(EXTBINDIR)/xz
+xz.src: $(EXTSRCDIR)/xz/INSTALL
+xz.touch:
+	@rm -fr $(EXTBINDIR)/xz
+
+$(EXTSRCDIR)/xz/INSTALL:
+	@$(DOWNLOAD) xz xz-5.2.4.tar.gz https://tukaani.org/xz/xz-5.2.4.tar.gz
+
+$(EXTBINDIR)/xz: $(EXTSRCDIR)/xz/INSTALL
+	@echo "building xz"
+	@mkdir -p $(EXTBUILDDIR)/xz
+	@cd $(EXTBUILDDIR)/xz && $(EXTSRCDIR)/xz/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --enable-silent-rules && \
+	    make -j $(NPROCESSES) && \
+	    make -j $(NPROCESSES) install$(INSTALL_TARGET_SUFFIX)
+
+xz.clean:
+	@echo "cleaning xz"
+	@rm -rf $(EXTSRCDIR)/xz
+
+lz4: $(EXTBINDIR)/lz4
+lz4.src: $(EXTSRCDIR)/lz4/INSTALL
+lz4.touch:
+	@rm -fr $(EXTBINDIR)/lz4
+
+$(EXTSRCDIR)/lz4/INSTALL:
+	@$(DOWNLOAD) lz4 lz4-v1.8.3.tar.gz https://github.com/lz4/lz4/archive/v1.8.3.tar.gz
+
+$(EXTBINDIR)/lz4: $(EXTSRCDIR)/lz4/INSTALL
+	@echo "building lz4"
+	@cp -fa $(EXTSRCDIR)/lz4 $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/lz4 && \
+	    make -j $(NPROCESSES) prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) install prefix=$(EXTDIR)
+
+lz4.clean:
+	@echo "cleaning lz4"
+	@rm -rf $(EXTSRCDIR)/lz4
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -808,7 +847,8 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR)/fftw3 -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON \
 	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=ON \
+	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
+	    -Dbuiltin_lz4=OFF \
 	    -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used

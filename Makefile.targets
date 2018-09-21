@@ -432,9 +432,9 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
-CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/requests/cacert.pem > .pip-certchain.pem"
+CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
-PIP3OPTIONS=--disable-pip-version-check --no-cache-dir --require-hashes --cert=.pip-certchain.pem \
+PIP3OPTIONS=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
 ifneq ($(USE_BELLE2SERVER),)
@@ -445,10 +445,13 @@ endif
 # with make src and it will download src and binary package versions
 python-packages.src:
 	eval $(CREATE_PIP_CERTCHAIN)
-	while read line; do \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
-	done < pip-requirements.txt
+# make sure pip is up to date
+	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
+	    -r requirements-base.txt
+	cat requirements-base.txt requirements-core.txt | (while read line; do \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
+	done)
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
@@ -461,7 +464,9 @@ python-packages: $(EXTBINDIR)/ipython
 $(EXTBINDIR)/ipython:
 	eval $(CREATE_PIP_CERTCHAIN)
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
-	    -r pip-requirements.txt
+	    -r requirements-base.txt
+	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
+	    -r requirements-base.txt -r requirements-core.txt
 # update default settings for pep8
 	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \
 	    $(EXTLIBDIR)/python3.6/site-packages/pep8.py
@@ -476,17 +481,17 @@ $(EXTBINDIR)/ipython:
 
 root-python-packages.src:
 	eval $(CREATE_PIP_CERTCHAIN)
-	while read line; do \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
-	done < root-pip-requirements.txt
+	cat requirements-root.txt | (while read line; do \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
+	done)
 
 root-python-packages: $(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py
 
 $(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py:
 	eval $(CREATE_PIP_CERTCHAIN)
 	pip3 install --prefix=$(EXTDIR) --find-links=src/python-packages $(PIP3OPTIONS) \
-	    --no-deps -r root-pip-requirements.txt
+	    --no-deps -r requirements-root.txt
 
 root-python-packages.clean:
 	@rm -fr $(EXTLIBDIR)/python3.6/site-packages/

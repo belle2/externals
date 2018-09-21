@@ -1,9 +1,12 @@
 Belle II Externals
 ==================
 
-This repository contains the external software needed to compile the Belle II software.
+This repository contains the external software needed to compile the Belle II
+software. Most users should be able to just install precompiled versions and
+should not need to recompile them by hand. Please check the
+[documentation](https://software.belle2.org/build/tools_doc/index-01-tools.html).
 
-To compile them just source `setup_belle2` from the
+To compile them just source `b2setup` from the
 [tools](https://stash.desy.de/projects/B2/repos/tools/), go into the externals
 directory and call
 
@@ -114,17 +117,23 @@ Python Packages
 ---------------
 
 This section lists all the python packages which are currently included in the
-externals. These packages are a result of running
+externals. Basically these are a result of running
 
-    pip3 install autopep8 CherryPy ipython lxml matplotlib numpy pep8 requests sphinx jupyter widgetsnbextension scipy pandas keras tensorflow CommonMark metakernel tables h5py seaborn uproot histbook Theano scikit-learn pylama uncertainties
+    pip3 install -U pip setuptools wheel
+    pip3 install autopep8 CherryPy CommonMark h5py histbook ipython jupyter keras lxml matplotlib metakernel pandas \
+                 pep8 pylama requests scikit-learn scipy scons seaborn sphinx tables tensorflow Theano uncertainties \
+                 uproot widgetsnbextension
     pip3 install root-numpy root-pandas pyroofit
+
+All other packages are just dependencies of these and versions between them are
+fixed in the externals. The actual dependencies are determined using
+`pip-compile` from [pip-tools](https://github.com/jazzband/pip-tools/), see
+`tools/create_python_requirements.py` for details.
 
 The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is
 included in a modified version containing some patches not yet included
 upstream (found in `src/sphinx-argparse`).
 
-All other packages are just dependencies of these and versions between them are
-fixed in the externals.
 
 [//]: # (START PYTHON_PKG)
 

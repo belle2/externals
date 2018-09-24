@@ -1,4 +1,5 @@
 fbdfc6f1966a972d19a215927266c76d4183eee235ed1e2bd7ec551c2a270eac *src/astyle_2.05.1_linux.tar.gz
+b6e87acfa0a405bb8b3417c58477b66d5bc27dc0d31ba6fa12bc255b9278d33b *src/bazel-0.17.2-dist.zip
 80ce2dfd20a73f34a3b233643ffdd7a8ca7b687ca128546167fd6bdbaf7597e0 *src/BELLE_FLC_1.1.tar.gz
 eeb19cfb4e9edb38fd0e2049d6444fbcb90aaaf400e469edd72bb812fef39159 *src/belle_legacy-v1.9.tar.gz
 ffcc382695bf947da6135e7436b8ed52d991cf270db897190f19d6f9838564d0 *src/binutils-2.31.1.tar.bz2
@@ -56,6 +57,7 @@ fb52fff3aa32e78d7576569113743af1f0868a5dc7b5c055e2ea0e6c1c49d070 *src/rave-0.6.2
 463ec20692332a422cfb5f38c78bedab1c40ab4d81be18e99b50cf9f53f596cf *src/root_v6.14.04.source.tar.gz
 de1a93dfc1ea23d93ee85440fe4347d0b9cd936f25c29645ee0ee170d1307f71 *src/sqlite-autoconf-3250000.tar.gz
 224c0faa113f91bca62002cb7e405a8eeccfa938e49a62c146441af0ec5f6f30 *src/TAUOLA.1.1.4.tar.gz
+83092d709800e2d93d4d4b1bcacaeb74f2f328962ed764cb35bbee20402879c6 *src/tensorflow-v1.10.1.tar.gz
 86e6707a379c7ff5489c218cfaf1e3464b0b95acf7817db0bc5f179e356a67b2 *src/util-linux-2.32.1.tar.xz
 d76680ef03f00cd5e970bbdcd4e57fb1f6df7d2e2c071635ef2be74790190c3b *src/valgrind-3.13.0.tar.bz2
 9c5fe088a84e9afedf92d0ff7dd2e516f4eac974d8195c710235ddf2530fd970 *src/vgm.4.3.tar.gz

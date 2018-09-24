@@ -22,7 +22,7 @@ endif
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 xz lz4 curl git libxml2 libxslt \
     cmake sqlite hdf5 python python-packages gdb boost gtest eigen astyle madgraph \
-    zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs
+    zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs bazel tensorflow
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 

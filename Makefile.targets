@@ -1579,3 +1579,56 @@ $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
 # install the filters system wide but not in the current directory otherwise it adds hooks to .git
 	@cd /tmp && git lfs install --system
+
+bazel.src: $(EXTSRCDIR)/bazel/compile.sh
+bazel: $(EXTBINDIR)/bazel
+bazel.touch:
+	@rm -fr $(EXTBINDIR)/bazel
+bazel.clean:
+	@rm -fr $(EXTBINDIR)/bazel
+
+$(EXTSRCDIR)/bazel/compile.sh:
+	$(DOWNLOAD) bazel bazel-0.17.2-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.17.2/bazel-0.17.2-dist.zip
+
+$(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
+	cd $(EXTSRCDIR)/bazel && BAZEL_EXTRA_ARGS="--jobs $(NPROCESSES)" ./compile.sh && \
+	  mv output/bazel $(EXTBINDIR)
+
+tensorflow.src: $(EXTSRCDIR)/tensorflow/configure
+tensorflow.wheel: $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl
+tensorflow.touch:
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl
+tensorflow.clean:
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl
+tensorflow: $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl
+	pip3 install -U --no-deps $<
+
+$(EXTSRCDIR)/tensorflow/configure:
+	$(DOWNLOAD) tensorflow tensorflow-v1.10.1.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.10.1.tar.gz
+
+$(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
+	cd $(EXTSRCDIR)/tensorflow && \
+	  GCC_HOST_COMPILER_PATH=`which gcc` \
+	  PYTHON_BIN_PATH=`which python3` \
+	  PYTHON_LIB_PATH=`python3 -c 'import site; print(site.getsitepackages()[0])'` \
+	  TF_NEED_AWS=0 \
+	  TF_NEED_KAFKA=0 \
+	  TF_NEED_GCP=0 \
+	  TF_NEED_S3=0 \
+	  TF_NEED_GDR=0 \
+	  TF_NEED_CUDA=0 \
+	  TF_NEED_HDFS=0 \
+	  TF_NEED_OPENCL=0 \
+	  TF_NEED_OPENCL_SYCL=0 \
+	  TF_NEED_JEMALLOC=1 \
+	  TF_DOWNLOAD_CLANG=0 \
+	  TF_SET_ANDROID_WORKSPACE=0 \
+	  TF_ENABLE_XLA=0 \
+	  TF_NEED_VERBS=0 \
+	  TF_CUDA_CLANG=0 \
+	  TF_NEED_MPI=0 \
+	  CC_OPT_FLAGS="-mtune=generic" \
+	  ./configure && bazel build --jobs=$(NPROCESSES) --config=opt --config=mkl \
+	    //tensorflow/tools/pip_package:build_pip_package && \
+	  bazel-bin/tensorflow/tools/pip_package/build_pip_package $(EXTSRCDIR) && \
+	  bazel shutdown

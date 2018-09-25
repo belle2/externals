@@ -1607,6 +1607,7 @@ $(EXTSRCDIR)/tensorflow/configure:
 	$(DOWNLOAD) tensorflow tensorflow-v1.10.1.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.10.1.tar.gz
 
 $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
+	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/tensorflow && \
 	  GCC_HOST_COMPILER_PATH=`which gcc` \
 	  PYTHON_BIN_PATH=`which python3` \
@@ -1632,3 +1633,4 @@ $(EXTSRCDIR)/tensorflow-1.10.1-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorf
 	    //tensorflow/tools/pip_package:build_pip_package && \
 	  bazel-bin/tensorflow/tools/pip_package/build_pip_package $(EXTSRCDIR) && \
 	  bazel shutdown
+	cd $(EXTBINDIR) && rm python

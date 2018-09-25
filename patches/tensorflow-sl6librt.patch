@@ -1,0 +1,11 @@
+--- tensorflow/tensorflow.bzl.orig	2018-09-25 10:23:43.035853734 +0200
++++ tensorflow/tensorflow.bzl	2018-09-25 11:01:09.877544881 +0200
+@@ -317,7 +317,7 @@
+       srcs=srcs + framework_so,
+       deps=deps,
+       linkshared = 1,
+-      linkopts=linkopts + _rpath_linkopts(name) + select({
++      linkopts=linkopts + ["-lrt"] + _rpath_linkopts(name) + select({
+           clean_dep("//tensorflow:darwin"): [
+               "-Wl,-install_name,@rpath/" + name.split("/")[-1],
+           ],

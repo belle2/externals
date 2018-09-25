@@ -1,0 +1,10 @@
+--- tensorflow/tensorflow.bzl.orig     +0100
++++ tensorflow/tensorflow.bzl  +0100
+@@ -920,6 +920,7 @@
+   args += [src.path]
+   outputs = [ctx.outputs.cc_out, ctx.outputs.py_out]
+   ctx.action(
++      use_default_shell_env = True,
+       executable=ctx.executable._swig,
+       arguments=args,
+       inputs=list(inputs),

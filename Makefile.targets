@@ -1548,6 +1548,11 @@ $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	cd $(EXTBUILDDIR)/epics && \
 	    sed -i -e "s|#INSTALL_LOCATION.*|INSTALL_LOCATION=$(EXTDIR)/epics|g" configure/CONFIG_SITE && \
 	    make -j $(NPROCESSES)
+	cd $(EXTBUILDDIR)/epics/modules/libcom/src/osi/compiler && \
+	    install -m 644 -D clang/compilerSpecific.h $(EXTDIR)/epics/include/compiler/clang/compilerSpecific.h && \
+	    install -m 644 -D clang/epicsAtomicCD.h $(EXTDIR)/epics/include/compiler/clang/epicsAtomicCD.h && \
+	    install -m 644 -D default/compilerSpecific.h $(EXTDIR)/epics/include/compiler/default/compilerSpecific.h && \
+	    install -m 644 -D default/epicsAtomicCD.h $(EXTDIR)/epics/include/compiler/default/epicsAtomicCD.h
 
 rclone.src: $(EXTSRCDIR)/rclone/README.txt
 rclone: $(EXTBINDIR)/rclone

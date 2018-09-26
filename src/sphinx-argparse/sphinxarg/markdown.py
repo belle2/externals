@@ -1,5 +1,5 @@
-from CommonMark import Parser  # >= 0.5.6
-from CommonMark.node import Node
+from commonmark import Parser  # >= 0.5.6
+from commonmark.node import Node
 from docutils import nodes
 from docutils.utils.code_analyzer import Lexer
 

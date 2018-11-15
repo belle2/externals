@@ -832,7 +832,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.14.04.source.tar.gz https://root.cern.ch/download/root_v6.14.04.source.tar.gz
+	@$(DOWNLOAD) root root_v6.14.06.source.tar.gz https://root.cern.ch/download/root_v6.14.06.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 

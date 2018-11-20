@@ -835,6 +835,8 @@ $(EXTSRCDIR)/root/README:
 	@$(DOWNLOAD) root root_v6.14.06.source.tar.gz https://root.cern.ch/download/root_v6.14.06.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
+# ROOT-9801: bug when copying a TF1 after reading it from file and before using it.
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-9801-copyingTF1.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -849,8 +851,8 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -Dcxx17=ON \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so \
-	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR)/fftw3 -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON \
+	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
+	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON -Dfftw3=ON \
 	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
 	    -Dbuiltin_lz4=OFF \

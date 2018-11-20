@@ -193,7 +193,7 @@ $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@mkdir -p $(EXTBUILDDIR)/binutils
 	#note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure $(CONFIGURE_COMMON_FLAGS) \
-	    --disable-werror --disable-multilib --enable-shared --prefix=$(EXTDIR) && \
+	    --disable-werror --disable-multilib --enable-shared --enable-gold --prefix=$(EXTDIR) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install$(INSTALL_TARGET_SUFFIX)
 

@@ -133,13 +133,6 @@ ifeq ($(GL_GLU_EXISTS),0)
   ROOT_OPTION+= -Dopengl=ON -Dbuiltin_glew=ON
 endif
 
-
-# check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS:=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
-ifneq ($(GEANT4_DATA_EXISTS),0)
-  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
-endif
-
 # check for graphics packages
 GL_XMU_EXISTS:=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
@@ -796,19 +789,9 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.10.01.p02.tar.gz http://geant4.cern.ch/support/source/geant4.10.01.p02.tar.gz
-	# fix gdml output for long properties. Already included upstream
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-gdml-strlen.patch
-	# disable forced overlap check in opt mode and cosmetic verbosity fixes
+	@$(DOWNLOAD) geant4 geant4.10.05.p01.tar.gz http://geant4.cern.ch/support/source/geant4.10.05.p01.tar.gz
+	# some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-verbosity.patch
-	# fix rounding problem in G4ReplicaNavigation reported by Alexei
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-replicanavigation.patch
-	# fix irreproducibility reported by Kirill (BII-2433)
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-1990-cascade_rotation.patch
-	# fix rounding problem in SubtractionSolid by porting 10.4 version
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-subtractionSolid-backport10.4.patch
-	# fix something ... I just got an updated .cc file via mail for BII-2750
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-BII-2750-G4GDecay3.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -816,18 +799,20 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@mkdir -p $(EXTBUILDDIR)/geant4
 	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) $(GEANT4_OPTION) \
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && \
+	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
+	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
+	    -DGEANT4_BUILD_CXXSTD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
 	    make -j $(NPROCESSES) && make install
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.1.2/geant4make/geant4make.*
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.5.1/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.1.2 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.5.1 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:

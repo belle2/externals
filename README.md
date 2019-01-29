@@ -83,6 +83,9 @@ the externals.
 | [SQLite](https://www.sqlite.org/)                                            | 3.31.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
+| [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.1           | BSD        |
+| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.5.2          | Apache v2  |
+| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.1.0           | Apache v2  |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.11.2          | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |

@@ -716,6 +716,54 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
+Vc.src: $(EXTSRCDIR)/Vc/README.md
+Vc: $(EXTLIBDIR)/libVc.a
+Vc.touch:
+	rm -fr $(EXTLIBDIR)/libVc.a
+
+$(EXTSRCDIR)/Vc/README.md:
+	@$(DOWNLOAD) Vc Vc-1.4.1.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.1/Vc-1.4.1.tar.gz
+
+$(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
+	@echo "building Vc"
+	@mkdir -p $(EXTBUILDDIR)/Vc
+	@cd $(EXTBUILDDIR)/Vc && $(CMAKE) $(EXTSRCDIR)/Vc \
+	    -DBUILD_TESTING=OFF && \
+	    make -j $(NPROCESSES) && make install
+
+VecCore.src: $(EXTSRCDIR)/VecCore/README.md
+VecCore: $(EXTINCDIR)/VecCore/Config.h
+VecCore.touch:
+	rm -fr $(EXTINCDIR)/VecCore/Config.h
+
+$(EXTSRCDIR)/VecCore/README.md:
+	$(DOWNLOAD) VecCore VecCore-v0.5.2.tar.gz https://github.com/root-project/veccore/archive/v0.5.2.tar.gz
+
+$(EXTINCDIR)/VecCore/Config.h: $(EXTSRCDIR)/VecCore/README.md
+	@echo "building VecCore"
+	@mkdir -p $(EXTBUILDDIR)/VecCore
+	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \
+	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF -DBUILD_UMESIMD=OFF && \
+	    make -j $(NPROCESSES) && make install
+
+
+VecGeom.src: $(EXTSRCDIR)/VecGeom/README.md
+VecGeom: $(EXTLIBDIR)/libvecgeom.a
+VecGeom.touch:
+	rm -fr $(EXTLIBDIR)/libvecgeom.a
+
+$(EXTSRCDIR)/VecGeom/README.md:
+	@$(DOWNLOAD) VecGeom VecGeom-v1.1.0.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.1.0/VecGeom-v1.1.0.tar.gz
+
+$(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
+	@echo "building VecGeom"
+	@mkdir -p $(EXTBUILDDIR)/VecGeom
+	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
+	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 && \
+	    make -j $(NPROCESSES) VERBOSE=1 && make install
+
+
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config
 clhep.src: $(EXTSRCDIR)/CLHEP

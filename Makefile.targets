@@ -766,23 +766,24 @@ $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config
-clhep.src: $(EXTSRCDIR)/CLHEP
+clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
-$(EXTSRCDIR)/CLHEP:
-	@$(DOWNLOAD) CLHEP clhep-2.2.0.4.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.2.0.4.tgz
+$(EXTSRCDIR)/clhep/CLHEP/README.md:
+	@$(DOWNLOAD) clhep clhep-2.4.1.0.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.4.1.0.tgz
 
 # CLHEP build
-$(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/CLHEP
+$(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 	@echo "building CLHEP"
-	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) $(EXTSRCDIR)/CLHEP/CLHEP && \
+	@mkdir -p $(EXTBUILDDIR)/clhep
+	@cd $(EXTBUILDDIR)/clhep && $(CMAKE) $(EXTSRCDIR)/clhep/CLHEP \
+	    -DCLHEP_BUILD_CXXSTD="-std=c++17" -DCLHEP_SINGLE_THREAD=ON && \
 	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/CLHEP $(EXTDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
 
 # CLHEP touch
 clhep.touch:

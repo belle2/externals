@@ -40,7 +40,7 @@ the externals.
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.34            | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.72            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](https://www.sourceware.org/bzip2/)                                   | 1.08            | BSD-style  |
-| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
+| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.1.0         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.16.5          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.6.0           | MIT-style  |

@@ -185,7 +185,7 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.31.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.31.1.tar.bz2
+	@$(DOWNLOAD) binutils binutils-2.32.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2
 	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-symbolversion.patch
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils

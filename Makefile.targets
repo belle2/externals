@@ -1551,7 +1551,8 @@ $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	@cp -fa $(EXTSRCDIR)/epics $(EXTBUILDDIR)
 	cd $(EXTBUILDDIR)/epics && \
 	    sed -i -e "s|#INSTALL_LOCATION.*|INSTALL_LOCATION=$(EXTDIR)/epics|g" configure/CONFIG_SITE && \
-	    make -j $(NPROCESSES)
+	    sed -i -e "s|^GNU_DIR\s*=.*|GNU_DIR = $(EXTCOMDIR)|g" configure/CONFIG_COMMON && \
+	    make -j $(NPROCESSES) EPICS_HOST_ARCH=linux-x86_64
 	cd $(EXTBUILDDIR)/epics/modules/libcom/src/osi/compiler && \
 	    install -m 644 -D clang/compilerSpecific.h $(EXTDIR)/epics/include/compiler/clang/compilerSpecific.h && \
 	    install -m 644 -D clang/epicsAtomicCD.h $(EXTDIR)/epics/include/compiler/clang/epicsAtomicCD.h && \

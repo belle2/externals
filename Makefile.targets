@@ -185,8 +185,7 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.31.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.31.1.tar.bz2
-	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-symbolversion.patch
+	@$(DOWNLOAD) binutils binutils-2.32.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
@@ -504,7 +503,7 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-8.1.1.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-8.1.1.tar.xz
+	@$(DOWNLOAD) gdb gdb-8.2.1.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-8.2.1.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"

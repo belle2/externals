@@ -36,7 +36,7 @@ the externals.
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1          | MIT        |
 | `BELLE_FLC`                                                                  | ?               | -          |
 | [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9             | -          |
-| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.31.1          | GPLv2      |
+| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.32            | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.68            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](http://www.bzip.org/)                                                | 1.06            | BSD-style  |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
@@ -53,7 +53,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 8.2             | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.1.1           | GPLv2      |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.2.1           | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.19.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.5.2           | MIT        |

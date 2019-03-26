@@ -55,6 +55,27 @@ endif
 export CC:=gcc
 export CXX:=g++
 
+# By default, we provide DWARF debug information even for optimized packages, as
+# it has uses for dynamic analysis like profiling. You can opt out of it for
+# selected packages using the following target file name prefix filter.
+#
+# The current approach has several caveats that one should keep in mind:
+#
+# - You must match every make target used during the building and installation
+#   of a package, including file-based targets like binutils' "$(EXTBINDIR)/ld".
+# - To work around the fact that make's filter functions only support a single %
+#   wildcard, which makes it hard to match the middle of a file name, we trim
+#   the directory part of the file name before matching. This approach is not
+#   flexible enough to e.g. match the "xz" part of "$(EXTSRCDIR)/xz/INSTALL".
+# - Prefix-based filtering can also overshoot (e.g. "ld" is a prefix of "ldd"
+#   and "ldap"). Please make sure that your prefixes don't accidentally affect
+#   other targets in this makefile, extending the filtering logic as necessary.
+#
+OPTDEB_EXCLUDE_PREFIXES:=astyle bazel binutils clang cmake cppcheck doxygen \
+	gcc gdb git git-lfs ld llvm pkg-config rclone valgrind
+OPTDEB_EXCLUDE_PATTERNS:=$(OPTDEB_EXCLUDE_PREFIXES:%=%%)
+OPTDEB_ENABLED=$(filter-out $(OPTDEB_EXCLUDE_PATTERNS),$(notdir $@))
+
 # set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   # suffix for the install target when running "make install". For opt/common
@@ -71,9 +92,10 @@ else
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
 # anything else we get an empty string
 ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
-  export INSTALL_TARGET_SUFFIX:=-strip
-  export CONFIGURE_COMMON_FLAGS:=
-  export CMAKE_COMMON_FLAGS:=-DCMAKE_BUILD_TYPE=Release
+  export INSTALL_TARGET_SUFFIX=$(if $(OPTDEB_ENABLED),,-strip)
+  export CONFIGURE_CXXFLAGS=$(if $(OPTDEB_ENABLED),-g)
+  export CONFIGURE_COMMON_FLAGS=$(if $(OPTDEB_ENABLED),--enable-debug)
+  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=$(if $(OPTDEB_ENABLED),RelWithDebInfo,Release)
   export BOOST_OPTION:=variant=release
   export GEANT4_OPTION:=-DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
@@ -124,7 +146,7 @@ ifeq ($(GL_XMU_EXISTS),0)
 endif
 
 # cmake executable including common options
-CMAKE:=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
+CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)

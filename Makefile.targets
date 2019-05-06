@@ -33,59 +33,81 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
 relpath=`python -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
 
 # get rid of localization
-export LANG=C
+export LANG:=C
 
 # set number of parallel jobs to the number of processors
 ifeq ($(shell uname),Darwin)
-  NPROCESSES=$(shell sysctl -n hw.ncpu 2> /dev/null)
+  NPROCESSES:=$(shell sysctl -n hw.ncpu 2> /dev/null)
 else
-  NPROCESSES=$(shell grep "physical id" /proc/cpuinfo 2> /dev/null | wc -l)
+  NPROCESSES:=$(shell grep "physical id" /proc/cpuinfo 2> /dev/null | wc -l)
   ifeq ($(NPROCESSES),0)
-    NPROCESSES=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
+    NPROCESSES:=$(shell grep processor /proc/cpuinfo 2> /dev/null | wc -l)
   endif
 endif
 ifdef BELLE2_MAKE_NPROCESSES
-  NPROCESSES=$(BELLE2_MAKE_NPROCESSES)
+  NPROCESSES:=$(BELLE2_MAKE_NPROCESSES)
 endif
 ifeq ($(NPROCESSES),0)
-  NPROCESSES=1
+  NPROCESSES:=1
 endif
 
 # Default compiler: gcc/g++
 export CC:=gcc
 export CXX:=g++
 
+# By default, we provide DWARF debug information even for optimized packages, as
+# it has uses for dynamic analysis like profiling. You can opt out of it for
+# selected packages using the following target file name prefix filter.
+#
+# The current approach has several caveats that one should keep in mind:
+#
+# - You must match every make target used during the building and installation
+#   of a package, including file-based targets like binutils' "$(EXTBINDIR)/ld".
+# - To work around the fact that make's filter functions only support a single %
+#   wildcard, which makes it hard to match the middle of a file name, we trim
+#   the directory part of the file name before matching. This approach is not
+#   flexible enough to e.g. match the "xz" part of "$(EXTSRCDIR)/xz/INSTALL".
+# - Prefix-based filtering can also overshoot (e.g. "ld" is a prefix of "ldd"
+#   and "ldap"). Please make sure that your prefixes don't accidentally affect
+#   other targets in this makefile, extending the filtering logic as necessary.
+#
+OPTDEB_EXCLUDE_PREFIXES:=astyle bazel binutils clang cmake cppcheck doxygen \
+	gcc gdb git git-lfs ld llvm pkg-config rclone valgrind
+OPTDEB_EXCLUDE_PATTERNS:=$(OPTDEB_EXCLUDE_PREFIXES:%=%%)
+OPTDEB_ENABLED=$(filter-out $(OPTDEB_EXCLUDE_PATTERNS),$(notdir $@))
+
 # set debug or optimization options
 ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   # suffix for the install target when running "make install". For opt/common
   # mode this can be set to "-strip" to install stripped versions of the programs
   # to greatly reduce disk size, especially for gcc
-  export INSTALL_TARGET_SUFFIX=
-  export CONFIGURE_CXXFLAGS=-g
-  export CONFIGURE_COMMON_FLAGS=--enable-debug
-  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=RelWithDebInfo
-  export BOOST_OPTION=variant=debug
-  export GEANT4_OPTION=
+  export INSTALL_TARGET_SUFFIX:=
+  export CONFIGURE_CXXFLAGS:=-g
+  export CONFIGURE_COMMON_FLAGS:=--enable-debug
+  export CMAKE_COMMON_FLAGS:=-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  export BOOST_OPTION:=variant=debug
+  export GEANT4_OPTION:=
 else
 # make if (option=opt or option=common) using the filter: filter will only
 # return common or opt if they are in the EXTERNALS_OPTION so if the option is
 # anything else we get an empty string
 ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
-  export INSTALL_TARGET_SUFFIX=-strip
-  export CONFIGURE_COMMON_FLAGS=
-  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=Release
-  export BOOST_OPTION=variant=release
-  export GEANT4_OPTION=-DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
+  export INSTALL_TARGET_SUFFIX=$(if $(OPTDEB_ENABLED),,-strip)
+  export CONFIGURE_CXXFLAGS=$(if $(OPTDEB_ENABLED),-g)
+  export CONFIGURE_COMMON_FLAGS=$(if $(OPTDEB_ENABLED),--enable-debug)
+  export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=$(if $(OPTDEB_ENABLED),RelWithDebInfo,Release)
+  export BOOST_OPTION:=variant=release
+  export GEANT4_OPTION:=-DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
 ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
-  export CC=icc
-  export CXX=icpc
-  export CXXCPP=icc -E
-  export FC=ifort
-  export AR=xiar
-  export LD=xild
-  export BOOST_OPTION=variant=release toolset=intel
-  export GEANT4_OPTION=-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
+  export CC:=icc
+  export CXX:=icpc
+  export CXXCPP:=icc -E
+  export FC:=ifort
+  export AR:=xiar
+  export LD:=xild
+  export BOOST_OPTION:=variant=release toolset=intel
+  export GEANT4_OPTION:=-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
   $(error Unknown externals build option. Please source the setup_belle2 script.)
 endif
@@ -105,26 +127,26 @@ ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
 endif
 
 # check for graphics packages needed to built ROOT's OpenGL support
-GL_GLU_EXISTS=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
+GL_GLU_EXISTS:=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
 ifeq ($(GL_GLU_EXISTS),0)
   ROOT_OPTION+= -Dopengl=ON -Dbuiltin_glew=ON
 endif
 
 
 # check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
+GEANT4_DATA_EXISTS:=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
 ifneq ($(GEANT4_DATA_EXISTS),0)
   GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
 endif
 
 # check for graphics packages
-GL_XMU_EXISTS=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
+GL_XMU_EXISTS:=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
   GEANT4_OPTION+= -D g4vis_build_openglx_driver='y' -D g4vis_use_openglx='y'
 endif
 
 # cmake executable including common options
-CMAKE:=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
+CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
@@ -135,9 +157,9 @@ else
 endif
 
 # directory we want to create
-DIRECTORIES=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTLIBDIR) $(EXTBINDIR)
+DIRECTORIES:=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTLIBDIR) $(EXTBINDIR)
 # directories we want to share between all options
-SHARED_DIRECTORIES=$(EXTINCDIR) $(EXTDIR)/share
+SHARED_DIRECTORIES:=$(EXTINCDIR) $(EXTDIR)/share
 
 # when called without targets, do nothing
 donothing: ;
@@ -433,7 +455,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # the tools pem file and the official one
 CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
-PIP3OPTIONS=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
+PIP3OPTIONS:=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
 ifneq ($(USE_BELLE2SERVER),)

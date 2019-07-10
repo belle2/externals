@@ -57,16 +57,15 @@ index 8fce0f1a59..7055d13525 100644
  const Int_t  kMaxLen = 2048;
  
 diff --git a/io/io/src/TFile.cxx b/io/io/src/TFile.cxx
-index 7f6e0edc96..93338b0121 100644
+index 7f6e0edc96..94914fbdf4 100644
 --- a/io/io/src/TFile.cxx
 +++ b/io/io/src/TFile.cxx
-@@ -650,6 +650,11 @@ void TFile::Init(Bool_t create)
+@@ -650,6 +650,10 @@ void TFile::Init(Bool_t create)
        new TFree(fFree, fBEGIN, Long64_t(kStartBigFile));  //Create new free list
  
        //*-* Write Directory info
 +      if (fgReproducible) {
 +         fName = "ReproducibleRootFile";
-+         fTitle = "ReproducibleRootFile";
 +         fUUID.SetUUID("00000000-0000-0000-0000-000000000000");
 +      }
        Int_t namelen= TNamed::Sizeof();

@@ -129,6 +129,8 @@ if __name__ == "__main__":
         with open(os.path.splitext(filename)[0] + ".txt", "w") as out:
             for l in content:
                 n = l.strip().lower()
+                if n.find("==") >= 0:
+                    n, v = n.split("==")
                 # did we find the package? if so delete from list
                 if n in found:
                     out.write(found[n])

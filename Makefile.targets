@@ -612,6 +612,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    --includedir=$(EXTINCDIR) --with-python=python3 --without-icu && \
 	    ./b2 install -sZLIB_INCLUDE=$(EXTINCDIR) -sZLIB_LIBPATH=$(EXTLIBDIR) \
 	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
+	    -sLZMA_INCLUDE=$(EXTINCDIR) -sLZMA_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
 	@cd $(EXTLIBDIR) && ln -sfT libboost_python36.so libboost_python.so
 

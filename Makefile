@@ -25,7 +25,7 @@ COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 xz lz4 curl git libx
     zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs bazel tensorflow \
     clhep geant4 postgresql neurobayes xrootd davix root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \
-    flc belle_legacy fann root-python-packages eos
+    flc belle_legacy fann root-python-packages eos nlohmann_json
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 

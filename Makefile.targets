@@ -1367,7 +1367,7 @@ git.clean:
 	@rm -fr $(EXTBUILDDIR)/git
 
 $(EXTSRCDIR)/git:
-	@$(DOWNLOAD) git git-2.19.0.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.19.0.tar.xz
+	@$(DOWNLOAD) git git-2.22.0.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.22.0.tar.xz
 
 # compile git but we don't want to require gettext to be installed so we
 # compile without localization support by setting NO_GETTEXT=yes for
@@ -1606,7 +1606,7 @@ git-lfs.clean:
 	@rm -fr $(EXTBINDIR)/git-lfs
 
 $(EXTSRCDIR)/git-lfs/README.md:
-	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.5.2.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.5.2/git-lfs-linux-amd64-v2.5.2.tar.gz
+	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.7.2.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.7.2/git-lfs-linux-amd64-v2.7.2.tar.gz
 
 $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@echo "installing git-lfs"

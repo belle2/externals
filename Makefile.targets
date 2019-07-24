@@ -804,8 +804,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-4.8.4.tar.gz http://xrootd.org/download/v4.8.4/xrootd-4.8.4.tar.gz
-	@cd $(EXTSRCDIR)/xrootd && patch -p1 < $(PATCHDIR)/xrootd-gcc8.patch
+	@$(DOWNLOAD) xrootd xrootd-4.10.0.tar.gz http://xrootd.org/download/v4.10.0/xrootd-4.10.0.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd

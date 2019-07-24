@@ -1,0 +1,21 @@
+commit 53b57ba35f239e753fc3164702550ed2395b6a5d
+Author: Michal Kreps <michal.kreps@cern.ch>
+Date:   Tue Jan 29 16:58:57 2019 +0000
+
+    Allow reading decay files which are missing end-of-line before end-of-file
+    (such files are not POSIX compliant but some users still manage to create
+    them).
+
+diff --git a/src/EvtGenBase/EvtParser.cpp b/src/EvtGenBase/EvtParser.cpp
+index 603653b..43390d2 100644
+--- a/src/EvtGenBase/EvtParser.cpp
++++ b/src/EvtGenBase/EvtParser.cpp
+@@ -82,7 +82,7 @@ int EvtParser::read(const std::string filename){
+     line++;
+     
+     i=0;
+-    while((c=fin.get()) != '\n' && i<MAXBUF) {
++    while((c=fin.get()) != '\n' && c != EOF && i<MAXBUF) {
+       buf[i]=c;
+       i++;
+     }

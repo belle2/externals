@@ -16,7 +16,7 @@ export EXTLIBDIR := $(EXTDIR)/lib
 export EXTBINDIR := $(EXTDIR)/bin
 export EXTCOMDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common
 export EXTSHRDIR := $(BELLE2_EXTERNALS_DIR)/share
-export ROOTSYS := $(EXTDIR)/root
+export ROOTSYS := $(EXTCOMDIR)/root
 
 # download script to get and extract sources
 export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh

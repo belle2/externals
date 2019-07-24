@@ -181,18 +181,18 @@ def setup_externals(location, common=False):
 def check_externals(location):
     """function to check the externals installation"""
 
-    subdir = os.environ.get('BELLE2_EXTERNALS_SUBDIR',
-                            os.environ['BELLE2_SUBDIR'])
+    found_root = False
+    found_geant4 = False
 
-    result = True
-    if not os.path.isfile(os.path.join(location, subdir, 'bin', 'geant4.sh')):
-        result = False
-        # sys.stderr.write('Error: geant4 installation is missing.\n')
-    root_dir = os.path.join(location, subdir, 'root')
-    if not os.path.isfile(os.path.join(root_dir, 'bin', 'root.exe')):
-        result = False
-        # sys.stderr.write('Error: root installation is missing.\n')
-    return result
+    option = os.environ.get('BELLE2_EXTERNALS_SUBDIR',  os.environ['BELLE2_SUBDIR'])
+    for subdir in ["common", option]:
+        if not os.path.isfile(os.path.join(location, subdir, 'bin', 'geant4.sh')):
+            found_geant4 = True
+        root_dir = os.path.join(location, subdir, 'root')
+        if not os.path.isfile(os.path.join(root_dir, 'bin', 'root.exe')):
+            found_root = True
+
+    return found_root and found_geant4
 
 
 def config_externals(conf):

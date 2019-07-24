@@ -61,7 +61,7 @@ the externals.
 | [Google Test](https://github.com/google/googletest)                          | 1.8.1           | BSD |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.5          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
-| [jemalloc memory allocator](http://jemalloc.net/)                            | 5.1.0           | BSD-style  |
+| [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.0           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.9           | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.33          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.1           | BSD + GPLv2 |

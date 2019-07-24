@@ -959,7 +959,7 @@ jemalloc.src: $(EXTSRCDIR)/jemalloc
 
 # jemalloc download
 $(EXTSRCDIR)/jemalloc:
-	@$(DOWNLOAD) jemalloc jemalloc-5.1.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.1.0/jemalloc-5.1.0.tar.bz2
+	@$(DOWNLOAD) jemalloc jemalloc-5.2.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.2.0/jemalloc-5.2.0.tar.bz2
 
 # jemalloc build
 $(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc

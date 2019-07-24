@@ -858,6 +858,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 # ROOT-9801: bug when copying a TF1 after reading it from file and before using it.
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-9801-copyingTF1.patch
+# option to write root files that are reproducible
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-reproducible-files.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

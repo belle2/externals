@@ -37,7 +37,7 @@ the externals.
 | `BELLE_FLC`                                                                  | ?               | -          |
 | [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9             | -          |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.32            | GPLv2      |
-| [Boost C++ Libraries](http://www.boost.org/)                                 | 1.68            | [Boost License](http://www.boost.org/users/license.html) |
+| [Boost C++ Libraries](http://www.boost.org/)                                 | 1.70            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](http://www.bzip.org/)                                                | 1.06            | BSD-style  |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.15.0          | BSD-style  |

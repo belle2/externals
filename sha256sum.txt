@@ -1,5 +1,5 @@
 fbdfc6f1966a972d19a215927266c76d4183eee235ed1e2bd7ec551c2a270eac *src/astyle_2.05.1_linux.tar.gz
-b6e87acfa0a405bb8b3417c58477b66d5bc27dc0d31ba6fa12bc255b9278d33b *src/bazel-0.17.2-dist.zip
+7456032199852c043e6c5b3e4c71dd8089c1158f72ec554e6ec1c77007f0ab51 *src/bazel-0.25.2-dist.zip
 80ce2dfd20a73f34a3b233643ffdd7a8ca7b687ca128546167fd6bdbaf7597e0 *src/BELLE_FLC_1.1.tar.gz
 eeb19cfb4e9edb38fd0e2049d6444fbcb90aaaf400e469edd72bb812fef39159 *src/belle_legacy-v1.9.tar.gz
 de38b15c902eb2725eac6af21183a5f34ea4634cb0bcef19612b50e5ed31072d *src/binutils-2.32.tar.bz2

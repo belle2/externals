@@ -34,6 +34,7 @@ the externals.
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1          | MIT        |
+| [bazel](https://bazel.build/)                                                | 0.25.2          | Apache 2.0 |
 | `BELLE_FLC`                                                                  | ?               | -          |
 | [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9             | -          |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.32            | GPLv2      |

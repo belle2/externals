@@ -1624,7 +1624,7 @@ bazel.clean:
 	@rm -fr $(EXTBINDIR)/bazel
 
 $(EXTSRCDIR)/bazel/compile.sh:
-	$(DOWNLOAD) bazel bazel-0.17.2-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.17.2/bazel-0.17.2-dist.zip
+	$(DOWNLOAD) bazel bazel-0.25.2-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
 
 $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
 	cd $(EXTSRCDIR)/bazel && export EXTRA_BAZEL_ARGS="--jobs $(NPROCESSES)" && ./compile.sh && \

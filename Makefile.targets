@@ -1025,7 +1025,7 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@$(DOWNLOAD) MillepedeII MillepedeII_V04-03-10.tgz svn:checkout:162:http://svnsrv.desy.de/public/MillepedeII/tags/V04-03-10
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-05-01.tgz svn:checkout:174:http://svnsrv.desy.de/public/MillepedeII/tags/V04-05-01
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI

@@ -1546,9 +1546,9 @@ eos.clean:
 	@rm -fr $(EXTBINDIR)/eos-* $(EXTLIBDIR)/libeos* $(EXTINCDIR)/eos
 
 $(EXTSRCDIR)/eos/configure:
-	$(DOWNLOAD) eos eos-0.2.1.tar.gz https://github.com/eos/eos/releases/download/v0.2.1/eos-0.2.1.tar.gz
-	@cd $(EXTSRCDIR)/eos && patch -p1 < $(PATCHDIR)/eos-nonstandardlocs.patch
-	cd $(EXTSRCDIR)/eos && ./autogen.bash
+	$(DOWNLOAD) eos eos-0.2.4.tar.gz https://github.com/eos/eos/releases/download/v0.2.4/eos-0.2.4.tar.gz
+	@cd $(EXTSRCDIR)/eos && patch -p1 < $(PATCHDIR)/eos-hdf5dependency.patch
+	@cd $(EXTSRCDIR)/eos && ./autogen.bash
 
 # needs gsl, hdf5 yaml-cpp fftw3
 $(EXTLIBDIR)/libeos.so: $(EXTSRCDIR)/eos/configure

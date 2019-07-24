@@ -1,0 +1,21 @@
+commit f4c2f89c3a41d7185be5518f3a6171d9464a791c
+Author: Martin Ritter <martin.ritter@desy.de>
+Date:   Wed Jul 24 17:46:18 2019 +0200
+
+    [infra] Fix missing hdf5 dependency
+    
+    Seems this one got lost
+
+diff --git a/src/clients/Makefile.am b/src/clients/Makefile.am
+index d551503..7795d16 100644
+--- a/src/clients/Makefile.am
++++ b/src/clients/Makefile.am
+@@ -73,7 +73,7 @@ eos_print_polynomial_SOURCES = eos-print-polynomial.cc
+ 
+ eos_propagate_uncertainty_SOURCES = eos-propagate-uncertainty.cc
+ eos_propagate_uncertainty_CXXFLAGS = $(AM_CXXFLAGS) $(GSL_CXXFLAGS) $(HDF5_CXXFLAGS)
+-eos_propagate_uncertainty_LDADD = $(LDADD) $(GSL_LDFLAGS) $(HDF5_LDFLAGS)
++eos_propagate_uncertainty_LDADD = $(LDADD) $(GSL_LDFLAGS) -lhdf5 $(HDF5_LDFLAGS)
+ 
+ eos_sample_mcmc_SOURCES = eos-sample-mcmc.cc
+ eos_sample_mcmc_CXXFLAGS = $(AM_CXXFLAGS) $(GSL_CXXFLAGS)

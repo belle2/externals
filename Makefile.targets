@@ -1569,7 +1569,7 @@ epics.clean:
 	@rm -fr $(EXTDIR)/epics
 
 $(EXTSRCDIR)/epics/README:
-	$(DOWNLOAD) epics epics-base-7.0.1.1.tar.gz https://epics.anl.gov/download/base/base-7.0.1.1.tar.gz
+	$(DOWNLOAD) epics epics-base-7.0.2.2.tar.gz https://epics.anl.gov/download/base/base-7.0.2.2.tar.gz
 
 $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	@cp -fa $(EXTSRCDIR)/epics $(EXTBUILDDIR)

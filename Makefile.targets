@@ -1202,8 +1202,8 @@ madgraph: $(EXTBINDIR)/mg5_aMC
 madgraph.src: $(EXTSRCDIR)/madgraph/VERSION
 
 $(EXTSRCDIR)/madgraph/VERSION:
-	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.3.2.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.3.2.tar.gz
-	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git8e324ea.tar.gz https://github.com/qliphy/MGISR/tarball/8e324ea
+	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.6.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.6.tar.gz
+	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git-a48b612.tar.gz https://github.com/qliphy/MGISR/tarball/a48b612
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 	@cd src/madgraph && patch -p0 < $(PATCHDIR)/madgraph-gcc8.patch
 

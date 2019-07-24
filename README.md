@@ -65,8 +65,8 @@ the externals.
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.9           | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.33          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.1           | BSD + GPLv2 |
-| [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.3.2         | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
-| Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | 8e324ea         | BSD        |
+| [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.6           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
+| Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-03-10       | GPLv2      |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56            | partly GPLv2? |

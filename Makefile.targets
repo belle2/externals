@@ -1495,7 +1495,7 @@ hdf5.clean:
 	@rm -fr $(EXTBINDIR)/h5* $(EXTLIBDIR)/libhdf5* $(EXTINCDIR)/hdf5
 
 $(EXTSRCDIR)/hdf5/CMakeLists.txt:
-	$(DOWNLOAD) hdf5 hdf5-1.10.1.tar.bz2 https://www.hdfgroup.org/package/source-bzip2/?wpdmdl=4300
+	$(DOWNLOAD) hdf5 hdf5-1.10.5.tar.bz2 https://www.hdfgroup.org/package/source-bzip2/?wpdmdl=13570
 
 $(EXTBINDIR)/h5ls: $(EXTSRCDIR)/hdf5/CMakeLists.txt
 	@echo "installing hdf5"

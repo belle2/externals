@@ -83,7 +83,7 @@ the externals.
 | [XRootD](http://xrootd.org/)                                                 | 4.8.4           | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.4           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.2           | MIT        |
-| [zeromq](http://www.zeromq.org/)                                             | 4.2.5           | LGPLv3 + static link exception, intent to move to MPLv2  |
+| [zeromq](http://www.zeromq.org/)                                             | 4.3.2           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.11          | MIT        |
 
 GCC requires some additional libraries which are downloaded as part of the GCC compilation:

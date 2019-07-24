@@ -1,10 +1,39 @@
 #!/usr/bin/env python3
 
+"""
+Utility to compile the requirements-*.txt file with consistent dependencies
+
+This script takes the requirements-*.in and tries to compile a fully pinned set
+of requirement files with all requirements between packages fulfilled.
+
+To upgrade all python packages to the latest version just run it with
+`--upgrade`. To just add a python package just add it unpinned to the .in and
+the .txt files and run without the upgrade option.
+"""
+
 import subprocess
 import sys
 import re
 import os
 import requests
+import argparse
+
+
+def get_annotations(filename):
+    """Get the `# via package` annotations from previously pinned requirements.txt files"""
+    result = {}
+    pkg = re.compile(r"^(.*?)==(.*?)\s*\\?$")
+    comment = re.compile(r"#\s*(.*)$")
+    with open(filename) as f:
+        package = None
+        for line in f:
+            m = pkg.match(line)
+            if m:
+                package = m.groups()
+            m = comment.search(line)
+            if m:
+                result[package[0]] = m.group(1)
+    return result
 
 
 def get_info(name, version):
@@ -14,6 +43,10 @@ def get_info(name, version):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--upgrade", default=False, action="store_true", help="If present update all packages to the "
+                        "latest possible version. Otherwise just determine missing dependencies when addding new packages")
+    args, remaining = parser.parse_known_args()
     # make sure root is setup, otherwise root-numpy fails horribly
     subprocess.run("which root-config", shell=True)
 
@@ -33,8 +66,20 @@ if __name__ == "__main__":
     files = ["requirements-base.in", "requirements-root.in", "requirements-core.in"]
     # make sure pip-tools are installed
     subprocess.run(["pip3", "install", "--user", "pip-tools"])
+    # if we run in non-upgrade mode we provide all existing versions which make
+    # pip-compile loose the dependency annotation which we don't want. So save
+    # those annotations and put them back in
+    existing_dependencies = {}
     # and compile the requirements.txt
-    subprocess.run(["pip-compile", '-v', "--no-header", "--annotate", "--upgrade", "--allow-unsafe" , "-o", "requirements.txt"] + files)
+    if not args.upgrade:
+        processed_files = [os.path.splitext(e)[0] + ".txt" for e in files]
+        for f in processed_files:
+            existing_dependencies.update(get_annotations(f))
+        subprocess.run(["pip-compile", '-v', "--no-header", "--annotate", "--allow-unsafe", "-o", "requirements.txt"] +
+                       processed_files + remaining)
+    else:
+        subprocess.run(["pip-compile", '-v', "--no-header", "--annotate", "--upgrade", "--allow-unsafe", "-o", "requirements.txt"] +
+                       files + remaining)
 
     found = {}
     infos = []
@@ -45,7 +90,7 @@ if __name__ == "__main__":
             if not line.strip() or line.startswith("#"):
                 continue
 
-            m = re.match("^(.*?)==(.*?)\s*(#.*)?$", line)
+            m = re.match(r"^(.*?)==(.*?)\s*(#.*)?$", line)
             if m:
                 name = m.group(1)
                 version = m.group(2)
@@ -66,6 +111,9 @@ if __name__ == "__main__":
                 # add dependency comment if present
                 if comment:
                     content.append(f"    {comment}")
+                # or take from previous run
+                elif name in existing_dependencies:
+                    content.append(f"    # {existing_dependencies[name]}")
                 # make it one string
                 found[name] = " \\\n".join(content) + "\n"
                 # and remember package information
@@ -81,6 +129,8 @@ if __name__ == "__main__":
         with open(os.path.splitext(filename)[0] + ".txt", "w") as out:
             for l in content:
                 n = l.strip().lower()
+                if n.find("==") >= 0:
+                    n, v = n.split("==")
                 # did we find the package? if so delete from list
                 if n in found:
                     out.write(found[n])
@@ -90,9 +140,8 @@ if __name__ == "__main__":
 
             # last file, put in all the remaining packages
             if i == len(files)-1:
-                for n,c in sorted(found.items()):
+                for n, c in sorted(found.items()):
                     out.writelines(c)
-
 
     print("Update readme")
     widths = {}

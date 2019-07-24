@@ -52,6 +52,9 @@ jupyter==1.0.0 \
 keras==2.2.2 \
     --hash=sha256:253cce021d73fa6d6e69e740bd985d6e2419dcb9fca96b2c8dbdd1736e3ec68d \
     --hash=sha256:468d98da104ec5c3dbb10c2ef6bb345ab154f6ca2d722d4c250ef4d6105de17a
+# Pin luigi to 2.7.7 because that is the only version compatible with tornado 5 (https://github.com/spotify/luigi/pull/2490)
+luigi==2.7.7 \
+    --hash=sha256:63b17f46ab2288d181f6649e0ea1937e1454722d1d15e112ffb9878494da534d
 lxml==4.2.5 \
     --hash=sha256:02bc220d61f46e9b9d5a53c361ef95e9f5e1d27171cd461dddb17677ae2289a5 \
     --hash=sha256:22f253b542a342755f6cfc047fe4d3a296515cf9b542bc6e261af45a80b8caf6 \
@@ -211,12 +214,14 @@ tables==3.4.4 \
     --hash=sha256:bdc5c073712af2a43babd139c4855fc99496bb2c3f3f5d1b4770a985e6f9ce29 \
     --hash=sha256:bed4f423dd33600907f1c3b88f994920f2b879b12bf83d4372f861ef4085e085 \
     --hash=sha256:c3ac22e3391f67a381d9a3018fd7e0a1ccfcc88b5f61b0d051fe5eba8196388f \
+    --hash=sha256:d263f4380a5dad862efac774428bacb04c2339c4f165f2efdd228867abaffcf6 \
     --hash=sha256:da98c8abfeefefad40110b994d5d06ac28d89b00d085530d377376b201566ebf \
     --hash=sha256:e2e4e40d010a6aa0464e5e281d4aa15f64acd99fd881c0e1e4c1c567b7167dba \
     --hash=sha256:e3bd7084dbf80ef347ad5d33645584e0fe7f8353cf2c33d8922a4c00034fa015 \
     --hash=sha256:e8f9b20b9623c900e7007b89a9d3e315280b666ac70b38b0c191345f7d4d8585 \
     --hash=sha256:f786d310cf954eaf52340680dfbc5c1190afc276093f5c454fab605a11488306 \
-    --hash=sha256:f97c8b5ebec23894fc56af25c6e73bc86b463cbccb1f9b9887def24cd7811e2c
+    --hash=sha256:f97c8b5ebec23894fc56af25c6e73bc86b463cbccb1f9b9887def24cd7811e2c \
+    --hash=sha256:fd3e774ff048de838df39b018c171bff3ecd9f34a908395a475ba07ac270a34a
 tensorflow==1.10.1 \
     --hash=sha256:002ed1550e2fdd82df5939c53737ed8871d21462c354604917dd9f12f44c65ed \
     --hash=sha256:316bcfda289c40f6ff9ff16ed747744d0b113b577e98e99c839a4da835011dbf \
@@ -285,10 +290,18 @@ cheroot==6.5.2 \
     --hash=sha256:ba2b9b0f59fcdcd920d51f61c19c4a8d65f8469741e634c04eaf6feca5b76837 \
     --hash=sha256:f1bb443f266898bc516de78a98e601e0681770a2f2310c2335648c4985e35184 \
     # via cherrypy
+colorama==0.4.1 \
+    --hash=sha256:05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d \
+    --hash=sha256:f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48 \
+    # via b2luigi
 cycler==0.10.0 \
     --hash=sha256:1d8a5ae1ff6c5cf9b93e8811e581232ad8920aeec647c37316ceac982b08cb2d \
     --hash=sha256:cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8 \
     # via matplotlib
+ddt==1.2.1 \
+    --hash=sha256:474546b4020ce8a2f9550ba8899c28aa2c284c7bbf175bddede98be949d1ca7c \
+    --hash=sha256:d13e6af8f36238e89d00f4ebccf2bda4f6d1878be560a6600689e42077e164e3 \
+    # via gitpython
 decorator==4.3.0 \
     --hash=sha256:2c51dff8ef3c447388fe5e4453d24a2bf128d3a4c32af3fabef1f01c6851ab82 \
     --hash=sha256:c39efa13fbdeb4506c476c9b3babf6a718da943dab7811c206005a4a956c080c \
@@ -312,6 +325,17 @@ future==0.16.0 \
 gast==0.2.0 \
     --hash=sha256:7068908321ecd2774f145193c4b34a11305bd104b4551b09273dfd1d6a374930 \
     # via tensorflow
+gitdb==0.6.4 \
+    --hash=sha256:a3ebbc27be035a2e874ed904df516e35f4a29a778a764385de09de9e0f139658 \
+    # via gitpython
+gitdb2==2.0.5 \
+    --hash=sha256:83361131a1836661a155172932a13c08bda2db3674e4caa32368aa6eb02f38c2 \
+    --hash=sha256:e3a0141c5f2a3f635c7209d56c496ebe1ad35da82fe4d3ec4aaa36278d70648a \
+    # via gitpython
+gitpython==2.1.12 \
+    --hash=sha256:7428f1cc5e72d53e65c3259d5cebc22fb2b07f973c49d95b3c3d26c64890a3c3 \
+    --hash=sha256:a0f744a4941eac5d99033eb0adcbec83bf443ee173fda4292d92a906aedce952 \
+    # via b2luigi
 grpcio==1.15.0 \
     --hash=sha256:00e0ed7a4558b65df24aed9369880c7e247bcd48c9c71c9c40f3143ab02842a5 \
     --hash=sha256:113d457cf87a2d642820f2a442008d714c52f9760fea2c02b22fe06aacc40531 \
@@ -437,6 +461,10 @@ kiwisolver==1.0.1 \
     --hash=sha256:efabbcd4f406b532206b8801058c8bab9e79645b9880329253ae3322b7b02cd5 \
     --hash=sha256:f923406e6b32c86309261b8195e24e18b6a8801df0cfc7814ac44017bfcb3939 \
     # via matplotlib
+lockfile==0.12.2 \
+    --hash=sha256:6aed02de03cba24efabcd600b30540140634fc06cfa603822d508d5361e9f799 \
+    --hash=sha256:6c3cb24f344923d30b2785d5ad75182c8ea7ac1b6171b08657258ec7429d50fa \
+    # via python-daemon
 lz4==2.1.0 \
     --hash=sha256:166aff2fbb2fee39f4ed58e8e7c1ed8a8ce72915832a100ced7a1634ac655a6f \
     --hash=sha256:447931d54e551a3653fa0b97bac7daddc218e16a5557f4795cdc6c2ca2b3fc42 \
@@ -547,6 +575,9 @@ packaging==17.1 \
 pandocfilters==1.4.2 \
     --hash=sha256:b3dd70e169bb5449e6bc6ff96aea89c5eea8c5f6ab5e207fc2f521a2cf4a0da9 \
     # via nbconvert
+parse==1.12.0 \
+    --hash=sha256:1b68657434d371e5156048ca4a0c5aea5afc6ca59a2fea4dd1a575354f617142 \
+    # via b2luigi
 parso==0.3.1 \
     --hash=sha256:35704a43a3c113cce4de228ddb39aab374b8004f4f2407d070b6a2ca784ce8a2 \
     --hash=sha256:895c63e93b94ac1e1690f5fdd40b65f07c8171e3e53cbd7793b5b96c0e0a7f24 \
@@ -577,6 +608,8 @@ protobuf==3.6.1 \
     --hash=sha256:1931d8efce896981fe410c802fd66df14f9f429c32a72dd9cfeeac9815ec6444 \
     --hash=sha256:196d3a80f93c537f27d2a19a4fafb826fb4c331b0b99110f985119391d170f96 \
     --hash=sha256:46e34fdcc2b1f2620172d3a4885128705a4e658b9b62355ae5e98f9ea19f42c2 \
+    --hash=sha256:4b92e235a3afd42e7493b281c8b80c0c65cbef45de30f43d571d1ee40a1f77ef \
+    --hash=sha256:574085a33ca0d2c67433e5f3e9a0965c487410d6cb3406c83bdaf549bfc2992e \
     --hash=sha256:59cd75ded98094d3cf2d79e84cdb38a46e33e7441b2826f3838dcc7c07f82995 \
     --hash=sha256:5ee0522eed6680bb5bac5b6d738f7b0923b3cafce8c4b1a039a6107f0841d7ed \
     --hash=sha256:65917cfd5da9dfc993d5684643063318a2e875f798047911a9dd71ca066641c9 \
@@ -614,6 +647,10 @@ pyparsing==2.2.1 \
     --hash=sha256:905d8090c335314568b5faee0025b1829f27bb974604a5762a6cdef3a7dfc3b7 \
     --hash=sha256:f493ee323be1e94929416b3585eefcc04943115cecbaaa35a8c86d1a2368af19 \
     # via matplotlib, packaging
+python-daemon==2.2.3 \
+    --hash=sha256:1d9a541f74822ac87045163ebd5473f9a7b22ab4031ed28293aba81fdaf6c156 \
+    --hash=sha256:affeca9e5adfce2666a63890af9d6aff79f670f7511899edaddca7f96593cc25 \
+    # via luigi
 python-dateutil==2.7.3 \
     --hash=sha256:1adb80e7a782c12e52ef9a8182bebeb73f1d7e24e374397af06fb4956c8dc5c0 \
     --hash=sha256:e27001de32f627c22380a688bcc43ce83504a7bc5da472209b4c70f02829f0b8 \
@@ -677,6 +714,13 @@ six==1.11.0 \
     --hash=sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9 \
     --hash=sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb \
     # via absl-py, bleach, cheroot, cycler, grpcio, h5py, html5lib, keras, keras-preprocessing, more-itertools, packaging, prompt-toolkit, protobuf, pydocstyle, python-dateutil, sphinx, tables, tempora, tensorboard, tensorflow, theano, traitlets
+smmap==0.9.0 \
+    --hash=sha256:0e2b62b497bd5f0afebc002eda4d90df9d209c30ef257e8673c90a6b5c119d62 \
+    # via gitdb
+smmap2==2.0.5 \
+    --hash=sha256:0555a7bf4df71d1ef4218e4807bbf9b201f910174e6e08af2e138d4e517b4dde \
+    --hash=sha256:29a9ffa0497e7f2be94ca0ed1ca1aa3cd4cf25a1f6b4f5f87f74b46ed91d609a \
+    # via gitdb2
 snowballstemmer==1.2.1 \
     --hash=sha256:919f26a68b2c17a7634da993d91339e288964f93c274f1343e3bbbe2096e1128 \
     --hash=sha256:9f3bcd3c401c3e862ec0ebe6d2c069ebc012ce142cce209c098ccb5b09136e89 \
@@ -712,7 +756,7 @@ tornado==5.1.1 \
     --hash=sha256:8e9d728c4579682e837c92fdd98036bd5cdefa1da2aaf6acf26947e6dd0c01c5 \
     --hash=sha256:d4b3e5329f572f055b587efc57d29bd051589fb5a43ec8898c77a47ec2fa2bbb \
     --hash=sha256:e5f2585afccbff22390cddac29849df463b252b711aa2ce7c5f3f342a5b3b444 \
-    # via ipykernel, jupyter-client, notebook, terminado
+    # via ipykernel, jupyter-client, luigi, notebook, terminado
 traitlets==4.3.2 \
     --hash=sha256:9c4bd2d267b7153df9152698efb1050a5d84982d3384a37b2c1f7723ba3e7835 \
     --hash=sha256:c6cb5e6f57c5a9bdaa40fa71ce7b4af30298fbab9ece9815b5d995ab6217c7d9 \

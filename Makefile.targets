@@ -829,8 +829,8 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.6.8.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.6.8/davix-0.6.8.tar.gz
-	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-finduuid.patch
+	@$(DOWNLOAD) davix davix-0.7.4.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.7.4/davix-0.7.4.tar.gz
+	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-disabletests.patch
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"

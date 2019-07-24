@@ -76,7 +76,7 @@ the externals.
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.43.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.14/06         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [SQLite](https://www.sqlite.org/)                                            | 3.25.0          | Public Domain |
+| [SQLite](https://www.sqlite.org/)                                            | 3.29.0          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.32.1   | BSD        |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |

@@ -419,8 +419,7 @@ sqlite.touch:
 	@rm -fr $(EXTBINDIR)/sqlite3
 
 $(EXTSRCDIR)/sqlite:
-	$(DOWNLOAD) sqlite sqlite-autoconf-3250000.tar.gz https://www.sqlite.org/2018/sqlite-autoconf-3250000.tar.gz
-	@cd $(EXTSRCDIR)/sqlite && patch -p1 < $(PATCHDIR)/sqlite-configure.patch
+	$(DOWNLOAD) sqlite sqlite-autoconf-3290000.tar.gz https://www.sqlite.org/2019/sqlite-autoconf-3290000.tar.gz
 
 $(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
 	@echo "building sqlite"

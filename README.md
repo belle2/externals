@@ -40,7 +40,7 @@ the externals.
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.68            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](http://www.bzip.org/)                                                | 1.06            | BSD-style  |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
-| [CMake](https://cmake.org/)                                                  | 3.12.2          | BSD-style  |
+| [CMake](https://cmake.org/)                                                  | 3.15.0          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.3.0           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.65.3          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |

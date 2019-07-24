@@ -72,7 +72,7 @@ the externals.
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56            | partly GPLv2? |
 | [PostgreSQL](http://www.postgresql.org/)                                     | 9.2.4           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](http://home.thep.lu.se/~torbjorn/Pythia.html)                       | 8.215           | GPLv2      |
-| [Python](https://www.python.org/)                                            | 3.6.6           | PSFL (BSD-style)  |
+| [Python](https://www.python.org/)                                            | 3.6.9           | PSFL (BSD-style)  |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.43.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.14/06         | LGPLv2.1 (GPLv3 for MathMore)  |

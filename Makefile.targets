@@ -438,7 +438,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.6.6.tgz https://www.python.org/ftp/python/3.6.6/Python-3.6.6.tgz
+	@$(DOWNLOAD) python Python-3.6.9.tgz https://www.python.org/ftp/python/3.6.9/Python-3.6.9.tgz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"

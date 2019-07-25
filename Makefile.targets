@@ -1167,7 +1167,7 @@ $(EXTSRCDIR)/evtgen/configure:
 	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
-	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen.pdl.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen.pdl-R01-07-00+BII-3296.patch
 	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen-BII-4471-emptyline.patch
 
 # EvtGen build

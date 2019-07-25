@@ -123,6 +123,18 @@ if __name__ == "__main__":
                     info["license"] = ""
                 infos.append(info)
 
+            # check pypi for https urls
+            m = re.match("http.*/(.*?)-(.*?)-cp", line)
+            if m:
+                name = m.group(1)
+                version = m.group(2)
+                json_data = get_info(name, version)
+                info = json_data["info"]
+                info["link"] = f"[{info['name']}]({info['project_url']})"
+                if info["license"] is None:
+                    info["license"] = ""
+                infos.append(info)
+
     print("Update requirement files")
     for i, filename in enumerate(files):
         content = open(filename).readlines()

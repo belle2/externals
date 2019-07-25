@@ -2,6 +2,9 @@ autopep8
 b2luigi
 CherryPy 
 CommonMark
+file-read-backwards
+# error with 0.15.1post1 so stick to non-post
+docutils==0.15
 h5py
 histbook
 ipython 
@@ -13,9 +16,10 @@ lxml
 matplotlib 
 metakernel
 pandas
-pep8 
+pycodestyle
 pylama
 requests 
+rise
 scikit-learn
 scipy
 scons
@@ -23,6 +27,12 @@ seaborn
 sphinx 
 tables
 tensorflow
+tensorflow-probability
+# CPU version of pytorch
+https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-linux_x86_64.whl \
+    --hash=sha256:f20df27935cd76d9eb244ea0f5558f65ff45730a1e19fe6b30b639f6cb4d640e
+https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl \
+    --hash=sha256:d9d1a862013ca87f841c42aeb19c5547a413238900500edf94020e57d5a02f8b
 Theano
 uncertainties
 uproot

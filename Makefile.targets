@@ -455,6 +455,12 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # the tools pem file and the official one
 CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
+MAIN_REQUIREMENTS:= "requirements-core.txt"
+# No torch on SL6
+ifeq ($(strip $(shell b2install-print-os)), sl6)
+  MAIN_REQUIREMENTS:= "requirements-core.sl6.txt"
+endif
+
 PIP3OPTIONS:=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
@@ -469,7 +475,7 @@ python-packages.src:
 # make sure pip is up to date
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
-	cat requirements-base.txt requirements-core.txt | (while read line; do \
+	cat requirements-base.txt $(MAIN_REQUIREMENTS) | (while read line; do \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
 	done)
@@ -489,10 +495,9 @@ $(EXTBINDIR)/ipython:
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
-	    -r requirements-base.txt -r requirements-core.txt
-# update default settings for pep8
-	@sed -i "s/^DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704'$$/DEFAULT_IGNORE = 'E121,E123,E126,E226,E24,E704,E402'/" \
-	    $(EXTLIBDIR)/python3.6/site-packages/pep8.py
+	    -r requirements-base.txt -r $(MAIN_REQUIREMENTS)
+# make pep8 compatibility link
+	cd $(EXTBINDIR) && ln -sf pycodestyle pep8
 # register widget extension in jupyter
 	jupyter nbextension enable --py --sys-prefix widgetsnbextension
 # make sure our own python3 kernel has precedence over /usr/share/jupyter/kernels/python3

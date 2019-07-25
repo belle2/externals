@@ -1,6 +1,6 @@
-root-numpy==4.7.3 \
-    --hash=sha256:af033c8e84301034c3005cf92c12f7c3eaa8b61be442c2bc21dbb5362baec66f
-root-pandas==0.6.0 \
-    --hash=sha256:8ef57baeeb47dc77e3ba1262e866abe35a9e69d94d860492523f3cbe2804e981
+root-numpy==4.8.0 \
+    --hash=sha256:5842bbcde92133f60a61f56e9f0a875a0dbc2a567cc65a9ac141ecd72e416878
+root-pandas==0.7.0 \
+    --hash=sha256:f58cabcb4675b945068f0ec409a0d3e16115be524f38db59eedb44047bbc6733
 pyroofit==0.9.4 \
     --hash=sha256:598034231579f600c8d45ec815fd5c23e16975c8e2f3acaebae01b4f6491345d

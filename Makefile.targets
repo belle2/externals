@@ -477,6 +477,8 @@ python-packages.src:
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
 python-packages: $(EXTBINDIR)/ipython
+python-packages.touch:
+	@rm -fr $(EXTBINDIR)/ipython
 
 # install all required python packages. setuptools-scm used to be required by
 # path.py but for newer versions we can just install the wheel which doesn't
@@ -853,11 +855,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.14.06.source.tar.gz https://root.cern.ch/download/root_v6.14.06.source.tar.gz
+	@$(DOWNLOAD) root root_v6.18.00.source.tar.gz https://root.cern.ch/download/root_v6.18.00.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
-# ROOT-9801: bug when copying a TF1 after reading it from file and before using it.
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-9801-copyingTF1.patch
 # option to write root files that are reproducible
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-reproducible-files.patch
 
@@ -872,7 +872,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -Dcxx17=ON \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so \
 	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON -Dfftw3=ON \
@@ -988,6 +988,8 @@ $(EXTSRCDIR)/rave/README:
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math $(EXTSRCDIR)/rave/src/ROOT/genvector
 	@cd $(EXTSRCDIR)/rave/src && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/boost)
 	@cd $(EXTSRCDIR)/rave/src/ROOT && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) genvector
+# and there's a weird monkey patch cc file we no longer want. This looks sane, right?
+	@echo "" > $(EXTSRCDIR)/rave/src/ROOT/src/GenVector_Throw.cc
 	@cd $(EXTSRCDIR)/rave/src/ROOT/mathcore && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/src/ROOT/smatrix && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root/Math)
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-template-fix.patch

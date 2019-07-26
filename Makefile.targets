@@ -19,7 +19,7 @@ export EXTSHRDIR := $(BELLE2_EXTERNALS_DIR)/share
 export ROOTSYS := $(EXTCOMDIR)/root
 
 # download script to get and extract sources
-export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/download.sh
+export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/tools/download.sh
 
 # function to get a relative path in a recipe. This will return a backtick
 # string to be expanded by the shell which is needed to get the current shell
@@ -177,19 +177,21 @@ pkg-config-wrapper: $(EXTBINDIR)/pkg-config
 # nothing to do for src
 pkg-config-wrapper.src: ;
 
-$(EXTBINDIR)/pkg-config: pkg-config
+$(EXTBINDIR)/pkg-config: tools/pkg-config
 	@echo "Installing pkg-config wrapper"
 	@install $< $@
 
-#Fix absolute paths in .pc files for pkg-config and in python scripts
 relocatable_fixes:
+# Fix absolute paths in .pc files for pkg-config and in python scripts
 	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
-#Fix absolute paths in pip packages and other python scripts id python is installed.
+# Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
+	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
+	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
+# And finally split and strip all binaries except bazel because stripping bazel removes all functionality :?
+	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py -j $(NPROCESSES) -e bin/bazel $(EXTDIR); fi
 
 # create directories
 $(DIRECTORIES):

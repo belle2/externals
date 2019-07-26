@@ -58,7 +58,7 @@ fb52fff3aa32e78d7576569113743af1f0868a5dc7b5c055e2ea0e6c1c49d070 *src/rave-0.6.2
 e6698d6cfe585f186490b667163db65e7d1b92a2447658d77fa831096383ea71 *src/root_v6.18.00.source.tar.gz
 8e7c1e2950b5b04c5944a981cb31fffbf9d2ddda939d536838ebc854481afd5b *src/sqlite-autoconf-3290000.tar.gz
 224c0faa113f91bca62002cb7e405a8eeccfa938e49a62c146441af0ec5f6f30 *src/TAUOLA.1.1.4.tar.gz
-83092d709800e2d93d4d4b1bcacaeb74f2f328962ed764cb35bbee20402879c6 *src/tensorflow-v1.10.1.tar.gz
+aa2a6a1daafa3af66807cfe0bc77bfe1144a9a53df9a96bab52e3e575b3047ed *src/tensorflow-v1.14.0.tar.gz
 86e6707a379c7ff5489c218cfaf1e3464b0b95acf7817db0bc5f179e356a67b2 *src/util-linux-2.32.1.tar.xz
 037c11bfefd477cc6e9ebe8f193bb237fe397f7ce791b4a4ce3fa1c6a520baa5 *src/valgrind-3.14.0.tar.bz2
 9c5fe088a84e9afedf92d0ff7dd2e516f4eac974d8195c710235ddf2530fd970 *src/vgm.4.3.tar.gz

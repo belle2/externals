@@ -1,0 +1,27 @@
+commit b8d13f6ce1654ac3835801d45262fef42c77059a
+Author: Martin Ritter <martin.ritter@desy.de>
+Date:   Fri Jul 26 09:55:18 2019 +0200
+
+    Adapt previous patches for tensorflow
+
+diff --git a/tensorflow/tensorflow.bzl b/tensorflow/tensorflow.bzl
+index 98e2cf1..da98349 100644
+--- a/tensorflow/tensorflow.bzl
++++ b/tensorflow/tensorflow.bzl
+@@ -538,7 +538,7 @@ def tf_cc_shared_object(
+             deps = deps,
+             linkshared = 1,
+             data = data + data_extra,
+-            linkopts = linkopts + _rpath_linkopts(name_os_full) + select({
++            linkopts = linkopts + ['-lrt'] + _rpath_linkopts(name_os_full) + select({
+                 clean_dep("//tensorflow:macos"): [
+                     "-Wl,-install_name,@rpath/" + soname,
+                 ],
+@@ -1555,6 +1555,7 @@ def _py_wrap_cc_impl(ctx):
+     args += [src.path]
+     outputs = [ctx.outputs.cc_out, ctx.outputs.py_out]
+     ctx.actions.run(
++        use_default_shell_env = True,
+         executable = ctx.executable._swig,
+         arguments = args,
+         inputs = inputs.to_list(),

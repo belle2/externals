@@ -850,6 +850,7 @@ $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"
 	@mkdir -p $(EXTBUILDDIR)/davix
 	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so && \
 	    make -j $(NPROCESSES) && make install
 

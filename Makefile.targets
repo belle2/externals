@@ -283,6 +283,7 @@ $(EXTSRCDIR)/llvm:
 # in case we want llvm libunwind
 #	@$(DOWNLOAD) llvm/projects/libunwind libunwind-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libunwind-8.0.0.src.tar.xz
 	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/clang-tools-extra-8.0.0.src.tar.xz
+	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-8.0-pythonforward.patch
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
@@ -1416,7 +1417,8 @@ $(EXTSRCDIR)/fann/README.md:
 
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
-	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann && \
+	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES); make install
 
 # astyle: C/C++ code beautifier
@@ -1551,7 +1553,9 @@ $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt:
 $(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
 	@echo "installing yaml-cpp"
 	@mkdir -p $(EXTBUILDDIR)/yaml-cpp
-	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp -DBUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
+	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp \
+	  -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
+	  -DBUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
 	    make -j $(NPROCESSES); make install
 
 eos: $(EXTLIBDIR)/libeos.so

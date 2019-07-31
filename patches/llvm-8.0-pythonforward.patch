@@ -1,0 +1,21 @@
+commit 956d99c153adde2815eb4595f67e33c5b8a90e0f
+Author: Martin Ritter <martin.ritter@desy.de>
+Date:   Wed Jul 31 14:05:36 2019 +0200
+
+    Forward python interpreter to sub projects
+
+diff --git a/projects/compiler-rt/cmake/Modules/AddCompilerRT.cmake b/projects/compiler-rt/cmake/Modules/AddCompilerRT.cmake
+index 81b1102..92b5f59 100644
+--- a/projects/compiler-rt/cmake/Modules/AddCompilerRT.cmake
++++ b/projects/compiler-rt/cmake/Modules/AddCompilerRT.cmake
+@@ -564,7 +564,9 @@ macro(add_custom_libcxx name prefix)
+     CMAKE_OBJDUMP
+     CMAKE_STRIP
+     CMAKE_SYSROOT
+-    CMAKE_SYSTEM_NAME)
++    CMAKE_SYSTEM_NAME
++    Python_ADDITIONAL_VERSIONS
++    PYTHON_EXECUTABLE)
+   foreach(variable ${PASSTHROUGH_VARIABLES})
+     get_property(is_value_set CACHE ${variable} PROPERTY VALUE SET)
+     if(${is_value_set})

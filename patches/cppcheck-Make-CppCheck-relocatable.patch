@@ -39,7 +39,7 @@ index 711fe44..b82e738 100644
 -        cfgfolders.push_back(CFGDIR);
 +        char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
 +        if(extDir){
-+            cfgfolders.push_back(std::string(extDir) + "/share/CppCheck");
++            cfgfolders.push_back(std::string(extDir) + "/share/Cppcheck");
 +        }
  #endif
          if (exename) {

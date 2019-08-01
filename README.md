@@ -36,7 +36,7 @@ the externals.
 | [Artistic Style (astyle)](http://astyle.sourceforge.net/)                    | 2.05.1          | MIT        |
 | [bazel](https://bazel.build/)                                                | 0.25.2          | Apache 2.0 |
 | `BELLE_FLC`                                                                  | ?               | -          |
-| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.9             | -          |
+| [belle\_legacy](https://stash.desy.de/projects/B2G/repos/belle_legacy/)      | 1.10            | -          |
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.32            | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.70            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](http://www.bzip.org/)                                                | 1.06            | BSD-style  |

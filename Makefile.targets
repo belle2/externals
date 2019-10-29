@@ -1174,7 +1174,7 @@ tauola.touch:
 
 
 # dependencies for EvtGen
-evtgen: $(EXTLIBDIR)/libEvtGen.so
+evtgen: hepmc pythia photos tauola $(EXTLIBDIR)/libEvtGen.so
 evtgen.src: $(EXTSRCDIR)/evtgen/configure
 
 # EvtGen download

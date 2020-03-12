@@ -2,6 +2,10 @@ autopep8
 b2luigi
 CherryPy 
 CommonMark
+# Cython is needed for compiling HAMMER with python bindings
+cython
+# Cymove is needed for compiling HAMMER with python bindings
+cymove
 file-read-backwards
 # error with 0.15.1post1 so stick to non-post
 docutils==0.15

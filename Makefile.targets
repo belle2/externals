@@ -1714,17 +1714,20 @@ hammer: $(EXTLIBDIR)/libHammer.so
 hammer.touch:
 	@rm -fr $(EXTLIBDIR)/libHammer.so
 hammer.clean:
-	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTINCDIR)/libHammer
+	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTLIBDIR)/libRates.* $(EXTLIBDIR)/libFormFactors.* $(EXTLIBDIR)/libAmplitudes.* $(EXTBUILDDIR)/hammer $(EXTINCDIR)/Hammer
 
 #Download the hammer software here...
 #$(EXTSRCDIR)/hammer/README:
 #	$(DOWNLOAD) hammer Hammer-v1.0.tar.gz https://gitlab.com/mpapucci/Hammer/-/archive/v1.0/Hammer-v1.0.tar.gz
 #	@mv $(EXTSRCDIR)/Hammer-v1.0 ${EXTSRCDIR}/hammer
 
+#MAX_CXX_IS_14=OFF enables CXX17 support
+#BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
+#WITH_PYTHON=ON for python bindings of the C++ libraries
 $(EXTLIBDIR)/libHammer.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@echo "building Hammer"
 	@mkdir -p $(EXTBUILDDIR)/hammer
-	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON && \
+	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF && \
         make -j$(NPROCESSES); make install
 	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/ 
 	@rm -r $(EXTDIR)/lib/Hammer

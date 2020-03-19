@@ -20,21 +20,21 @@ index d501c19..608b736 100644
    DumpTableInfo();
 +#endif
  }
-diff --git a/source/physics_lists/lists/include/FTFP_BERT.icc b/source/physics_lists/lists/include/FTFP_BERT.icc
-index d5ca11d..a89d612 100644
---- a/source/physics_lists/lists/include/FTFP_BERT.icc
-+++ b/source/physics_lists/lists/include/FTFP_BERT.icc
-@@ -72,8 +72,8 @@ template<class T> TFTFP_BERT<T>::TFTFP_BERT(G4int ver):  T()
-   // default cut value  (1.0mm) 
+diff --git a/source/physics_lists/lists/src/FTFP_BERT.cc b/source/physics_lists/lists/src/FTFP_BERT.cc
+index 6fac67a..cd3b5de 100644
+--- a/source/physics_lists/lists/src/FTFP_BERT.cc
++++ b/source/physics_lists/lists/src/FTFP_BERT.cc
+@@ -70,8 +70,8 @@ FTFP_BERT::FTFP_BERT(G4int ver)
+ {
+   // default cut value  (1.0mm)
    // defaultCutValue = 1.0*CLHEP::mm;
-   G4DataQuestionaire it(photon);
--  G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT 2.0"<<G4endl;
+-  G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT"<<G4endl;
 -  G4cout <<G4endl;
-+  if(ver>0) G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT 2.0"<<G4endl;
-+  if(ver>0) G4cout <<G4endl;
-   this->defaultCutValue = 0.7*CLHEP::mm;  
-   this->SetVerboseLevel(ver);
- 
++  if(ver) G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT"<<G4endl;
++  if(ver) G4cout <<G4endl;
+   defaultCutValue = 0.7*CLHEP::mm;
+   SetVerboseLevel(ver);
+   
 diff --git a/source/physics_lists/lists/src/G4PhysListFactory.cc b/source/physics_lists/lists/src/G4PhysListFactory.cc
 index 3e0e2e7..47dff87 100644
 --- a/source/physics_lists/lists/src/G4PhysListFactory.cc

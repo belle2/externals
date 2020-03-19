@@ -3,12 +3,11 @@ index 814da1731..d0af241db 100644
 --- a/source/geometry/volumes/src/G4AssemblyStore.cc
 +++ b/source/geometry/volumes/src/G4AssemblyStore.cc
 @@ -95,7 +95,8 @@ void G4AssemblyStore::Clean()
-   for(iterator pos=store->begin(); pos!=store->end(); pos++)
+   for(auto pos=store->begin(); pos!=store->end(); ++pos)
    {
-     if (fgNotifier) { fgNotifier->NotifyDeRegistration(); }
+     if (fgNotifier != nullptr) { fgNotifier->NotifyDeRegistration(); }
 -    if (*pos) { delete *pos; }
 +    // HACK: basf2 is not ready for this sudden change of ownership logic
 +    /* if (*pos) { delete *pos; } */
-     i++;
+     ++i;
    }
- 

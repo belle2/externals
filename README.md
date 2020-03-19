@@ -40,7 +40,7 @@ the externals.
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.34            | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.72            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](https://www.sourceware.org/bzip2/)                                   | 1.08            | BSD-style  |
-| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.1.0         | LGPLv3     |
+| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.1.3         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.16.5          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.6.0           | MIT-style  |
@@ -55,7 +55,7 @@ the externals.
 | [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 9.3             | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 9.1             | GPLv2      |
-| [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.05.p01       | Geant4 License |
+| [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p01       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.25.2          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.10.0           | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
@@ -84,9 +84,9 @@ the externals.
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.1           | BSD        |
-| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.5.2          | Apache v2  |
-| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.1.0           | Apache v2  |
-| [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
+| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.6.0          | Apache v2  |
+| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.1.5           | Apache v2  |
+| [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.6             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.11.2          | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |

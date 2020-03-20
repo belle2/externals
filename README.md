@@ -64,8 +64,8 @@ the externals.
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.5          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.0           | BSD-style  |
-| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.9           | MIT        |
-| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.33          | MIT        |
+| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |
+| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.34          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.2           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.6.6           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |

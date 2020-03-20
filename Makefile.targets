@@ -319,7 +319,7 @@ libxml2.touch:
 	@rm $(EXTBINDIR)/xml2-config
 
 $(EXTSRCDIR)/libxml2:
-	@$(DOWNLOAD) libxml2 libxml2-2.9.9.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.9.tar.gz
+	@$(DOWNLOAD) libxml2 libxml2-2.9.10.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.10.tar.gz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
@@ -338,7 +338,7 @@ libxslt.touch:
 	@rm $(EXTBINDIR)/xslt-config
 
 $(EXTSRCDIR)/libxslt:
-	@$(DOWNLOAD) libxslt libxslt-1.1.33.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.33.tar.gz
+	@$(DOWNLOAD) libxslt libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.34.tar.gz
 
 $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \

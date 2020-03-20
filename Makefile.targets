@@ -371,7 +371,7 @@ bzip2.touch:
 	@rm -fr $(EXTBINDIR)/bzip2
 
 $(EXTSRCDIR)/bzip2:
-	@$(DOWNLOAD) bzip2 bzip2-1.0.6.tar.gz http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+	@$(DOWNLOAD) bzip2 bzip2-1.0.8.tar.gz https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
 
 $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
@@ -380,7 +380,7 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep && \
 	    ln -fs bzgrep bzegrep && ln -fs bzmore bzless
 	# add symlink to find library
-	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.6 libbz2.so
+	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.8 libbz2.so
 
 xz: $(EXTBINDIR)/xz
 xz.src: $(EXTSRCDIR)/xz/INSTALL

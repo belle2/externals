@@ -619,7 +619,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_70_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.70.0/boost_1_70_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_72_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.72.0/boost_1_72_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -630,7 +630,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    -sLZMA_INCLUDE=$(EXTINCDIR) -sLZMA_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
-	@cd $(EXTLIBDIR) && ln -sfT libboost_python36.so libboost_python.so
+	@cd $(EXTLIBDIR) && ln -sfT libboost_python38.so libboost_python.so
 
 # boost clean
 boost.clean:

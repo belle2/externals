@@ -67,7 +67,7 @@ aa2a6a1daafa3af66807cfe0bc77bfe1144a9a53df9a96bab52e3e575b3047ed *src/tensorflow
 417c7a9da8f60dd05698b3a7bc6002e4ef996f14c13f0ff96679a16873e78ab1 *src/valgrind-3.15.0.tar.bz2
 9c5fe088a84e9afedf92d0ff7dd2e516f4eac974d8195c710235ddf2530fd970 *src/vgm.4.3.tar.gz
 f07f85e27d72e9e8ff124173c7b53619aed8fcd36f9d6234c33f8f7fd511995b *src/xrootd-4.10.0.tar.gz
-b512f3b726d3b37b6dc4c8570e137b9311e7552e8ccbab4d39d47ce5f4177145 *src/xz-5.2.4.tar.gz
+f6f4910fd033078738bd82bfba4f49219d03b17eb0794eb91efbae419f4aba10 *src/xz-5.2.5.tar.gz
 e4d8560e163c3d875fd5d9e5542b5fd5bec810febdcba61481fe5fc4e6b1fd05 *src/yaml-cpp-0.6.2.tar.gz
 ebd7b5c830d6428956b67a0454a7f8cbed1de74b3b01e5c33c5378e22740f763 *src/zeromq-4.3.2.tar.gz
 c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1 *src/zlib-1.2.11.tar.gz

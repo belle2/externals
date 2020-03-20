@@ -388,7 +388,7 @@ xz.touch:
 	@rm -fr $(EXTBINDIR)/xz
 
 $(EXTSRCDIR)/xz/INSTALL:
-	@$(DOWNLOAD) xz xz-5.2.4.tar.gz https://tukaani.org/xz/xz-5.2.4.tar.gz
+	@$(DOWNLOAD) xz xz-5.2.5.tar.gz https://tukaani.org/xz/xz-5.2.5.tar.gz
 
 $(EXTBINDIR)/xz: $(EXTSRCDIR)/xz/INSTALL
 	@echo "building xz"

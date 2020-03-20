@@ -61,7 +61,7 @@ the externals.
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.5             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.8.1           | BSD |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.0.0           | GPLv3      |
-| [HDF5](https://www.hdfgroup.org/)                                            | 1.10.5          | BSD |
+| [HDF5](https://www.hdfgroup.org/)                                            | 1.10.6          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.0           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |

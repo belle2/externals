@@ -54,7 +54,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 9.3             | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 8.3             | GPLv2      |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 9.1             | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.01.p02       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.25.2          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.7.2           | MIT        |

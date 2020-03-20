@@ -540,14 +540,15 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-8.3.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.xz
+	@$(DOWNLOAD) gdb gdb-9.1.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-9.1.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
+	@mkdir -p $(EXTBUILDDIR)/gdb
 # note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 # also touch all .info files and their prerequisites to make sure they are up to
 # date, otherwise makeinfo might be called on "make install" and we don't want to require that
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
+	@cd $(EXTBUILDDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --with-python=python3 && \
 	    make -j $(NPROCESSES) && \
 	    touch gdb/doc/version.subst gdb/doc/GDBvn.texi gdb/doc/*.info && \

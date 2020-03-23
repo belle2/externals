@@ -1627,12 +1627,13 @@ git-lfs.clean:
 	@rm -fr $(EXTBINDIR)/git-lfs
 
 $(EXTSRCDIR)/git-lfs/README.md:
-	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.7.2.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.7.2/git-lfs-linux-amd64-v2.7.2.tar.gz
+	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.10.0.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.10.0/git-lfs-linux-amd64-v2.10.0.tar.gz
 
 $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@echo "installing git-lfs"
 	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
 # install the filters system wide but not in the current directory otherwise it adds hooks to .git
+	@mkdir -p $(EXTDIR)/etc
 	@cd /tmp && git lfs install --system
 
 bazel.src: $(EXTSRCDIR)/bazel/compile.sh

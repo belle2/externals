@@ -1493,7 +1493,7 @@ gsl: $(EXTBINDIR)/gsl-config
 gsl.src: $(EXTSRCDIR)/gsl
 
 $(EXTSRCDIR)/gsl:
-	$(DOWNLOAD) gsl gsl-2.5.tar.gz http://ftpmirror.gnu.org/gsl/gsl-2.5.tar.gz
+	$(DOWNLOAD) gsl gsl-2.6.tar.gz http://ftpmirror.gnu.org/gsl/gsl-2.6.tar.gz
 
 $(EXTBINDIR)/gsl-config: $(EXTSRCDIR)/gsl
 	@cp -fa $< $(EXTBUILDDIR)

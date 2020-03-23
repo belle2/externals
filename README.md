@@ -59,7 +59,7 @@ the externals.
 | [git](https://git-scm.com/)                                                  | 2.25.2          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.7.2           | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.5             | GPLv3      |
-| [Google Test](https://github.com/google/googletest)                          | 1.8.1           | BSD |
+| [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.0.0           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.6          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |

@@ -588,18 +588,19 @@ cmake.touch:
 
 
 # dependencies for google test
-gtest: $(EXTLIBDIR)/libgtest.a
+gtest: $(EXTLIBDIR)/libgtest.so
 gtest.src: $(EXTSRCDIR)/gtest/README.md
 
 # google test download
 $(EXTSRCDIR)/gtest/README.md:
-	@$(DOWNLOAD) gtest gtest-1.8.1.tar.gz https://github.com/google/googletest/archive/release-1.8.1.tar.gz
+	@$(DOWNLOAD) gtest gtest-1.10.0.tar.gz https://github.com/google/googletest/archive/release-1.10.0.tar.gz
 
 # google test build
-$(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README.md
+$(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@echo "building gtest"
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
+	    -DBUILD_SHARED_LIBS=ON \
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 

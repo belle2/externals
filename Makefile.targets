@@ -821,7 +821,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-4.10.0.tar.gz http://xrootd.org/download/v4.10.0/xrootd-4.10.0.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-4.11.2.tar.gz http://xrootd.org/download/v4.11.2/xrootd-4.11.2.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd

@@ -81,7 +81,7 @@ the externals.
 | [ROOT](https://root.cern.ch/)                                                | 6.18/00         | LGPLv2.1 (GPLv3 for MathMore)  |
 | [SQLite](https://www.sqlite.org/)                                            | 3.31.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
-| libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.32.1   | BSD        |
+| libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.3             | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 4.10.0          | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |

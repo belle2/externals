@@ -650,7 +650,7 @@ libuuid.clean:
 libuuid.touch: libuuid.clean
 
 $(EXTSRCDIR)/util-linux/README:
-	@$(DOWNLOAD) util-linux util-linux-2.32.1.tar.xz https://www.kernel.org/pub/linux/utils/util-linux/v2.32/util-linux-2.32.1.tar.xz
+	@$(DOWNLOAD) util-linux util-linux-2.35.1.tar.xz https://www.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35.1.tar.xz
 
 $(EXTINCDIR)/uuid/uuid.h: $(EXTSRCDIR)/util-linux/README
 	@echo "building libuuid"

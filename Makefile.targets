@@ -1473,7 +1473,7 @@ cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 # cppzmq download
 $(EXTSRCDIR)/cppzmq/zmq.hpp:
-	$(DOWNLOAD) cppzmq cppzmq-v4.3.0.tar.gz https://github.com/zeromq/cppzmq/archive/v4.3.0.tar.gz
+	$(DOWNLOAD) cppzmq cppzmq-v4.3.6.tar.gz https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz
 
 # cppzmq copy .hpp file to include folder
 $(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp

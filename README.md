@@ -43,7 +43,7 @@ the externals.
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.2.0.4         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.16.5          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
-| [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.3.0           | MIT-style  |
+| [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.6.0           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.69.1          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
 | [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.7.4           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.7           | MPLv2      |

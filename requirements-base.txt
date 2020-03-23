@@ -1,9 +1,12 @@
 pip==19.2.1 \
     --hash=sha256:258d702483dd749400aec59c23d638a5b2249ae28a0f478b6cab12ad45681a80 \
-    --hash=sha256:80d7452630a67c1e7763b5f0a515690f2c1e9ad06dda48e0ae85b7fdf2f59d97
+    --hash=sha256:80d7452630a67c1e7763b5f0a515690f2c1e9ad06dda48e0ae85b7fdf2f59d97 \
+    # via -r requirements-base.txt
 setuptools==41.0.1 \
     --hash=sha256:a222d126f5471598053c9a77f4b5d4f26eaa1f150ad6e01dcf1a42e185d05613 \
-    --hash=sha256:c7769ce668c7a333d84e17fe8b524b1c45e7ee9f7908ad0a73e1eda7e6a5aebf
+    --hash=sha256:c7769ce668c7a333d84e17fe8b524b1c45e7ee9f7908ad0a73e1eda7e6a5aebf \
+    # via -r requirements-base.txt, ipython, jsonschema, kiwisolver, markdown, protobuf, python-daemon, sphinx, tensorboard, zc.lockfile
 wheel==0.33.4 \
     --hash=sha256:5e79117472686ac0c4aef5bad5172ea73a1c2d1646b808c35926bd26bdfb0c08 \
-    --hash=sha256:62fcfa03d45b5b722539ccbc07b190e4bfff4bb9e3a4d470dd9f6a0981002565
+    --hash=sha256:62fcfa03d45b5b722539ccbc07b190e4bfff4bb9e3a4d470dd9f6a0981002565 \
+    # via -r requirements-base.txt, tensorboard, tensorflow

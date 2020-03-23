@@ -438,6 +438,23 @@ $(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
 	    --enable-json1 --enable-fts5 --enable-session --enable-silent-rules && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 
+libffi: $(EXTLIBDIR)/libffi.so
+libffi.src: $(EXTSRCDIR)/libffi/README.md
+libffi.clean:
+	@rm -fr $(EXTLIBDIR)/libffi.so
+libffi.touch:
+	@rm -fr $(EXTLIBDIR)/libffi.so
+
+$(EXTSRCDIR)/libffi/README.md:
+	@$(DOWNLOAD) libffi libffi-3.3.tar.gz https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
+
+$(EXTLIBDIR)/libffi.so: $(EXTSRCDIR)/libffi/README.md
+	@echo "building libffi"
+	@mkdir -p $(EXTBUILDDIR)/libffi
+	@cd $(EXTBUILDDIR)/libffi && $(EXTSRCDIR)/libffi/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
+	    --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
+
 python: $(EXTBINDIR)/python3
 python.src: $(EXTSRCDIR)/python
 

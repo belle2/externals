@@ -21,7 +21,7 @@ endif
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
 COMMON_PACKAGES:=pkg-config-wrapper gcc binutils zlib bzip2 xz lz4 curl git libxml2 libxslt \
-    cmake sqlite hdf5 python python-packages gdb boost gtest eigen astyle madgraph \
+    cmake sqlite hdf5 libffi python python-packages gdb boost gtest eigen astyle madgraph \
     zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs bazel tensorflow \
     clhep geant4 postgresql neurobayes xrootd davix root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \

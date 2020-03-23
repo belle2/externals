@@ -64,6 +64,7 @@ the externals.
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.10.6          | BSD |
 | [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
+| [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.34          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.2           | BSD + GPLv2 |

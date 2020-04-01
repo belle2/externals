@@ -1,0 +1,27 @@
+From ca5092b08002e8b6c89b85b01c2a0c5808495065 Mon Sep 17 00:00:00 2001
+From: Martin Ritter <martin.ritter@lmu.de>
+Date: Wed, 1 Apr 2020 11:41:09 +0000
+Subject: [PATCH] Disable Perl module
+
+The perl ccflags on centos8 contain gcc plugins our gcc doesn't have.
+---
+ modules/ca/src/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/modules/ca/src/Makefile b/modules/ca/src/Makefile
+index 335cec6..b3cc7cb 100644
+--- a/modules/ca/src/Makefile
++++ b/modules/ca/src/Makefile
+@@ -17,9 +17,6 @@ DIRS += client
+ DIRS += tools
+ tools_DEPEND_DIRS = client
+ 
+-DIRS += perl
+-perl_DEPEND_DIRS = client
+-
+ DIRS += template
+ 
+ include $(TOP)/configure/RULES_DIRS
+-- 
+2.17.1
+

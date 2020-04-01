@@ -1610,6 +1610,7 @@ epics.clean:
 
 $(EXTSRCDIR)/epics/README:
 	$(DOWNLOAD) epics epics-base-7.0.3.1.tar.gz https://epics.anl.gov/download/base/base-7.0.3.1.tar.gz
+	@cd $(EXTSRCDIR)/epics && patch -p1 < $(PATCHDIR)/epics-disable-perl.patch
 
 $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	@cp -fa $(EXTSRCDIR)/epics $(EXTBUILDDIR)

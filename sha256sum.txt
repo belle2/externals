@@ -15,7 +15,7 @@ e9203391a0b913576153a2ad22a2dc1479b1ec325beb6c46a3237c669aef5a52 *src/cppzmq-v4.
 dcee2428f81cba113f82e0c7c42f4d85bff4b8530e5ab5c82c059bed3e570c20 *src/cry_v1.7.tar.gz
 2ff5e5bd507adf6aa88ff4bbafd4c7af464867ffb688be93b9930717a56c4de8 *src/curl-7.69.1.tar.bz2
 d920ca976846875d83af4dc50c99280bb3741fcf8351d5733453e70fa5fe6fc8 *src/davix-0.7.5.tar.gz
-bd9c0ec462b6a9b5b41ede97bede5458e0d7bb40d4cfa27f6f622eb33c59245d *src/doxygen-1.8.15.src.tar.gz
+2cba988af2d495541cbbe5541b3bee0ee11144dcb23a81eada19f5501fd8b599 *src/doxygen-1.8.17.src.tar.gz
 9f13cf90dedbe3e52a19f43000d71fdf72e986beb9a5436dddcd61ff9d77a3ce *src/eigen_3.3.7.tar.bz2
 5b77b8d7d2de2e1c14746836fab059b195b2128505b0568e2abe2bd37f4863b6 *src/eos-0.2.4.tar.gz
 1de65638a806be6c0eebc0b7840ed9dd1a1a7879bcb6ab0da88a1e8e456b709c *src/epics-base-7.0.3.1.tar.gz

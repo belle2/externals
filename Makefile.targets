@@ -274,17 +274,17 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/llvm-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/cfe-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/compiler-rt-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/lld lld-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/lld-8.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/llvm-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang clang-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/compiler-rt-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/lld lld-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lld-10.0.0.src.tar.xz
 # in case we want the llvm debugger
-#	@$(DOWNLOAD) llvm/projects/lldb lldb-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/lldb-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxx libcxx-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libcxx-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libcxxabi-8.0.0.src.tar.xz
+#	@$(DOWNLOAD) llvm/projects/lldb lldb-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lldb-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxx libcxx-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxx-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxxabi-10.0.0.src.tar.xz
 # in case we want llvm libunwind
-#	@$(DOWNLOAD) llvm/projects/libunwind libunwind-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libunwind-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/clang-tools-extra-8.0.0.src.tar.xz
+#	@$(DOWNLOAD) llvm/projects/libunwind libunwind-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libunwind-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-tools-extra-10.0.0.src.tar.xz
 	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-8.0-pythonforward.patch
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm

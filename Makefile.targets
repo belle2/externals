@@ -685,14 +685,15 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-1.88.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.88/cppcheck-1.88.tar.bz2
+	@$(DOWNLOAD) cppcheck cppcheck-1.90.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.90/cppcheck-1.90.tar.bz2
 	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DMATCH_COMPILER=ON && \
 	    make -j $(NPROCESSES) && make install
 
 # doxygen
@@ -1751,6 +1752,5 @@ $(EXTLIBDIR)/libHammer.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@mkdir -p $(EXTBUILDDIR)/hammer
 	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF && \
         make -j$(NPROCESSES); make install
-	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/ 
+	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
 	@rm -r $(EXTDIR)/lib/Hammer
-

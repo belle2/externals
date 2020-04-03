@@ -183,7 +183,9 @@ $(EXTBINDIR)/pkg-config: tools/pkg-config
 
 relocatable_fixes:
 # Fix absolute paths in .pc files for pkg-config and in python scripts
-	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
+	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc 2>/dev/null
+# and in CMAKE files
+	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/**/*.cmake 2>/dev/null
 # Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
 	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi

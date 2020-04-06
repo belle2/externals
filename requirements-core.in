@@ -1,17 +1,19 @@
 autopep8 
 b2luigi
+boost-histogram
 CherryPy 
 CommonMark
 # Cython is needed for compiling HAMMER with python bindings
 cython==0.29.15
 # Cymove is needed for compiling HAMMER with python bindings
 cymove==1.0.0
+flake8
 file-read-backwards
 # error with 0.15.1post1 so stick to non-post
 docutils==0.15
 h5py
-histbook
 ipython 
+jira
 jupyter 
 keras
 # Pin luigi to 2.7.7 because that is the only version compatible with tornado 5 (https://github.com/spotify/luigi/pull/2490)
@@ -28,15 +30,17 @@ scikit-learn
 scipy
 scons
 seaborn
+snakemake
 sphinx 
 tables
-tensorflow
+tabulate
+tensorflow==1.15.2
 tensorflow-probability
 # CPU version of pytorch
-https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-linux_x86_64.whl \
-    --hash=sha256:f20df27935cd76d9eb244ea0f5558f65ff45730a1e19fe6b30b639f6cb4d640e
-https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl \
-    --hash=sha256:d9d1a862013ca87f841c42aeb19c5547a413238900500edf94020e57d5a02f8b
+https://download.pytorch.org/whl/cpu/torch-1.4.0%2Bcpu-cp36-cp36m-linux_x86_64.whl \
+    --hash=sha256:f20312fc168147e6b152e8a335bc916cc0b86a39d9a39c69d0223ffa99b72de4
+https://download.pytorch.org/whl/cpu/torchvision-0.5.0%2Bcpu-cp36-cp36m-linux_x86_64.whl \
+    --hash=sha256:ae3686f57a56c71ee7cc001bb067b3ebb246f1d6abc8b9023f7d7d043a4f8b83
 Theano
 uncertainties
 uproot

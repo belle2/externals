@@ -234,7 +234,7 @@ gcc.src: $(EXTSRCDIR)/gcc
 $(EXTSRCDIR)/gcc:
 	@$(DOWNLOAD) gcc gcc-9.3.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz
 # and also download the prerequisites in their latest version
-	@$(DOWNLOAD) gcc/gmp gmp-6.2.0.tar.xz https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz
+	@$(DOWNLOAD) gcc/gmp gmp-6.1.2.tar.xz https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz
 	@$(DOWNLOAD) gcc/mpfr mpfr-4.0.2.tar.xz http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz
 	@$(DOWNLOAD) gcc/mpc mpc-1.1.0.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
 	@$(DOWNLOAD) gcc/isl isl-0.21.tar.xz http://isl.gforge.inria.fr/isl-0.21.tar.xz
@@ -482,12 +482,6 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # the tools pem file and the official one
 CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
-MAIN_REQUIREMENTS:= "requirements-core.txt"
-# No torch on SL6
-ifeq ($(strip $(shell b2install-print-os)), sl6)
-  MAIN_REQUIREMENTS:= "requirements-core.sl6.txt"
-endif
-
 PIP3OPTIONS:=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
@@ -502,7 +496,7 @@ python-packages.src:
 # make sure pip is up to date
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
-	cat requirements-base.txt $(MAIN_REQUIREMENTS) | (while read line; do \
+	cat requirements-base.txt requirements-core.txt | (while read line; do \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
 	done)
@@ -522,7 +516,7 @@ $(EXTBINDIR)/ipython:
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
-	    -r requirements-base.txt -r $(MAIN_REQUIREMENTS)
+	    -r requirements-base.txt -r requirements-core.txt
 # make pep8 compatibility link
 	cd $(EXTBINDIR) && ln -sf pycodestyle pep8
 # register widget extension in jupyter
@@ -1666,7 +1660,7 @@ bazel.clean:
 	@rm -fr $(EXTBINDIR)/bazel
 
 $(EXTSRCDIR)/bazel/compile.sh:
-	$(DOWNLOAD) bazel bazel-0.25.2-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
+	$(DOWNLOAD) bazel bazel-0.26.1-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.26.1/bazel-0.26.1-dist.zip
 
 $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
 	cd $(EXTSRCDIR)/bazel && export EXTRA_BAZEL_ARGS="--jobs $(NPROCESSES)" && ./compile.sh && \
@@ -1674,21 +1668,21 @@ $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
 
 tensorflow.src: $(EXTSRCDIR)/tensorflow/configure
 tensorflow.touch:
-	@rm -fr $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed
 tensorflow.clean:
-	@rm -fr $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed \
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed \
 	  $(EXTSRCDIR)/tensorflow
 tensorflow: $(EXTSRCDIR)/.tensorflow-installed
 
-$(EXTSRCDIR)/.tensorflow-installed: $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl
+$(EXTSRCDIR)/.tensorflow-installed: $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl
 	pip3 install -U --no-deps $<
 	touch $@
 
 $(EXTSRCDIR)/tensorflow/configure:
-	$(DOWNLOAD) tensorflow tensorflow-v1.14.0.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.14.0.tar.gz
+	$(DOWNLOAD) tensorflow tensorflow-v1.15.2.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.15.2.tar.gz
 	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-sl6.patch
 
-$(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
+$(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
 	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/tensorflow && \
 	  GCC_HOST_COMPILER_PATH=`which gcc` \

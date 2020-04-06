@@ -291,7 +291,7 @@ $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
 	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles"  \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/llvm && \
 	    make -j $(NPROCESSES) && make install
 
@@ -465,7 +465,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.8.2.tgz https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz
+	@$(DOWNLOAD) python Python-3.6.10.xz https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tar.xz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -473,8 +473,10 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
 	    --prefix=$(EXTDIR) --with-ensurepip=install && \
 	    make -j $(NPROCESSES) && make install
+# make symlink from $(VERSION)m to $(VERSION) as some programs don't find the includes otherwise. Done by Debian as well
+	@cd $(EXTINCDIR) && ln -sfT python3.6m python3.6
 # add customization to the site directories so that we can also install packages into the other lib directories
-	@cp sitecustomize.py $(EXTLIBDIR)/python3.8/site-packages
+	@cp sitecustomize.py $(EXTLIBDIR)/python3.6/site-packages
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
@@ -539,15 +541,15 @@ root-python-packages.src:
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
 	done)
 
-root-python-packages: $(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py
+root-python-packages: $(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py
 
-$(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py:
+$(EXTLIBDIR)/python3.6/site-packages/root_numpy/info.py:
 	eval $(CREATE_PIP_CERTCHAIN)
 	pip3 install --prefix=$(EXTDIR) --find-links=src/python-packages $(PIP3OPTIONS) \
 	    --no-deps -r requirements-root.txt
 
 root-python-packages.clean:
-	@rm -fr $(EXTLIBDIR)/python3.8/site-packages/
+	@rm -fr $(EXTLIBDIR)/python3.6/site-packages/
 
 root-python-packages.touch: root-python-packages.clean
 
@@ -618,7 +620,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
 	    -DBUILD_SHARED_LIBS=ON \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
 # google test clean
@@ -692,7 +694,7 @@ $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DMATCH_COMPILER=ON && \
 	    make -j $(NPROCESSES) && make install
 
@@ -709,7 +711,7 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen
 	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
 # dependencies for CLHEP
@@ -847,7 +849,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
 	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
 	    make -j $(NPROCESSES) && make install
 
@@ -870,7 +872,7 @@ $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"
 	@mkdir -p $(EXTBUILDDIR)/davix
 	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so \
 	    -DDAVIX_TESTS=OFF && \
 	    make -j $(NPROCESSES) && make install
@@ -1440,7 +1442,7 @@ $(EXTSRCDIR)/fann/README.md:
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES); make install
 
 # astyle: C/C++ code beautifier
@@ -1576,7 +1578,7 @@ $(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
 	@echo "installing yaml-cpp"
 	@mkdir -p $(EXTBUILDDIR)/yaml-cpp
 	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp \
-	  -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	  -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
 	  -DYAML_BUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
 	    make -j $(NPROCESSES); make install
 
@@ -1688,7 +1690,7 @@ $(EXTSRCDIR)/tensorflow/configure:
 	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-sl6.patch
 
 $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
-	cd $(EXTBINDIR) && ln -sf python3.8 python
+	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/tensorflow && \
 	  GCC_HOST_COMPILER_PATH=`which gcc` \
 	  PYTHON_BIN_PATH=`which python3` \

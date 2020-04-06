@@ -234,7 +234,7 @@ gcc.src: $(EXTSRCDIR)/gcc
 $(EXTSRCDIR)/gcc:
 	@$(DOWNLOAD) gcc gcc-9.3.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz
 # and also download the prerequisites in their latest version
-	@$(DOWNLOAD) gcc/gmp gmp-6.1.2.tar.xz https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz
+	@$(DOWNLOAD) gcc/gmp gmp-6.1.2.tar.xz https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz
 	@$(DOWNLOAD) gcc/mpfr mpfr-4.0.2.tar.xz http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz
 	@$(DOWNLOAD) gcc/mpc mpc-1.1.0.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
 	@$(DOWNLOAD) gcc/isl isl-0.21.tar.xz http://isl.gforge.inria.fr/isl-0.21.tar.xz

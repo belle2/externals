@@ -30,7 +30,7 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/tools/download.sh
 #    evaluate $EXTINCDIR relative to $EXTDIR
 # if needed as make variable wrap it in a shell echo call $(shell echo $(call
 # relpath,...))
-relpath=`python -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
+relpath=`b2anypython -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
 
 # get rid of localization
 export LANG:=C

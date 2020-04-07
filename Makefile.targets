@@ -1664,6 +1664,7 @@ bazel.clean:
 
 $(EXTSRCDIR)/bazel/compile.sh:
 	$(DOWNLOAD) bazel bazel-0.26.1-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.26.1/bazel-0.26.1-dist.zip
+	@cd $(EXTSRCDIR)/bazel/third_party/grpc/ && patch -p1 < $(PATCHDIR)/bazel-grpc-18950-rename-gettid.patch
 
 $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
 	cd $(EXTBINDIR) && ln -sf python3.6 python
@@ -1686,6 +1687,7 @@ $(EXTSRCDIR)/.tensorflow-installed: $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-li
 $(EXTSRCDIR)/tensorflow/configure:
 	$(DOWNLOAD) tensorflow tensorflow-v1.15.2.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.15.2.tar.gz
 	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-sl6.patch
+	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-grpc-18950-rename-gettid.patch
 
 $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
 	cd $(EXTBINDIR) && ln -sf python3.6 python

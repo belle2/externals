@@ -1734,9 +1734,9 @@ $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp
 
 
 hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt
-hammer: $(EXTLIBDIR)/libHammer.so
+hammer: $(EXTLIBDIR)/libHammerBase.so
 hammer.touch:
-	@rm -fr $(EXTLIBDIR)/libHammer.so
+	@rm -fr $(EXTLIBDIR)/libHammerBase.so
 hammer.clean:
 	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTLIBDIR)/libRates.* $(EXTLIBDIR)/libFormFactors.* $(EXTLIBDIR)/libAmplitudes.* $(EXTBUILDDIR)/hammer $(EXTINCDIR)/Hammer
 
@@ -1747,10 +1747,10 @@ $(EXTSRCDIR)/hammer/CMakeLists.txt:
 #MAX_CXX_IS_14=OFF enables CXX17 support
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries
-$(EXTLIBDIR)/libHammer.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
+$(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@echo "building Hammer"
 	@mkdir -p $(EXTBUILDDIR)/hammer
 	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF && \
-        make -j$(NPROCESSES); make install
+	    make -j$(NPROCESSES); make install
 	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
 	@rm -r $(EXTDIR)/lib/Hammer

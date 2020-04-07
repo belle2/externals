@@ -1726,11 +1726,11 @@ nlohmann_json.clean:
 	@rm -fr $(EXTSRCDIR)/nlohmann_json $(EXTINCDIR)/nlohmann/
 
 $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp:
-	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.6.1.zip https://github.com/nlohmann/json/releases/download/v3.6.1/include.zip
+	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.7.3.zip https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
 
 $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp
 	@echo "installing nlohmann/json"
-	@cp -fa $(EXTSRCDIR)/nlohmann_json/nlohmann $(EXTINCDIR)
+	@cp -fa $(EXTSRCDIR)/nlohmann_json/include/nlohmann $(EXTINCDIR)
 
 
 hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt

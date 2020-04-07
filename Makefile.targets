@@ -1242,6 +1242,7 @@ $(EXTSRCDIR)/madgraph/VERSION:
 	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git-a48b612.tar.gz https://github.com/qliphy/MGISR/tarball/a48b612
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 	@cd src/madgraph && patch -p0 < $(PATCHDIR)/madgraph-gcc8.patch
+	@sed -i 's:^#!\s*/usr/bin/env\s*python$$:#!/usr/bin/env python2:g' $(EXTSRCDIR)/madgraph/bin/*
 
 # MadGraph developer's kit installation.
 $(EXTBINDIR)/mg5_aMC: $(EXTSRCDIR)/madgraph/VERSION

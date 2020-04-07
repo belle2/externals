@@ -1666,8 +1666,10 @@ $(EXTSRCDIR)/bazel/compile.sh:
 	$(DOWNLOAD) bazel bazel-0.26.1-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.26.1/bazel-0.26.1-dist.zip
 
 $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
+	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/bazel && export EXTRA_BAZEL_ARGS="--jobs $(NPROCESSES)" && ./compile.sh && \
 	  mv output/bazel $(EXTBINDIR)
+	cd $(EXTBINDIR) && rm python
 
 tensorflow.src: $(EXTSRCDIR)/tensorflow/configure
 tensorflow.touch:

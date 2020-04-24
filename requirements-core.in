@@ -14,13 +14,15 @@ docutils==0.15
 h5py
 ipython 
 jira
-jupyter 
+jupyter
+jupytext
 keras
 # Pin luigi to 2.7.7 because that is the only version compatible with tornado 5 (https://github.com/spotify/luigi/pull/2490)
 luigi==2.7.7
 lxml 
 matplotlib 
 metakernel
+nbsphinx
 pandas
 pycodestyle
 pylama
@@ -31,7 +33,7 @@ scipy
 scons
 seaborn
 snakemake
-sphinx 
+sphinx
 tables
 tabulate
 tensorflow==1.15.2

@@ -30,7 +30,7 @@ export DOWNLOAD := $(BELLE2_EXTERNALS_DIR)/tools/download.sh
 #    evaluate $EXTINCDIR relative to $EXTDIR
 # if needed as make variable wrap it in a shell echo call $(shell echo $(call
 # relpath,...))
-relpath=`python -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
+relpath=`b2anypython -c 'import os,sys; print(os.path.relpath(*sys.argv[1:]))' $(1) $(2)`
 
 # get rid of localization
 export LANG:=C
@@ -133,13 +133,6 @@ ifeq ($(GL_GLU_EXISTS),0)
   ROOT_OPTION+= -Dopengl=ON -Dbuiltin_glew=ON
 endif
 
-
-# check whether geant4 data files are already installed
-GEANT4_DATA_EXISTS:=$(shell test -d share/Geant4-10.1.2/data/G4EMLOW6.41; echo $$?)
-ifneq ($(GEANT4_DATA_EXISTS),0)
-  GEANT4_OPTION+= -DGEANT4_INSTALL_DATA=ON
-endif
-
 # check for graphics packages
 GL_XMU_EXISTS:=$(shell pkg-config --exists gl xmu 2> /dev/null; echo $$?)
 ifeq ($(GL_XMU_EXISTS),0)
@@ -183,7 +176,9 @@ $(EXTBINDIR)/pkg-config: tools/pkg-config
 
 relocatable_fixes:
 # Fix absolute paths in .pc files for pkg-config and in python scripts
-	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc
+	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/pkgconfig/*.pc 2>/dev/null
+# and in CMAKE files
+	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/**/*.cmake 2>/dev/null
 # Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
 	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
@@ -210,7 +205,9 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.32.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2
+	@$(DOWNLOAD) binutils binutils-2.34.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.bz2
+# bazel runs into problems on centos8 https://bugzilla.redhat.com/show_bug.cgi?id=1600431
+	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-1600431-discarded-section.patch
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
@@ -230,12 +227,12 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-8.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-9.3.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz
 # and also download the prerequisites in their latest version
 	@$(DOWNLOAD) gcc/gmp gmp-6.1.2.tar.xz https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz
-	@$(DOWNLOAD) gcc/mpfr mpfr-4.0.1.tar.xz http://www.mpfr.org/mpfr-4.0.1/mpfr-4.0.1.tar.xz
+	@$(DOWNLOAD) gcc/mpfr mpfr-4.0.2.tar.xz http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz
 	@$(DOWNLOAD) gcc/mpc mpc-1.1.0.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
-	@$(DOWNLOAD) gcc/isl isl-0.18.tar.xz http://isl.gforge.inria.fr/isl-0.18.tar.xz
+	@$(DOWNLOAD) gcc/isl isl-0.21.tar.xz http://isl.gforge.inria.fr/isl-0.21.tar.xz
 
 $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 	@echo "building gcc"
@@ -252,7 +249,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 # Now ROOT needs to see a c++ in the search path, otherwise it thinks there are
 # no c++ std includes so we install the c++ includes in $(EXTINCDIR)/c++ but
 # skip the version: there's only one gcc version per external version.
-	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib \
+	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --disable-bootstrap \
 	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
 	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
@@ -272,17 +269,17 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/llvm-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang cfe-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/cfe-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/compiler-rt-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/lld lld-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/lld-8.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm llvm-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/llvm-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang clang-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/compiler-rt-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/lld lld-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lld-10.0.0.src.tar.xz
 # in case we want the llvm debugger
-#	@$(DOWNLOAD) llvm/projects/lldb lldb-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/lldb-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxx libcxx-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libcxx-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libcxxabi-8.0.0.src.tar.xz
+#	@$(DOWNLOAD) llvm/projects/lldb lldb-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lldb-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxx libcxx-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxx-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxxabi-10.0.0.src.tar.xz
 # in case we want llvm libunwind
-#	@$(DOWNLOAD) llvm/projects/libunwind libunwind-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/libunwind-8.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-8.0.0.src.tar.xz http://llvm.org/releases/8.0.0/clang-tools-extra-8.0.0.src.tar.xz
+#	@$(DOWNLOAD) llvm/projects/libunwind libunwind-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libunwind-10.0.0.src.tar.xz
+	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-tools-extra-10.0.0.src.tar.xz
 	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-8.0-pythonforward.patch
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
@@ -317,7 +314,7 @@ libxml2.touch:
 	@rm $(EXTBINDIR)/xml2-config
 
 $(EXTSRCDIR)/libxml2:
-	@$(DOWNLOAD) libxml2 libxml2-2.9.9.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.9.tar.gz
+	@$(DOWNLOAD) libxml2 libxml2-2.9.10.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.10.tar.gz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
@@ -336,7 +333,7 @@ libxslt.touch:
 	@rm $(EXTBINDIR)/xslt-config
 
 $(EXTSRCDIR)/libxslt:
-	@$(DOWNLOAD) libxslt libxslt-1.1.33.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.33.tar.gz
+	@$(DOWNLOAD) libxslt libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.34.tar.gz
 
 $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
@@ -369,7 +366,7 @@ bzip2.touch:
 	@rm -fr $(EXTBINDIR)/bzip2
 
 $(EXTSRCDIR)/bzip2:
-	@$(DOWNLOAD) bzip2 bzip2-1.0.6.tar.gz http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+	@$(DOWNLOAD) bzip2 bzip2-1.0.8.tar.gz https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
 
 $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $< && make -f Makefile-libbz2_so && mv libbz2.so* $(EXTLIBDIR)
@@ -378,7 +375,7 @@ $(EXTBINDIR)/bzip2: $(EXTSRCDIR)/bzip2
 	@cd $(EXTBINDIR) && ln -fs bzdiff bzcmp && ln -fs bzgrep bzfgrep && \
 	    ln -fs bzgrep bzegrep && ln -fs bzmore bzless
 	# add symlink to find library
-	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.6 libbz2.so
+	@cd $(EXTLIBDIR) && ln -fs libbz2.so.1.0.8 libbz2.so
 
 xz: $(EXTBINDIR)/xz
 xz.src: $(EXTSRCDIR)/xz/INSTALL
@@ -386,7 +383,7 @@ xz.touch:
 	@rm -fr $(EXTBINDIR)/xz
 
 $(EXTSRCDIR)/xz/INSTALL:
-	@$(DOWNLOAD) xz xz-5.2.4.tar.gz https://tukaani.org/xz/xz-5.2.4.tar.gz
+	@$(DOWNLOAD) xz xz-5.2.5.tar.gz https://tukaani.org/xz/xz-5.2.5.tar.gz
 
 $(EXTBINDIR)/xz: $(EXTSRCDIR)/xz/INSTALL
 	@echo "building xz"
@@ -406,7 +403,7 @@ lz4.touch:
 	@rm -fr $(EXTBINDIR)/lz4
 
 $(EXTSRCDIR)/lz4/INSTALL:
-	@$(DOWNLOAD) lz4 lz4-v1.9.1.tar.gz https://github.com/lz4/lz4/archive/v1.9.1.tar.gz
+	@$(DOWNLOAD) lz4 lz4-v1.9.2.tar.gz https://github.com/lz4/lz4/archive/v1.9.2.tar.gz
 
 $(EXTBINDIR)/lz4: $(EXTSRCDIR)/lz4/INSTALL
 	@echo "building lz4"
@@ -427,7 +424,7 @@ sqlite.touch:
 	@rm -fr $(EXTBINDIR)/sqlite3
 
 $(EXTSRCDIR)/sqlite:
-	$(DOWNLOAD) sqlite sqlite-autoconf-3290000.tar.gz https://www.sqlite.org/2019/sqlite-autoconf-3290000.tar.gz
+	$(DOWNLOAD) sqlite sqlite-autoconf-3310100.tar.gz https://www.sqlite.org/2020/sqlite-autoconf-3310100.tar.gz
 
 $(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
 	@echo "building sqlite"
@@ -435,6 +432,23 @@ $(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
 	@cd $(EXTBUILDDIR)/sqlite && $(EXTSRCDIR)/sqlite/configure --prefix=$(EXTDIR) \
 	    --enable-json1 --enable-fts5 --enable-session --enable-silent-rules && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
+libffi: $(EXTLIBDIR)/libffi.so
+libffi.src: $(EXTSRCDIR)/libffi/README.md
+libffi.clean:
+	@rm -fr $(EXTLIBDIR)/libffi.so
+libffi.touch:
+	@rm -fr $(EXTLIBDIR)/libffi.so
+
+$(EXTSRCDIR)/libffi/README.md:
+	@$(DOWNLOAD) libffi libffi-3.3.tar.gz https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz
+
+$(EXTLIBDIR)/libffi.so: $(EXTSRCDIR)/libffi/README.md
+	@echo "building libffi"
+	@mkdir -p $(EXTBUILDDIR)/libffi
+	@cd $(EXTBUILDDIR)/libffi && $(EXTSRCDIR)/libffi/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
+	    --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
 
 python: $(EXTBINDIR)/python3
 python.src: $(EXTSRCDIR)/python
@@ -446,7 +460,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.6.9.tgz https://www.python.org/ftp/python/3.6.9/Python-3.6.9.tgz
+	@$(DOWNLOAD) python Python-3.6.10.xz https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tar.xz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -463,12 +477,6 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 # the tools pem file and the official one
 CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
-MAIN_REQUIREMENTS:= "requirements-core.txt"
-# No torch on SL6
-ifeq ($(strip $(shell b2install-print-os)), sl6)
-  MAIN_REQUIREMENTS:= "requirements-core.sl6.txt"
-endif
-
 PIP3OPTIONS:=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
 	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
@@ -478,15 +486,19 @@ endif
 
 # download the source for the python packages. This is only called directly or
 # with make src and it will download src and binary package versions
-python-packages.src:
+python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 	eval $(CREATE_PIP_CERTCHAIN)
 # make sure pip is up to date
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
-	cat requirements-base.txt $(MAIN_REQUIREMENTS) | (while read line; do \
+	cat requirements-base.txt requirements-core.txt | (while read line; do \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
 	done)
+
+# we need the matplotlib style files
+$(EXTSRCDIR)/belle2style/README.md:
+	@$(DOWNLOAD) belle2style belle2style@e774d4e7ecf.zip https://stash.desy.de/rest/api/latest/projects/B2D/repos/belle2style/archive?at=e774d4e7ecf&format=zip
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
@@ -498,12 +510,12 @@ python-packages.touch:
 # path.py but for newer versions we can just install the wheel which doesn't
 # need that. For now we ignore this dependency and assume easy_install will do
 # it correctly.
-$(EXTBINDIR)/ipython:
+$(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	eval $(CREATE_PIP_CERTCHAIN)
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
-	    -r requirements-base.txt -r $(MAIN_REQUIREMENTS)
+	    -r requirements-base.txt -r requirements-core.txt
 # make pep8 compatibility link
 	cd $(EXTBINDIR) && ln -sf pycodestyle pep8
 # register widget extension in jupyter
@@ -514,6 +526,8 @@ $(EXTBINDIR)/ipython:
 	sed -i 's#$(EXTBINDIR)/*##g' $(EXTDIR)/share/jupyter/kernels/python3/kernel.json
 # install our own version of sphinx-argparse
 	pip3 install -U --no-deps src/sphinx-argparse
+# install the belle2style files
+	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
 
 root-python-packages.src:
 	eval $(CREATE_PIP_CERTCHAIN)
@@ -540,14 +554,15 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-8.3.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.xz
+	@$(DOWNLOAD) gdb gdb-9.1.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-9.1.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
+	@mkdir -p $(EXTBUILDDIR)/gdb
 # note: avoid propagating CXXFLAGS by explicitly unsetting in sub-shell (works in posix and csh)
 # also touch all .info files and their prerequisites to make sure they are up to
 # date, otherwise makeinfo might be called on "make install" and we don't want to require that
-	@cd $(EXTSRCDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
+	@cd $(EXTBUILDDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --with-python=python3 && \
 	    make -j $(NPROCESSES) && \
 	    touch gdb/doc/version.subst gdb/doc/GDBvn.texi gdb/doc/*.info && \
@@ -565,7 +580,7 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@$(DOWNLOAD) cmake cmake-3.15.0.tar.gz http://www.cmake.org/files/v3.15/cmake-3.15.0.tar.gz
+	@$(DOWNLOAD) cmake cmake-3.16.5.tar.gz http://www.cmake.org/files/v3.16/cmake-3.16.5.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
@@ -587,18 +602,19 @@ cmake.touch:
 
 
 # dependencies for google test
-gtest: $(EXTLIBDIR)/libgtest.a
+gtest: $(EXTLIBDIR)/libgtest.so
 gtest.src: $(EXTSRCDIR)/gtest/README.md
 
 # google test download
 $(EXTSRCDIR)/gtest/README.md:
-	@$(DOWNLOAD) gtest gtest-1.8.1.tar.gz https://github.com/google/googletest/archive/release-1.8.1.tar.gz
+	@$(DOWNLOAD) gtest gtest-1.10.0.tar.gz https://github.com/google/googletest/archive/release-1.10.0.tar.gz
 
 # google test build
-$(EXTLIBDIR)/libgtest.a: $(EXTSRCDIR)/gtest/README.md
+$(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@echo "building gtest"
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
+	    -DBUILD_SHARED_LIBS=ON \
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
@@ -618,7 +634,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_70_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.70.0/boost_1_70_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_72_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.72.0/boost_1_72_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -648,7 +664,7 @@ libuuid.clean:
 libuuid.touch: libuuid.clean
 
 $(EXTSRCDIR)/util-linux/README:
-	@$(DOWNLOAD) util-linux util-linux-2.32.1.tar.xz https://www.kernel.org/pub/linux/utils/util-linux/v2.32/util-linux-2.32.1.tar.xz
+	@$(DOWNLOAD) util-linux util-linux-2.35.1.tar.xz https://www.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35.1.tar.xz
 
 $(EXTINCDIR)/uuid/uuid.h: $(EXTSRCDIR)/util-linux/README
 	@echo "building libuuid"
@@ -666,14 +682,15 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-1.88.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.88/cppcheck-1.88.tar.bz2
+	@$(DOWNLOAD) cppcheck cppcheck-1.90.tar.bz2 http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.90/cppcheck-1.90.tar.bz2
 	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DMATCH_COMPILER=ON && \
 	    make -j $(NPROCESSES) && make install
 
 # doxygen
@@ -683,7 +700,7 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.8.15.src.tar.gz http://doxygen.nl/files/doxygen-1.8.15.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.8.17.src.tar.gz http://doxygen.nl/files/doxygen-1.8.17.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
@@ -692,25 +709,74 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` && \
 	    make -j $(NPROCESSES) && make install
 
+Vc.src: $(EXTSRCDIR)/Vc/README.md
+Vc: $(EXTLIBDIR)/libVc.a
+Vc.touch:
+	rm -fr $(EXTLIBDIR)/libVc.a
+
+$(EXTSRCDIR)/Vc/README.md:
+	@$(DOWNLOAD) Vc Vc-1.4.1.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.1/Vc-1.4.1.tar.gz
+
+$(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
+	@echo "building Vc"
+	@mkdir -p $(EXTBUILDDIR)/Vc
+	@cd $(EXTBUILDDIR)/Vc && $(CMAKE) $(EXTSRCDIR)/Vc \
+	    -DBUILD_TESTING=OFF && \
+	    make -j $(NPROCESSES) && make install
+
+VecCore.src: $(EXTSRCDIR)/VecCore/README.md
+VecCore: $(EXTINCDIR)/VecCore/Config.h
+VecCore.touch:
+	rm -fr $(EXTINCDIR)/VecCore/Config.h
+
+$(EXTSRCDIR)/VecCore/README.md:
+	$(DOWNLOAD) VecCore VecCore-v0.6.0.tar.gz https://github.com/root-project/veccore/archive/v0.6.0.tar.gz
+
+$(EXTINCDIR)/VecCore/Config.h: $(EXTSRCDIR)/VecCore/README.md
+	@echo "building VecCore"
+	@mkdir -p $(EXTBUILDDIR)/VecCore
+	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \
+	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF -DBUILD_UMESIMD=OFF && \
+	    make -j $(NPROCESSES) && make install
+
+
+VecGeom.src: $(EXTSRCDIR)/VecGeom/README.md
+VecGeom: $(EXTLIBDIR)/libvecgeom.a
+VecGeom.touch:
+	rm -fr $(EXTLIBDIR)/libvecgeom.a
+
+$(EXTSRCDIR)/VecGeom/README.md:
+	@$(DOWNLOAD) VecGeom VecGeom-v1.1.5.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.1.5/VecGeom-v1.1.5.tar.gz
+
+$(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
+	@echo "building VecGeom"
+	@mkdir -p $(EXTBUILDDIR)/VecGeom
+	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
+	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 && \
+	    make -j $(NPROCESSES) VERBOSE=1 && make install
+
+
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config
-clhep.src: $(EXTSRCDIR)/CLHEP
+clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
-$(EXTSRCDIR)/CLHEP:
-	@$(DOWNLOAD) CLHEP clhep-2.2.0.4.tgz http://proj-clhep.web.cern.ch/proj-clhep/DISTRIBUTION/tarFiles/clhep-2.2.0.4.tgz
+$(EXTSRCDIR)/clhep/CLHEP/README.md:
+	@$(DOWNLOAD) clhep clhep-2.4.1.3.tgz http://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.1.3.tgz
 
 # CLHEP build
-$(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/CLHEP
+$(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 	@echo "building CLHEP"
-	@mkdir -p $(EXTBUILDDIR)/CLHEP
-	@cd $(EXTBUILDDIR)/CLHEP && $(CMAKE) $(EXTSRCDIR)/CLHEP/CLHEP && \
+	@mkdir -p $(EXTBUILDDIR)/clhep
+	@cd $(EXTBUILDDIR)/clhep && $(CMAKE) $(EXTSRCDIR)/clhep/CLHEP \
+	    -DCLHEP_BUILD_CXXSTD="-std=c++17" -DCLHEP_SINGLE_THREAD=ON && \
 	    make -j $(NPROCESSES) && make install
 
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/CLHEP $(EXTDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
 
 # CLHEP touch
 clhep.touch:
@@ -723,19 +789,11 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.10.01.p02.tar.gz http://geant4.cern.ch/support/source/geant4.10.01.p02.tar.gz
-	# fix gdml output for long properties. Already included upstream
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-gdml-strlen.patch
-	# disable forced overlap check in opt mode and cosmetic verbosity fixes
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-verbosity.patch
-	# fix rounding problem in G4ReplicaNavigation reported by Alexei
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-replicanavigation.patch
-	# fix irreproducibility reported by Kirill (BII-2433)
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-1990-cascade_rotation.patch
-	# fix rounding problem in SubtractionSolid by porting 10.4 version
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-subtractionSolid-backport10.4.patch
-	# fix something ... I just got an updated .cc file via mail for BII-2750
-	@cd $(EXTSRCDIR)/geant4 && patch -p1 < $(PATCHDIR)/geant4-BII-2750-G4GDecay3.patch
+	@$(DOWNLOAD) geant4 geant4.10.06.p01.tar.gz http://geant4.cern.ch/support/source/geant4.10.06.p01.tar.gz
+	# some cosmetic verbosity fixes
+	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
+	# disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
+	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -743,18 +801,20 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@mkdir -p $(EXTBUILDDIR)/geant4
 	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) $(GEANT4_OPTION) \
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
-	    -DGEANT4_USE_G3TOG4=ON -DGEANT4_USE_SYSTEM_EXPAT=OFF $(EXTSRCDIR)/geant4 && \
+	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
+	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
+	    -DGEANT4_BUILD_CXXSTD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
 	    make -j $(NPROCESSES) && make install
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.1.2/geant4make/geant4make.*
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.6.1/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.1.2 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.6.1 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
@@ -819,7 +879,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-4.10.0.tar.gz http://xrootd.org/download/v4.10.0/xrootd-4.10.0.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-4.11.2.tar.gz http://xrootd.org/download/v4.11.2/xrootd-4.11.2.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
@@ -844,15 +904,15 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.7.4.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.7.4/davix-0.7.4.tar.gz
-	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-disabletests.patch
+	@$(DOWNLOAD) davix davix-0.7.5.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.7.5/davix-0.7.5.tar.gz
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"
 	@mkdir -p $(EXTBUILDDIR)/davix
 	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
 	    -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
-	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so && \
+	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so \
+	    -DDAVIX_TESTS=OFF && \
 	    make -j $(NPROCESSES) && make install
 
 davix.clean:
@@ -869,11 +929,15 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.18.00.source.tar.gz https://root.cern.ch/download/root_v6.18.00.source.tar.gz
+	@$(DOWNLOAD) root root_v6.20.04.source.tar.gz https://root.cern.ch/download/root_v6.20.04.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
+# disable cling unloader as it crashes basf2
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10659-disable-cling-unloader.patch
 # option to write root files that are reproducible
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-reproducible-files.patch
+# and add the Belle 2 style definition
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-belle2style.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -886,14 +950,14 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -DPython_ADDITIONAL_VERSIONS=3.6 -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) -DDAVIX_LIBRARY=$(EXTLIBDIR)/libdavix.so \
-	    -DDAVIX_INCLUDE_DIR=$(EXTINCDIR)/davix -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dmemstat=ON -Dhttp=ON -Dfftw3=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpython=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
+	    -DPYTHON_EXECUTABLE=$(EXTBINDIR)/python3 -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
+	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
+	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
+	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
+	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
-	    -Dbuiltin_lz4=OFF -Dfftw3=ON \
-	    -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
+	    -Dfftw3=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
@@ -944,9 +1008,8 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.4.3.tar.gz  http://ivana.home.cern.ch/ivana/vgm.4.3.tar.gz
-	@cd $(EXTSRCDIR)/vgm && patch -Np0 < $(PATCHDIR)/vgm.patch
-	@cd $(EXTSRCDIR)/vgm && patch -p1 < $(PATCHDIR)/vgm-cpp14.patch
+	@$(DOWNLOAD) vgm vgm.4.6.tar.gz  http://ivana.home.cern.ch/ivana/vgm.4.6.tar.gz
+	@cd $(EXTSRCDIR)/vgm && patch -l -Np0 < $(PATCHDIR)/vgm.patch
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
@@ -972,7 +1035,7 @@ jemalloc.src: $(EXTSRCDIR)/jemalloc
 
 # jemalloc download
 $(EXTSRCDIR)/jemalloc:
-	@$(DOWNLOAD) jemalloc jemalloc-5.2.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.2.0/jemalloc-5.2.0.tar.bz2
+	@$(DOWNLOAD) jemalloc jemalloc-5.2.1.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
 
 # jemalloc build
 $(EXTLIBDIR)/libjemalloc.so: $(EXTSRCDIR)/jemalloc
@@ -1041,7 +1104,7 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@$(DOWNLOAD) MillepedeII MillepedeII_V04-05-01.tgz svn:checkout:174:http://svnsrv.desy.de/public/MillepedeII/tags/V04-05-01
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-06-00.tgz svn:checkout:184:http://svnsrv.desy.de/public/MillepedeII/tags/V04-06-00
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
@@ -1218,10 +1281,11 @@ madgraph: $(EXTBINDIR)/mg5_aMC
 madgraph.src: $(EXTSRCDIR)/madgraph/VERSION
 
 $(EXTSRCDIR)/madgraph/VERSION:
-	@$(DOWNLOAD) madgraph MG5_aMC_v2.6.6.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.6.tar.gz
+	@$(DOWNLOAD) madgraph MG5_aMC_v2.7.2.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.7.x/+download/MG5_aMC_v2.7.2.tar.gz
 	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git-a48b612.tar.gz https://github.com/qliphy/MGISR/tarball/a48b612
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 	@cd src/madgraph && patch -p0 < $(PATCHDIR)/madgraph-gcc8.patch
+	@sed -i 's:^#!\s*/usr/bin/env\s*python$$:#!/usr/bin/env python2:g' $(EXTSRCDIR)/madgraph/bin/*
 
 # MadGraph developer's kit installation.
 $(EXTBINDIR)/mg5_aMC: $(EXTSRCDIR)/madgraph/VERSION
@@ -1352,7 +1416,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.65.3.tar.bz2 http://curl.haxx.se/download/curl-7.65.3.tar.bz2
+	@$(DOWNLOAD) curl curl-7.69.1.tar.bz2 http://curl.haxx.se/download/curl-7.69.1.tar.bz2
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
@@ -1383,7 +1447,7 @@ git.clean:
 	@rm -fr $(EXTBUILDDIR)/git
 
 $(EXTSRCDIR)/git:
-	@$(DOWNLOAD) git git-2.22.0.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.22.0.tar.xz
+	@$(DOWNLOAD) git git-2.25.2.tar.xz https://www.kernel.org/pub/software/scm/git/git-2.25.2.tar.xz
 
 # compile git but we don't want to require gettext to be installed so we
 # compile without localization support by setting NO_GETTEXT=yes for
@@ -1471,7 +1535,7 @@ cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 # cppzmq download
 $(EXTSRCDIR)/cppzmq/zmq.hpp:
-	$(DOWNLOAD) cppzmq cppzmq-v4.3.0.tar.gz https://github.com/zeromq/cppzmq/archive/v4.3.0.tar.gz
+	$(DOWNLOAD) cppzmq cppzmq-v4.3.6.tar.gz https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz
 
 # cppzmq copy .hpp file to include folder
 $(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp
@@ -1491,7 +1555,7 @@ gsl: $(EXTBINDIR)/gsl-config
 gsl.src: $(EXTSRCDIR)/gsl
 
 $(EXTSRCDIR)/gsl:
-	$(DOWNLOAD) gsl gsl-2.5.tar.gz http://ftpmirror.gnu.org/gsl/gsl-2.5.tar.gz
+	$(DOWNLOAD) gsl gsl-2.6.tar.gz http://ftpmirror.gnu.org/gsl/gsl-2.6.tar.gz
 
 $(EXTBINDIR)/gsl-config: $(EXTSRCDIR)/gsl
 	@cp -fa $< $(EXTBUILDDIR)
@@ -1513,7 +1577,7 @@ hdf5.clean:
 	@rm -fr $(EXTBINDIR)/h5* $(EXTLIBDIR)/libhdf5* $(EXTINCDIR)/hdf5
 
 $(EXTSRCDIR)/hdf5/CMakeLists.txt:
-	$(DOWNLOAD) hdf5 hdf5-1.10.5.tar.bz2 https://www.hdfgroup.org/package/source-bzip2/?wpdmdl=13570
+	$(DOWNLOAD) hdf5 hdf5-1.10.6.tar.bz2 https://www.hdfgroup.org/package/hdf5-1-10-6-tar-bz2/?wpdmdl=14134
 
 $(EXTBINDIR)/h5ls: $(EXTSRCDIR)/hdf5/CMakeLists.txt
 	@echo "installing hdf5"
@@ -1548,14 +1612,14 @@ yaml-cpp.clean:
 	@rm -fr $(EXTLIBDIR)/libyaml-cpp* $(EXTINCDIR)/yaml-cpp
 
 $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt:
-	$(DOWNLOAD) yaml-cpp yaml-cpp-0.6.2.tar.gz https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.2.tar.gz
+	$(DOWNLOAD) yaml-cpp yaml-cpp-0.6.3.tar.gz https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.3.tar.gz
 
 $(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
 	@echo "installing yaml-cpp"
 	@mkdir -p $(EXTBUILDDIR)/yaml-cpp
 	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp \
 	  -DPython_ADDITIONAL_VERSIONS=3.6 -DPYTHON_EXECUTABLE=`which python3` \
-	  -DBUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
+	  -DYAML_BUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
 	    make -j $(NPROCESSES); make install
 
 eos: $(EXTLIBDIR)/libeos.so
@@ -1566,8 +1630,7 @@ eos.clean:
 	@rm -fr $(EXTBINDIR)/eos-* $(EXTLIBDIR)/libeos* $(EXTINCDIR)/eos
 
 $(EXTSRCDIR)/eos/configure:
-	$(DOWNLOAD) eos eos-0.2.4.tar.gz https://github.com/eos/eos/releases/download/v0.2.4/eos-0.2.4.tar.gz
-	@cd $(EXTSRCDIR)/eos && patch -p1 < $(PATCHDIR)/eos-hdf5dependency.patch
+	$(DOWNLOAD) eos eos-0.3.2.tar.gz https://github.com/eos/eos/archive/v0.3.2.tar.gz
 	@cd $(EXTSRCDIR)/eos && ./autogen.bash
 
 # needs gsl, hdf5 yaml-cpp fftw3
@@ -1577,7 +1640,7 @@ $(EXTLIBDIR)/libeos.so: $(EXTSRCDIR)/eos/configure
 	@cd $(EXTBUILDDIR)/eos && $(EXTSRCDIR)/eos/configure $(CONFIGURE_COMMON_FLAGS) --with-boost-python-suffix=36 \
 	    PYTHON=python3 --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
 	    --bindir=$(EXTBINDIR) --disable-pmc --with-minuit2=$(ROOTSYS) --enable-python --with-gsl=$(EXTCOMDIR) \
-	    --with-hdf5=$(EXTCOMDIR) --enable-silent-rules && \
+	    --with-hdf5=$(EXTCOMDIR) --enable-silent-rules BOOST_PYTHON_CXXFLAGS='-I$(EXTINCDIR)' && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 
 epics.src: $(EXTSRCDIR)/epics/README
@@ -1588,7 +1651,8 @@ epics.clean:
 	@rm -fr $(EXTDIR)/epics
 
 $(EXTSRCDIR)/epics/README:
-	$(DOWNLOAD) epics epics-base-7.0.2.2.tar.gz https://epics.anl.gov/download/base/base-7.0.2.2.tar.gz
+	$(DOWNLOAD) epics epics-base-7.0.3.1.tar.gz https://epics.anl.gov/download/base/base-7.0.3.1.tar.gz
+	@cd $(EXTSRCDIR)/epics && patch -p1 < $(PATCHDIR)/epics-disable-perl.patch
 
 $(EXTDIR)/epics/bin/linux-x86_64/caget: $(EXTSRCDIR)/epics/README
 	@cp -fa $(EXTSRCDIR)/epics $(EXTBUILDDIR)
@@ -1610,7 +1674,7 @@ rclone.clean:
 	@rm -fr $(EXTBINDIR)/rclone $(EXTDIR)/share/man/man1/rclone.1
 
 $(EXTSRCDIR)/rclone/README.txt:
-	$(DOWNLOAD) rclone rclone-v1.48.0-linux-amd64.zip https://downloads.rclone.org/v1.48.0/rclone-v1.48.0-linux-amd64.zip
+	$(DOWNLOAD) rclone rclone-v1.51.0-linux-amd64.zip https://downloads.rclone.org/v1.51.0/rclone-v1.51.0-linux-amd64.zip
 
 $(EXTBINDIR)/rclone: $(EXTSRCDIR)/rclone/README.txt
 	@echo "installing rclone"
@@ -1625,12 +1689,13 @@ git-lfs.clean:
 	@rm -fr $(EXTBINDIR)/git-lfs
 
 $(EXTSRCDIR)/git-lfs/README.md:
-	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.7.2.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.7.2/git-lfs-linux-amd64-v2.7.2.tar.gz
+	$(DOWNLOAD) git-lfs git-lfs-linux-amd64-v2.10.0.tar.gz https://github.com/git-lfs/git-lfs/releases/download/v2.10.0/git-lfs-linux-amd64-v2.10.0.tar.gz
 
 $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@echo "installing git-lfs"
 	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
 # install the filters system wide but not in the current directory otherwise it adds hooks to .git
+	@mkdir -p $(EXTDIR)/etc
 	@cd /tmp && git lfs install --system
 
 bazel.src: $(EXTSRCDIR)/bazel/compile.sh
@@ -1641,29 +1706,33 @@ bazel.clean:
 	@rm -fr $(EXTBINDIR)/bazel
 
 $(EXTSRCDIR)/bazel/compile.sh:
-	$(DOWNLOAD) bazel bazel-0.25.2-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
+	$(DOWNLOAD) bazel bazel-0.26.1-dist.zip https://github.com/bazelbuild/bazel/releases/download/0.26.1/bazel-0.26.1-dist.zip
+	@cd $(EXTSRCDIR)/bazel/third_party/grpc/ && patch -p1 < $(PATCHDIR)/bazel-grpc-18950-rename-gettid.patch
 
 $(EXTBINDIR)/bazel: $(EXTSRCDIR)/bazel/compile.sh
+	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/bazel && export EXTRA_BAZEL_ARGS="--jobs $(NPROCESSES)" && ./compile.sh && \
 	  mv output/bazel $(EXTBINDIR)
+	cd $(EXTBINDIR) && rm python
 
 tensorflow.src: $(EXTSRCDIR)/tensorflow/configure
 tensorflow.touch:
-	@rm -fr $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed
 tensorflow.clean:
-	@rm -fr $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed \
+	@rm -fr $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl $(EXTSRCDIR)/.tensorflow-installed \
 	  $(EXTSRCDIR)/tensorflow
 tensorflow: $(EXTSRCDIR)/.tensorflow-installed
 
-$(EXTSRCDIR)/.tensorflow-installed: $(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl
+$(EXTSRCDIR)/.tensorflow-installed: $(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl
 	pip3 install -U --no-deps $<
 	touch $@
 
 $(EXTSRCDIR)/tensorflow/configure:
-	$(DOWNLOAD) tensorflow tensorflow-v1.14.0.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.14.0.tar.gz
+	$(DOWNLOAD) tensorflow tensorflow-v1.15.2.tar.gz https://github.com/tensorflow/tensorflow/archive/v1.15.2.tar.gz
 	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-sl6.patch
+	@cd $(EXTSRCDIR)/tensorflow && patch -p1 < $(PATCHDIR)/tensorflow-grpc-18950-rename-gettid.patch
 
-$(EXTSRCDIR)/tensorflow-1.14.0-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
+$(EXTSRCDIR)/tensorflow-1.15.2-cp36-cp36m-linux_x86_64.whl: $(EXTSRCDIR)/tensorflow/configure $(EXTBINDIR)/bazel
 	cd $(EXTBINDIR) && ln -sf python3.6 python
 	cd $(EXTSRCDIR)/tensorflow && \
 	  GCC_HOST_COMPILER_PATH=`which gcc` \
@@ -1702,17 +1771,17 @@ nlohmann_json.clean:
 	@rm -fr $(EXTSRCDIR)/nlohmann_json $(EXTINCDIR)/nlohmann/
 
 $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp:
-	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.6.1.zip https://github.com/nlohmann/json/releases/download/v3.6.1/include.zip
+	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.7.3.zip https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
 
 $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp
 	@echo "installing nlohmann/json"
-	@cp -fa $(EXTSRCDIR)/nlohmann_json/nlohmann $(EXTINCDIR)
+	@cp -fa $(EXTSRCDIR)/nlohmann_json/include/nlohmann $(EXTINCDIR)
 
 
 hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt
-hammer: $(EXTLIBDIR)/libHammer.so
+hammer: $(EXTLIBDIR)/libHammerBase.so
 hammer.touch:
-	@rm -fr $(EXTLIBDIR)/libHammer.so
+	@rm -fr $(EXTLIBDIR)/libHammerBase.so
 hammer.clean:
 	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTLIBDIR)/libRates.* $(EXTLIBDIR)/libFormFactors.* $(EXTLIBDIR)/libAmplitudes.* $(EXTBUILDDIR)/hammer $(EXTINCDIR)/Hammer
 
@@ -1723,11 +1792,10 @@ $(EXTSRCDIR)/hammer/CMakeLists.txt:
 #MAX_CXX_IS_14=OFF enables CXX17 support
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries
-$(EXTLIBDIR)/libHammer.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
+$(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@echo "building Hammer"
 	@mkdir -p $(EXTBUILDDIR)/hammer
 	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF && \
-        make -j$(NPROCESSES); make install
-	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/ 
+	    make -j$(NPROCESSES); make install
+	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
 	@rm -r $(EXTDIR)/lib/Hammer
-

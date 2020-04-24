@@ -39,6 +39,7 @@ def get_annotations(filename):
 def get_info(name, version):
     """Get JSON information for a package from pypi"""
     req = requests.get(f"https://pypi.org/pypi/{name}/{version}/json")
+    req.raise_for_status()
     return req.json()
 
 
@@ -90,11 +91,11 @@ if __name__ == "__main__":
             if not line.strip() or line.startswith("#"):
                 continue
 
-            m = re.match(r"^(.*?)==(.*?)\s*(#.*)?$", line)
+            m = re.match(r"^(.*?)(\[[^\]]*\]*)?==(.*?)\s*(#.*)?$", line)
             if m:
                 name = m.group(1)
-                version = m.group(2)
-                comment = m.group(3)
+                version = m.group(3)
+                comment = m.group(4)
                 print(f"Obtain info for {name}=={version}")
                 json_data = get_info(name, version)
                 # make list of all checksums
@@ -124,16 +125,21 @@ if __name__ == "__main__":
                 infos.append(info)
 
             # check pypi for https urls
-            m = re.match("http.*/(.*?)-(.*?)-cp", line)
+            m = re.match("http.*/(.*?)-(.*?)((\+|%2B).*)?-cp", line)
             if m:
                 name = m.group(1)
                 version = m.group(2)
-                json_data = get_info(name, version)
-                info = json_data["info"]
-                info["link"] = f"[{info['name']}]({info['project_url']})"
-                if info["license"] is None:
-                    info["license"] = ""
-                infos.append(info)
+                print(f"Obtain info from url for {name}=={version}")
+                try:
+                    json_data = get_info(name, version)
+                    info = json_data["info"]
+                    info["link"] = f"[{info['name']}]({info['project_url']})"
+                    if info["license"] is None:
+                        info["license"] = ""
+                    infos.append(info)
+                except Exception as e:
+                    print(e)
+                    pass
 
     print("Update requirement files")
     for i, filename in enumerate(files):

@@ -77,6 +77,9 @@ def unsetup_externals(location, common=False):
         env_vars['EPICS_HOST_ARCH'] = ''
         remove_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
 
+        # and eos home dir
+        env_vars['EOS_HOME'] = ''
+
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
@@ -168,6 +171,9 @@ def setup_externals(location, common=False):
         env_vars['EPICS_HOST_ARCH'] = 'linux-x86_64'
         add_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
 
+        # set EOS home
+        env_vars['EOS_HOME'] = os.path.join(location, 'share', 'eos')
+
         # ok, the rest is stuff we don't need fallbacks so we can return
         return
 
@@ -212,7 +218,7 @@ def config_externals(conf):
 
     def add_incdir(*components):
         """small helper to add a directory to the system include path"""
-        conf.env.Append(CCFLAGS="-isystem%s" % os.path.join(*components))
+        conf.env.AppendUnique(CCFLAGS="-isystem%s" % os.path.normpath(os.path.join(*components)))
 
     # configure python
     python_env = Environment(ENV=os.environ)
@@ -225,35 +231,13 @@ def config_externals(conf):
     # CLHEP
     add_incdir(conf.env['EXTINCDIR'], 'CLHEP')
 
-    # configure geant4
-    add_incdir(conf.env['EXTINCDIR'], 'Geant4')
-    conf.env['GEANT4_LIBS'] = [
-        'G4digits_hits',
-        'G4error_propagation',
-        'G4event',
-        'G4FR',
-        'G4geometry',
-        'G4global',
-        'G4graphics_reps',
-        'G4intercoms',
-        'G4interfaces',
-        'G4materials',
-        'G4modeling',
-        'G4parmodels',
-        'G4particles',
-        'G4physicslists',
-        'G4processes',
-        'G4RayTracer',
-        'G4readout',
-        'G4run',
-        'G4track',
-        'G4tracking',
-        'G4Tree',
-        'G4visHepRep',
-        'G4vis_management',
-        'G4visXXX',
-        'G4VRML',
-    ]
+    # Configure and setup Geant4
+    geant4_env = Environment(ENV=os.environ)
+    geant4_env.ParseConfig('geant4-config --cflags --libs')
+    conf.env['GEANT4_LIBS'] = geant4_env['LIBS']
+    conf.env.AppendUnique(CPPDEFINES=geant4_env['CPPDEFINES'])
+    for incdir in geant4_env['CPPPATH']:
+        add_incdir(incdir)
 
     # PostgreSQL
     conf.env['HAS_PGSQL'] = False

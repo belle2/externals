@@ -1,49 +1,106 @@
-From 856222c896d16371df8e64ffc827c2d20cb7b734 Mon Sep 17 00:00:00 2001
+From 61d96afa4fd357f3d2ec9691ca14a0038a660d0d Mon Sep 17 00:00:00 2001
 From: Martin Ritter <martin.ritter@lmu.de>
-Date: Mon, 5 Sep 2016 15:21:30 +0200
-Subject: [PATCH] Make CppCheck relocatable
+Date: Wed, 8 Apr 2020 07:47:57 +0000
+Subject: [PATCH] Make cppcheck relocatable
 
-cmake compilation adds an absolute path to the configuration files which
-we don't want. This patch replaces this by looking for the
-$BELLE2_EXTERNALS_DIR environment variable to find the config files.
 ---
- cli/cppcheckexecutor.cpp | 6 +++---
- lib/library.cpp          | 6 +++++-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ cli/cppcheckexecutor.cpp | 13 +++----------
+ lib/cppcheck.cpp         | 12 ++++++------
+ lib/library.cpp          |  7 ++++---
+ lib/platform.cpp         | 15 ++++++++-------
+ 4 files changed, 21 insertions(+), 26 deletions(-)
 
 diff --git a/cli/cppcheckexecutor.cpp b/cli/cppcheckexecutor.cpp
-index 3867bcf..378cda6 100644
+index 80ea288..b2596f5 100644
 --- a/cli/cppcheckexecutor.cpp
 +++ b/cli/cppcheckexecutor.cpp
-@@ -781,9 +781,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
+@@ -832,16 +832,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
+     if (!std || !posix || !windows) {
          const std::list<ErrorLogger::ErrorMessage::FileLocation> callstack;
          const std::string msg("Failed to load " + std::string(!std ? "std.cfg" : !posix ? "posix.cfg" : "windows.cfg") + ". Your Cppcheck installation is broken, please re-install.");
- #ifdef CFGDIR
--        const std::string details("The Cppcheck binary was compiled with CFGDIR set to \"" +
--                                  std::string(CFGDIR) + "\" and will therefore search for "
--                                  "std.cfg in that path.");
+-#ifdef FILESDIR
+-        const std::string details("The Cppcheck binary was compiled with FILESDIR set to \""
+-                                  FILESDIR "\" and will therefore search for "
+-                                  "std.cfg in " FILESDIR "/cfg.");
+-#else
+-        const std::string cfgfolder(Path::fromNativeSeparators(Path::getPathFromFilename(argv[0])) + "cfg");
+-        const std::string details("The Cppcheck binary was compiled without FILESDIR set. Either the "
+-                                  "std.cfg should be available in " + cfgfolder + " or the FILESDIR "
+-                                  "should be configured.");
+-#endif
 +        const std::string details("The Cppcheck binary was compiled for the Belle2 externals, "
-+                                  "please make sure the externals are setup using setuprel "
++                                  "please make sure the externals are setup using b2setup "
 +                                  "or setupext and $BELLE2_EXTERNALS_DIR is set correctly.");
- #else
-         const std::string cfgfolder(Path::fromNativeSeparators(Path::getPathFromFilename(argv[0])) + "cfg");
-         const std::string details("The Cppcheck binary was compiled without CFGDIR set. Either the "
+         ErrorLogger::ErrorMessage errmsg(callstack, emptyString, Severity::information, msg+" "+details, "failedToLoadCfg", false);
+         reportErr(errmsg);
+         return EXIT_FAILURE;
+diff --git a/lib/cppcheck.cpp b/lib/cppcheck.cpp
+index 023ad23..af5783e 100644
+--- a/lib/cppcheck.cpp
++++ b/lib/cppcheck.cpp
+@@ -77,12 +77,12 @@ namespace {
+             if (Path::fileExists(exepath + "addons/" + fileName))
+                 return exepath + "addons/" + fileName;
+ 
+-#ifdef FILESDIR
+-            if (Path::fileExists(FILESDIR + ("/" + fileName)))
+-                return FILESDIR + ("/" + fileName);
+-            if (Path::fileExists(FILESDIR + ("/addons/" + fileName)))
+-                return FILESDIR + ("/addons/" + fileName);
+-#endif
++            char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
++            if(extDir){
++                const std::string fname = std::string(extDir) + "/share/Cppcheck/addons" + fileName;
++                if (Path::fileExists(fname)) return fname;
++            }
++
+             return "";
+         }
+ 
 diff --git a/lib/library.cpp b/lib/library.cpp
-index 711fe44..b82e738 100644
+index d48d59b..5066e65 100644
 --- a/lib/library.cpp
 +++ b/lib/library.cpp
-@@ -76,7 +77,10 @@ Library::Error Library::load(const char exename[], const char path[])
+@@ -95,9 +95,10 @@ Library::Error Library::load(const char exename[], const char path[])
+         }
  
          std::list<std::string> cfgfolders;
- #ifdef CFGDIR
--        cfgfolders.push_back(CFGDIR);
+-#ifdef FILESDIR
+-        cfgfolders.emplace_back(FILESDIR "/cfg");
+-#endif
++
 +        char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
-+        if(extDir){
-+            cfgfolders.push_back(std::string(extDir) + "/share/Cppcheck");
-+        }
- #endif
++        if(extDir) cfgfolders.push_back(std::string(extDir) + "/share/Cppcheck/cfg");
++
          if (exename) {
              const std::string exepath(Path::fromNativeSeparators(Path::getPathFromFilename(exename)));
+             cfgfolders.push_back(exepath + "cfg");
+diff --git a/lib/platform.cpp b/lib/platform.cpp
+index 3ba2e6f..176bc12 100644
+--- a/lib/platform.cpp
++++ b/lib/platform.cpp
+@@ -165,13 +165,14 @@ bool cppcheck::Platform::loadPlatformFile(const char exename[], const std::strin
+             filenames.push_back(Path::getPathFromFilename(Path::fromNativeSeparators(exename)) + "platforms/" + filename);
+             filenames.push_back(Path::getPathFromFilename(Path::fromNativeSeparators(exename)) + "platforms/" + filename + ".xml");
+         }
+-#ifdef FILESDIR
+-        std::string filesdir = FILESDIR;
+-        if (!filesdir.empty() && filesdir[filesdir.size()-1] != '/')
+-            filesdir += '/';
+-        filenames.push_back(filesdir + ("platforms/" + filename));
+-        filenames.push_back(filesdir + ("platforms/" + filename + ".xml"));
+-#endif
++
++        char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
++        if(extDir){
++            const std::string fname = std::string(extDir) + "/share/Cppcheck/platforms" + filename;
++            filenames.push_back(fname);
++            filenames.push_back(fname + ".xml");
++        }
++
+         bool success = false;
+         for (const std::string & f : filenames) {
+             if (doc.LoadFile(f.c_str()) == tinyxml2::XML_SUCCESS) {
 -- 
-2.9.0
+2.25.2
 

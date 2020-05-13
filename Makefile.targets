@@ -1799,3 +1799,16 @@ $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	    make -j$(NPROCESSES); make install
 	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
 	@rm -r $(EXTDIR)/lib/Hammer
+
+pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
+pandoc: $(EXTBINDIR)/pandoc
+pandoc.touch:
+	@rm -fr $(EXTBINDIR)/pandoc
+pandoc.clean:
+	@rm -fr $(EXTBINDIR)/pandoc*
+
+$(EXTSRCDIR)/pandoc/bin/pandoc:
+	$(DOWNLOAD) pandoc pandoc-2.9.2.1-linux-amd64.tar.gz https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-linux-amd64.tar.gz
+
+$(EXTBINDIR)/pandoc: $(EXTSRCDIR)/pandoc/bin/pandoc
+	cp -fa $(EXTSRCDIR)/pandoc/bin/* $(EXTBINDIR)

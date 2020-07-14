@@ -127,7 +127,7 @@ def setup_externals(location, common=False):
     if common:
         # we have to setup git to be relocatable. Inspired by bin-wrappers/git in the git build
         # directory
-        env_vars['GIT_EXEC_PATH'] = os.path.join(location, subdir, 'libexec', 'git-core')
+        env_vars['GIT_EXEC_PATH'] = os.path.join(location, subdir, 'lib', 'git-core')
         env_vars['GIT_TEMPLATE_DIR'] = os.path.join(location, 'share', 'git-core', 'templates')
         env_vars['GIT_GUI_LIB_DIR'] = os.path.join(location, 'share', 'git-gui', 'lib')
         # set up perl path for git-svn. Sadly this directory is somewhere

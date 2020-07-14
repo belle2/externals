@@ -164,6 +164,9 @@ dirs: $(DIRECTORIES) $(SHARED_DIRECTORIES)
 ifeq ($(shell uname -m),x86_64)
 	@cd $(EXTDIR) && ln -sfT lib lib64
 endif
+# make a libexec -> lib symlink too because otherwise git tools will be in "lib"
+# on some distros and in "libexec" on others
+	@cd $(EXTDIR) && ln -sfT lib libexec
 
 # pkg config wrapper using correct paths and being relocatable (if .pc files are fixed)
 pkg-config-wrapper: $(EXTBINDIR)/pkg-config

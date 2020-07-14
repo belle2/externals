@@ -1,0 +1,25 @@
+From e93cb0a19d0ed902301620b21ce46611bf713a5b Mon Sep 17 00:00:00 2001
+From: Jonathan Slenders <jonathan@slenders.be>
+Date: Tue, 31 Mar 2020 23:04:39 +0200
+Subject: [PATCH] Handle situation when signal.getsignal returns None.
+
+---
+ prompt_toolkit/application/application.py | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/prompt_toolkit/application/application.py b/prompt_toolkit/application/application.py
+index c7430277b..11afcc205 100644
+--- a/prompt_toolkit/application/application.py
++++ b/prompt_toolkit/application/application.py
+@@ -690,6 +690,11 @@ def flush_input() -> None:
+                     if has_sigwinch:
+                         previous_winch_handler = signal.getsignal(signal.SIGWINCH)
+                         loop.add_signal_handler(signal.SIGWINCH, self._on_resize)
++                        if previous_winch_handler is None:
++                            # In some situations we receive `None`. This is
++                            # however not a valid value for passing to
++                            # `signal.signal` at the end of this block.
++                            previous_winch_handler = signal.SIG_DFL
+ 
+                     # Wait for UI to finish.
+                     try:

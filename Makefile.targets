@@ -941,6 +941,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-reproducible-files.patch
 # and add the Belle 2 style definition
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-belle2style.patch
+# and apply the fix for cling on non-standard locales
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10751-clanglocale.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README

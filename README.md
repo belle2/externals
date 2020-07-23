@@ -13,7 +13,7 @@ directory and call
     make
 
 If you want to specify if you want to build the externals in optimal or debug
-mode you can either call `setopt` before running make or specify the option
+mode you can either call `b2code-option` before running make or specify the option
 directly. You can also compile both options at the same time
 
     make opt debug

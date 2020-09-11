@@ -1254,8 +1254,7 @@ $(EXTSRCDIR)/evtgen:
 	@$(DOWNLOAD) EvtGen EvtGen.R02-00-00.tar.gz https://evtgen.hepforge.org/downloads?f=EvtGen-02.00.00.tar.gz
 	@mv $(EXTSRCDIR)/EvtGen/R02-00-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
-	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-avoid-double-counting.patch
-	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-remove-leak.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
 
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen

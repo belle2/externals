@@ -1334,6 +1334,38 @@ cry.touch:
 	@rm -f $(EXTLIBDIR)/libCRY.a
 
 
+# dependencies for PHOKHARA
+phokhara: $(EXTLIBDIR)/libphokhara.so
+phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
+
+# PHOKHARA download
+# The archive contains object files, they need to be deleted.
+# The source file is converted from DOS to UNIX line endings.
+$(EXTSRCDIR)/phokhara/Makefile:
+	@$(DOWNLOAD) phokhara PH10.0.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH10.0.tar.gz
+	@cd $(EXTSRCDIR)/phokhara && \
+	    rm -f `find . -name '*.o'` && \
+	    sed -i 's/$$//' phokhara_10.0.f && \
+	    patch -Np1 < $(PATCHDIR)/phokhara.patch
+
+# PHOKHARA build
+$(EXTLIBDIR)/libphokhara.so: $(EXTSRCDIR)/phokhara/Makefile
+	@echo "building PHOKHARA"
+	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/phokhara && make -j $(NPROCESSES) && \
+	    cp libphokhara.so $(EXTLIBDIR)/libphokhara.so
+
+# PHOKHARA clean
+phokhara.clean:
+	@echo "cleaning PHOKHARA"
+	@-cd $(EXTBUILDDIR)/phokhara 2>/dev/null && make clean
+	@rm -rf $(EXTLIBDIR)/libphokhara.so
+
+# PHOKHARA touch
+phokhara.touch:
+	@rm -f $(EXTLIBDIR)/libphokhara.so
+
+
 # dependencies for FLC
 flc: $(EXTLIBDIR)/libComplexPDF.so
 flc.src: $(EXTSRCDIR)/FLC/README

@@ -1352,8 +1352,13 @@ $(EXTSRCDIR)/phokhara/Makefile:
 $(EXTLIBDIR)/libphokhara.so: $(EXTSRCDIR)/phokhara/Makefile
 	@echo "building PHOKHARA"
 	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/phokhara && make -j $(NPROCESSES) && \
-	    cp libphokhara.so $(EXTLIBDIR)/libphokhara.so
+	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && \
+	    make -j $(NPROCESSES) && \
+	    cp libeemmg5.so libeemmgisrfsr.so libeemmgisr.so libeemmgmix.so \
+	        libpjfry.so libqcdloop1.so $(EXTLIBDIR)
+	@cd $(EXTBUILDDIR)/phokhara && \
+	    EEMMGLIB_PATH=$(EXTLIBDIR) make -j $(NPROCESSES) && \
+	    cp libphokhara.so $(EXTLIBDIR)
 
 # PHOKHARA clean
 phokhara.clean:

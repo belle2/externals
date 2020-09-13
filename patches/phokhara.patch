@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index b285128..da904f0 100644
+index b285128..ef4d0ae 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -2,32 +2,40 @@ include eemmg-lib/Makefile.inc
@@ -21,21 +21,21 @@ index b285128..da904f0 100644
  
  # Path to libqcdloop1.so and libpjfry.so
 -LIBDIR=/home/szymon/PH10.0/eemmg-lib
-+LIBDIR=eemmg-lib
++LIBDIR=$(EEMMGLIB_PATH)
  # Path to libeemmg5.so
 -LIBDIR1=/home/szymon/PH10.0/eemmg-lib
-+LIBDIR1=eemmg-lib
++LIBDIR1=$(EEMMGLIB_PATH)
  # Path to libeemmgisr.so
 -LIBDIR2=/home/szymon/PH10.0/eemmg-lib
-+LIBDIR2=eemmg-lib
++LIBDIR2=$(EEMMGLIB_PATH)
  # Path to lqcdloop1
 -LIBDIR3=/home/szymon/PH10.0/eemmg-lib
 -LIBDIR4=/home/szymon/PH10.0/eemmg-lib
-+LIBDIR3=eemmg-lib
-+LIBDIR4=eemmg-lib
++LIBDIR3=$(EEMMGLIB_PATH)
++LIBDIR4=$(EEMMGLIB_PATH)
  # Path to fort 11 libraries
 -LIBDIR5=/home/szymon/PH10.0/eemmg-lib
-+LIBDIR5=eemmg-lib
++LIBDIR5=$(EEMMGLIB_PATH)
  
  # Link eemmg
 -LINK=-L$(LIBDIR1) -L$(LIBDIR2) -L$(LIBDIR) -L$(LIBDIR3) -L$(LIBDIR4) -L$(LIBDIR5) -leemmg5 -leemmgisr -lpjfry -lqcdloop1 -leemmgisrfsr -leemmgmix
@@ -377,6 +377,19 @@ index 0000000..1ada99b
 +      
 +      return
 +      end
+diff --git a/eemmg-lib/Makefile.inc b/eemmg-lib/Makefile.inc
+index 65b910c..c8b61fb 100644
+--- a/eemmg-lib/Makefile.inc
++++ b/eemmg-lib/Makefile.inc
+@@ -6,7 +6,7 @@ F77 = gfortran
+ 
+ # create dynamic libraries
+ CXXFLAGS = -O2 -fPIC -DHAVE_CONFIG_H
+-FFLAGS = -O2 -fPIC -ff2c
++FFLAGS = -O2 -std=legacy -fPIC -ff2c
+ LIB_LDFLAGS = -shared -Wl,-no-undefined -Wl,-export-dynamic
+ BIN_LDFLAGS = -Wl,-rpath=.
+ LIBEXT=.so
 diff --git a/gammf64.f b/gammf64.f
 new file mode 100644
 index 0000000..de95113
@@ -454,14 +467,14 @@ index 0000000..de95113
 +      END
 diff --git a/libphokhara.vers b/libphokhara.vers
 new file mode 100644
-index 0000000..9702bf9
+index 0000000..c80ee5d
 --- /dev/null
 +++ b/libphokhara.vers
 @@ -0,0 +1,9 @@
 +libphokhara {
 +    global:
 +        momset_;
-+        phokhara_;
++        phokhara;
 +        phokhara_set_parameter_file;
 +        phokhara_set_input_file;
 +    local:

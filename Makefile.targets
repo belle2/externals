@@ -1340,11 +1340,13 @@ phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
 
 # PHOKHARA download
 # The archive contains object files, they need to be deleted.
-# The source file is converted from DOS to UNIX line endings.
+# All ordinary files have mode "x", it is cleared
+# The main source file is converted from DOS to UNIX line endings.
 $(EXTSRCDIR)/phokhara/Makefile:
 	@$(DOWNLOAD) phokhara PH10.0.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH10.0.tar.gz
 	@cd $(EXTSRCDIR)/phokhara && \
 	    rm -f `find . -name '*.o'` && \
+	    chmod -x `find . -type f` && \
 	    sed -i 's/$$//' phokhara_10.0.f && \
 	    patch -Np1 < $(PATCHDIR)/phokhara.patch
 
@@ -1358,13 +1360,15 @@ $(EXTLIBDIR)/libphokhara.so: $(EXTSRCDIR)/phokhara/Makefile
 	        libpjfry.so libqcdloop1.so $(EXTLIBDIR)
 	@cd $(EXTBUILDDIR)/phokhara && \
 	    EEMMGLIB_PATH=$(EXTLIBDIR) make -j $(NPROCESSES) && \
-	    cp libphokhara.so $(EXTLIBDIR)
+	    cp libphokhara.so $(EXTLIBDIR) && \
+	    mkdir -p $(EXTSHRDIR)/phokhara && \
+	    cp const_and_model_paramall10.0.dat $(EXTSHRDIR)/phokhara
 
 # PHOKHARA clean
 phokhara.clean:
 	@echo "cleaning PHOKHARA"
 	@-cd $(EXTBUILDDIR)/phokhara 2>/dev/null && make clean
-	@rm -rf $(EXTLIBDIR)/libphokhara.so
+	@rm -rf $(EXTLIBDIR)/libphokhara.so $(EXTSHRDIR)/phokhara
 
 # PHOKHARA touch
 phokhara.touch:

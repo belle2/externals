@@ -390,6 +390,21 @@ index 65b910c..c8b61fb 100644
  LIB_LDFLAGS = -shared -Wl,-no-undefined -Wl,-export-dynamic
  BIN_LDFLAGS = -Wl,-rpath=.
  LIBEXT=.so
+diff --git a/eemmg-lib/ffinit_auto.f b/eemmg-lib/ffinit_auto.f
+index 66bc5d8..6fda4ab 100644
+--- a/eemmg-lib/ffinit_auto.f
++++ b/eemmg-lib/ffinit_auto.f
+@@ -781,8 +781,8 @@
+ 	return
+    30	continue
+ *	second try - the old system directory
+-	call getenv('HOME',path)
+-	fullname = path(1:index(path,' ')-1)//'/.config/ff/'//name
++	call getenv('BELLE2_EXTERNALS_DIR',path)
++	fullname = path(1:index(path,' ')-1)//'/share/phokhara/'//name
+ 	open(ifile,file=fullname,status='OLD',err=40)
+ 	return
+ *	file could not be found
 diff --git a/gammf64.f b/gammf64.f
 new file mode 100644
 index 0000000..de95113
@@ -481,7 +496,7 @@ index 0000000..c80ee5d
 +        *;
 +};
 diff --git a/phokhara_10.0.f b/phokhara_10.0.f
-index 4d11ba7..a9d5fd5 100644
+index 4d11ba7..f670a43 100644
 --- a/phokhara_10.0.f
 +++ b/phokhara_10.0.f
 @@ -206,17 +206,49 @@ c ======================================================================== c
@@ -534,7 +549,7 @@ index 4d11ba7..a9d5fd5 100644
  c
        common/muonfsr/inte
        common/virtsoft/inte_s
-@@ -227,20 +259,51 @@ c
+@@ -227,295 +259,227 @@ c
  c      open(16,file='cross1.dat',ACCESS='append')
  c      open(17,file='cross2.dat',ACCESS='append')
  c --- reads the seed ------
@@ -591,8 +606,274 @@ index 4d11ba7..a9d5fd5 100644
 +      if(MODE.eq.-1) then
  c --- print run data ------------------------------
        write(*,*) '----------------------------------------------------'
-       write(10,*) '----------------------------------------------------'
-@@ -514,8 +577,8 @@ c --------------------------------
+-      write(10,*) '----------------------------------------------------'
+ 
+       if(ph0.eq.0)then
+       if (pion.eq.0) then 
+          write(*,*) '     PHOKHARA 10.0 : e^+ e^- -> mu^+ mu^- gamma'
+-         write(10,*) '     PHOKHARA 10.0 : e^+ e^- -> mu^+ mu^- gamma'
+       elseif (pion.eq.1) then
+          write(*,*) '     PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- gamma' 
+-         write(10,*) '     PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- gamma'   
+       elseif (pion.eq.2) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- 2pi^0 gamma' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- 2pi^0 gamma'          
+       elseif (pion.eq.3) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> 2pi^+ 2pi^- gamma'
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> 2pi^+ 2pi^- gamma'  
+       elseif (pion.eq.4) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> p pbar gamma' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> p pbar gamma'
+       elseif (pion.eq.5) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> n nbar gamma'  
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> n nbar gamma'              
+       elseif (pion.eq.6) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> K^+ K^- gamma' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> K^+ K^- gamma'               
+       elseif (pion.eq.7) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> K_0 K_0bar gamma'    
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> K_0 K_0bar gamma'            
+       elseif (pion.eq.8) then
+          write(*,*)
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- pi^0 gamma'  
+-         write(10,*)
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- pi^0 gamma'              
+       elseif (pion.eq.9) then
+          write(*,*) 'PHOKHARA 10.0 : e^+ e^- ->'
+       write(*,*)'  Lambda (-> pi^- p) Lambda bar (-> pi^+ pbar) gamma'
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- ->'
+-      write(10,*)'  Lambda (-> pi^- p) Lambda bar (-> pi^+ pbar) gamma'
+       elseif (pion.eq.10) then
+          write(*,*)
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- eta gamma'
+-         write(10,*)
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- eta gamma'      
+          elseif(pion.eq.11) then
+       write(*,*) 'PHOKHARA 10.0 : Chi_c1 production'
+-      write(10,*) 'PHOKHARA 10.0 : Chi_c1 production'    
+          elseif(pion.eq.12) then   
+       write(*,*) 'PHOKHARA 10.0 : Chi_c2 production'
+-      write(10,*) 'PHOKHARA 10.0 : Chi_c2 production'    
+          elseif(pion.eq.13) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> pi^0  gamma gamma' 
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> pi^0  gamma gamma' 
+          elseif(pion.eq.14) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> eta  gamma gamma'
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> eta  gamma gamma'
+          elseif(pion.eq.15) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> etaP  gamma gamma'
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> etaP  gamma gamma'
+       else 
+          write(*,*) '     PHOKHARA 10.0: not yet implemented'
+-         write(10,*) '     PHOKHARA 10.0: not yet implemented'
+          stop        
+       endif
+       endif
+       if((ph0.eq.1).or.(ph0.eq.-1))then
+       if (pion.eq.0) then 
+          write(*,*) '     PHOKHARA 10.0 : e^+ e^- -> mu^+ mu^-'
+-         write(10,*) '     PHOKHARA 10.0 : e^+ e^- -> mu^+ mu^-'
+       elseif (pion.eq.1) then
+          write(*,*) '     PHOKHARA 10.0: e^+ e^- -> pi^+ pi^-'
+-         write(10,*) '     PHOKHARA 10.0: e^+ e^- -> pi^+ pi^-'    
+       elseif (pion.eq.2) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- 2pi^0' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- 2pi^0'       
+       elseif (pion.eq.3) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> 2pi^+ 2pi^-' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> 2pi^+ 2pi^-'
+       elseif (pion.eq.4) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> p pbar' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> p pbar'
+       elseif (pion.eq.5) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> n nbar'  
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> n nbar'              
+       elseif (pion.eq.6) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> K^+ K^-' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> K^+ K^-'               
+       elseif (pion.eq.7) then
+          write(*,*) 
+      1    '   PHOKHARA 10.0: e^+ e^- -> K_0 K_0bar' 
+-         write(10,*) 
+-     1    '   PHOKHARA 10.0: e^+ e^- -> K_0 K_0bar'               
+       elseif (pion.eq.8) then
+          write(*,*)
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- pi^0'  
+-         write(10,*)
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- pi^0'              
+       elseif (pion.eq.9) then
+          write(*,*) 'PHOKHARA 10.0 : e^+ e^- ->'
+       write(*,*)'  Lambda (-> pi^- p) Lambda bar (-> pi^+ pbar)'
+-         write(10,*) 'PHOKHARA 10.0 : e^+ e^- ->'
+-      write(10,*)'  Lambda (-> pi^- p) Lambda bar (-> pi^+ pbar)'
+       elseif (pion.eq.10) then
+          write(*,*)
+      1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- eta'
+-         write(10,*)
+-     1    '   PHOKHARA 10.0: e^+ e^- -> pi^+ pi^- eta'  
+       elseif(pion.eq.13) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> pi^0 gamma'
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> pi^0 gamma' 
+       elseif(pion.eq.14) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> eta gamma'
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> eta gamma' 
+       elseif(pion.eq.15) then   
+       write(*,*) 'PHOKHARA 10.0 : e^+ e^- -> etaP gamma' 
+-      write(10,*) 'PHOKHARA 10.0 : e^+ e^- -> etaP gamma'             
+       else 
+          write(*,*) '     PHOKHARA 10.0: not yet implemented'
+-         write(10,*) '     PHOKHARA 10.0: not yet implemented'
+          stop        
+       endif
+       endif
+ c --------------------------------
+       write(*,*) '----------------------------------------------------'
+-      write(10,*) '----------------------------------------------------'
+       write(*,100)   'cms total energy                       = ',
+      &                 dSqrt(Sp),' GeV  '
+-      write(10,100)   'cms total energy                       = ',
+-     &                 dSqrt(Sp),' GeV  '
+         if(ph0.eq.0)then
+         if(((gmin/2.d0/ebeam).lt.0.0098d0))then
+              write(*,*)' minimal missing energy set to small'
+-             write(10,*)' minimal missing energy set to small'
+              stop
+         endif
+         write(*,100) 'minimal tagged photon energy           = ',
+      &                 gmin,' GeV  '
+-        write(10,100) 'minimal tagged photon energy           = ',
+-     &                 gmin,' GeV  '
+         write(*,110) 'angular cuts on tagged photon          = ',
+      &                 phot1cut,',',phot2cut
+-        write(10,110) 'angular cuts on tagged photon          = ',
+-     &                 phot1cut,',',phot2cut
+         endif
+ c --------------------------------
+       if((pion.eq.0).or.(pion.eq.11).or.(pion.eq.12)) then 
+          write(*,110)'angular cuts on muons                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on muons                  = ',
+-     &                 pi1cut,',',pi2cut
+       elseif (pion.eq.4) then 
+          write(*,110)'angular cuts on protons                = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on protons                = ',
+-     &                 pi1cut,',',pi2cut
+       elseif (pion.eq.5) then 
+          write(*,110)'angular cuts on neutrons               = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on neutrons               = ',
+-     &                 pi1cut,',',pi2cut
+       elseif ((pion.eq.6).or.(pion.eq.7)) then 
+          write(*,110)'angular cuts on kaons                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on kaons                  = ',
+-     &                 pi1cut,',',pi2cut
+       elseif (pion.eq.9) then 
+          write(*,110)'angular cuts on pions and protons      = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions and protons      = ',
+-     &                 pi1cut,',',pi2cut
+       elseif (pion.eq.10) then 
+          write(*,110)'angular cuts on pions and eta          = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions and eta          = ',
+-     &                 pi1cut,',',pi2cut
+       elseif(pion.eq.13)then
+          write(*,110)'angular cuts on pion                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pion                  = ',
+-     &                 pi1cut,',',pi2cut
+       elseif(pion.eq.14)then
+          write(*,110)'angular cuts on eta                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on eta                  = ',
+-     &                 pi1cut,',',pi2cut
+       elseif(pion.eq.15)then
+          write(*,110)'angular cuts on etaP                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on etaP                  = ',
+-     &                 pi1cut,',',pi2cut
+       else
+          write(*,110)'angular cuts on pions                  = ',
+      &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions                  = ',
+-     &                 pi1cut,',',pi2cut
+       endif
+       if(ph0.eq.0)then
+          if ((pion.eq.0).or.(pion.eq.11).or.(pion.eq.12)) then  
+          write(*,*)'min. muons-tagged photon inv.mass^2    = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)'min. muons-tagged photon inv.mass^2    = ',
+-     &                 q2min,' GeV^2' 
+          elseif (pion.eq.4) then  
+          write(*,*)'min. protons-tagged photon inv.mass^2  = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)'min. protons-tagged photon inv.mass^2  = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.5) then  
+          write(*,*)'min. neutrons-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)'min. neutrons-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2' 
+          elseif ((pion.eq.6).or.(pion.eq.7)) then  
+          write(*,*)'min. kaons-tagged photon inv.mass^2    = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)'min. kaons-tagged photon inv.mass^2    = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.9) then  
+          write(*,*)' min. lambdas-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)' min. lambdas-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.10) then  
+          write(*,*)' min. pi-pi-eta-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)' min. pi-pi-eta-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.13) then  
+          write(*,*)' min. pion-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2'
+-         write(10,*)' min. pion-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.14) then  
+          write(*,*)' min. eta-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2'
+-         write(10,*)' min. eta-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2'
+          elseif (pion.eq.15) then  
+          write(*,*)' min. etaP-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2' 
+-         write(10,*)' min. etaP-tagged photon inv.mass^2 = ',
+-     &                 q2min,' GeV^2'
+          else
+          write(*,*)'min. pions-tagged photon inv.mass^2    = ',	 
+      &                 q2min,' GeV^2' 
+-         write(10,*)'min. pions-tagged photon inv.mass^2    = ',	 
+-     &                 q2min,' GeV^2' 
+          endif
        endif
  c
  c --- book histograms -----------------------------
@@ -603,7 +884,613 @@ index 4d11ba7..a9d5fd5 100644
  c --- set cuts ------------------------------------
        cos1min = dCos(phot2cut*pi/180.d0)     ! photon1 angle cuts in the 
        cos1max = dCos(phot1cut*pi/180.d0)     ! LAB rest frame            
-@@ -1215,10 +1278,23 @@ c --------------------
+@@ -566,10 +530,6 @@ c -------------------
+          write(*,*)' Q^2_min TOO SMALL'
+          write(*,*)' Q^2_min CHANGED BY PHOKHARA = ',qqmin,' GeV^2'
+          write(*,*)'------------------------------'
+-         write(10,*)'------------------------------'
+-         write(10,*)' Q^2_min TOO SMALL'
+-         write(10,*)' Q^2_min CHANGED BY PHOKHARA = ',qqmin,' GeV^2'
+-         write(10,*)'------------------------------'
+       endif
+       
+         if((pion.eq.13).or.(pion.eq.14).or.(pion.eq.15))then
+@@ -578,11 +538,6 @@ c -------------------
+          write(*,*)'-- Please put your cuts when selecting events  --'
+          write(*,*)' Q^2_min CHANGED BY PHOKHARA = ',qqmin,' GeV^2'
+          write(*,*)'------------------------------'
+-         write(10,*)'-- in modes pion=13,14,15,  --'
+-         write(10,*)'--  Q^2_min = (m_P)^2 is used in generation  -- ' 
+-         write(10,*)'-- Please put your cuts when selecting events  --'
+-         write(10,*)' Q^2_min CHANGED BY PHOKHARA = ',qqmin,' GeV^2'
+-         write(10,*)'------------------------------'
+         endif
+             
+ c -------------------
+@@ -590,9 +545,6 @@ c -------------------
+          write(*,*)' Q^2_max to small '
+          write(*,*)' Q^2_max = ',qqmax
+          write(*,*)' Q^2_min = ',qqmin
+-         write(10,*)' Q^2_max to small '
+-         write(10,*)' Q^2_max = ',qqmax
+-         write(10,*)' Q^2_min = ',qqmin
+          stop
+       endif
+ c -------------------
+@@ -602,109 +554,61 @@ c -------------------
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal muon-pair invariant mass^2     = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal muon-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal muon-pair invariant mass^2     = ',
+-     &                 qqmax,' GeV^2'
+       elseif (pion.eq.1) then
+          write(*,100) 'minimal pion-pair invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pion-pair invariant mass^2     = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal pion-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pion-pair invariant mass^2     = ',
+-     &                 qqmax,' GeV^2'
+       elseif (pion.eq.4) then
+          write(*,100) 'minimal proton-pair invariant mass^2   = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal proton-pair invariant mass^2   = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal proton-pair invariant mass^2   = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal proton-pair invariant mass^2   = ',
+-     &                 qqmax,' GeV^2'
+       elseif (pion.eq.5) then
+          write(*,100) 'minimal neutron-pair invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal neutron-pair invariant mass^2  = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal neutron-pair invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal neutron-pair invariant mass^2  = ',
+-     &                 qqmax,' GeV^2'
+       elseif ((pion.eq.6).or.(pion.eq.7)) then
+          write(*,100) 'minimal kaon-pair invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal kaon-pair invariant mass^2     = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal kaon-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal kaon-pair invariant mass^2     = ',
+-     &                 qqmax,' GeV^2'
+       elseif(pion.eq.8)then
+          write(*,100) 'minimal three-pion invariant mass^2    = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal three-pion invariant mass^2    = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal three-pion invariant mass^2    = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal three-pion invariant mass^2    = ',
+-     &                 qqmax,' GeV^2'     
+       elseif(pion.eq.9)then
+          write(*,100) 'minimal lambda-pair invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal lambda-pair invariant mass^2  = ',
+      &                 qqmax,' GeV^2' 
+-         write(10,100) 'minimal lambda-pair invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal lambda-pair invariant mass^2  = ',
+-     &                 qqmax,' GeV^2'    
+       elseif(pion.eq.10)then
+          write(*,100) 'minimal pi-pi-eta invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pi-pi-eta invariant mass^2  = ',
+      &                 qqmax,' GeV^2' 
+-         write(10,100) 'minimal pi-pi-eta invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pi-pi-eta invariant mass^2  = ',
+-     &                 qqmax,' GeV^2' 
+       elseif(pion.eq.13)then
+          write(*,100) 'minimal pion - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pion - photon invariant mass^2  = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal pion - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pion - photon invariant mass^2  = ',
+-     &                 qqmax,' GeV^2'   
+       elseif(pion.eq.14)then
+          write(*,100) 'minimal eta - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal eta - photon invariant mass^2  = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal eta - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal eta - photon invariant mass^2  = ',
+-     &                 qqmax,' GeV^2'
+       elseif(pion.eq.15)then
+          write(*,100) 'minimal etaP - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal etaP - photon invariant mass^2  = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal etaP - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal etaP - photon invariant mass^2  = ',
+-     &                 qqmax,' GeV^2'
+       else
+          write(*,100) 'minimal four-pion invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal four-pion invariant mass^2     = ',
+      &                 qqmax,' GeV^2'
+-         write(10,100) 'minimal four-pion invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal four-pion invariant mass^2     = ',
+-     &                 qqmax,' GeV^2'
+       endif
+       elseif(ph0.eq.1)then
+       if (pion.eq.0) then
+@@ -712,109 +616,61 @@ c -------------------
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal muon-pair invariant mass^2     = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal muon-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal muon-pair invariant mass^2     = ',
+-     &                 Sp,' GeV^2'
+       elseif (pion.eq.1) then
+          write(*,100) 'minimal pion-pair invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pion-pair invariant mass^2     = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal pion-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pion-pair invariant mass^2     = ',
+-     &                 Sp,' GeV^2'
+       elseif (pion.eq.4) then
+          write(*,100) 'minimal proton-pair invariant mass^2   = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal proton-pair invariant mass^2   = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal proton-pair invariant mass^2   = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal proton-pair invariant mass^2   = ',
+-     &                 Sp,' GeV^2'
+       elseif (pion.eq.5) then
+          write(*,100) 'minimal neutron-pair invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal neutron-pair invariant mass^2  = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal neutron-pair invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal neutron-pair invariant mass^2  = ',
+-     &                 Sp,' GeV^2'
+       elseif ((pion.eq.6).or.(pion.eq.7)) then
+          write(*,100) 'minimal kaon-pair invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal kaon-pair invariant mass^2     = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal kaon-pair invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal kaon-pair invariant mass^2     = ',
+-     &                 Sp,' GeV^2'
+       elseif(pion.eq.8)then
+          write(*,100) 'minimal three-pion invariant mass^2    = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal three-pion invariant mass^2    = ',
+      &                 Sp,' GeV^2'  
+-         write(10,100) 'minimal three-pion invariant mass^2    = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal three-pion invariant mass^2    = ',
+-     &                 Sp,' GeV^2'   
+       elseif(pion.eq.9)then
+          write(*,100) 'minimal lambda-pair invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal lambda-pair invariant mass^2  = ',
+      &                 Sp,' GeV^2' 
+-         write(10,100) 'minimal lambda-pair invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal lambda-pair invariant mass^2  = ',
+-     &                 Sp,' GeV^2'    
+       elseif(pion.eq.10)then
+          write(*,100) 'minimal pi-pi-eta invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pi-pi-eta invariant mass^2  = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal pi-pi-eta invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pi-pi-eta invariant mass^2  = ',
+-     &                 Sp,' GeV^2'   
+        elseif(pion.eq.13)then
+          write(*,100) 'minimal pion - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal pion - photon invariant mass^2  = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal pion - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal pion - photon invariant mass^2  = ',
+-     &                 Sp,' GeV^2'
+        elseif(pion.eq.14)then
+          write(*,100) 'minimal eta - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal eta - photon invariant mass^2  = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal eta - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal eta - photon invariant mass^2  = ',
+-     &                 Sp,' GeV^2'
+        elseif(pion.eq.15)then
+          write(*,100) 'minimal etaP - photon invariant mass^2  = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal etaP - photon invariant mass^2  = ',
+      &                 Sp,' GeV^2'  
+-         write(10,100) 'minimal etaP - photon invariant mass^2  = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal etaP - photon invariant mass^2  = ',
+-     &                 Sp,' GeV^2'  
+       else
+          write(*,100) 'minimal four-pion invariant mass^2     = ',
+      &                 qqmin,' GeV^2'
+          write(*,100) 'maximal four-pion invariant mass^2     = ',
+      &                 Sp,' GeV^2'
+-         write(10,100) 'minimal four-pion invariant mass^2     = ',
+-     &                 qqmin,' GeV^2'
+-         write(10,100) 'maximal four-pion invariant mass^2     = ',
+-     &                 Sp,' GeV^2'
+       endif
+       endif
+ c -------------------
+@@ -823,59 +679,44 @@ c -------------------
+       elseif(be_r.eq.1)then
+           if((pion.eq.11).or.(pion.eq.12))then
+             write(*,*) 'Beam resolution is included'
+-            write(10,*) 'Beam resolution is included'
+             continue
+           else
+       write(*,*) 'Beam resolution allowed only for pion=11 or pion=12'
+-      write(10,*) 'Beam resolution allowed only for pion=11 or pion=12'
+       stop 
+       endif
+       else
+       write(*,*) 'Wrong be_r switch'
+-      write(10,*) 'Wrong be_r switch'
+       stop
+       endif
+  
+       if(ph0.eq.-1)then
+          write(*,*) 'Born'
+-         write(10,*) 'Born'
+       elseif(ph0.eq.0)then
+        if (nlo.eq.0) then 
+          write(*,*) 'Born'
+-         write(10,*) 'Born'
+          if(fsrnlo.ne.0)then
+            write(*,*)
+      1  'WRONG FSRNLO flag - only fsrnlo=0 allowed for Born'
+-           write(10,*)
+-     1  'WRONG FSRNLO flag - only fsrnlo=0 allowed for Born'
+            stop
+          endif
+        endif
+       else !ph0.eq.1
+         if (nlo.eq.0) then 
+          write(*,*) 'ISR NLO'
+-         write(10,*) 'ISR NLO'
+         elseif(nlo.eq.1)then
+          write(*,*) 'ISR NNLO'
+-         write(10,*) 'ISR NNLO'
+         else
+          write(*,*) 'wrong nlo switch'
+-         write(10,*) 'wrong nlo switch'
+          stop
+         endif
+       endif
+ c -------------------
+       if((pion.eq.9).and.(nlo.ne.0)) then
+         write(*,*)'WRONG NLO flag'
+-        write(10,*)'WRONG NLO flag'
+        if(ph0.eq.0) write(*,*)' - only Born allowed for Lambdas'
+        if(ph0.eq.1) write(*,*)' - only NLO allowed for Lambdas'
+-       if(ph0.eq.0) write(10,*)' - only Born allowed for Lambdas'
+-       if(ph0.eq.1) write(10,*)' - only NLO allowed for Lambdas'
+         write(*,*)'If you feel that you need better precision'
+         write(*,*)'please contact the authors'
+-        write(10,*)'If you feel that you need better precision'
+-        write(10,*)'please contact the authors'
+         stop
+       endif
+ 
+@@ -884,10 +725,6 @@ c -------------------
+         write(*,*)'only nlo=0 allowed for chi production'
+         write(*,*)'If you feel that you need better precision'
+         write(*,*)'please contact the authors'
+-        write(10,*) 'WRONG NLO flag'
+-        write(10,*)'only nlo=0 allowed for chi production'
+-        write(10,*)'If you feel that you need better precision'
+-        write(10,*)'please contact the authors'
+        stop
+        endif
+      
+@@ -895,9 +732,6 @@ c -------------------
+          write(*,*) 'WRONG NLO flag'
+         write(*,*)'only ph0=0 allowed for chi production'
+         write(*,*)'please contact the authors'
+-        write(10,*) 'WRONG NLO flag'
+-        write(10,*)'only ph0=0 allowed for chi production'
+-        write(10,*)'please contact the authors'
+        stop
+        endif
+ 
+@@ -906,7 +740,6 @@ c -------------------
+ c------------------
+        if((ph0.eq.1).and.(fsr.ne.0))then
+         write(*,*) 'Coulomb factor included'
+-        write(10,*) 'Coulomb factor included'
+        endif       
+ c -------------------
+ c -------------------
+@@ -915,32 +748,23 @@ c -------------------
+      &                'NLO:    soft photon cutoff w           = ',w
+       if (nlo.eq.1) write(*,*) 
+      &                'NNLO:    soft photon cutoff w           = ',w
+-      if (nlo.eq.0) write(10,*) 
+-     &                'NLO:    soft photon cutoff w           = ',w
+-      if (nlo.eq.1) write(10,*) 
+-     &                'NNLO:    soft photon cutoff w           = ',w
+       endif
+ c-----------------------
+       if((ph0.eq.0).and.(pion.eq.0))then
+        if(nlo.eq.0)then
+         if(fsrnlo.ne.0)then
+          write(*,*)'WRONG combination of FSR, FSRNLO flags'
+-         write(10,*)'WRONG combination of FSR, FSRNLO flags'
+          stop
+         else
+           if (fsr.eq.0) then
+           continue
+           elseif (fsr.eq.1) then
+            write(*,*) 'ISR+FSR'
+-           write(10,*) 'ISR+FSR'
+           elseif (fsr.eq.2) then
+            write(*,*) 'ISR+INT+FSR'
+-           write(10,*) 'ISR+INT+FSR'
+           else
+            write(*,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
+-           write(10,*)
+-     1   'WRONG FSR flag: interference is included only for nlo=0'
+            stop
+           endif
+          endif
+@@ -948,18 +772,12 @@ c-----------------------
+          if(fsrnlo.eq.1)then
+            if(fsr.eq.2)then
+             write(*,*)'ISR+FSR+INT'
+-            write(10,*)'ISR+FSR+INT'
+            elseif(fsr.eq.0)then
+             write(*,*)'Wrong switch'
+             write(*,*)'Combinations for mu+mu- NLO  mode:'
+             write(*,*)'nlo = 1 then'
+             write(*,*)'fsr = 0, ifsnlo = 0'
+             write(*,*)'fsr = 2, ifsnlo = 1'
+-            write(10,*)'Wrong switch'
+-            write(10,*)'Combinations for mu+mu- NLO  mode:'
+-            write(10,*)'nlo = 1 then'
+-            write(10,*)'fsr = 0, ifsnlo = 0'
+-            write(10,*)'fsr = 2, ifsnlo = 1'
+             stop
+            elseif(fsr.eq.1)then
+             write(*,*)'Wrong switch'
+@@ -967,11 +785,6 @@ c-----------------------
+             write(*,*)'nlo = 1 then'
+             write(*,*)'fsr = 0, ifsnlo = 0'
+             write(*,*)'fsr = 2, ifsnlo = 1'
+-            write(10,*)'Wrong switch'
+-            write(10,*)'Combinations for mu+mu- NLO  mode:'
+-            write(10,*)'nlo = 1 then'
+-            write(10,*)'fsr = 0, ifsnlo = 0'
+-            write(10,*)'fsr = 2, ifsnlo = 1'
+             stop
+            endif
+          endif
+@@ -988,8 +801,6 @@ c pi+pi-
+           else
+         write(*,*)'only ph0=0, nlo=1,frs=2 and fsrnlo=1
+      1  is allowed for nlo2=1'
+-        write(10,*)'only ph0=0, nlo=1,frs=2 and fsrnlo=1
+-     1  is allowed for nlo2=1'
+             stop
+           endif
+         endif
+@@ -1008,44 +819,35 @@ c          if(fsrnlo.eq.1) write(10,*) 'IFSNLO included'
+        else
+         if(nlo2.eq.1)then
+         write(*,*)'full NLO'
+-        write(10,*)'full NLO'
+            continue
+         else
+         write(*,*)'WRONG combination of FSR, FSRNLO flags'
+-        write(10,*)'WRONG combination of FSR, FSRNLO flags'
+         stop
+         endif
+        endif
+ 
+           if (fsr.eq.0) then
+          write(*,*) 'ISR only'
+-         write(10,*) 'ISR only'
+        elseif (fsr.eq.1) then
+          write(*,*) 'ISR+FSR'
+-         write(10,*) 'ISR+FSR'
+        elseif (fsr.eq.2) then
+          if (nlo.eq.0) then
+             write(*,*) 'ISR+INT+FSR'
+-            write(10,*) 'ISR+INT+FSR'
+          else
+              if(nlo2.eq.1)then
+                  continue
+              else
+          write(*,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
+-         write(10,*)
+-     1   'WRONG FSR flag: interference is included only for nlo=0'
+          stop
+              endif
+          endif
+        else
+           write(*,*)'WRONG FSR flag', fsr
+-          write(10,*)'WRONG FSR flag', fsr
+          stop
+        endif
+          if(fsrnlo.eq.1) then
+             write(*,*)'IFSNLO included'
+-            write(10,*)'IFSNLO included'
+          endif
+         
+       endif
+@@ -1057,8 +859,6 @@ c
+       if(ph0.eq.0)then
+       if (nlo.eq.1) write(*,*) 
+      &                'NLO:    soft photon cutoff w           = ',w
+-      if (nlo.eq.1) write(10,*) 
+-     &                'NLO:    soft photon cutoff w           = ',w
+       if ((pion.eq.4).or.(pion.eq.6)) then
+ c
+        if(((fsr.eq.1).or.(fsr.eq.2)).and.(fsrnlo.eq.0))then
+@@ -1069,49 +869,38 @@ c
+         continue
+        else
+         write(*,*)'WRONG combination of FSR, FSRNLO flags'
+-        write(10,*)'WRONG combination of FSR, FSRNLO flags'
+         stop
+        endif
+ 
+ 
+        if (fsr.eq.0) then
+          write(*,*) 'ISR only'
+-         write(10,*) 'ISR only'
+        elseif (fsr.eq.1) then
+          write(*,*) 'ISR+FSR'
+-         write(10,*) 'ISR+FSR'
+        elseif (fsr.eq.2) then
+          if (nlo.eq.0) then
+             write(*,*) 'ISR+INT+FSR'
+-            write(10,*) 'ISR+INT+FSR'
+          else
+          write(*,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
+-         write(10,*)
+-     1   'WRONG FSR flag: interference is included only for nlo=0'
+          stop
+          endif
+        else
+           write(*,*)'WRONG FSR flag', fsr
+-          write(10,*)'WRONG FSR flag', fsr
+          stop
+        endif
+          if(fsrnlo.eq.1) then
+             write(*,*)'IFSNLO included'
+-            write(10,*)'IFSNLO included'
+          endif
+        else
+         if((fsr.eq.0).and.(fsrnlo.eq.0))then
+          write(*,*)'ISR only'
+-         write(10,*)'ISR only'
+         else
+           if((pion.eq.0).or.(pion.eq.1) )then 
+           continue
+           else
+         write(*,*)'FSR is implemented only for pi+pi-, mu+mu-,K+K- and
+      1 ppbar modes'
+-        write(10,*)'FSR is implemented only for pi+pi-, mu+mu-,K+K- and
+-     1 ppbar modes'
+        stop
+            endif
+        endif
+@@ -1125,22 +914,15 @@ c      endif
+ c ------------------
+       if(ivac.eq.0)then
+         write(*,*)'Vacuum polarization is NOT included'
+-        write(10,*)'Vacuum polarization is NOT included'
+       elseif(ivac.eq.1)then
+         write(*,*)'Vacuum polarization by Fred Jegerlehner' 
+         write(*,*)
+      1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
+-        write(10,*)'Vacuum polarization by Fred Jegerlehner' 
+-        write(10,*)
+-     1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
+       elseif(ivac.eq.2)then
+         write(*,*)'Vacuum polarization (VP_HLMNT_v1_3nonr) by' 
+         write(*,*)'Daisuke Nomura and Thomas Teubner' 
+-        write(10,*)'Vacuum polarization (VP_HLMNT_v1_3nonr) by' 
+-        write(10,*)'Daisuke Nomura and Thomas Teubner'
+       else
+         write(*,*)'WRONG vacuum polarization switch'
+-        write(10,*)'WRONG vacuum polarization switch'
+         stop      
+       endif
+        
+@@ -1148,35 +930,26 @@ c -----------------
+       if(pion.eq.1)then
+         if(FF_pion.eq.0)then
+           write(*,*)'Kuhn-Santamaria PionFormFactor'
+-          write(10,*)'Kuhn-Santamaria PionFormFactor'
+         elseif(FF_pion.eq.1)then
+           write(*,*)'Gounaris-Sakurai PionFormFactor old'
+-          write(10,*)'Gounaris-Sakurai PionFormFactor old'
+         elseif(FF_pion.eq.2)then
+           write(*,*)'Gounaris-Sakurai PionFormFactor new'
+-          write(10,*)'Gounaris-Sakurai PionFormFactor new'
+         else
+         write(*,*)'WRONG PionFormFactor switch'
+-        write(10,*)'WRONG PionFormFactor switch'
+         stop      
+         endif
+ c ------
+         if(fsr.ne.0)then
+          if(f0_model.eq.0)then
+            write(*,*)'f0+f0(600): K+K- model'
+-           write(10,*)'f0+f0(600): K+K- model'
+          elseif(f0_model.eq.1)then
+            write(*,*)'f0+f0(600): "no structure" model'
+-           write(10,*)'f0+f0(600): "no structure" model'
+          elseif(f0_model.eq.2)then
+            write(*,*)'NO f0+f0(600)'
+-           write(10,*)'NO f0+f0(600)'
+          elseif(f0_model.eq.3)then
+            write(*,*)'only f0, KLOE: Cesare Bini-private communication'
+-           write(10,*)'only f0, KLOE: Cesare Bini-private communication'
+          else
+          write(*,*)'WRONG f0+f0(600) switch'
+-         write(10,*)'WRONG f0+f0(600) switch'
+          stop      
+          endif
+         endif
+@@ -1185,16 +958,12 @@ c --------------------
+       if((pion.eq.6).or.(pion.eq.7))then
+         if(FF_kaon.eq.0)then
+           write(*,*)'constrained KaonFormFactor'
+-          write(10,*)'constrained KaonFormFactor'
+         elseif(FF_kaon.eq.1)then
+           write(*,*)'unconstrained KaonFormFactor'
+-          write(10,*)'unconstrained KaonFormFactor'
+         elseif(FF_kaon.eq.2)then
+           write(*,*)'Kuhn-Khodjamirian-Bruch KaonFormFactor'
+-          write(10,*)'Kuhn-Khodjamirian-Bruch KaonFormFactor'
+         else
+           write(*,*)'WRONG KaonFormFactor switch'
+-          write(10,*)'WRONG KaonFormFactor switch'
+           stop      
+         endif
+       endif
+@@ -1204,21 +973,31 @@ c --------------------
+           continue
+         elseif(narr_res.eq.1) then
+           write(*,*)'THE NARROW RESONANCE J/PSI INLUDED'
+-          write(10,*)'THE NARROW RESONANCE J/PSI INLUDED'
+         elseif(narr_res.eq.2) then
+           write(*,*)'THE NARROW RESONANCE PSI(2S) INLUDED'
+-          write(10,*)'THE NARROW RESONANCE PSI(2S) INLUDED'
+         else
+           write(*,*)'wrong flag narr_res: only 0, 1 or 2 allowed'
+-          write(10,*)'wrong flag narr_res: only 0, 1 or 2 allowed'
+           stop
          endif
        endif
  
@@ -628,7 +1515,7 @@ index 4d11ba7..a9d5fd5 100644
        do i = 1,3
           Mmax(i-1) = 1.d0
           gross(i-1) = 0.d0
-@@ -1229,8 +1305,15 @@ c --- finding the maximum -------------------------
+@@ -1229,8 +1008,15 @@ c --- finding the maximum -------------------------
        if  (ph0.eq.-1)then   ! only 0 photon events (LO) are generated
           Mmax(1)=0.d0  
           Mmax(2)=0.d0 
@@ -646,7 +1533,7 @@ index 4d11ba7..a9d5fd5 100644
        tr(0) = 0.d0
        tr(1) = 0.d0      
        tr(2) = 0.d0
-@@ -1252,14 +1335,14 @@ c
+@@ -1252,14 +1038,14 @@ c
  c =================================================
  c --- beginning the MC loop event generation ------
        
@@ -663,7 +1550,7 @@ index 4d11ba7..a9d5fd5 100644
             int0ph = int0ph + intezero
             int0ph_err = int0ph_err + intezero*intezero
           elseif(Ar(1).le.(Mmax(0)+Mmax(1))
-@@ -1267,7 +1350,7 @@ c --- beginning the MC loop event generation ------
+@@ -1267,7 +1053,7 @@ c --- beginning the MC loop event generation ------
              
              count(1) = count(1)+1.d0
              call gen_1ph(i,qqmin,qqmax,cos1min,cos1max,
@@ -672,7 +1559,7 @@ index 4d11ba7..a9d5fd5 100644
              
     
           int1ph=int1ph + inte_s
-@@ -1277,7 +1360,7 @@ c --- beginning the MC loop event generation ------
+@@ -1277,7 +1063,7 @@ c --- beginning the MC loop event generation ------
           else
              count(2) = count(2)+1.d0
              call gen_2ph(i,qqmin,cos1min,cos1max,
@@ -681,7 +1568,7 @@ index 4d11ba7..a9d5fd5 100644
             int2ph=int2ph + inte
             int2ph_err=int2ph_err + inte*inte
           endif
-@@ -1289,7 +1372,6 @@ c --- end of the MC loop --------------------------
+@@ -1289,7 +1075,6 @@ c --- end of the MC loop --------------------------
  
  c =================================================
  c --- for the second run ---
@@ -689,7 +1576,7 @@ index 4d11ba7..a9d5fd5 100644
        if (i.eq.1) then
           Mmax(0) = gross(0)+.1d0*Sqrt(gross(0)*gross(0))
           Mmax(1) = gross(1)+.05d0*Sqrt(gross(1)*gross(1))
-@@ -1314,18 +1396,82 @@ c
+@@ -1314,18 +1099,82 @@ c
              Mmax(1)=Mmax(1)*1.5d0
           endif
        endif
@@ -778,9 +1665,46 @@ index 4d11ba7..a9d5fd5 100644
  c --- value of the cross section ------------------
        sigma0 = 0.d0
        sigma1 = 0.d0
-@@ -1478,6 +1624,10 @@ c
-       write(10,200)'sigma2_MC(nbarn) = ',int2ph,'+-',int2ph_err
-       write(10,200)'sigma_MC (nbarn) = ',sum_MC,'+-',sum_MC_err
+@@ -1436,30 +1285,6 @@ c --- output --------------------------------------
+       write(*,*) 'Mmax2    = ',Mmax(2)            
+       write(*,*) '----------------------------------------------------'
+ 
+-      write(10,*) '----------------------------------------------------'      
+-      write(10,*) int(tr(0)+tr(1)+tr(2)),' total events accepted of '
+-      write(10,*) int(nges),       ' total events generated'
+-      write(10,*) int(tr(0)),      ' zero photon events accepted of '
+-      write(10,*) int(count(0)),   ' events generated'
+-      write(10,*) int(tr(1)),      ' one photon events accepted of '
+-      write(10,*) int(count(1)),   ' events generated'
+-      write(10,*) int(tr(2)),      ' two photon events accepted of '
+-      write(10,*) int(count(2)),   ' events generated'
+-      write(10,*)
+-
+-      write(10,200) 'sigma0(nbarn) = ',sigma0,' +- ',dsigm0
+-      write(10,200) 'sigma1(nbarn) = ',sigma1,' +- ',dsigm1
+-      write(10,200) 'sigma2(nbarn) = ',sigma2,' +- ',dsigm2
+-      write(10,200) 'sigma (nbarn) = ',sigma, ' +- ',dsigm
+-      write(10,200)
+-      write(10,200) 'maximum0 = ',gross(0),'  minimum1 = ',klein(0)
+-      write(10,201) 'Mmax0    = ',Mmax(0) 
+-      write(10,200) 'maximum1 = ',gross(1),'  minimum1 = ',klein(1)
+-      write(10,201) 'Mmax1    = ',Mmax(1)            
+-      write(10,200) 'maximum2 = ',gross(2),'  minimum2 = ',klein(2)
+-      write(10,201) 'Mmax2    = ',Mmax(2)            
+-      write(10,*) '----------------------------------------------------'
+-
+   200 FORMAT('',A16,G20.10E3,A15,G20.10E3)
+   201 FORMAT('',A16,G20.10E3)
+       
+@@ -1472,12 +1297,11 @@ c
+       write(*,*)'sigma1_MC(nbarn) = ',int1ph,'+-',int1ph_err
+       write(*,*)'sigma2_MC(nbarn) = ',int2ph,'+-',int2ph_err
+       write(*,*)'sigma_MC (nbarn) = ',sum_MC,'+-',sum_MC_err
+-      write(10,*)'Monte Carlo integrand'
+-      write(10,200)'sigma0_MC(nbarn) = ',int0ph,'+-',int0ph_err 
+-      write(10,200)'sigma1_MC(nbarn) = ',int1ph,'+-',int1ph_err
+-      write(10,200)'sigma2_MC(nbarn) = ',int2ph,'+-',int2ph_err
+-      write(10,200)'sigma_MC (nbarn) = ',sum_MC,'+-',sum_MC_err
        endif
 +
 +      endif !TF end MODE.eq.2
@@ -789,7 +1713,7 @@ index 4d11ba7..a9d5fd5 100644
         
  c      write(17,*) energi_m,sum_MC,sum_MC_err,int0ph,int0ph_err,
  c     1 int1ph,int1ph_err
-@@ -1530,6 +1680,7 @@ c Mode    p + pbar (pion=4)         |   q1 - four momentum of pi^+
+@@ -1530,6 +1354,7 @@ c Mode    p + pbar (pion=4)         |   q1 - four momentum of pi^+
  c Mode    n + nbar (pion=5)         |   q2 - four momentum of pi^-
  c Mode    K^+ + K^-(pion=6)         |   q3 - four momentum of pi^0
  c Mode    K^0 + K^0bar (pion=7)
@@ -797,7 +1721,7 @@ index 4d11ba7..a9d5fd5 100644
  c
  c Mode  lambda (-> pi^- p) lambda bar (-> pi^+ pbar) (pion=9)
  c Mode eta pi+  pi-  (pion=10)
-@@ -1588,9 +1739,9 @@ c
+@@ -1588,9 +1413,9 @@ c
           write(10,*)'K-:    ',momenta(7,0),momenta(7,1),
       &      momenta(7,2),momenta(7,3)
        elseif(pion.eq.7)then
@@ -809,7 +1733,7 @@ index 4d11ba7..a9d5fd5 100644
       &      momenta(7,2),momenta(7,3)
        elseif(pion.eq.8)then
           write(10,*)'Pi+:    ',momenta(6,0),momenta(6,1),
-@@ -1648,7 +1799,8 @@ c
+@@ -1648,7 +1473,8 @@ c
  c ======================================================================
  c --- generates 0 photon ---------------------------------------------
  c ======================================================================
@@ -819,7 +1743,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        real*8 Ar(14),Ar_r(0:13),z,inte,amplit,pom
        real*8 qqmin,qqmax,qq,jac4,helicityampLO,Matrix 
-@@ -1658,12 +1810,15 @@ c ======================================================================
+@@ -1658,12 +1484,15 @@ c ======================================================================
        complex*16 Hadronic(0:3,0:3),pionggFF_dprime
        integer i,ru,ll
        logical accepted    
@@ -835,7 +1759,17 @@ index 4d11ba7..a9d5fd5 100644
  c --- get the variables ---------------------------
  c
         call qquadrat_0(qqmin,qqmax,cos3min,cos3max,Ar
-@@ -1732,6 +1887,7 @@ c --- event accepted? ---
+@@ -1720,9 +1549,6 @@ c --- in the second rund ---
+           if (Mmax(0).lt.inte) write(*,*) 'Warning! Max(0) too small!'
+           if (inte.lt.0.d0)   write(*,*) '0ph:Warning! negative weight'
+           if (inte.lt.0.d0)   write(*,*) 'inte',inte
+-          if (Mmax(0).lt.inte) write(10,*) 'Warning! Max(0) too small!'
+-          if (inte.lt.0.d0)   write(10,*) '0ph:Warning! negative weight'
+-          if (inte.lt.0.d0)   write(10,203) 'inte',inte
+   203 FORMAT('',A10,G20.12E3)
+ c --- event accepted? ---
+           if (z.le.inte) then
+@@ -1732,6 +1558,7 @@ c --- event accepted? ---
                       tr(0) = tr(0) + 1.d0
                       call addiere(1.d0,qq,0)
                       if (iprint.ne.0) call writeevent()
@@ -843,7 +1777,7 @@ index 4d11ba7..a9d5fd5 100644
                     endif
                 else
                 tr(0) = tr(0) + 1.d0 
-@@ -1745,6 +1901,7 @@ c polar angle distribution
+@@ -1745,6 +1572,7 @@ c polar angle distribution
       &         dSqrt(momenta(7,1)**2+momenta(7,2)**2+momenta(7,3)**2)
                call addiere(1.d0,pom,4) ! cos(th-)
                if (iprint.ne.0) call writeevent()
@@ -851,7 +1785,7 @@ index 4d11ba7..a9d5fd5 100644
                endif
           endif
           endif    
-@@ -1759,7 +1916,8 @@ c ======================================================================
+@@ -1759,7 +1587,8 @@ c ======================================================================
  c --- generates one photon ---------------------------------------------
  c ======================================================================
        subroutine gen_1ph(i,qqmin,qqmax,cos1min,cos1max,
@@ -861,7 +1795,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        complex*16 Leptonic(0:3,0:3),Hadronic(0:3,0:3),
       1 Leptonic2(0:3,0:3),Hadronic2(0:3,0:3),
-@@ -1777,6 +1935,7 @@ c ======================================================================
+@@ -1777,6 +1606,7 @@ c ======================================================================
        complex*16 fsr_no_em
        integer i,ru,mu,nu
        logical accepted      
@@ -869,7 +1803,7 @@ index 4d11ba7..a9d5fd5 100644
        common/Lept_ee/Leptonic
        common/pedf/rk1,dps 
        common/virtsoft/inte_s
-@@ -1802,6 +1961,8 @@ c
+@@ -1802,6 +1632,8 @@ c
         call addiere(1.d0,momenta(2,0),7)
         call addiere(1.d0,momenta(2,0)+momenta(1,0),8)     
  
@@ -878,7 +1812,17 @@ index 4d11ba7..a9d5fd5 100644
  c --- get the variables ---------------------------
  
        if((pion.eq.13).or.(pion.eq.14).or.(pion.eq.15))then  
-@@ -1957,6 +2118,7 @@ c --- event accepted? ---
+@@ -1944,9 +1776,6 @@ c --- in the second rund ---
+             if (Mmax(1).lt.inte) write(*,*)'Warning! Max(1) too small!'
+ c          if (inte.lt.0.d0)    write(*,*)'1ph:Warning! negative weight'
+ c          if (inte.lt.0.d0)    write(*,*)'inte',inte
+-          if (Mmax(1).lt.inte) write(10,*)'Warning! Max(1) too small!'
+-          if (inte.lt.0.d0)    write(10,*)'1ph:Warning! negative weight'
+-          if (inte.lt.0.d0)    write(10,203)'inte',inte
+   203 FORMAT('',A10,G20.12E3)
+ c --- event accepted? ---
+             if (z.le.inte) then
+@@ -1957,6 +1786,7 @@ c --- event accepted? ---
                       tr(1) = tr(1) + 1.d0
                       call addiere(1.d0,qq,1)
                      if (iprint.ne.0) call writeevent()
@@ -886,7 +1830,7 @@ index 4d11ba7..a9d5fd5 100644
                   endif
                 else
                    tr(1) = tr(1) + 1.d0
-@@ -1981,7 +2143,7 @@ c        endif
+@@ -1981,7 +1811,7 @@ c        endif
                call addiere(1.d0,pom,4) ! cos(th-)
  
                  if (iprint.ne.0) call writeevent()
@@ -895,7 +1839,7 @@ index 4d11ba7..a9d5fd5 100644
                 endif
              endif 
  
-@@ -1997,7 +2159,8 @@ c ======================================================================
+@@ -1997,7 +1827,8 @@ c ======================================================================
  c --- generates two photons --------------------------------------------
  c ======================================================================
        subroutine gen_2ph(i,qqmin,cos1min,cos1max,
@@ -905,7 +1849,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        real*8 qqmin,qqmax,qq,jac0,q0p,q2p,q0b,q2b,
       &  cos1min,cos1max,cos1,phi1,jac1,sin1,cos12,
-@@ -2006,6 +2169,7 @@ c ======================================================================
+@@ -2006,6 +1837,7 @@ c ======================================================================
       &  Ar(14),Ar_r(0:14),z,inte,helicityamp,pom
        integer i,ru
        logical accepted    
@@ -913,7 +1857,7 @@ index 4d11ba7..a9d5fd5 100644
  c  
        common/muonfsr/inte
  c
-@@ -2014,6 +2178,8 @@ c
+@@ -2014,6 +1846,8 @@ c
           Ar(ru+1) = Ar_r(ru)
        enddo
        
@@ -922,7 +1866,15 @@ index 4d11ba7..a9d5fd5 100644
  c --- get the variables -----------------------------------------------
  c --- one of the photons is generated inside the angular cuts and -----
  c --- the other is generated everywhere -------------------------------
-@@ -2094,6 +2260,7 @@ c --- event accepted? ---
+@@ -2086,14 +1920,12 @@ c --- in the second rund ---
+             if (Mmax(2).lt.inte) write(*,*)'Warning! Max(2) too small!'
+           if (inte.lt.0.d0)    write(*,*)'2ph:Warning! negative weight'
+           if (inte.lt.0.d0)    write(*,*)'inte',inte
+-          if (Mmax(2).lt.inte) write(10,*)'Warning! Max(2) too small!'
+-          if (inte.lt.0.d0)    write(10,*)'2ph:Warning! negative weight'
+-          if (inte.lt.0.d0)    write(10,203)'inte',inte
+   203 FORMAT('',A10,G20.12E3)
+ c --- event accepted? ---
              if (z.le.inte) then
                    tr(2) = tr(2) + 1.d0
                 if (iprint.ne.0) call writeevent()
@@ -930,7 +1882,7 @@ index 4d11ba7..a9d5fd5 100644
  c --- add to the histogrammes ---
                 call addiere(1.d0,qq,2)
  c polar angle distribution
-@@ -2115,6 +2282,7 @@ c ======================================================================
+@@ -2115,6 +1947,7 @@ c ======================================================================
  c --- input parameters -------------------------------------------------
  c ======================================================================
        subroutine input(nges,nm,outfile)
@@ -938,7 +1890,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        integer nm,i,jj,kk,ii
        integer*8 nges
-@@ -2181,54 +2349,56 @@ c J/Psi and Psi(2S) generation common
+@@ -2181,54 +2014,56 @@ c J/Psi and Psi(2S) generation common
        
          
         
@@ -1037,7 +1989,7 @@ index 4d11ba7..a9d5fd5 100644
  c
  c --- input couplings, masses and meson widths ---
        read(8,*)           !                                   
-@@ -2250,8 +2420,8 @@ c --- fix constants -------------------------------
+@@ -2250,8 +2085,8 @@ c --- fix constants -------------------------------
        mpi_q=mpi
        alpha = 1.d0/alpha
        alpha_q= alpha
@@ -1048,15 +2000,42 @@ index 4d11ba7..a9d5fd5 100644
        ebeam = dSqrt(Sp)/2.d0                  ! beam energy
        ebeam_q = Sqrt(Sp_q)/2.q0
        w_q=w
-@@ -3288,6 +3458,7 @@ c
+@@ -2300,7 +2135,6 @@ c J/Psi resonance parameters and EM and strong couplings
+          continue
+       else
+          write(*,*)'if you do not use flag narr_res put: 0'
+-         write(10,*)'if you do not use flag narr_res put: 0'
+          stop
+       endif
+ 
+@@ -2310,8 +2144,6 @@ c J/Psi resonance parameters and EM and strong couplings
+        else
+        write(*,*)
+      1 'for chi_c1 and chi_c2 production you have to use narr_res=1 !!!' 
+-       write(10,*)
+-     1 'for chi_c1 and chi_c2 production you have to use narr_res=1 !!!'      
+        stop
+        endif
+        endif
+@@ -3267,7 +3099,6 @@ c        sinthW2=0.23126d0
+      3 (1.d0-4.d0*sinthW2+8.d0*sinthW2**2)
+ 
+ 
+-          write(10,*)'Gamma(chi_c1-> e+ e-)=',gamchiee
+        endif   
+        
+         if(pion.eq.12) then
+@@ -3286,8 +3117,8 @@ c        sinthW2=0.23126d0
+ c
+           gg2=adg_chi()  
            gamchiee2=dconjg(gg2)*gg2/40.d0/pi*mchic2
-           write(10,*)'Gamma(chi_c2-> e+ e-)=', gamchiee2      
+-          write(10,*)'Gamma(chi_c2-> e+ e-)=', gamchiee2      
           endif  
 +      
  
         if((pion.eq.13).or.(pion.eq.14).or.(pion.eq.15))then
           if(FF_Pgg.eq.0)then
-@@ -3419,7 +3590,11 @@ c
+@@ -3419,7 +3250,11 @@ c
        cpp(2,2,2,2)=con3*Jeemin(2,2,2,2)
        endif
  c
@@ -1069,7 +2048,7 @@ index 4d11ba7..a9d5fd5 100644
        end
  c***********************************************************************
        subroutine init_ha
-@@ -5433,6 +5608,7 @@ c --- Generates: pion costheta and phi angles in Lambda rest-frame
+@@ -5433,6 +5268,7 @@ c --- Generates: pion costheta and phi angles in Lambda rest-frame
  c ------------------------------------------------------------------------
        subroutine pionanglesLamb(cosmin,cosmax,costhm,phim,
       1                          costhp,phip)
@@ -1077,7 +2056,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        real*8 jacobian,x1,x2,jac1,jac2,cosmin,cosmax,x
        real*8 costhm,phim,costhp,phip,rr1_ll(0:3)
-@@ -5464,6 +5640,7 @@ c q3    - four momentum of pi^-    |   q2,q3 - four momenta of pi^-
+@@ -5464,6 +5300,7 @@ c q3    - four momentum of pi^-    |   q2,q3 - four momenta of pi^-
  c q4    - four momentum of pi^+    |
  c ------------------------------------------------------------------
        subroutine pionangles_1(qq2,q0p,q2p,q0b,q2b,fac)
@@ -1085,7 +2064,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        integer ip0,i,ru
        real*8 Arp(8),Arp_r(0:7)
-@@ -5596,6 +5773,7 @@ c q2    - four momentum of pi^-
+@@ -5596,6 +5433,7 @@ c q2    - four momentum of pi^-
  c q3    - four momentum of pi^0
  c
        subroutine pionangles_2(qq2,q0p,q2p,fac)
@@ -1093,7 +2072,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
  
        real*8 rr,rr_r(0:5),qq2,q1,q2,q3,fac,rlam,a,b,c,x1min,q0,x1max,
-@@ -5743,6 +5921,7 @@ c q2    - four momentum of pi^+
+@@ -5743,6 +5581,7 @@ c q2    - four momentum of pi^+
  c q3    - four momentum of pi^-
  c
        subroutine pionangles_eta(qq2,q0p,q2p,fac)
@@ -1101,7 +2080,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
  
        real*8 rr,rr_r(0:5),qq2,q1,q2,q3,fac,rlam,a,b,c,x1min,q0,x1max,
-@@ -5874,6 +6053,7 @@ c *******************************************************************
+@@ -5874,6 +5713,7 @@ c *******************************************************************
  c generation of the 3pi invariant mass: flat + omega Breit-Wigner
  c *******************************************************************
        subroutine chann1(rrr,q2p_min,q2p_max,q2p,dx1,ip0)
@@ -1109,7 +2088,7 @@ index 4d11ba7..a9d5fd5 100644
        implicit none
        real*8 rrr,q2p_min,q2p_max,q2p,dx1,dm,dg,dm2,dmg,rr1(1),
       1       rr1_r(0:2),vol1,vol2,vol3,vol4,vol,r1_test,r2_test,r3_test,
-@@ -6424,6 +6604,7 @@ c ========================================================================
+@@ -6424,6 +6264,7 @@ c ========================================================================
  c --- Spin Lambda test
  c ------------------------------------------------------------------------
        subroutine test_spin(qq,Hadronic,amplit,accepted)
@@ -1117,7 +2096,7 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        real*8 Matrix,qq,amplit
        real*8 rr_ll,ff_min_ll,ff_max_ll,ff_ll,ff_spin_ll
-@@ -6454,6 +6635,7 @@ c========================================================================
+@@ -6454,6 +6295,7 @@ c========================================================================
  c        Spin lambda test for 0 photon part
  c 
        subroutine test_spin0(qq,Hadronic,amplit,accepted)
@@ -1125,7 +2104,98 @@ index 4d11ba7..a9d5fd5 100644
        include 'phokhara_10.0.inc'
        real*8 Matrix,qq,amplit
        real*8 rr_ll,ff_min_ll,ff_max_ll,ff_ll,ff_spin_ll
-@@ -15267,6 +15449,7 @@ c************contribution from gamma gamma
+@@ -8554,8 +8396,6 @@ c ***********************************************************************
+          else
+            write(*,*)'qq = ',qq
+            write(*,*)'4*rmass(1)**2 = ',4.d0*rmass(1)**2
+-           write(10,*)'qq = ',qq
+-           write(10,*)'4*rmass(1)**2 = ',4.d0*rmass(1)**2
+          endif
+        endif
+ 
+@@ -8570,9 +8410,6 @@ c ***********************************************************************
+            write(*,'(1x,a,1pd23.16)')'qq = ',qq
+            write(*,'(1x,a,1pd23.16)')'(rmass(1)+rmass(3))**2 = ',
+      1                                (rmass(1)+rmass(3))**2
+-           write(10,'(1x,a,1pd23.16)')'qq = ',qq
+-           write(10,'(1x,a,1pd23.16)')'(rmass(1)+rmass(3))**2 = ',
+-     1                                (rmass(1)+rmass(3))**2
+          endif
+        endif
+ 
+@@ -9274,7 +9111,6 @@ c      open(21,file='plik1.dat',status='new')
+ c      open(22,file='plik2.dat',status='new')
+            do i=0,2     !=========================
+           write(*,*)i
+-          write(10,*)i
+           do j=1,bins(i)
+             x = xlow(i)+(j-.5d0)*(xup(i)-xlow(i))/dble(bins(i))
+             if (count(i).ne.0.d0) then 
+@@ -9290,20 +9126,16 @@ c              error(i,j)=error(i,j)*dble(bins(i))/(xup(i)-xlow(i))
+               error(i,j) = 0.d0
+             endif
+               write(*,*) x,histo(i,j),error(i,j)
+-              write(10,202) x,histo(i,j),error(i,j)
+ c              if(i.eq.1) write (21,*) x,histo(i,j),error(i,j)
+ c              if(i.eq.2) write (22,*) x,histo(i,j),error(i,j)
+           enddo
+         enddo
+ c
+           write(*,*)'0+1+2'
+-          write(10,*)'0+1+2'
+           do j=1,bins(1)
+               x = xlow(1)+(j-.5d0)*(xup(1)-xlow(1))/dble(bins(1))
+               write(*,*) x,histo(0,j)+histo(1,j)+histo(2,j)
+      1                ,sqrt(error(0,j)**2+error(1,j)**2+error(2,j)**2)
+-              write(10,202) x,histo(0,j)+histo(1,j)+histo(2,j)
+-     1                ,sqrt(error(0,j)**2+error(1,j)**2+error(2,j)**2)
+           enddo
+   202 FORMAT('',G20.10E3,G20.10E3,G20.10E3)
+ c----------------------------------------------------------------------
+@@ -9487,10 +9319,8 @@ c ------------------------------------------------------
+ c --- fill histograms --------                                                                                                                              
+ c
+       write(*,*)'Histograms Monte Carlo integrand' 
+-      write(10,*)'Histograms Monte Carlo integrand'                                                                                                         
+         do i=0,2     !=========================                                                                                                             
+           write(*,*)i
+-          write(10,*)i
+           do j=1,bins(i)
+             x = xlow(i)+(j-.5d0)*(xup(i)-xlow(i))/dble(bins(i))
+             if (count(i).ne.0.d0) then
+@@ -9503,19 +9333,15 @@ c
+               errorMC(i,j) = 0.d0
+             endif
+               write(*,*) x,histoMC(i,j),errorMC(i,j)
+-              write(10,202) x,histoMC(i,j),errorMC(i,j)
+                                                
+           enddo
+         enddo
+ c                                                                                                                                                           
+           write(*,*)'0+1+2'
+-          write(10,*)'0+1+2'
+           do j=1,bins(1)
+               x = xlow(1)+(j-.5d0)*(xup(1)-xlow(1))/dble(bins(1))
+               write(*,*) x,histoMC(0,j)+histoMC(1,j)+histoMC(2,j)
+      1            ,sqrt(errorMC(0,j)**2+errorMC(1,j)**2+errorMC(2,j)**2)
+-              write(10,202) x,histoMC(0,j)+histoMC(1,j)+histoMC(2,j)
+-     1            ,sqrt(errorMC(0,j)**2+errorMC(1,j)**2+errorMC(2,j)**2)
+           enddo
+   202 FORMAT('',G20.10E3,G20.10E3,G20.10E3)
+ c----------------------------------------------------------------------
+@@ -13668,11 +13494,6 @@ c
+       write(*,*)'nlo = 1 then'
+       write(*,*)'fsr = 0, ifsnlo = 0'
+       write(*,*)'fsr = 2, ifsnlo = 1'
+-      write(10,*)'Wrong switch'
+-      write(10,*)'Combinations for mu+mu- NLO  mode:'
+-      write(10,*)'nlo = 1 then'
+-      write(10,*)'fsr = 0, ifsnlo = 0'
+-      write(10,*)'fsr = 2, ifsnlo = 1'
+       stop
+       endif
+ c
+@@ -15267,6 +15088,7 @@ c************contribution from gamma gamma
  
  c----------beam resolution--------------------------------------------------------------------------------
         subroutine beam_res

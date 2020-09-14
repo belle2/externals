@@ -1362,7 +1362,8 @@ $(EXTLIBDIR)/libphokhara.so: $(EXTSRCDIR)/phokhara/Makefile
 	    EEMMGLIB_PATH=$(EXTLIBDIR) make -j $(NPROCESSES) && \
 	    cp libphokhara.so $(EXTLIBDIR) && \
 	    mkdir -p $(EXTSHRDIR)/phokhara && \
-	    cp const_and_model_paramall10.0.dat $(EXTSHRDIR)/phokhara
+	    cp const_and_model_paramall10.0.dat eemmg-lib/ff/fferr.dat \
+	        $(EXTSHRDIR)/phokhara
 
 # PHOKHARA clean
 phokhara.clean:

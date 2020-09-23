@@ -934,7 +934,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.20.04.source.tar.gz https://root.cern.ch/download/root_v6.20.04.source.tar.gz
+	@$(DOWNLOAD) root root_v6.20.08.source.tar.gz https://root.cern.ch/download/root_v6.20.08.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 # disable cling unloader as it crashes basf2
@@ -945,6 +945,8 @@ $(EXTSRCDIR)/root/README:
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-belle2style.patch
 # and apply the fix for cling on non-standard locales
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10751-clanglocale.patch
+# we also need to fix a crash if std::cout is used in interpreted code
+	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10468-stdcout-crash.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -964,7 +966,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
 	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
-	    -Dfftw3=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -Dfftw3=ON -Ddataframe=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    make -j $(NPROCESSES) && make install
 	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch

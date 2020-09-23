@@ -1,0 +1,98 @@
+From 2d242b53907f5db42e838e3c5e9dab60c4bc1f16 Mon Sep 17 00:00:00 2001
+From: Axel Naumann <Axel.Naumann@cern.ch>
+Date: Mon, 3 Aug 2020 10:23:01 +0200
+Subject: [PATCH 1/4] [TCling] Expose libCling *after* interp init
+ (ROOT-10499):
+
+Some platforms have problems (rightfully so!) in finding symbols
+from libCling.so, which is dlopened with RTLD_LOCAL. libCling should
+me made available to RuntimeDyld, but priority should be given to
+the main binary, i.e. the "traditional" symbol resolution. This is
+achieved by injecting libCling as a symbol source into the
+DynLibManager *after* the initialization of cling::Interpreter.
+
+This fixes e.g. ROOT-10499, by resolving to the process's cout,
+not the "copy" in libCling.
+---
+ core/metacling/src/TCling.cxx | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/core/metacling/src/TCling.cxx b/core/metacling/src/TCling.cxx
+index 792baf8522f..09e4f493409 100644
+--- a/core/metacling/src/TCling.cxx
++++ b/core/metacling/src/TCling.cxx
+@@ -589,8 +589,9 @@ extern "C" const Decl* TCling__GetObjectDecl(TObject *obj) {
+ extern "C" R__DLLEXPORT TInterpreter *CreateInterpreter(void* interpLibHandle,
+                                                         const char* argv[])
+ {
++   auto tcling = new TCling("C++", "cling C++ Interpreter", argv);
+    cling::DynamicLibraryManager::ExposeHiddenSharedLibrarySymbols(interpLibHandle);
+-   return new TCling("C++", "cling C++ Interpreter", argv);
++   return tcling;
+ }
+
+ extern "C" R__DLLEXPORT void DestroyInterpreter(TInterpreter *interp)
+
+From dd78aabe72bc6dbe0b3d133411233235e94dcdb5 Mon Sep 17 00:00:00 2001
+From: Axel Naumann <Axel.Naumann@cern.ch>
+Date: Tue, 4 Aug 2020 15:40:36 +0200
+Subject: [PATCH 2/4] [cling] We do not resolve clang/llvm symbols from cling:
+
+As interpreted user code needs to match their binaries, cling
+should find the same symbols as the binaries. This fixes ROOT-10499.
+---
+ .../cling/lib/Interpreter/IncrementalJIT.cpp     | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/interpreter/cling/lib/Interpreter/IncrementalJIT.cpp b/interpreter/cling/lib/Interpreter/IncrementalJIT.cpp
+index 15598d38c30..87cb9d8e01c 100644
+--- a/interpreter/cling/lib/Interpreter/IncrementalJIT.cpp
++++ b/interpreter/cling/lib/Interpreter/IncrementalJIT.cpp
+@@ -282,22 +282,6 @@ IncrementalJIT::IncrementalJIT(IncrementalExecutor& exe,
+   m_CompileLayer(m_ObjectLayer, llvm::orc::SimpleCompiler(*m_TM)),
+   m_LazyEmitLayer(m_CompileLayer) {
+
+-  // Force the JIT to query for symbols local to itself, i.e. if it resides in a
+-  // shared library it will resolve symbols from there first. This is done to
+-  // implement our proto symbol versioning protection. Namely, if some other
+-  // library provides llvm symbols, we want out JIT to avoid looking at them.
+-  //
+-  // FIXME: In general, this approach causes numerous issues when cling is
+-  // embedded and the framework needs to provide its own set of symbols which
+-  // exist in llvm. Most notably if the framework links against different
+-  // versions of linked against llvm libraries. For instance, if we want to provide
+-  // a custom zlib in the framework the JIT will still resolve to llvm's version
+-  // of libz causing hard-to-debug bugs. In order to work around such cases we
+-  // need to swap the llvm system libraries, which can be tricky for two
+-  // reasons: (a) llvm's cmake doesn't really support it; (b) only works if we
+-  // build llvm from sources.
+-  llvm::sys::DynamicLibrary::SearchOrder
+-    = llvm::sys::DynamicLibrary::SO_LoadedFirst;
+   // Enable JIT symbol resolution from the binary.
+   llvm::sys::DynamicLibrary::LoadLibraryPermanently(0, 0);
+
+
+From d8ad683441ba20f56ba248dd524e47502c52cf44 Mon Sep 17 00:00:00 2001
+From: Axel Naumann <Axel.Naumann@cern.ch>
+Date: Tue, 4 Aug 2020 15:41:39 +0200
+Subject: [PATCH 3/4] [TCling] Add tests against ROOT-10499.
+
+---
+ core/metacling/test/TClingTests.cxx | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/core/metacling/test/TClingTests.cxx b/core/metacling/test/TClingTests.cxx
+index da671383acf..9437f7f50f0 100644
+--- a/core/metacling/test/TClingTests.cxx
++++ b/core/metacling/test/TClingTests.cxx
+@@ -205,3 +205,10 @@ TEST_F(TClingTests, ClingLookupHelper) {
+   gCling->GetFunction(cl, "RDataFrameTake<float>");
+   gCling->GetFunction(cl, "RDataFrameTake<std::vector<float>>");
+ }
++
++// Check that compiled and interpreted statics share the same address.
++TEST_F(TClingTests, ROOT10499) {
++   EXPECT_EQ((void*)&std::cout, (void*)gInterpreter->Calc("&std::cout"));
++   EXPECT_EQ((void*)&std::cerr, (void*)gInterpreter->Calc("&std::cerr"));
++   EXPECT_EQ((void*)&errno, (void*)gInterpreter->Calc("&errno"));
++}

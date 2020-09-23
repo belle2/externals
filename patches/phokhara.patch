@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index b285128..ef4d0ae 100644
+index b285128..0bad8ff 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -2,32 +2,40 @@ include eemmg-lib/Makefile.inc
@@ -66,7 +66,7 @@ index b285128..ef4d0ae 100644
 +%.o: %.cc
 +	$(CXX) $(CXXFLAGS) $(ROOT_INCLUDE_FLAGS) -c -o $@ $^
 +
-+libphokhara.so: random.o $(OBJ) $(test_OBJECTS) $(F90OBJECTS) $(LIBDIR)/libqcdloop1.so phokhara_10.0.o
++libphokhara.so: random.o $(OBJ) $(test_OBJECTS) $(F90OBJECTS) phokhara_10.0.o
 +	LD_LIBRARY_PATH=$(LIBDIR) $(CXX) -shared -Wl,--version-script=libphokhara.vers -o $@ $^ $(ROOT_LINK_FLAGS) $(LINK)
  
  testlxf: testlxf.o ranlux_fort.o ranlxd.o
@@ -752,9 +752,9 @@ index 4d11ba7..f670a43 100644
        write(*,*) '----------------------------------------------------'
 -      write(10,*) '----------------------------------------------------'
        write(*,100)   'cms total energy                       = ',
-      &                 dSqrt(Sp),' GeV  '
--      write(10,100)   'cms total energy                       = ',
 -     &                 dSqrt(Sp),' GeV  '
+-      write(10,100)   'cms total energy                       = ',
+      &                 dSqrt(Sp),' GeV  '
          if(ph0.eq.0)then
          if(((gmin/2.d0/ebeam).lt.0.0098d0))then
               write(*,*)' minimal missing energy set to small'
@@ -762,72 +762,72 @@ index 4d11ba7..f670a43 100644
               stop
          endif
          write(*,100) 'minimal tagged photon energy           = ',
-      &                 gmin,' GeV  '
--        write(10,100) 'minimal tagged photon energy           = ',
 -     &                 gmin,' GeV  '
+-        write(10,100) 'minimal tagged photon energy           = ',
+      &                 gmin,' GeV  '
          write(*,110) 'angular cuts on tagged photon          = ',
-      &                 phot1cut,',',phot2cut
--        write(10,110) 'angular cuts on tagged photon          = ',
 -     &                 phot1cut,',',phot2cut
+-        write(10,110) 'angular cuts on tagged photon          = ',
+      &                 phot1cut,',',phot2cut
          endif
  c --------------------------------
        if((pion.eq.0).or.(pion.eq.11).or.(pion.eq.12)) then 
           write(*,110)'angular cuts on muons                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on muons                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on muons                  = ',
+      &                 pi1cut,',',pi2cut
        elseif (pion.eq.4) then 
           write(*,110)'angular cuts on protons                = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on protons                = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on protons                = ',
+      &                 pi1cut,',',pi2cut
        elseif (pion.eq.5) then 
           write(*,110)'angular cuts on neutrons               = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on neutrons               = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on neutrons               = ',
+      &                 pi1cut,',',pi2cut
        elseif ((pion.eq.6).or.(pion.eq.7)) then 
           write(*,110)'angular cuts on kaons                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on kaons                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on kaons                  = ',
+      &                 pi1cut,',',pi2cut
        elseif (pion.eq.9) then 
           write(*,110)'angular cuts on pions and protons      = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on pions and protons      = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions and protons      = ',
+      &                 pi1cut,',',pi2cut
        elseif (pion.eq.10) then 
           write(*,110)'angular cuts on pions and eta          = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on pions and eta          = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions and eta          = ',
+      &                 pi1cut,',',pi2cut
        elseif(pion.eq.13)then
           write(*,110)'angular cuts on pion                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on pion                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pion                  = ',
+      &                 pi1cut,',',pi2cut
        elseif(pion.eq.14)then
           write(*,110)'angular cuts on eta                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on eta                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on eta                  = ',
+      &                 pi1cut,',',pi2cut
        elseif(pion.eq.15)then
           write(*,110)'angular cuts on etaP                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on etaP                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on etaP                  = ',
+      &                 pi1cut,',',pi2cut
        else
           write(*,110)'angular cuts on pions                  = ',
-      &                 pi1cut,',',pi2cut
--         write(10,110)'angular cuts on pions                  = ',
 -     &                 pi1cut,',',pi2cut
+-         write(10,110)'angular cuts on pions                  = ',
+      &                 pi1cut,',',pi2cut
        endif
        if(ph0.eq.0)then
           if ((pion.eq.0).or.(pion.eq.11).or.(pion.eq.12)) then  
           write(*,*)'min. muons-tagged photon inv.mass^2    = ',
-      &                 q2min,' GeV^2' 
--         write(10,*)'min. muons-tagged photon inv.mass^2    = ',
 -     &                 q2min,' GeV^2' 
+-         write(10,*)'min. muons-tagged photon inv.mass^2    = ',
+      &                 q2min,' GeV^2' 
           elseif (pion.eq.4) then  
           write(*,*)'min. protons-tagged photon inv.mass^2  = ',
       &                 q2min,' GeV^2' 
@@ -835,9 +835,9 @@ index 4d11ba7..f670a43 100644
 -     &                 q2min,' GeV^2'
           elseif (pion.eq.5) then  
           write(*,*)'min. neutrons-tagged photon inv.mass^2 = ',
-      &                 q2min,' GeV^2' 
--         write(10,*)'min. neutrons-tagged photon inv.mass^2 = ',
 -     &                 q2min,' GeV^2' 
+-         write(10,*)'min. neutrons-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2' 
           elseif ((pion.eq.6).or.(pion.eq.7)) then  
           write(*,*)'min. kaons-tagged photon inv.mass^2    = ',
       &                 q2min,' GeV^2' 
@@ -855,14 +855,14 @@ index 4d11ba7..f670a43 100644
 -     &                 q2min,' GeV^2'
           elseif (pion.eq.13) then  
           write(*,*)' min. pion-tagged photon inv.mass^2 = ',
-      &                 q2min,' GeV^2'
--         write(10,*)' min. pion-tagged photon inv.mass^2 = ',
 -     &                 q2min,' GeV^2'
+-         write(10,*)' min. pion-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2'
           elseif (pion.eq.14) then  
           write(*,*)' min. eta-tagged photon inv.mass^2 = ',
-      &                 q2min,' GeV^2'
--         write(10,*)' min. eta-tagged photon inv.mass^2 = ',
 -     &                 q2min,' GeV^2'
+-         write(10,*)' min. eta-tagged photon inv.mass^2 = ',
+      &                 q2min,' GeV^2'
           elseif (pion.eq.15) then  
           write(*,*)' min. etaP-tagged photon inv.mass^2 = ',
       &                 q2min,' GeV^2' 
@@ -870,9 +870,9 @@ index 4d11ba7..f670a43 100644
 -     &                 q2min,' GeV^2'
           else
           write(*,*)'min. pions-tagged photon inv.mass^2    = ',	 
-      &                 q2min,' GeV^2' 
--         write(10,*)'min. pions-tagged photon inv.mass^2    = ',	 
 -     &                 q2min,' GeV^2' 
+-         write(10,*)'min. pions-tagged photon inv.mass^2    = ',	 
+      &                 q2min,' GeV^2' 
           endif
        endif
  c
@@ -917,50 +917,51 @@ index 4d11ba7..f670a43 100644
           stop
        endif
  c -------------------
-@@ -602,109 +554,61 @@ c -------------------
+@@ -601,109 +553,61 @@ c -------------------
+          write(*,100) 'minimal muon-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal muon-pair invariant mass^2     = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal muon-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal muon-pair invariant mass^2     = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif (pion.eq.1) then
           write(*,100) 'minimal pion-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal pion-pair invariant mass^2     = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal pion-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal pion-pair invariant mass^2     = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif (pion.eq.4) then
           write(*,100) 'minimal proton-pair invariant mass^2   = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal proton-pair invariant mass^2   = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal proton-pair invariant mass^2   = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal proton-pair invariant mass^2   = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif (pion.eq.5) then
           write(*,100) 'minimal neutron-pair invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal neutron-pair invariant mass^2  = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal neutron-pair invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal neutron-pair invariant mass^2  = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif ((pion.eq.6).or.(pion.eq.7)) then
           write(*,100) 'minimal kaon-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal kaon-pair invariant mass^2     = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal kaon-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal kaon-pair invariant mass^2     = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif(pion.eq.8)then
           write(*,100) 'minimal three-pion invariant mass^2    = ',
       &                 qqmin,' GeV^2'
@@ -983,11 +984,11 @@ index 4d11ba7..f670a43 100644
           write(*,100) 'minimal pi-pi-eta invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal pi-pi-eta invariant mass^2  = ',
-      &                 qqmax,' GeV^2' 
+-     &                 qqmax,' GeV^2' 
 -         write(10,100) 'minimal pi-pi-eta invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal pi-pi-eta invariant mass^2  = ',
--     &                 qqmax,' GeV^2' 
+      &                 qqmax,' GeV^2' 
        elseif(pion.eq.13)then
           write(*,100) 'minimal pion - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
@@ -1001,76 +1002,76 @@ index 4d11ba7..f670a43 100644
           write(*,100) 'minimal eta - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal eta - photon invariant mass^2  = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal eta - photon invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal eta - photon invariant mass^2  = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        elseif(pion.eq.15)then
           write(*,100) 'minimal etaP - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal etaP - photon invariant mass^2  = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal etaP - photon invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal etaP - photon invariant mass^2  = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        else
           write(*,100) 'minimal four-pion invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal four-pion invariant mass^2     = ',
-      &                 qqmax,' GeV^2'
+-     &                 qqmax,' GeV^2'
 -         write(10,100) 'minimal four-pion invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal four-pion invariant mass^2     = ',
--     &                 qqmax,' GeV^2'
+      &                 qqmax,' GeV^2'
        endif
        elseif(ph0.eq.1)then
-       if (pion.eq.0) then
-@@ -712,109 +616,61 @@ c -------------------
+@@ -711,109 +615,61 @@ c -------------------
+          write(*,100) 'minimal muon-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal muon-pair invariant mass^2     = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal muon-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal muon-pair invariant mass^2     = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        elseif (pion.eq.1) then
           write(*,100) 'minimal pion-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal pion-pair invariant mass^2     = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal pion-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal pion-pair invariant mass^2     = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        elseif (pion.eq.4) then
           write(*,100) 'minimal proton-pair invariant mass^2   = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal proton-pair invariant mass^2   = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal proton-pair invariant mass^2   = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal proton-pair invariant mass^2   = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        elseif (pion.eq.5) then
           write(*,100) 'minimal neutron-pair invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal neutron-pair invariant mass^2  = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal neutron-pair invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal neutron-pair invariant mass^2  = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        elseif ((pion.eq.6).or.(pion.eq.7)) then
           write(*,100) 'minimal kaon-pair invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal kaon-pair invariant mass^2     = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal kaon-pair invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal kaon-pair invariant mass^2     = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        elseif(pion.eq.8)then
           write(*,100) 'minimal three-pion invariant mass^2    = ',
       &                 qqmin,' GeV^2'
@@ -1102,42 +1103,41 @@ index 4d11ba7..f670a43 100644
           write(*,100) 'minimal pion - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal pion - photon invariant mass^2  = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal pion - photon invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal pion - photon invariant mass^2  = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
         elseif(pion.eq.14)then
           write(*,100) 'minimal eta - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal eta - photon invariant mass^2  = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal eta - photon invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal eta - photon invariant mass^2  = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
         elseif(pion.eq.15)then
           write(*,100) 'minimal etaP - photon invariant mass^2  = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal etaP - photon invariant mass^2  = ',
-      &                 Sp,' GeV^2'  
+-     &                 Sp,' GeV^2'  
 -         write(10,100) 'minimal etaP - photon invariant mass^2  = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal etaP - photon invariant mass^2  = ',
--     &                 Sp,' GeV^2'  
+      &                 Sp,' GeV^2'  
        else
           write(*,100) 'minimal four-pion invariant mass^2     = ',
       &                 qqmin,' GeV^2'
           write(*,100) 'maximal four-pion invariant mass^2     = ',
-      &                 Sp,' GeV^2'
+-     &                 Sp,' GeV^2'
 -         write(10,100) 'minimal four-pion invariant mass^2     = ',
 -     &                 qqmin,' GeV^2'
 -         write(10,100) 'maximal four-pion invariant mass^2     = ',
--     &                 Sp,' GeV^2'
+      &                 Sp,' GeV^2'
        endif
        endif
- c -------------------
-@@ -823,59 +679,44 @@ c -------------------
+@@ -823,30 +679,23 @@ c -------------------
        elseif(be_r.eq.1)then
            if((pion.eq.11).or.(pion.eq.12))then
              write(*,*) 'Beam resolution is included'
@@ -1163,12 +1163,12 @@ index 4d11ba7..f670a43 100644
 -         write(10,*) 'Born'
           if(fsrnlo.ne.0)then
             write(*,*)
-      1  'WRONG FSRNLO flag - only fsrnlo=0 allowed for Born'
--           write(10,*)
 -     1  'WRONG FSRNLO flag - only fsrnlo=0 allowed for Born'
+-           write(10,*)
+      1  'WRONG FSRNLO flag - only fsrnlo=0 allowed for Born'
             stop
           endif
-        endif
+@@ -854,28 +703,20 @@ c -------------------
        else !ph0.eq.1
          if (nlo.eq.0) then 
           write(*,*) 'ISR NLO'
@@ -1226,17 +1226,18 @@ index 4d11ba7..f670a43 100644
         endif       
  c -------------------
  c -------------------
-@@ -915,32 +748,23 @@ c -------------------
+@@ -914,10 +747,6 @@ c -------------------
+       if (nlo.eq.0) write(*,*) 
       &                'NLO:    soft photon cutoff w           = ',w
        if (nlo.eq.1) write(*,*) 
-      &                'NNLO:    soft photon cutoff w           = ',w
+-     &                'NNLO:    soft photon cutoff w           = ',w
 -      if (nlo.eq.0) write(10,*) 
 -     &                'NLO:    soft photon cutoff w           = ',w
 -      if (nlo.eq.1) write(10,*) 
--     &                'NNLO:    soft photon cutoff w           = ',w
+      &                'NNLO:    soft photon cutoff w           = ',w
        endif
  c-----------------------
-       if((ph0.eq.0).and.(pion.eq.0))then
+@@ -925,21 +754,16 @@ c-----------------------
         if(nlo.eq.0)then
          if(fsrnlo.ne.0)then
           write(*,*)'WRONG combination of FSR, FSRNLO flags'
@@ -1253,12 +1254,11 @@ index 4d11ba7..f670a43 100644
 -           write(10,*) 'ISR+INT+FSR'
            else
             write(*,*)
-      1   'WRONG FSR flag: interference is included only for nlo=0'
--           write(10,*)
 -     1   'WRONG FSR flag: interference is included only for nlo=0'
+-           write(10,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
             stop
            endif
-          endif
 @@ -948,18 +772,12 @@ c-----------------------
           if(fsrnlo.eq.1)then
             if(fsr.eq.2)then
@@ -1290,15 +1290,15 @@ index 4d11ba7..f670a43 100644
              stop
             endif
           endif
-@@ -988,8 +801,6 @@ c pi+pi-
+@@ -987,8 +800,6 @@ c pi+pi-
+              continue
            else
          write(*,*)'only ph0=0, nlo=1,frs=2 and fsrnlo=1
-      1  is allowed for nlo2=1'
--        write(10,*)'only ph0=0, nlo=1,frs=2 and fsrnlo=1
 -     1  is allowed for nlo2=1'
+-        write(10,*)'only ph0=0, nlo=1,frs=2 and fsrnlo=1
+      1  is allowed for nlo2=1'
              stop
            endif
-         endif
 @@ -1008,44 +819,35 @@ c          if(fsrnlo.eq.1) write(10,*) 'IFSNLO included'
         else
          if(nlo2.eq.1)then
@@ -1327,9 +1327,9 @@ index 4d11ba7..f670a43 100644
                   continue
               else
           write(*,*)
-      1   'WRONG FSR flag: interference is included only for nlo=0'
--         write(10,*)
 -     1   'WRONG FSR flag: interference is included only for nlo=0'
+-         write(10,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
           stop
               endif
           endif
@@ -1344,16 +1344,16 @@ index 4d11ba7..f670a43 100644
           endif
          
        endif
-@@ -1057,8 +859,6 @@ c
+@@ -1056,8 +858,6 @@ c---------------------------------------------------------------------
+ c
        if(ph0.eq.0)then
        if (nlo.eq.1) write(*,*) 
-      &                'NLO:    soft photon cutoff w           = ',w
--      if (nlo.eq.1) write(10,*) 
 -     &                'NLO:    soft photon cutoff w           = ',w
+-      if (nlo.eq.1) write(10,*) 
+      &                'NLO:    soft photon cutoff w           = ',w
        if ((pion.eq.4).or.(pion.eq.6)) then
  c
-        if(((fsr.eq.1).or.(fsr.eq.2)).and.(fsrnlo.eq.0))then
-@@ -1069,49 +869,38 @@ c
+@@ -1069,48 +869,37 @@ c
          continue
         else
          write(*,*)'WRONG combination of FSR, FSRNLO flags'
@@ -1374,9 +1374,9 @@ index 4d11ba7..f670a43 100644
 -            write(10,*) 'ISR+INT+FSR'
           else
           write(*,*)
-      1   'WRONG FSR flag: interference is included only for nlo=0'
--         write(10,*)
 -     1   'WRONG FSR flag: interference is included only for nlo=0'
+-         write(10,*)
+      1   'WRONG FSR flag: interference is included only for nlo=0'
           stop
           endif
         else
@@ -1397,12 +1397,11 @@ index 4d11ba7..f670a43 100644
            continue
            else
          write(*,*)'FSR is implemented only for pi+pi-, mu+mu-,K+K- and
-      1 ppbar modes'
--        write(10,*)'FSR is implemented only for pi+pi-, mu+mu-,K+K- and
 -     1 ppbar modes'
+-        write(10,*)'FSR is implemented only for pi+pi-, mu+mu-,K+K- and
+      1 ppbar modes'
         stop
             endif
-        endif
 @@ -1125,22 +914,15 @@ c      endif
  c ------------------
        if(ivac.eq.0)then
@@ -1411,10 +1410,10 @@ index 4d11ba7..f670a43 100644
        elseif(ivac.eq.1)then
          write(*,*)'Vacuum polarization by Fred Jegerlehner' 
          write(*,*)
-      1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
+-     1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
 -        write(10,*)'Vacuum polarization by Fred Jegerlehner' 
 -        write(10,*)
--     1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
+      1 'http://www-com.physik.hu-berlin.de/fjeger/alphaQEDn.uu'
        elseif(ivac.eq.2)then
          write(*,*)'Vacuum polarization (VP_HLMNT_v1_3nonr) by' 
          write(*,*)'Daisuke Nomura and Thomas Teubner' 
@@ -2113,16 +2112,16 @@ index 4d11ba7..f670a43 100644
           endif
         endif
  
-@@ -8570,9 +8410,6 @@ c ***********************************************************************
+@@ -8569,9 +8409,6 @@ c ***********************************************************************
+          else
             write(*,'(1x,a,1pd23.16)')'qq = ',qq
             write(*,'(1x,a,1pd23.16)')'(rmass(1)+rmass(3))**2 = ',
-      1                                (rmass(1)+rmass(3))**2
+-     1                                (rmass(1)+rmass(3))**2
 -           write(10,'(1x,a,1pd23.16)')'qq = ',qq
 -           write(10,'(1x,a,1pd23.16)')'(rmass(1)+rmass(3))**2 = ',
--     1                                (rmass(1)+rmass(3))**2
+      1                                (rmass(1)+rmass(3))**2
           endif
         endif
- 
 @@ -9274,7 +9111,6 @@ c      open(21,file='plik1.dat',status='new')
  c      open(22,file='plik2.dat',status='new')
             do i=0,2     !=========================
@@ -2131,7 +2130,7 @@ index 4d11ba7..f670a43 100644
            do j=1,bins(i)
              x = xlow(i)+(j-.5d0)*(xup(i)-xlow(i))/dble(bins(i))
              if (count(i).ne.0.d0) then 
-@@ -9290,20 +9126,16 @@ c              error(i,j)=error(i,j)*dble(bins(i))/(xup(i)-xlow(i))
+@@ -9290,19 +9126,15 @@ c              error(i,j)=error(i,j)*dble(bins(i))/(xup(i)-xlow(i))
                error(i,j) = 0.d0
              endif
                write(*,*) x,histo(i,j),error(i,j)
@@ -2146,12 +2145,11 @@ index 4d11ba7..f670a43 100644
            do j=1,bins(1)
                x = xlow(1)+(j-.5d0)*(xup(1)-xlow(1))/dble(bins(1))
                write(*,*) x,histo(0,j)+histo(1,j)+histo(2,j)
-      1                ,sqrt(error(0,j)**2+error(1,j)**2+error(2,j)**2)
--              write(10,202) x,histo(0,j)+histo(1,j)+histo(2,j)
 -     1                ,sqrt(error(0,j)**2+error(1,j)**2+error(2,j)**2)
+-              write(10,202) x,histo(0,j)+histo(1,j)+histo(2,j)
+      1                ,sqrt(error(0,j)**2+error(1,j)**2+error(2,j)**2)
            enddo
    202 FORMAT('',G20.10E3,G20.10E3,G20.10E3)
- c----------------------------------------------------------------------
 @@ -9487,10 +9319,8 @@ c ------------------------------------------------------
  c --- fill histograms --------                                                                                                                              
  c
@@ -2163,7 +2161,7 @@ index 4d11ba7..f670a43 100644
            do j=1,bins(i)
              x = xlow(i)+(j-.5d0)*(xup(i)-xlow(i))/dble(bins(i))
              if (count(i).ne.0.d0) then
-@@ -9503,19 +9333,15 @@ c
+@@ -9503,18 +9333,14 @@ c
                errorMC(i,j) = 0.d0
              endif
                write(*,*) x,histoMC(i,j),errorMC(i,j)
@@ -2177,12 +2175,11 @@ index 4d11ba7..f670a43 100644
            do j=1,bins(1)
                x = xlow(1)+(j-.5d0)*(xup(1)-xlow(1))/dble(bins(1))
                write(*,*) x,histoMC(0,j)+histoMC(1,j)+histoMC(2,j)
-      1            ,sqrt(errorMC(0,j)**2+errorMC(1,j)**2+errorMC(2,j)**2)
--              write(10,202) x,histoMC(0,j)+histoMC(1,j)+histoMC(2,j)
 -     1            ,sqrt(errorMC(0,j)**2+errorMC(1,j)**2+errorMC(2,j)**2)
+-              write(10,202) x,histoMC(0,j)+histoMC(1,j)+histoMC(2,j)
+      1            ,sqrt(errorMC(0,j)**2+errorMC(1,j)**2+errorMC(2,j)**2)
            enddo
    202 FORMAT('',G20.10E3,G20.10E3,G20.10E3)
- c----------------------------------------------------------------------
 @@ -13668,11 +13494,6 @@ c
        write(*,*)'nlo = 1 then'
        write(*,*)'fsr = 0, ifsnlo = 0'

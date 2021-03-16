@@ -53,7 +53,7 @@ the externals.
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 9.3             | GPLv2/GPLv3 + Runtime library Exception |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 10.2            | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 9.1             | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p01       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.25.2          | GPLv2      |
@@ -99,10 +99,10 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
-| [GNU MPC](http://www.multiprecision.org/)                                    | 1.1.0           | LGPLv3+    |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.0.2           | LGPLv3+    |
-| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.2.0           | LGPLv3 + GPLv2 |
-| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.21            | MIT        |
+| [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
+| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.2.1           | LGPLv3 + GPLv2 |
+| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.23            | MIT        |
 
 Optional Package
 ----------------

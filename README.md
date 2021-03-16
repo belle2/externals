@@ -56,7 +56,7 @@ the externals.
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 10.2            | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 9.1             | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p01       | Geant4 License |
-| [git](https://git-scm.com/)                                                  | 2.25.2          | GPLv2      |
+| [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.10.0           | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD |

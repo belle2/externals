@@ -57,7 +57,7 @@ the externals.
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.1            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p01       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
-| [git-lfs](https://git-lfs.github.com/)                                       | 2.10.0           | MIT        |
+| [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.0.0           | GPLv3      |

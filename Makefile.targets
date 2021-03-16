@@ -727,14 +727,14 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	    make -j $(NPROCESSES) && make install
 
 VecCore.src: $(EXTSRCDIR)/VecCore/README.md
-VecCore: $(EXTINCDIR)/VecCore/Config.h
+VecCore: $(EXTINCDIR)/VecCore/Version.h
 VecCore.touch:
-	rm -fr $(EXTINCDIR)/VecCore/Config.h
+	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
 	$(DOWNLOAD) VecCore VecCore-v0.6.0.tar.gz https://github.com/root-project/veccore/archive/v0.6.0.tar.gz
 
-$(EXTINCDIR)/VecCore/Config.h: $(EXTSRCDIR)/VecCore/README.md
+$(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
 	@mkdir -p $(EXTBUILDDIR)/VecCore
 	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \

@@ -318,15 +318,3 @@ upstream (found in `src/sphinx-argparse`).
 | [zipp](https://pypi.org/project/zipp/)                                                   | Backport of pathlib-compatible object wrapper for zip files                                                                                                                                                                                                                                                                                                                                         | 3.1.0        |                                                                                                                                                                            |
 
 [//]: # (END PYTHON_PKG)
-
-### TensorFlow
-
-TensorFlow is listed above as python package and on modern system this also
-works fine. However we still need to support Scientific Linux 6 and the binary
-packages provided by TensorFlow do not work on this system. Also the binary
-packages use AVX instructions which we might not have on all machines.
-
-As such we install the binary package to get all dependencies set correctly and
-afterwards compile the same version of TensorFlow from source on the different
-platforms. While the version is the same the build options might be different
-so it might behave slightly different than the normal TensorFlow package.

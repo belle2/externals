@@ -1551,7 +1551,7 @@ zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
 
 # zeromq download
 $(EXTSRCDIR)/zeromq/INSTALL:
-	@$(DOWNLOAD) zeromq zeromq-4.3.2.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz
+	@$(DOWNLOAD) zeromq zeromq-4.3.4.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz
 
 # zeromq build
 $(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL
@@ -1577,7 +1577,7 @@ cppzmq.src: $(EXTSRCDIR)/cppzmq/zmq.hpp
 
 # cppzmq download
 $(EXTSRCDIR)/cppzmq/zmq.hpp:
-	$(DOWNLOAD) cppzmq cppzmq-v4.3.6.tar.gz https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz
+	$(DOWNLOAD) cppzmq cppzmq-v4.7.1.tar.gz https://github.com/zeromq/cppzmq/archive/v4.7.1.tar.gz
 
 # cppzmq copy .hpp file to include folder
 $(EXTINCDIR)/zmq.hpp: $(EXTSRCDIR)/cppzmq/zmq.hpp

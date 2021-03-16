@@ -208,9 +208,8 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.34.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.bz2
-# bazel runs into problems on centos8 https://bugzilla.redhat.com/show_bug.cgi?id=1600431
-	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-1600431-discarded-section.patch
+	@$(DOWNLOAD) binutils binutils-2.36.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.bz2
+	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-27482-parallelbuild-libctf.patch
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"

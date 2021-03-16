@@ -45,7 +45,7 @@ the externals.
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.7.1           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.75.0          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
-| [davix](https://dmc.web.cern.ch/projects/davix/home)                         | 0.7.4           | LGPLv2     |
+| [davix](https://github.com/cern-fts/davix)                                   | 0.7.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.9           | MPLv2      |
 | [EOS](https://eos.github.io/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1304320.svg)](https://doi.org/10.5281/zenodo.1304320) | 0.3.2 | GPLv2 |
 | [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.5           | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |

@@ -906,7 +906,7 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.7.5.tar.gz http://grid-deployment.web.cern.ch/grid-deployment/dms/lcgutil/tar/davix/0.7.5/davix-0.7.5.tar.gz
+	@$(DOWNLOAD) davix davix-0.7.6.tar.gz https://github.com/cern-fts/davix/releases/download/R_0_7_6/davix-0.7.6.tar.gz
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"

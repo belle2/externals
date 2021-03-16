@@ -426,7 +426,7 @@ sqlite.touch:
 	@rm -fr $(EXTBINDIR)/sqlite3
 
 $(EXTSRCDIR)/sqlite:
-	$(DOWNLOAD) sqlite sqlite-autoconf-3310100.tar.gz https://www.sqlite.org/2020/sqlite-autoconf-3310100.tar.gz
+	$(DOWNLOAD) sqlite sqlite-autoconf-3350100.tar.gz https://www.sqlite.org/2021/sqlite-autoconf-3350100.tar.gz
 
 $(EXTBINDIR)/sqlite3: $(EXTSRCDIR)/sqlite
 	@echo "building sqlite"

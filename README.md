@@ -82,7 +82,7 @@ the externals.
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.51.0         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.20/08         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [SQLite](https://www.sqlite.org/)                                            | 3.31.1          | Public Domain |
+| [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.1           | BSD        |

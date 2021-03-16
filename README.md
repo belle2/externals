@@ -67,7 +67,7 @@ the externals.
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.34          | MIT        |
-| [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.2           | BSD + GPLv2 |
+| [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.7.2           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-06-00       | GPLv2      |

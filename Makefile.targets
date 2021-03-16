@@ -1404,7 +1404,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.3.7.tar.bz2 http://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
+	@$(DOWNLOAD) eigen eigen_3.3.9.tar.bz2 https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.bz2
 	@cd $(EXTSRCDIR)/eigen && patch -p1 < $(PATCHDIR)/eigen-installdir.patch
 
 # eigen build
@@ -1412,7 +1412,7 @@ $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@echo "installing eigen"
 	@mkdir -p $(EXTBUILDDIR)/eigen
 	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=include \
-	    -DCMAKEPACKAGE_INSTALL_DIR=$(EXTLIBDIR)/cmake/Eigen3 -DPKGCONFIG_INSTALL_DIR=$(EXTLIBDIR)/pkgconfig \
+	    -DCMAKEPACKAGE_INSTALL_DIR=lib/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=lib/pkgconfig \
 	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON && \
 	    make -j $(NPROCESSES); make install
 

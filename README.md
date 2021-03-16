@@ -89,7 +89,7 @@ the externals.
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.6.0          | Apache v2  |
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.1.5           | Apache v2  |
 | [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.6             | GPLv2      |
-| [XRootD](http://xrootd.org/)                                                 | 4.11.2          | LGPLv3     |
+| [XRootD](http://xrootd.org/)                                                 | 5.1.1          | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.3.4           | LGPLv3 + static link exception, intent to move to MPLv2  |

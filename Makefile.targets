@@ -791,7 +791,7 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.10.06.p01.tar.gz http://geant4.cern.ch/support/source/geant4.10.06.p01.tar.gz
+	@$(DOWNLOAD) geant4 geant4.10.06.p03.tar.gz http://cern.ch/geant4-data/releases/geant4.10.06.p03.tar.gz
 	# some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 	# disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
@@ -810,13 +810,13 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.6.1/geant4make/geant4make.*
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.6.3/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.6.1 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.6.3 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:

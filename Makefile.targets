@@ -1716,7 +1716,7 @@ rclone.clean:
 	@rm -fr $(EXTBINDIR)/rclone $(EXTDIR)/share/man/man1/rclone.1
 
 $(EXTSRCDIR)/rclone/README.txt:
-	$(DOWNLOAD) rclone rclone-v1.51.0-linux-amd64.zip https://downloads.rclone.org/v1.51.0/rclone-v1.51.0-linux-amd64.zip
+	$(DOWNLOAD) rclone rclone-v1.54.1-linux-amd64.zip https://downloads.rclone.org/v1.54.1/rclone-v1.54.1-linux-amd64.zip
 
 $(EXTBINDIR)/rclone: $(EXTSRCDIR)/rclone/README.txt
 	@echo "installing rclone"

@@ -80,7 +80,7 @@ the externals.
 | [PYTHIA](http://home.thep.lu.se/~torbjorn/Pythia.html)                       | 8.215           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.8.8           | PSFL (BSD-style)  |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
-| [rclone](https://rclone.org/)                                                | v1.51.0         | MIT        |
+| [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.20/08         | LGPLv2.1 (GPLv3 for MathMore)  |
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |

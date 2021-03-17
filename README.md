@@ -70,7 +70,7 @@ the externals.
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.7.2           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |
-| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-06-00       | GPLv2      |
+| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-09-00       | GPLv2      |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.7.3           | MIT        |
 | [pandoc](https://pandoc.org)                                                 | 2.9.2.1         | GPLv2 or later|

@@ -1,0 +1,16 @@
+--- src/EvtGenModels/EvtPartWave.cpp.original	2020-08-26 11:11:34.334236926 +0200
++++ src/EvtGenModels/EvtPartWave.cpp	2020-08-26 11:12:15.958135884 +0200
+@@ -244,6 +244,13 @@
+ 
+     _evalHelAmp = std::make_unique<EvtEvalHelAmp>( getParentId(), getDaug( 0 ),
+                                                    getDaug( 1 ), _HBC );
++
++    delete [] _lambdaA2; // LEP
++    delete [] _lambdaB2; // LEP
++    delete [] _lambdaC2; // LEP
++    for(ib=0;ib<_nB;ib++) delete [] _HBC[ib]; // LEP
++    delete [] _HBC; // LEP
++
+ }
+ 
+ void EvtPartWave::initProbMax()

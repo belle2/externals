@@ -1,22 +1,22 @@
-From 61d96afa4fd357f3d2ec9691ca14a0038a660d0d Mon Sep 17 00:00:00 2001
+From c4d97a2e48b3967f54a985b5c1c032ba838f52a6 Mon Sep 17 00:00:00 2001
 From: Martin Ritter <martin.ritter@lmu.de>
-Date: Wed, 8 Apr 2020 07:47:57 +0000
-Subject: [PATCH] Make cppcheck relocatable
+Date: Wed, 17 Mar 2021 11:07:49 +0000
+Subject: [PATCH] Make cpcheck relocatable
 
 ---
- cli/cppcheckexecutor.cpp | 13 +++----------
+ cli/cppcheckexecutor.cpp | 14 +++-----------
  lib/cppcheck.cpp         | 12 ++++++------
  lib/library.cpp          |  7 ++++---
  lib/platform.cpp         | 15 ++++++++-------
- 4 files changed, 21 insertions(+), 26 deletions(-)
+ 4 files changed, 21 insertions(+), 27 deletions(-)
 
 diff --git a/cli/cppcheckexecutor.cpp b/cli/cppcheckexecutor.cpp
-index 80ea288..b2596f5 100644
+index 0b51a76..75405d7 100644
 --- a/cli/cppcheckexecutor.cpp
 +++ b/cli/cppcheckexecutor.cpp
-@@ -832,16 +832,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
+@@ -869,16 +869,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
      if (!std || !posix || !windows) {
-         const std::list<ErrorLogger::ErrorMessage::FileLocation> callstack;
+         const std::list<ErrorMessage::FileLocation> callstack;
          const std::string msg("Failed to load " + std::string(!std ? "std.cfg" : !posix ? "posix.cfg" : "windows.cfg") + ". Your Cppcheck installation is broken, please re-install.");
 -#ifdef FILESDIR
 -        const std::string details("The Cppcheck binary was compiled with FILESDIR set to \""
@@ -31,14 +31,14 @@ index 80ea288..b2596f5 100644
 +        const std::string details("The Cppcheck binary was compiled for the Belle2 externals, "
 +                                  "please make sure the externals are setup using b2setup "
 +                                  "or setupext and $BELLE2_EXTERNALS_DIR is set correctly.");
-         ErrorLogger::ErrorMessage errmsg(callstack, emptyString, Severity::information, msg+" "+details, "failedToLoadCfg", false);
+         ErrorMessage errmsg(callstack, emptyString, Severity::information, msg+" "+details, "failedToLoadCfg", false);
          reportErr(errmsg);
          return EXIT_FAILURE;
 diff --git a/lib/cppcheck.cpp b/lib/cppcheck.cpp
-index 023ad23..af5783e 100644
+index 307327b..c20b4d4 100644
 --- a/lib/cppcheck.cpp
 +++ b/lib/cppcheck.cpp
-@@ -77,12 +77,12 @@ namespace {
+@@ -78,12 +78,12 @@ namespace {
              if (Path::fileExists(exepath + "addons/" + fileName))
                  return exepath + "addons/" + fileName;
  
@@ -58,10 +58,10 @@ index 023ad23..af5783e 100644
          }
  
 diff --git a/lib/library.cpp b/lib/library.cpp
-index d48d59b..5066e65 100644
+index d929d57..263df8b 100644
 --- a/lib/library.cpp
 +++ b/lib/library.cpp
-@@ -95,9 +95,10 @@ Library::Error Library::load(const char exename[], const char path[])
+@@ -96,9 +96,10 @@ Library::Error Library::load(const char exename[], const char path[])
          }
  
          std::list<std::string> cfgfolders;
@@ -102,5 +102,5 @@ index 3ba2e6f..176bc12 100644
          for (const std::string & f : filenames) {
              if (doc.LoadFile(f.c_str()) == tinyxml2::XML_SUCCESS) {
 -- 
-2.25.2
+2.31.0
 

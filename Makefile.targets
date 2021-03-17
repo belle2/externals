@@ -1672,14 +1672,14 @@ eos.clean:
 	@rm -fr $(EXTBINDIR)/eos-* $(EXTLIBDIR)/libeos* $(EXTINCDIR)/eos
 
 $(EXTSRCDIR)/eos/configure:
-	$(DOWNLOAD) eos eos-0.3.2.tar.gz https://github.com/eos/eos/archive/v0.3.2.tar.gz
+	$(DOWNLOAD) eos eos-0.3.3.tar.gz https://github.com/eos/eos/archive/v0.3.3.tar.gz
 	@cd $(EXTSRCDIR)/eos && ./autogen.bash
 
 # needs gsl, hdf5 yaml-cpp fftw3
 $(EXTLIBDIR)/libeos.so: $(EXTSRCDIR)/eos/configure
 	@echo "building eos"
 	@mkdir -p $(EXTBUILDDIR)/eos
-	@cd $(EXTBUILDDIR)/eos && $(EXTSRCDIR)/eos/configure $(CONFIGURE_COMMON_FLAGS) --with-boost-python-suffix=36 \
+	@cd $(EXTBUILDDIR)/eos && $(EXTSRCDIR)/eos/configure $(CONFIGURE_COMMON_FLAGS) --with-boost-python-suffix=38 \
 	    PYTHON=python3 --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
 	    --bindir=$(EXTBINDIR) --disable-pmc --with-minuit2=$(ROOTSYS) --enable-python --with-gsl=$(EXTCOMDIR) \
 	    --with-hdf5=$(EXTCOMDIR) --enable-silent-rules BOOST_PYTHON_CXXFLAGS='-I$(EXTINCDIR)' && \

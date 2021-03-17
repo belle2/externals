@@ -49,7 +49,7 @@ the externals.
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.3.7           | MPLv2      |
 | [EOS](https://eos.github.io/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1304320.svg)](https://doi.org/10.5281/zenodo.1304320) | 0.3.2 | GPLv2 |
 | [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.3.1         | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
-| [EvtGen](http://evtgen.warwick.ac.uk/)                                       | R01-04-00       | -          |
+| [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-00       | -          |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.8           | GPL        |

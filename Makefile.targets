@@ -1247,32 +1247,26 @@ tauola.touch:
 
 # dependencies for EvtGen
 evtgen: hepmc pythia photos tauola $(EXTLIBDIR)/libEvtGen.so
-evtgen.src: $(EXTSRCDIR)/evtgen/configure
+evtgen.src: $(EXTSRCDIR)/evtgen
 
 # EvtGen download
-$(EXTSRCDIR)/evtgen/configure:
-	@$(DOWNLOAD) EvtGen EvtGen.R01-04-00.tar.gz http://evtgen.warwick.ac.uk/static/srcrep/R01-04-00/EvtGen.R01-04-00.tar.gz
-	@mv $(EXTSRCDIR)/EvtGen/R01-04-00 $(EXTSRCDIR)/evtgen
+$(EXTSRCDIR)/evtgen:
+	@$(DOWNLOAD) EvtGen EvtGen.R02-00-00.tar.gz https://evtgen.hepforge.org/downloads?f=EvtGen-02.00.00.tar.gz
+	@mv $(EXTSRCDIR)/EvtGen/R02-00-00 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen.patch
-	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen.pdl-R01-07-00+BII-3296.patch
-	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen-BII-4471-emptyline.patch
 
 # EvtGen build
-$(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen/configure
+$(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
 	@echo "building EvtGen"
-	@cp -fa $(EXTSRCDIR)/evtgen $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/evtgen && ./configure $(CONFIGURE_COMMON_FLAGS) \
-	    --hepmcdir=$(EXTDIR) --pythiadir=$(EXTDIR) \
-	    --photosdir=$(EXTDIR) --tauoladir=$(EXTDIR) && \
-	    make -j $(NPROCESSES) lib_shared && make all
-	# install ourselves as evtgen stuff is expected in share/evtgen but
-	# evtgen has no option to install that way
-	@cd $(EXTBUILDDIR)/evtgen && \
-	    cp -fr lib/* $(EXTLIBDIR) && \
-	    cp -fr EvtGen EvtGenBase EvtGenModels EvtGenExternal $(EXTINCDIR) && \
-	    mkdir -p $(EXTDIR)/share/evtgen && cp -fr *.DEC *.XML evt.pdl $(EXTDIR)/share/evtgen
-	@cd $(EXTDIR)/share/evtgen && cp DECAY_2010.DEC DECAY.DEC
+	@mkdir -p ${EXTBUILDDIR}/evtgen
+	@cd $(EXTBUILDDIR)/evtgen && ${CMAKE} \
+	    -DEVTGEN_HEPMC3=OFF \
+	    -DEVTGEN_PYTHIA=ON \
+	    -DEVTGEN_PHOTOS=ON \
+	    -DEVTGEN_TAUOLA=ON \
+	    ${EXTSRCDIR}/evtgen && \
+	    make -j $(NPROCESSES) && make install
 
 # EvtGen clean
 evtgen.clean:

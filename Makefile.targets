@@ -1787,7 +1787,7 @@ pandoc.clean:
 	@rm -fr $(EXTBINDIR)/pandoc*
 
 $(EXTSRCDIR)/pandoc/bin/pandoc:
-	$(DOWNLOAD) pandoc pandoc-2.9.2.1-linux-amd64.tar.gz https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-linux-amd64.tar.gz
+	$(DOWNLOAD) pandoc pandoc-2.12-linux-amd64.tar.gz https://github.com/jgm/pandoc/releases/download/2.12/pandoc-2.12-linux-amd64.tar.gz
 
 $(EXTBINDIR)/pandoc: $(EXTSRCDIR)/pandoc/bin/pandoc
 	cp -fa $(EXTSRCDIR)/pandoc/bin/* $(EXTBINDIR)

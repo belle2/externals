@@ -117,7 +117,7 @@ To compile any of these just go into the external directory and type
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
 | [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 2.3             | GPLv3      |
-| [Doxygen](http://www.doxygen.org)                                            | 1.8.17          | GPL        |
+| [Doxygen](http://www.doxygen.org)                                            | 1.9.1           | GPL        |
 | [LLVM/Clang](http://llvm.org/), including libcxx and sanitizer tools         | 10.0.0          | [LLVM Release License](http://releases.llvm.org/4.0.0/LICENSE.TXT) |
 | [Valgrind](http://valgrind.org/)                                             | 3.16.1          | GPLv2      |
 

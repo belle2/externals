@@ -62,7 +62,7 @@ the externals.
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.0.0           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD |
-| [HepMC](http://lcgapp.cern.ch/project/simu/HepMC/)                           | 2.06.09         | GPLv2      |
+| [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |

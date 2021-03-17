@@ -1137,7 +1137,7 @@ hepmc.src: $(EXTSRCDIR)/hepmc
 
 # HepMC download
 $(EXTSRCDIR)/hepmc:
-	@$(DOWNLOAD) hepmc HepMC-2.06.09.tar.gz http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+	@$(DOWNLOAD) hepmc HepMC-2.06.11.tar.gz https://gitlab.cern.ch/hepmc/HepMC/-/archive/2.06.11/HepMC-2.06.11.tar.gz
 
 # HepMC build
 $(EXTLIBDIR)/libHepMC.so: $(EXTSRCDIR)/hepmc

@@ -1740,19 +1740,21 @@ $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@mkdir -p $(EXTDIR)/etc
 	@cd /tmp && git lfs install --system
 
-nlohmann_json.src: $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp
+nlohmann_json.src: $(EXTSRCDIR)/nlohmann_json/README.md
 nlohmann_json: $(EXTINCDIR)/nlohmann/json.hpp
 nlohmann_json.touch:
 	@rm -fr $(EXTINCDIR)/nlohmann/json.hpp
 nlohmann_json.clean:
 	@rm -fr $(EXTSRCDIR)/nlohmann_json $(EXTINCDIR)/nlohmann/
 
-$(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp:
-	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.7.3.zip https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
+$(EXTSRCDIR)/nlohmann_json/README.md:
+	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.9.1.tar.gz https://github.com/nlohmann/json/archive/v3.9.1.tar.gz
 
-$(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/nlohmann/json.hpp
+$(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@echo "installing nlohmann/json"
-	@cp -fa $(EXTSRCDIR)/nlohmann_json/include/nlohmann $(EXTINCDIR)
+	@mkdir -p $(EXTBUILDDIR)/nlohmann_json
+	@cd $(EXTBUILDDIR)/nlohmann_json && $(CMAKE) $(EXTSRCDIR)/nlohmann_json && \
+	    make -j $(NPROCESSES); make install
 
 
 hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt

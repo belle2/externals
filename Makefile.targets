@@ -1769,8 +1769,9 @@ $(EXTSRCDIR)/hammer/CMakeLists.txt:
 $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@echo "building Hammer"
 	@mkdir -p $(EXTBUILDDIR)/hammer
-	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DMAX_CXX_IS_14=OFF \
-	    -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
+	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer-v1-1-add-missing-includes.patch
+	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON \
+	    -DWITH_ROOT=ON -DENABLE_TESTS=OFF -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
 		-DPython3_FIND_STRATEGY=LOCATION && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/

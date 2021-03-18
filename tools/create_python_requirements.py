@@ -47,6 +47,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--upgrade", default=False, action="store_true", help="If present update all packages to the "
                         "latest possible version. Otherwise just determine missing dependencies when addding new packages")
+    parser.add_argument("--no-root", default=False, action="store_true", help="Ignore packages depending on ROOT if ROOT isn't compiled yet")
     args, remaining = parser.parse_known_args()
     # make sure root is setup, otherwise root-numpy fails horribly
     subprocess.run("which root-config", shell=True)
@@ -64,7 +65,9 @@ if __name__ == "__main__":
         raise ValueError("cannot find markers")
 
     # input files
-    files = ["requirements-base.in", "requirements-root.in", "requirements-core.in"]
+    files = ["requirements-base.in", "requirements-core.in"]
+    if not args.no_root:
+        files.insert(1, "requirements-root.in")
     # make sure pip-tools are installed
     subprocess.run(["pip3", "install", "--user", "pip-tools"])
     # if we run in non-upgrade mode we provide all existing versions which make
@@ -94,6 +97,11 @@ if __name__ == "__main__":
             m = re.match(r"^(.*?)(\[[^\]]*\]*)?==(.*?)\s*(#.*)?$", line)
             if m:
                 name = m.group(1)
+                extra = m.group(2)
+                if extra:
+                    print(name, extra)
+                else:
+                    extra = ""
                 version = m.group(3)
                 comment = m.group(4)
                 print(f"Obtain info for {name}=={version}")
@@ -108,7 +116,7 @@ if __name__ == "__main__":
                         pass
                 # sort by checksum and insert package requirement
                 content.sort()
-                content.insert(0, f"{name}=={version}")
+                content.insert(0, f"{name}{extra}=={version}")
                 # add dependency comment if present
                 if comment:
                     content.append(f"    {comment}")
@@ -116,7 +124,7 @@ if __name__ == "__main__":
                 elif name in existing_dependencies:
                     content.append(f"    # {existing_dependencies[name]}")
                 # make it one string
-                found[name] = " \\\n".join(content) + "\n"
+                found[name+extra] = " \\\n".join(content) + "\n"
                 # and remember package information
                 info = json_data["info"]
                 info["link"] = f"[{info['name']}]({info['project_url']})"

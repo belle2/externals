@@ -1,9 +1,7 @@
 root-numpy==4.8.0 \
-    --hash=sha256:5842bbcde92133f60a61f56e9f0a875a0dbc2a567cc65a9ac141ecd72e416878 \
-    # via -r requirements-root.in, pyroofit, root-pandas
+    --hash=sha256:5842bbcde92133f60a61f56e9f0a875a0dbc2a567cc65a9ac141ecd72e416878
 root-pandas==0.7.0 \
-    --hash=sha256:f58cabcb4675b945068f0ec409a0d3e16115be524f38db59eedb44047bbc6733 \
-    # via -r requirements-root.in
-pyroofit==0.9.4 \
-    --hash=sha256:598034231579f600c8d45ec815fd5c23e16975c8e2f3acaebae01b4f6491345d \
-    # via -r requirements-root.in
+    --hash=sha256:f58cabcb4675b945068f0ec409a0d3e16115be524f38db59eedb44047bbc6733
+pyroofit==0.9.6 \
+    --hash=sha256:0af916b3c00cfc74eed9b29bb51f196dbcabf0c12af56091c7aaba827e26111c \
+    --hash=sha256:b81ba220c396c2b13cd2308768f3432bdc3ef5ba6dca4fbb4fa429dcad25b68b

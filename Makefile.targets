@@ -534,8 +534,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	pip3 install -U --no-deps src/sphinx-argparse
 # install the belle2style files
 	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
-# and patch prompt-toolkit as there is no version available that includes https://github.com/prompt-toolkit/python-prompt-toolkit/pull/1110
-	cd $(EXTLIBDIR)/python3.8/site-packages && patch -p1 < $(PATCHDIR)/prompt-toolkit-1110-signalhandler.patch
 
 root-python-packages.src:
 	eval $(CREATE_PIP_CERTCHAIN)

@@ -937,19 +937,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6.20.08.source.tar.gz https://root.cern.ch/download/root_v6.20.08.source.tar.gz
+	@$(DOWNLOAD) root root_v6-24-00.tar.gz https://github.com/root-project/root/archive/refs/tags/v6-24-00.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
-# disable cling unloader as it crashes basf2
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10659-disable-cling-unloader.patch
-# option to write root files that are reproducible
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-reproducible-files.patch
-# and add the Belle 2 style definition
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-belle2style.patch
-# and apply the fix for cling on non-standard locales
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10751-clanglocale.patch
-# we also need to fix a crash if std::cout is used in interpreted code
-	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-10468-stdcout-crash.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -962,7 +952,8 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -DPYTHON_EXECUTABLE=$(EXTBINDIR)/python3 -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
+	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
+		-DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 -Dpyroot_legacy=OFF \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \

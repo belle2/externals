@@ -288,26 +288,15 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/llvm-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang clang-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/compiler-rt compiler-rt-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/compiler-rt-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/lld lld-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lld-10.0.0.src.tar.xz
-# in case we want the llvm debugger
-#	@$(DOWNLOAD) llvm/projects/lldb lldb-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/lldb-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxx libcxx-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxx-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/projects/libcxxabi libcxxabi-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libcxxabi-10.0.0.src.tar.xz
-# in case we want llvm libunwind
-#	@$(DOWNLOAD) llvm/projects/libunwind libunwind-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/libunwind-10.0.0.src.tar.xz
-	@$(DOWNLOAD) llvm/tools/clang/tools/extra clang-tools-extra-10.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-tools-extra-10.0.0.src.tar.xz
-	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-8.0-pythonforward.patch
+	@$(DOWNLOAD) llvm llvm-project-12.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
-	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -G "Unix Makefiles"  \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
-	    $(EXTSRCDIR)/llvm && \
-	    make -j $(NPROCESSES) && make install
+	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -S $(EXTSRCDIR)/llvm/llvm \
+	    -DPython3_EXECUTABLE=`which python3` \
+		-DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 valgrind: $(EXTBINDIR)/valgrind
 valgrind.src: $(EXTSRCDIR)/valgrind

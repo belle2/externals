@@ -85,6 +85,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),debug)
   export CONFIGURE_CXXFLAGS:=-g
   export CONFIGURE_COMMON_FLAGS:=--enable-debug
   export CMAKE_COMMON_FLAGS:=-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  export CMAKE_TARGET_SUFFIX:=
   export BOOST_OPTION:=variant=debug
   export GEANT4_OPTION:=
 else
@@ -96,6 +97,7 @@ ifneq (, $(filter $(BELLE2_EXTERNALS_OPTION), common opt))
   export CONFIGURE_CXXFLAGS=$(if $(OPTDEB_ENABLED),-g)
   export CONFIGURE_COMMON_FLAGS=$(if $(OPTDEB_ENABLED),--enable-debug)
   export CMAKE_COMMON_FLAGS=-DCMAKE_BUILD_TYPE=$(if $(OPTDEB_ENABLED),RelWithDebInfo,Release)
+  export CMAKE_TARGET_SUFFIX=$(if $(OPTDEB_ENABLED),,/strip)
   export BOOST_OPTION:=variant=release
   export GEANT4_OPTION:=-DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
@@ -140,7 +142,7 @@ ifeq ($(GL_XMU_EXISTS),0)
 endif
 
 # cmake executable including common options
-CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) $(CMAKE_COMMON_FLAGS)
+CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -GNinja $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
 export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
@@ -201,6 +203,21 @@ $(SHARED_DIRECTORIES):
 	@echo "create shared $@"
 	@mkdir -p $(BELLE2_EXTERNALS_DIR)/$(notdir $@)
 	@cd $(dir $@) && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/$(notdir $@))
+
+ninja.src: $(EXTSRCDIR)/ninja
+ninja: $(EXTBINDIR)/ninja
+ninja.touch:
+	@rm -fr $(EXTBINDIR)/ninja
+ninja.clean:
+	@rm -fr $(EXTBINDIR)/ninja
+
+$(EXTSRCDIR)/ninja:
+	@echo "downloading Ninja"
+	$(DOWNLOAD) ninja ninja-linux-v1.10.2.zip https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip
+
+$(EXTBINDIR)/ninja: $(EXTSRCDIR)/ninja
+	@echo "installing Ninja"
+	@install $(EXTSRCDIR)/ninja $(EXTBINDIR)/ninja
 
 binutils: $(EXTBINDIR)/ld
 binutils.src: $(EXTSRCDIR)/binutils
@@ -618,7 +635,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
 	    -DBUILD_SHARED_LIBS=ON \
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # google test clean
 gtest.clean:
@@ -693,7 +710,7 @@ $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DMATCH_COMPILER=ON && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # doxygen
 doxygen: $(EXTBINDIR)/doxygen
@@ -709,7 +726,7 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@mkdir -p $(EXTBUILDDIR)/doxygen
 	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 Vc.src: $(EXTSRCDIR)/Vc/README.md
 Vc: $(EXTLIBDIR)/libVc.a
@@ -724,7 +741,7 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@mkdir -p $(EXTBUILDDIR)/Vc
 	@cd $(EXTBUILDDIR)/Vc && $(CMAKE) $(EXTSRCDIR)/Vc \
 	    -DBUILD_TESTING=OFF && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecCore.src: $(EXTSRCDIR)/VecCore/README.md
 VecCore: $(EXTINCDIR)/VecCore/Version.h
@@ -739,7 +756,7 @@ $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@mkdir -p $(EXTBUILDDIR)/VecCore
 	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \
 	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF -DBUILD_UMESIMD=OFF && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 
 VecGeom.src: $(EXTSRCDIR)/VecGeom/README.md
@@ -756,7 +773,7 @@ $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
 	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
 	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 && \
-	    make -j $(NPROCESSES) VERBOSE=1 && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 
 # dependencies for CLHEP
@@ -773,7 +790,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 	@mkdir -p $(EXTBUILDDIR)/clhep
 	@cd $(EXTBUILDDIR)/clhep && $(CMAKE) $(EXTSRCDIR)/clhep/CLHEP \
 	    -DCLHEP_BUILD_CXXSTD="-std=c++17" -DCLHEP_SINGLE_THREAD=ON && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # CLHEP clean
 clhep.clean:
@@ -806,7 +823,7 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
 	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
 	    -DGEANT4_BUILD_CXXSTD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
@@ -891,7 +908,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # xrootd clean command
 xrootd.clean:
@@ -915,7 +932,7 @@ $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so \
 	    -DDAVIX_TESTS=OFF && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 davix.clean:
 	@echo "cleaning davix"
@@ -964,8 +981,8 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
 	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
 	    -Dfftw3=ON -Ddataframe=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
-	    make -j $(NPROCESSES) && make install
-	#patch include/root/Rtypes.h to emit a warning if ClassImp is used
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+#patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
 	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
 
@@ -993,7 +1010,7 @@ $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
 	@echo "building FastBDT TMVA plugin"
 	@mkdir -p $(EXTBUILDDIR)/FastBDT
 	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT && \
-	    make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # FastBDT TMVA plugin clean command
 fastbdt.clean:
@@ -1024,7 +1041,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR) -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # vgm clean
 vgm.clean:
@@ -1145,7 +1162,7 @@ $(EXTLIBDIR)/libHepMC.so: $(EXTSRCDIR)/hepmc
 	@mkdir -p $(EXTBUILDDIR)/hepmc
 	@cd $(EXTBUILDDIR)/hepmc && $(CMAKE) \
 	    -Dmomentum:STRING=GEV -Dlength:STRING=CM $(EXTSRCDIR)/hepmc && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # HepMC clean
 hepmc.clean:
@@ -1264,7 +1281,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
 	    -DEVTGEN_PHOTOS=ON \
 	    -DEVTGEN_TAUOLA=ON \
 	    ${EXTSRCDIR}/evtgen && \
-	    make -j $(NPROCESSES) && make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # EvtGen clean
 evtgen.clean:
@@ -1415,7 +1432,7 @@ $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=include \
 	    -DCMAKEPACKAGE_INSTALL_DIR=lib/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=lib/pkgconfig \
 	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON && \
-	    make -j $(NPROCESSES); make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # eigen clean
 eigen.clean:
@@ -1526,7 +1543,7 @@ $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann \
 	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
-	    make -j $(NPROCESSES); make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # astyle: C/C++ code beautifier
 astyle: $(EXTBINDIR)/astyle
@@ -1626,7 +1643,7 @@ $(EXTBINDIR)/h5ls: $(EXTSRCDIR)/hdf5/CMakeLists.txt
 	@echo "installing hdf5"
 	@mkdir -p $(EXTBUILDDIR)/hdf5
 	@cd $(EXTBUILDDIR)/hdf5 && $(CMAKE) $(EXTSRCDIR)/hdf5 && \
-	    make -j $(NPROCESSES); make install
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 fftw3.src: $(EXTSRCDIR)/fftw3/configure
 fftw3: $(EXTBINDIR)/fftw-wisdom
@@ -1661,9 +1678,9 @@ $(EXTLIBDIR)/libyaml-cpp.so: $(EXTSRCDIR)/yaml-cpp/CMakeLists.txt
 	@echo "installing yaml-cpp"
 	@mkdir -p $(EXTBUILDDIR)/yaml-cpp
 	@cd $(EXTBUILDDIR)/yaml-cpp && $(CMAKE) $(EXTSRCDIR)/yaml-cpp \
-	  -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
-	  -DYAML_BUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TOOLS=OFF && \
-	    make -j $(NPROCESSES); make install
+	  -DPython3_EXECUTABLE=`which python3` \
+	  -DYAML_BUILD_SHARED_LIBS=ON -DYAML_CPP_BUILD_TESTS=OFF -DYAML_CPP_BUILD_TOOLS=OFF && \
+	  ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 eos: $(EXTLIBDIR)/libeos.so
 eos.src: $(EXTSRCDIR)/eos/configure
@@ -1754,9 +1771,8 @@ $(EXTSRCDIR)/nlohmann_json/README.md:
 $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@echo "installing nlohmann/json"
 	@mkdir -p $(EXTBUILDDIR)/nlohmann_json
-	@cd $(EXTBUILDDIR)/nlohmann_json && $(CMAKE) $(EXTSRCDIR)/nlohmann_json && \
-	    make -j $(NPROCESSES); make install
-
+	@cd $(EXTBUILDDIR)/nlohmann_json && $(CMAKE) $(EXTSRCDIR)/nlohmann_json -DJSON_BuildTests=OFF && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt
 hammer: $(EXTLIBDIR)/libHammerBase.so
@@ -1775,8 +1791,10 @@ $(EXTSRCDIR)/hammer/CMakeLists.txt:
 $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@echo "building Hammer"
 	@mkdir -p $(EXTBUILDDIR)/hammer
-	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -DMAX_CXX_IS_14=OFF -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) -DPython3_FIND_STRATEGY=LOCATION && \
-	    make -j$(NPROCESSES); make install
+	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON -DMAX_CXX_IS_14=OFF \
+	    -DWITH_ROOT=ON -DENABLE_TESTS=ON -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
+		-DPython3_FIND_STRATEGY=LOCATION && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
 	@rm -r $(EXTDIR)/lib/Hammer
 

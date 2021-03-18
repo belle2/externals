@@ -72,6 +72,7 @@ the externals.
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-09-00       | GPLv2      |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
+| [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.9.1           | MIT        |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later|
 | [PHOKHARA](http://ific.uv.es/~rodrigo/phokhara/)                             | 10.0            | unknown    |

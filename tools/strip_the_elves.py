@@ -90,6 +90,7 @@ class ElfStripper:
             debugdir = filename.parent / ".debug"
             debugdir.mkdir(exist_ok=True)
             debugfile.rename(debugdir / debugfilename)
+            debugfile = debugdir / debugfilename
             # only allow reading debug files
             debugfile.chmod(0o444)
         except Exception as e:

@@ -35,6 +35,8 @@ class ElfStripper:
         self.__split = ["objcopy", "--only-keep-debug"]
         if compress:
             self.__split.append("--compress-debug-sections")
+        #: arguments to add a debuglink to split debug info
+        self.__add_debuglink = ["objcopy", "--add-gnu-debuglink"]
 
     def get_fileinfo(self, filename):
         """Return a tuple with parsed output from readelf
@@ -57,8 +59,8 @@ class ElfStripper:
             logging.warn(f"Problem reading elf information for '{filename}': {e}")
         return None, {}
 
-    def strip(self, filename, debuglink=None):
-        """Strip all unneeded symbols and optionally add a debuglink section"""
+    def strip(self, filename):
+        """Strip all unneeded symbols"""
         logging.info(f"stripping {filename}")
         try:
             # check permissions
@@ -66,8 +68,7 @@ class ElfStripper:
             # make writeable
             filename.chmod(mode | stat.S_IWUSR)
             # strip
-            extra = [] if debuglink is None else ["--add-gnu-debuglink", str(debuglink)]
-            subprocess.check_call(self.__strip + extra + [str(filename)])
+            subprocess.check_call(self.__strip + [str(filename)])
             # and reset permissions
             filename.chmod(mode)
         except Exception as e:
@@ -79,17 +80,23 @@ class ElfStripper:
         """Split the debuging information from the file and then strip the file itself"""
         logging.info(f"splitting debug info for {filename}")
         try:
-            debugfile = filename.parent / ".debug" / f"{filename.name}.dbg"
-            debugfile.parent.mkdir(exist_ok=True)
+            # split the file & add debuglink in the current directory
+            # (per https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html )
+            debugfilename = f"{filename.name}.dbg"
+            debugfile = filename.parent / debugfilename
             subprocess.check_call(self.__split + [str(filename), str(debugfile)])
+            subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename)], cwd=filename.parent)
+            # move the debug file to its final location
+            debugdir = filename.parent / ".debug"
+            debugdir.mkdir(exist_ok=True)
+            debugfile.rename(debugdir / debugfilename)
             # only allow reading debug files
             debugfile.chmod(0o444)
         except Exception as e:
             logging.error(f"Problem splitting debug info for {filename}: {e}")
             return None
         # ok we split debug info, now let's definitely strip the original one
-        # because we need to add debuglink
-        return self.strip(filename, debugfile), debugfile
+        return self.strip(filename), debugfile
 
     def __call__(self, filename):
         elftype, sections = self.get_fileinfo(filename)

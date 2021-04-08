@@ -85,7 +85,7 @@ class ElfStripper:
             debugfilename = f"{filename.name}.dbg"
             debugfile = filename.parent / debugfilename
             subprocess.check_call(self.__split + [str(filename), str(debugfile)])
-            subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename)], cwd=filename.parent)
+            subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename.name)], cwd=filename.parent)
             # move the debug file to its final location
             debugdir = filename.parent / ".debug"
             debugdir.mkdir(exist_ok=True)

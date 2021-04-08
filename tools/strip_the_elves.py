@@ -22,6 +22,7 @@ import subprocess
 import logging
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor as PoolExecutor
+from contextlib import contextmanager
 
 
 class ElfStripper:
@@ -59,18 +60,24 @@ class ElfStripper:
             logging.warn(f"Problem reading elf information for '{filename}': {e}")
         return None, {}
 
+    @contextmanager
+    def make_writable(filename):
+        """Make ELF files temporarily writable for stripping or debuglinking"""
+        # check permissions
+        mode = stat.S_IMODE(filename.stat().st_mode)
+        # make writeable
+        filename.chmod(mode | stat.S_IWUSR)
+        # run context
+        yield filename
+        # and reset permissions
+        filename.chmod(mode)
+
     def strip(self, filename):
         """Strip all unneeded symbols"""
         logging.info(f"stripping {filename}")
         try:
-            # check permissions
-            mode = stat.S_IMODE(filename.stat().st_mode)
-            # make writeable
-            filename.chmod(mode | stat.S_IWUSR)
-            # strip
-            subprocess.check_call(self.__strip + [str(filename)])
-            # and reset permissions
-            filename.chmod(mode)
+            with make_writable(filename):
+                subprocess.check_call(self.__strip + [str(filename)])
         except Exception as e:
             logging.error(f"Problem stripping {filename}: {e}")
             return None
@@ -85,14 +92,8 @@ class ElfStripper:
             debugfilename = f"{filename.name}.dbg"
             debugfile = filename.parent / debugfilename
             subprocess.check_call(self.__split + [str(filename), str(debugfile)])
-            # check permissions
-            mode = stat.S_IMODE(filename.stat().st_mode)
-            # make writeable
-            filename.chmod(mode | stat.S_IWUSR)
-            # add debuglink
-            subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename.name)], cwd=filename.parent)
-            # and reset permissions
-            filename.chmod(mode)
+            with make_writable(filename):
+                subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename.name)], cwd=filename.parent)
 
             # move the debug file to its final location
             debugdir = filename.parent / ".debug"

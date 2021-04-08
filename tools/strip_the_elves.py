@@ -80,17 +80,26 @@ class ElfStripper:
         """Split the debuging information from the file and then strip the file itself"""
         logging.info(f"splitting debug info for {filename}")
         try:
-            # split the file & add debuglink in the current directory
-            # (per https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html )
+            # Must split the file & add debuglink in the current directory
+            # per https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
             debugfilename = f"{filename.name}.dbg"
             debugfile = filename.parent / debugfilename
             subprocess.check_call(self.__split + [str(filename), str(debugfile)])
+            # check permissions
+            mode = stat.S_IMODE(filename.stat().st_mode)
+            # make writeable
+            filename.chmod(mode | stat.S_IWUSR)
+            # add debuglink
             subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename.name)], cwd=filename.parent)
+            # and reset permissions
+            filename.chmod(mode)
+
             # move the debug file to its final location
             debugdir = filename.parent / ".debug"
             debugdir.mkdir(exist_ok=True)
             debugfile.rename(debugdir / debugfilename)
             debugfile = debugdir / debugfilename
+
             # only allow reading debug files
             debugfile.chmod(0o444)
         except Exception as e:

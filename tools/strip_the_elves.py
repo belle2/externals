@@ -24,6 +24,17 @@ from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor as PoolExecutor
 from contextlib import contextmanager
 
+@contextmanager
+def make_writable(filename):
+    """Make ELF files temporarily writable for stripping or debuglinking"""
+    # check permissions
+    mode = stat.S_IMODE(filename.stat().st_mode)
+    # make writeable
+    filename.chmod(mode | stat.S_IWUSR)
+    # run context
+    yield filename
+    # and reset permissions
+    filename.chmod(mode)
 
 class ElfStripper:
     ELF_TYPE = re.compile(r'^\s+Type:\s*(\S*)', re.M)
@@ -59,18 +70,6 @@ class ElfStripper:
             logging.debug(f"Exception reading elf for '{filename}'", exc_info=e)
             logging.warn(f"Problem reading elf information for '{filename}': {e}")
         return None, {}
-
-    @contextmanager
-    def make_writable(filename):
-        """Make ELF files temporarily writable for stripping or debuglinking"""
-        # check permissions
-        mode = stat.S_IMODE(filename.stat().st_mode)
-        # make writeable
-        filename.chmod(mode | stat.S_IWUSR)
-        # run context
-        yield filename
-        # and reset permissions
-        filename.chmod(mode)
 
     def strip(self, filename):
         """Strip all unneeded symbols"""

@@ -799,10 +799,12 @@ geant4.src: $(EXTSRCDIR)/geant4
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
 	@$(DOWNLOAD) geant4 geant4.10.06.p03.tar.gz http://cern.ch/geant4-data/releases/geant4.10.06.p03.tar.gz
-	# some cosmetic verbosity fixes
+# some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
-	# disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
+# disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
+# get rid of possible heap overflow
+	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4

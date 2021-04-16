@@ -1,0 +1,42 @@
+commit 5539f9d4b0ea2c02177af15ee6e07cbf094fcf77
+Author: Martin Ritter <martin.ritter@lmu.de>
+Date:   Fri Apr 16 08:02:45 2021 +0000
+
+    Fix Buffer overflow in Geant4
+
+diff --git a/source/global/management/include/G4strstreambuf.icc b/source/global/management/include/G4strstreambuf.icc
+index e8ff09e6..fb0e99d7 100644
+--- a/source/global/management/include/G4strstreambuf.icc
++++ b/source/global/management/include/G4strstreambuf.icc
+@@ -46,7 +46,10 @@ inline G4strstreambuf::~G4strstreambuf()
+ {
+   // flushing buffer...
+   // std::cout is used because destination object may not be alive.
+-  if(count !=0) std::cout << buffer;
++  if(count !=0 and count<=size) {
++    buffer[count] = 0;
++    std::cout << buffer;
++  }
+ 
+   delete [] buffer;
+ }
+@@ -54,8 +57,8 @@ inline G4strstreambuf::~G4strstreambuf()
+ 
+ //////////////////////////////////////////////////////////////////
+ inline G4strstreambuf::G4strstreambuf(const G4strstreambuf& right)
+-  : std::basic_streambuf<char>(), 
+-    buffer(right.buffer), 
++  : std::basic_streambuf<char>(),
++    buffer(right.buffer),
+     count(right.count), size(right.size),
+     destination(right.destination)
+ //////////////////////////////////////////////////////////////////
+@@ -68,7 +71,7 @@ inline G4strstreambuf& G4strstreambuf::operator=(const G4strstreambuf& right)
+ /////////////////////////////////////////////////////////////////////////////
+ {
+   if(&right==this) return *this;
+-  
++
+   destination= right.destination;
+   buffer= right.buffer;
+   count= right.count;

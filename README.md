@@ -76,7 +76,7 @@ the externals.
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.9.1           | MIT        |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later|
 | [PHOKHARA](http://ific.uv.es/~rodrigo/phokhara/)                             | 10.0            | unknown    |
-| [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.56            | partly GPLv2? |
+| [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.64            | partly GPLv2? |
 | [PostgreSQL](http://www.postgresql.org/)                                     | 9.2.4           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](http://home.thep.lu.se/~torbjorn/Pythia.html)                       | 8.305           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.8.8           | PSFL (BSD-style)  |

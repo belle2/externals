@@ -1192,16 +1192,16 @@ pythia.touch:
 
 
 # dependencies for Photos
-photos: $(EXTLIBDIR)/libPhotosCxxInterface.so
+photos: $(EXTLIBDIR)/libPhotospp.so
 photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
-	@$(DOWNLOAD) PHOTOS PHOTOS.3.56.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.56/PHOTOS.3.56.tar.gz
+	@$(DOWNLOAD) PHOTOS PHOTOS.3.64.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.64/PHOTOS.3.64.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
 # Photos build
-$(EXTLIBDIR)/libPhotosCxxInterface.so: $(EXTSRCDIR)/PHOTOS/configure
+$(EXTLIBDIR)/libPhotospp.so: $(EXTSRCDIR)/PHOTOS/configure
 	@echo "building Photos"
 	@cp -fa $(EXTSRCDIR)/PHOTOS $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/PHOTOS && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
@@ -1215,7 +1215,7 @@ photos.clean:
 
 # Photos touch
 photos.touch:
-	@rm -f $(EXTLIBDIR)/libPhotosCxxInterface.so
+	@rm -f $(EXTLIBDIR)/libPhotospp.so
 
 
 # dependencies for Tauola

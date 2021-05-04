@@ -1,0 +1,21 @@
+commit ef1a41f0642e2f4a60cae584813e7e7b6e5374d9
+Author: Martin Ritter <martin.ritter@lmu.de>
+Date:   Tue May 4 11:54:44 2021 +0000
+
+    Don't disable optimization just because we want debug information
+
+diff --git a/configure b/configure
+index 0b60b44..64b268f 100755
+--- a/configure
++++ b/configure
+@@ -2435,8 +2435,8 @@ if test "${enable_debug+set}" = set; then :
+   enableval=$enable_debug;
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_debug" >&5
+ $as_echo "$enable_debug" >&6; } ;
+-    FFLAGS="-g3 -O0" ;
+-    CXXFLAGS="-g3 -O0"
++    FFLAGS="-g3 -O2" ;
++    CXXFLAGS="-g3 -O2"
+ 
+ else
+ 

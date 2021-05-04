@@ -84,7 +84,7 @@ the externals.
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.24.0          | LGPLv2.1 (GPLv3 for MathMore)  |
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
-| [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.4           | -          |
+| [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.1           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.6.0          | Apache v2  |

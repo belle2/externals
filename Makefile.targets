@@ -1224,13 +1224,15 @@ tauola.src: $(EXTSRCDIR)/TAUOLA/configure
 
 # Tauola download
 $(EXTSRCDIR)/TAUOLA/configure:
-	@$(DOWNLOAD) TAUOLA TAUOLA.1.1.4.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.4/TAUOLA.1.1.4.tar.gz
+	@$(DOWNLOAD) TAUOLA TAUOLA.1.1.8.tar.gz http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.8/TAUOLA.1.1.8.tar.gz
+	@cd $(EXTSRCDIR)/TAUOLA && patch -p1 < $(PATCHDIR)/tauola-enable-debug-optimization.patch
 
 # Tauola build
 $(EXTLIBDIR)/libTauolaCxxInterface.so: $(EXTSRCDIR)/TAUOLA/configure
 	@echo "building Tauola"
 	@cp -fa $(EXTSRCDIR)/TAUOLA $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/TAUOLA && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --with-hepmc=$(EXTDIR) && \
+	@cd $(EXTBUILDDIR)/TAUOLA && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
+	    --with-hepmc=$(EXTDIR) --without-hepmc3 --with-pythia8=$(EXTDIR) && \
 	    make && make install
 
 # Tauola clean

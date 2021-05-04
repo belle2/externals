@@ -1164,14 +1164,16 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@$(DOWNLOAD) pythia pythia8215.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8215.tgz
+	@$(DOWNLOAD) pythia pythia8305.tgz http://home.thep.lu.se/~torbjorn/pythia8/pythia8305.tgz
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 	@echo "building Pythia"
 	@cp -fa $(EXTSRCDIR)/pythia $(EXTBUILDDIR)
+# Pythia disables optimizations when enabling debug symbols ... so let's just define the flags we want by running ./configure once,
+# looking at the default flags it uses anc copying them here with some adjustments
 	@cd $(EXTBUILDDIR)/pythia && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
-	    --enable-shared --with-hepmc2=$(EXTDIR) && \
+	    --with-hepmc2=$(EXTDIR) --cxx-common="-g -O3 -std=c++14 -pedantic -W -Wall -Wshadow -fPIC" && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -1253,6 +1255,7 @@ $(EXTSRCDIR)/evtgen:
 	@rmdir $(EXTSRCDIR)/EvtGen
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-avoid-double-counting.patch
 	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-remove-leak.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -p1 < $(PATCHDIR)/evtgen-02-00-00-pythia8.304.patch
 
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen

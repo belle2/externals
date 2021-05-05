@@ -832,30 +832,33 @@ geant4.touch:
 	@rm -f $(EXTBINDIR)/geant4.sh
 
 # dependencies for PostgreSql
-postgresql: $(EXTBINDIR)/psql
+postgresql: $(EXTLIBDIR)/libpq.so
 postgresql.src: $(EXTSRCDIR)/postgresql/configure
 
 # PostgreSql download
 $(EXTSRCDIR)/postgresql/configure:
-	@$(DOWNLOAD) postgresql postgresql-9.2.4.tar.gz http://ftp.postgresql.org/pub/source/v9.2.4/postgresql-9.2.4.tar.gz
+	@$(DOWNLOAD) postgresql postgresql-13.2.tar.gz https://ftp.postgresql.org/pub/source/v13.2/postgresql-13.2.tar.gz
 
 # PostgreSql build
-$(EXTBINDIR)/psql: $(EXTSRCDIR)/postgresql/configure
+$(EXTLIBDIR)/libpq.so: $(EXTSRCDIR)/postgresql/configure
 	@echo "building PostgreSql"
 	@mkdir -p $(EXTBUILDDIR)/postgresql
+# Compile and install only the library/headers as indicated in INSTALL, no need for the postgres server
 	@cd $(EXTBUILDDIR)/postgresql && $(EXTSRCDIR)/postgresql/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR)/pgsql/ --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) && \
-	    make -j $(NPROCESSES) && make install
+	    make -C src/backend generated-headers && \
+	    make -C src/include install && \
+	    make -C src/interfaces install
 
 # PostgreSql clean
 postgresql.clean:
 	@echo "cleaning PostgreSql"
-	@-cd $(EXTBUILDDIR)/postgresql 2>/dev/null && make clean
-	@rm -rf $(EXTINCDIR)/pgsql $(EXTBINDIR)/psql
+	@rm -fr $(EXTBUILDDIR)/postgresql
+	@rm -rf $(EXTINCDIR)/pgsql $(EXTLIBDIR)/libpq*
 
 # PostgreSql touch
 postgresql.touch:
-	@rm -f $(EXTBINDIR)/psql
+	@rm -f $(EXTLIBDIR)/libpq.so
 
 # dependencies for NeuroBayes
 neurobayes: $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so

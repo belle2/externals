@@ -120,7 +120,7 @@ To compile any of these just go into the external directory and type
 | [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 2.3             | GPLv3      |
 | [Doxygen](http://www.doxygen.org)                                            | 1.9.1           | GPL        |
 | [LLVM/Clang](http://llvm.org/), including libcxx and sanitizer tools         | 12.0.0          | [Apache 2 License with LLVM Exceptions](http://releases.llvm.org/12.0.0/LICENSE.TXT) |
-| [Valgrind](http://valgrind.org/)                                             | 3.16.1          | GPLv2      |
+| [Valgrind](http://valgrind.org/)                                             | 3.17.0          | GPLv2      |
 
 
 Python Packages

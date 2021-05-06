@@ -1802,3 +1802,19 @@ $(EXTSRCDIR)/pandoc/bin/pandoc:
 
 $(EXTBINDIR)/pandoc: $(EXTSRCDIR)/pandoc/bin/pandoc
 	cp -fa $(EXTSRCDIR)/pandoc/bin/* $(EXTBINDIR)
+
+fastjet.src: $(EXTSRCDIR)/fastjet/configure
+fastjet: $(EXTLIBDIR)/libfastjet.so
+fastjet.touch:
+	@rm -fr $(EXTLIBDIR)/libfastjet.so
+fastjet.clean:
+	@rm -fr $(EXTLIBDIR)/libfastjet* $(EXTLIBDIR)/libsiscone $(EXTINCDIR)/fastjet
+
+$(EXTSRCDIR)/fastjet/configure:
+	$(DOWNLOAD) fastjet fastjet-3.3.4.tar.gz http://fastjet.fr/repo/fastjet-3.3.4.tar.gz
+
+$(EXTLIBDIR)/libfastjet.so: $(EXTSRCDIR)/fastjet/configure
+	@mkdir -p $(EXTBUILDDIR)/fastjet
+	@cd $(EXTBUILDDIR)/fastjet && $(EXTSRCDIR)/fastjet/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
+	    --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --enable-silent-rules && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)

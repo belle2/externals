@@ -3,6 +3,14 @@
 # the BELLE2_EXTERNALS_DIR. This makes pkg-config work even when when the path
 # changes (assuming the variable is used in the .pc files which we enforce
 # using sed).
+
+# now if we ask for --version we don't want anything else so just forward it to the basic pkg-config
+if [[ "$@" == "--version" ]]; then
+	/usr/bin/pkg-config --version
+	exit $?
+fi
+
+# otherwise make sure the externals are setup and set some paths
 if [ -z $BELLE2_EXTERNALS_DIR ]; then
     echo "Belle2 environment not set up"
     exit 1;

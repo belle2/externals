@@ -1338,48 +1338,6 @@ cry.touch:
 	@rm -f $(EXTLIBDIR)/libCRY.a
 
 
-# dependencies for PHOKHARA
-phokhara: $(EXTLIBDIR)/libphokhara.so
-phokhara.src: $(EXTSRCDIR)/phokhara/Makefile
-
-# PHOKHARA download
-# The archive contains object files, they need to be deleted.
-# All ordinary files have mode "x", it is cleared
-# The main source file is converted from DOS to UNIX line endings.
-$(EXTSRCDIR)/phokhara/Makefile:
-	@$(DOWNLOAD) phokhara PH10.0.tar.gz http://ific.uv.es/~rodrigo/phokhara/PH10.0.tar.gz
-	@cd $(EXTSRCDIR)/phokhara && \
-	    rm -f `find . -name '*.o'` && \
-	    chmod -x `find . -type f` && \
-	    sed -i 's/\r$$//' phokhara_10.0.f && \
-	    patch -Np1 < $(PATCHDIR)/phokhara.patch
-
-# PHOKHARA build
-$(EXTLIBDIR)/libphokhara.so: $(EXTSRCDIR)/phokhara/Makefile
-	@echo "building PHOKHARA"
-	@cp -fa $(EXTSRCDIR)/phokhara $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/phokhara/eemmg-lib && \
-	    make -j $(NPROCESSES) && \
-	    cp libeemmg5.so libeemmgisrfsr.so libeemmgisr.so libeemmgmix.so \
-	        libpjfry.so libqcdloop1.so $(EXTLIBDIR)
-	@cd $(EXTBUILDDIR)/phokhara && \
-	    EEMMGLIB_PATH=$(EXTLIBDIR) make -j $(NPROCESSES) && \
-	    cp libphokhara.so $(EXTLIBDIR) && \
-	    mkdir -p $(EXTSHRDIR)/phokhara && \
-	    cp const_and_model_paramall10.0.dat eemmg-lib/ff/fferr.dat \
-	        $(EXTSHRDIR)/phokhara
-
-# PHOKHARA clean
-phokhara.clean:
-	@echo "cleaning PHOKHARA"
-	@-cd $(EXTBUILDDIR)/phokhara 2>/dev/null && make clean
-	@rm -rf $(EXTLIBDIR)/libphokhara.so $(EXTSHRDIR)/phokhara
-
-# PHOKHARA touch
-phokhara.touch:
-	@rm -f $(EXTLIBDIR)/libphokhara.so
-
-
 # dependencies for FLC
 flc: $(EXTLIBDIR)/libComplexPDF.so
 flc.src: $(EXTSRCDIR)/FLC/README

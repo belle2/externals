@@ -24,7 +24,12 @@ get_archive () {
   # only download if not present or wrong checksum
   check_archive
   if [ $? -ne 0 ]; then
+    # Workaround for system wget being broken as a result of LD_LIBRARY_PATH tweaking
+    # The long-term solution is to stop messing with LD_LIBRARY_PATH and use RPATHs instead
+    old_ld_library_path=${LD_LIBRARY_PATH}
+    unset LD_LIBRARY_PATH
     wget -T 60 --tries=3 -O ${EXTSRCDIR}/${FILENAME} "$@" ${URL} || { rm -fr ${EXTSRCDIR}/${FILENAME}; return 1; }
+    export LD_LIBRARY_PATH=${old_ld_library_path}
     # check again
     check_archive || return 1
   fi

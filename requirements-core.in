@@ -10,7 +10,6 @@ cython
 cymove
 flake8
 file-read-backwards
-# error with 0.15.1post1 so stick to non-post
 docutils
 h5py
 ipython

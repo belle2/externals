@@ -60,7 +60,7 @@ the externals.
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later|
 | [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.64            | partly GPLv2? |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
-| [PYTHIA](https://pythia.org/)                                                | 8.305           | GPLv2      |
+| [PYTHIA](https://pythia.org/)                                                | 8.215           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.8.8           | PSFL (BSD-style)  |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |

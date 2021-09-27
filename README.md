@@ -58,7 +58,7 @@ the externals.
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.9.1           | MIT        |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later|
-| [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.64            | partly GPLv2? |
+| [PHOTOS](http://photospp.web.cern.ch/photospp/)                              | 3.64            | MIT |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](https://pythia.org/)                                                | 8.305           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.8.8           | PSFL (BSD-style)  |

@@ -507,7 +507,7 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 
 # we need the matplotlib style files
 $(EXTSRCDIR)/belle2style/README.md:
-	@$(DOWNLOAD) belle2style belle2style@e774d4e7ecf.zip https://stash.desy.de/rest/api/latest/projects/B2D/repos/belle2style/archive?at=e774d4e7ecf&format=zip
+	@$(DOWNLOAD) belle2style belle2style@347fddbc7e8.zip https://stash.desy.de/rest/api/latest/projects/B2D/repos/belle2style/archive?at=347fddbc7e8&format=zip
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
@@ -1202,7 +1202,7 @@ photos.src: $(EXTSRCDIR)/PHOTOS/configure
 
 # Photos download
 $(EXTSRCDIR)/PHOTOS/configure:
-	@$(DOWNLOAD) PHOTOS PHOTOS.3.64.tar.gz http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.64/PHOTOS.3.64.tar.gz
+	@$(DOWNLOAD) PHOTOS PHOTOS.3.64.tar.gz https://gitlab.cern.ch/photospp/photospp/-/archive/v3.64/photospp-v3.64.tar.gz
 	@cd $(EXTSRCDIR)/PHOTOS && patch -Np0 < $(PATCHDIR)/photos.patch
 
 # Photos build

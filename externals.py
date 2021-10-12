@@ -130,10 +130,11 @@ def setup_externals(location, common=False):
         env_vars['GIT_EXEC_PATH'] = os.path.join(location, subdir, 'lib', 'git-core')
         env_vars['GIT_TEMPLATE_DIR'] = os.path.join(location, 'share', 'git-core', 'templates')
         env_vars['GIT_GUI_LIB_DIR'] = os.path.join(location, 'share', 'git-gui', 'lib')
-        # set up perl path for git-svn. Sadly this directory is somewhere
-        # depending on the distribution (centos 5:
-        # $BELLE2_ARCH/common/lib/perl5/site_perl/5.8.8/, centos 6,7:
-        # share/perl5, ubuntu: share/perl/$VERSION/ ...
+        # set up perl path for for some git subcommands.
+        # Sadly this directory is somewhere depending on the distribution:
+        #  - CentOS 5: $BELLE2_ARCH/common/lib/perl5/site_perl/5.8.8/
+        #  - CentOS 6,7: share/perl5
+        #  - Ubuntu: share/perl/$VERSION/
         # So let's do the lazy approach and find it by looking at all
         # possible directories and looking for Git.pm in there
 

@@ -132,15 +132,14 @@ def setup_externals(location, common=False):
         env_vars['GIT_GUI_LIB_DIR'] = os.path.join(location, 'share', 'git-gui', 'lib')
         # set up perl path for for some git subcommands.
         # Sadly this directory is somewhere depending on the distribution:
-        #  - CentOS 5: $BELLE2_ARCH/common/lib/perl5/site_perl/5.8.8/
-        #  - CentOS 6,7: share/perl5
+        #  - CentOS 7: share/perl5
         #  - Ubuntu: share/perl/$VERSION/
         # So let's do the lazy approach and find it by looking at all
         # possible directories and looking for Git.pm in there
 
         def find_perl():
             """small helper to find the correct perl directory where the Git.pm is installed"""
-            for base in ["share/perl", "share/perl5", os.path.join(subdir, "lib/perl"), os.path.join(subdir, "lib/perl5")]:
+            for base in ["share/perl", "share/perl5"]:
                 abs_base = os.path.join(location, base)
                 for dirname, dirs, filenames in os.walk(abs_base):
                     if "Git.pm" in filenames:

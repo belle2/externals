@@ -68,14 +68,6 @@ get_archive () {
   rm -fr ${TMPDIR}
 }
 
-get_svn () {
-  URL=$1
-  COMMAND=`echo ${URL} | awk -F: '{print $2}'`
-  REVISION=`echo ${URL} | awk -F: '{print $3}'`
-  LINK=`echo ${URL} | sed 's;svn:\w*:\w*:;;'`
-  svn ${COMMAND} -r${REVISION} ${LINK} ${DIRNAME}
-}
-
 get_git() {
   URL=$1
   TREEISH=`echo ${URL} | awk -F: '{print $2}'`
@@ -102,9 +94,7 @@ if [ -z "$USE_BELLE2SERVER" ]; then
         URL=$1
         PROTOCOL=`echo ${URL} | awk -F: '{print $1}'`
         shift
-        if [ "${PROTOCOL}" = "svn" ]; then
-            get_svn $URL
-        elif [ "${PROTOCOL}" = "git" ]; then
+        if [ "${PROTOCOL}" = "git" ]; then
             get_git $URL
         else
             get_archive ${URL}

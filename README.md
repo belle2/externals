@@ -42,9 +42,9 @@ the externals.
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
-| [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD |
+| [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD        |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.1.0           | GPLv3      |
-| [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD |
+| [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
@@ -53,7 +53,7 @@ the externals.
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.7.2           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |
-| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-09-00       | GPLv2      |
+| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-10-00       | LGPLv2     |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.9.1           | MIT        |

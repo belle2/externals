@@ -2,7 +2,7 @@ diff --git a/graf3d/gl/src/TGLLogicalShape.cxx b/graf3d/gl/src/TGLLogicalShape.c
 index 0eaa1fd..e87eea5 100644
 --- a/graf3d/gl/src/TGLLogicalShape.cxx
 +++ b/graf3d/gl/src/TGLLogicalShape.cxx
-@@ -75,7 +75,7 @@ TGLLogicalShape::TGLLogicalShape() :
+@@ -79,7 +79,7 @@ TGLLogicalShape::TGLLogicalShape() :
     fDLBase        (0),
     fDLSize        (1),
     fDLValid       (0),
@@ -11,7 +11,7 @@ index 0eaa1fd..e87eea5 100644
     fRefStrong     (kFALSE),
     fOwnExtObj     (kFALSE)
  {
-@@ -92,7 +92,7 @@ TGLLogicalShape::TGLLogicalShape(TObject* obj) :
+@@ -96,7 +96,7 @@ TGLLogicalShape::TGLLogicalShape(TObject* obj) :
     fDLBase        (0),
     fDLSize        (1),
     fDLValid       (0),
@@ -20,7 +20,7 @@ index 0eaa1fd..e87eea5 100644
     fRefStrong     (kFALSE),
     fOwnExtObj     (kFALSE)
  {
-@@ -109,7 +109,7 @@ TGLLogicalShape::TGLLogicalShape(const TBuffer3D & buffer) :
+@@ -113,7 +113,7 @@ TGLLogicalShape::TGLLogicalShape(const TBuffer3D & buffer) :
     fDLBase        (0),
     fDLSize        (1),
     fDLValid       (0),

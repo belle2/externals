@@ -246,12 +246,12 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-10.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-11.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
 # and also download the prerequisites in their latest version
 	@$(DOWNLOAD) gcc/gmp gmp-6.2.1.tar.xz https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz
 	@$(DOWNLOAD) gcc/mpfr mpfr-4.1.0.tar.xz http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
 	@$(DOWNLOAD) gcc/mpc mpc-1.2.1.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
-	@$(DOWNLOAD) gcc/isl isl-0.21.tar.xz http://isl.gforge.inria.fr/isl-0.21.tar.xz
+	@$(DOWNLOAD) gcc/isl isl-0.24.tar.xz https://libisl.sourceforge.io/isl-0.24.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 

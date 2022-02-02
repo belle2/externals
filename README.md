@@ -36,7 +36,7 @@ the externals.
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FastJet](http://fastjet.fr/)                                                | 3.3.4           | GPLv2 (and others) |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 10.2            | GPLv2/GPLv3 + Runtime library Exception |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 11.2            | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.1            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p03       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
@@ -85,7 +85,7 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
 | [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
 | [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.2.1           | LGPLv3 + GPLv2 |
-| [Integer Set Library](http://isl.gforge.inria.fr/)                           | 0.21            | MIT        |
+| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.24            | MIT        |
 
 Optional Package
 ----------------

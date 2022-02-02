@@ -1426,7 +1426,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.75.0.tar.xz http://curl.haxx.se/download/curl-7.75.0.tar.xz
+	@$(DOWNLOAD) curl curl-7.77.0.tar.xz http://curl.haxx.se/download/curl-7.77.0.tar.xz
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
@@ -1434,7 +1434,7 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/curl && ./configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl --with-openssl && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config

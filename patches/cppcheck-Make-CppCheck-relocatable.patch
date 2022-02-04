@@ -14,7 +14,7 @@ diff --git a/cli/cppcheckexecutor.cpp b/cli/cppcheckexecutor.cpp
 index 0b51a76..75405d7 100644
 --- a/cli/cppcheckexecutor.cpp
 +++ b/cli/cppcheckexecutor.cpp
-@@ -869,16 +869,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
+@@ -879,16 +879,9 @@ int CppCheckExecutor::check_internal(CppCheck& cppcheck, int /*argc*/, const cha
      if (!std || !posix || !windows) {
          const std::list<ErrorMessage::FileLocation> callstack;
          const std::string msg("Failed to load " + std::string(!std ? "std.cfg" : !posix ? "posix.cfg" : "windows.cfg") + ". Your Cppcheck installation is broken, please re-install.");
@@ -31,14 +31,14 @@ index 0b51a76..75405d7 100644
 +        const std::string details("The Cppcheck binary was compiled for the Belle2 externals, "
 +                                  "please make sure the externals are setup using b2setup "
 +                                  "or setupext and $BELLE2_EXTERNALS_DIR is set correctly.");
-         ErrorMessage errmsg(callstack, emptyString, Severity::information, msg+" "+details, "failedToLoadCfg", false);
+         ErrorMessage errmsg(callstack, emptyString, Severity::information, msg+" "+details, "failedToLoadCfg", Certainty::normal);
          reportErr(errmsg);
          return EXIT_FAILURE;
 diff --git a/lib/cppcheck.cpp b/lib/cppcheck.cpp
 index 307327b..c20b4d4 100644
 --- a/lib/cppcheck.cpp
 +++ b/lib/cppcheck.cpp
-@@ -78,12 +78,12 @@ namespace {
+@@ -84,12 +84,12 @@ namespace {
              if (Path::fileExists(exepath + "addons/" + fileName))
                  return exepath + "addons/" + fileName;
  
@@ -61,7 +61,7 @@ diff --git a/lib/library.cpp b/lib/library.cpp
 index d929d57..263df8b 100644
 --- a/lib/library.cpp
 +++ b/lib/library.cpp
-@@ -96,9 +96,10 @@ Library::Error Library::load(const char exename[], const char path[])
+@@ -95,9 +95,10 @@ Library::Error Library::load(const char exename[], const char path[])
          }
  
          std::list<std::string> cfgfolders;
@@ -79,7 +79,7 @@ diff --git a/lib/platform.cpp b/lib/platform.cpp
 index 3ba2e6f..176bc12 100644
 --- a/lib/platform.cpp
 +++ b/lib/platform.cpp
-@@ -165,13 +165,14 @@ bool cppcheck::Platform::loadPlatformFile(const char exename[], const std::strin
+@@ -167,13 +167,14 @@ bool cppcheck::Platform::loadPlatformFile(const char exename[], const std::strin
              filenames.push_back(Path::getPathFromFilename(Path::fromNativeSeparators(exename)) + "platforms/" + filename);
              filenames.push_back(Path::getPathFromFilename(Path::fromNativeSeparators(exename)) + "platforms/" + filename + ".xml");
          }

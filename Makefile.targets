@@ -691,7 +691,7 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-2.3.tar.gz https://github.com/danmar/cppcheck/archive/2.3.tar.gz
+	@$(DOWNLOAD) cppcheck cppcheck-2.6.tar.gz https://github.com/danmar/cppcheck/archive/2.6.tar.gz
 	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck

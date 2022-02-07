@@ -1503,7 +1503,7 @@ astyle.touch:
 	@rm -f $(EXTBINDIR)/astyle
 
 $(EXTSRCDIR)/astyle/build/gcc/Makefile:
-	@$(DOWNLOAD) astyle astyle_2.05.1_linux.tar.gz http://downloads.sourceforge.net/project/astyle/astyle/astyle%202.05.1/astyle_2.05.1_linux.tar.gz
+	@$(DOWNLOAD) astyle astyle_3.1_linux.tar.gz https://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz
 
 $(EXTBINDIR)/astyle: $(EXTSRCDIR)/astyle/build/gcc/Makefile
 	@echo "building astyle"

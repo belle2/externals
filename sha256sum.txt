@@ -1,4 +1,4 @@
-fbdfc6f1966a972d19a215927266c76d4183eee235ed1e2bd7ec551c2a270eac *src/astyle_2.05.1_linux.tar.gz
+cbcc4cf996294534bb56f025d6f199ebfde81aa4c271ccbd5ee1c1a3192745d7 *src/astyle_3.1_linux.tar.gz
 08e5f50f2697fa3f9c9fe8e4e113dce21b98cb230d0c64e1b5dc23b446af7a9e *src/belle2style@347fddbc7e8.zip
 80ce2dfd20a73f34a3b233643ffdd7a8ca7b687ca128546167fd6bdbaf7597e0 *src/BELLE_FLC_1.1.tar.gz
 e49a3c3e5b589b2b9497229de2ca064113110410d73f30eadaa4caab29a09a16 *src/belle_legacy-v1.10.tar.gz

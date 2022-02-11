@@ -8,12 +8,12 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index dbb9bcf..48370f8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -392,7 +392,7 @@ endif()
+@@ -428,7 +428,7 @@ endif()
  if(EIGEN_INCLUDE_INSTALL_DIR AND NOT INCLUDE_INSTALL_DIR)
    set(INCLUDE_INSTALL_DIR ${EIGEN_INCLUDE_INSTALL_DIR}
-       CACHE STRING "The directory relative to CMAKE_PREFIX_PATH where Eigen header files are installed")
+       CACHE PATH "The directory relative to CMAKE_INSTALL_PREFIX where Eigen header files are installed")
 -else()
 +elseif(NOT INCLUDE_INSTALL_DIR)
    set(INCLUDE_INSTALL_DIR
        "${CMAKE_INSTALL_INCLUDEDIR}/eigen3"
-       CACHE STRING "The directory relative to CMAKE_PREFIX_PATH where Eigen header files are installed"
+       CACHE PATH "The directory relative to CMAKE_INSTALL_PREFIX where Eigen header files are installed"

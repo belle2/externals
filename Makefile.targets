@@ -1373,7 +1373,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.3.9.tar.bz2 https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.bz2
+	@$(DOWNLOAD) eigen eigen_3.4.0.tar.bz2 https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.bz2
 	@cd $(EXTSRCDIR)/eigen && patch -p1 < $(PATCHDIR)/eigen-installdir.patch
 
 # eigen build

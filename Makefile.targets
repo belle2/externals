@@ -1717,7 +1717,7 @@ nlohmann_json.clean:
 	@rm -fr $(EXTSRCDIR)/nlohmann_json $(EXTINCDIR)/nlohmann/
 
 $(EXTSRCDIR)/nlohmann_json/README.md:
-	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.9.1.tar.gz https://github.com/nlohmann/json/archive/v3.9.1.tar.gz
+	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.10.5.tar.gz https://github.com/nlohmann/json/archive/v3.10.5.tar.gz
 
 $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@echo "installing nlohmann/json"

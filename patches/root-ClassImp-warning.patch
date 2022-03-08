@@ -12,7 +12,7 @@ diff --git a/include/root/Rtypes.h b/include/root/Rtypes.h
 index 276ea6c..e8e97d2 100644
 --- a/include/root/Rtypes.h	2018-08-23 16:57:30.000000000 +0200
 +++ b/include/root/Rtypes.h	2018-09-18 16:08:23.218020606 +0200
-@@ -347,7 +347,7 @@
+@@ -352,7 +352,7 @@
     class _NAME2_(name,_c) { public: _NAME2_(name,_c)() { if (name) { } } }
  
  
@@ -21,7 +21,7 @@ index 276ea6c..e8e97d2 100644
     namespace ROOT { \
        TGenericClassInfo *GenerateInitInstance(const name*); \
        namespace { \
-@@ -360,7 +360,7 @@
+@@ -365,7 +365,7 @@
  
  // Macro for Namespace
  
@@ -30,7 +30,7 @@ index 276ea6c..e8e97d2 100644
     namespace name { \
        namespace ROOT { \
           ::ROOT::TGenericClassInfo *GenerateInitInstance(); \
-@@ -394,7 +394,7 @@
+@@ -399,7 +399,7 @@
  
  #define ClassDefT2(name,Tmpl)
  

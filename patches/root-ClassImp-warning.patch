@@ -28,7 +28,7 @@ index 276ea6c..e8e97d2 100644
 -#define NamespaceImpUnique(name,key) \
 +#define NamespaceImpUnique(name,key) _Pragma("GCC warning \"NamespaceImp is not needed, please remove it\"") \
     namespace name { \
-       namespace ROOT { \
+       namespace ROOTDict { \
           ::ROOT::TGenericClassInfo *GenerateInitInstance(); \
 @@ -399,7 +399,7 @@
  

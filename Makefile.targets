@@ -1736,7 +1736,6 @@ hammer.clean:
 $(EXTSRCDIR)/hammer/CMakeLists.txt:
 	$(DOWNLOAD) hammer Hammer-1.1.0-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.1.0-Source.tar.gz
 
-#MAX_CXX_IS_14=OFF enables CXX17 support
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries
 $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt

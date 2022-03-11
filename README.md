@@ -48,8 +48,8 @@ the externals.
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
-| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.10          | MIT        |
-| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.34          | MIT        |
+| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.13          | MIT        |
+| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.35          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 2.7.2           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | Madgraph [MGISR](https://github.com/qliphy/MGISR)                            | a48b612         | BSD        |

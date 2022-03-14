@@ -246,12 +246,12 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-10.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-11.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
 # and also download the prerequisites in their latest version
 	@$(DOWNLOAD) gcc/gmp gmp-6.2.1.tar.xz https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz
 	@$(DOWNLOAD) gcc/mpfr mpfr-4.1.0.tar.xz http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
 	@$(DOWNLOAD) gcc/mpc mpc-1.2.1.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
-	@$(DOWNLOAD) gcc/isl isl-0.21.tar.xz http://isl.gforge.inria.fr/isl-0.21.tar.xz
+	@$(DOWNLOAD) gcc/isl isl-0.24.tar.xz https://libisl.sourceforge.io/isl-0.24.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -325,7 +325,7 @@ libxml2.touch:
 	@rm $(EXTBINDIR)/xml2-config
 
 $(EXTSRCDIR)/libxml2:
-	@$(DOWNLOAD) libxml2 libxml2-2.9.10.tar.gz ftp://xmlsoft.org/libxml2/libxml2-2.9.10.tar.gz
+	@$(DOWNLOAD) libxml2 libxml2-2.9.13.tar.xz https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.13.tar.xz
 
 $(EXTBINDIR)/xml2-config: $(EXTSRCDIR)/libxml2
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
@@ -344,7 +344,7 @@ libxslt.touch:
 	@rm $(EXTBINDIR)/xslt-config
 
 $(EXTSRCDIR)/libxslt:
-	@$(DOWNLOAD) libxslt libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxslt/libxslt-1.1.34.tar.gz
+	@$(DOWNLOAD) libxslt libxslt-1.1.35.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.35.tar.xz
 
 $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules --without-python && \
@@ -589,7 +589,7 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@$(DOWNLOAD) cmake cmake-3.19.7.tar.gz http://www.cmake.org/files/v3.19/cmake-3.19.7.tar.gz
+	@$(DOWNLOAD) cmake cmake-3.22.2.tar.gz http://www.cmake.org/files/v3.22/cmake-3.22.2.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
@@ -643,7 +643,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_75_0.tar.bz2 https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_78_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -691,7 +691,7 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-2.3.tar.gz https://github.com/danmar/cppcheck/archive/2.3.tar.gz
+	@$(DOWNLOAD) cppcheck cppcheck-2.6.tar.gz https://github.com/danmar/cppcheck/archive/2.6.tar.gz
 	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
@@ -945,7 +945,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-24-00.tar.gz https://github.com/root-project/root/archive/refs/tags/v6-24-00.tar.gz
+	@$(DOWNLOAD) root root_v6-24-06.tar.gz https://github.com/root-project/root/archive/refs/tags/v6-24-06.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 
@@ -992,6 +992,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
 	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
+	@cd $(EXTSRCDIR)/FastBDT && patch -p0 < $(PATCHDIR)/fastbdt-gcc11.patch
 
 # FastBDT TMVA plugin build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
@@ -1372,7 +1373,7 @@ eigen.src: $(EXTSRCDIR)/eigen/INSTALL
 
 # eigen download
 $(EXTSRCDIR)/eigen/INSTALL:
-	@$(DOWNLOAD) eigen eigen_3.3.9.tar.bz2 https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.bz2
+	@$(DOWNLOAD) eigen eigen_3.4.0.tar.bz2 https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.bz2
 	@cd $(EXTSRCDIR)/eigen && patch -p1 < $(PATCHDIR)/eigen-installdir.patch
 
 # eigen build
@@ -1426,7 +1427,7 @@ curl.src: $(EXTSRCDIR)/curl/README
 
 # curl download
 $(EXTSRCDIR)/curl/README:
-	@$(DOWNLOAD) curl curl-7.75.0.tar.xz http://curl.haxx.se/download/curl-7.75.0.tar.xz
+	@$(DOWNLOAD) curl curl-7.77.0.tar.xz http://curl.haxx.se/download/curl-7.77.0.tar.xz
 
 # curl build
 $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
@@ -1434,7 +1435,7 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/curl && ./configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl && \
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl --with-openssl && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config
@@ -1502,7 +1503,7 @@ astyle.touch:
 	@rm -f $(EXTBINDIR)/astyle
 
 $(EXTSRCDIR)/astyle/build/gcc/Makefile:
-	@$(DOWNLOAD) astyle astyle_2.05.1_linux.tar.gz http://downloads.sourceforge.net/project/astyle/astyle/astyle%202.05.1/astyle_2.05.1_linux.tar.gz
+	@$(DOWNLOAD) astyle astyle_3.1_linux.tar.gz https://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz
 
 $(EXTBINDIR)/astyle: $(EXTSRCDIR)/astyle/build/gcc/Makefile
 	@echo "building astyle"
@@ -1716,7 +1717,7 @@ nlohmann_json.clean:
 	@rm -fr $(EXTSRCDIR)/nlohmann_json $(EXTINCDIR)/nlohmann/
 
 $(EXTSRCDIR)/nlohmann_json/README.md:
-	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.9.1.tar.gz https://github.com/nlohmann/json/archive/v3.9.1.tar.gz
+	$(DOWNLOAD) nlohmann_json nlohmann_json-v3.10.5.tar.gz https://github.com/nlohmann/json/archive/v3.10.5.tar.gz
 
 $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@echo "installing nlohmann/json"
@@ -1735,7 +1736,6 @@ hammer.clean:
 $(EXTSRCDIR)/hammer/CMakeLists.txt:
 	$(DOWNLOAD) hammer Hammer-1.1.0-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.1.0-Source.tar.gz
 
-#MAX_CXX_IS_14=OFF enables CXX17 support
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries
 $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt

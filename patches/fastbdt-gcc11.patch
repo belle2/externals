@@ -1,0 +1,10 @@
+--- include/FastBDT.h.in	2022-02-04 18:53:42.832200000 +0100
++++ include/FastBDT_new.h.in	2022-02-04 18:53:36.353475000 +0100
+@@ -16,6 +16,7 @@
+ #include <map>
+ #include <algorithm>
+ #include <cmath>
++#include <limits>
+ 
+ namespace FastBDT {
+ 

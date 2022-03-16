@@ -32,6 +32,7 @@ scikit-learn
 scipy
 scons
 seaborn
+sly==0.4
 snakemake
 sphinx
 tables

@@ -892,16 +892,16 @@ ipython-genutils==0.2.0 \
 ipywidgets==7.6.5 \
     --hash=sha256:00974f7cb4d5f8d494c19810fedb9fa9b64bffd3cda7c2be23c133a1ad3c99c5 \
     --hash=sha256:d258f582f915c62ea91023299603be095de19afb5ee271698f88327b9fe9bf43
-jaraco.classes==3.2.1 \
+jaraco-classes==3.2.1 \
     --hash=sha256:22ac35313cf4b145bf7b217cc51be2d98a3d2db1c8558a30ca259d9f0b9c0b7d \
     --hash=sha256:ed54b728af1937dc16b7236fbaf34ba561ba1ace572b03fffa5486ed363ecf34
-jaraco.collections==3.5.1 \
+jaraco-collections==3.5.1 \
     --hash=sha256:b04f00bd4b3c4fc4ba5fe1baf8042c0efd192b13e386830ea23fff77bb69dc88 \
     --hash=sha256:ef7c308d6d7cadfb16b32c7e414d628151ab02b57a5702b9d9a293148c035e70
-jaraco.functools==3.5.0 \
+jaraco-functools==3.5.0 \
     --hash=sha256:141f95c490a18eb8aab86caf7a2728f02f604988a26dc36652e3d9fa9e4c49fa \
     --hash=sha256:31e0e93d1027592b7b0bec6ad468db850338981ebee76ba5e212e235f4c7dda0
-jaraco.text==3.6.0 \
+jaraco-text==3.6.0 \
     --hash=sha256:901d3468eaaa04f1d8a8f141f54b8887bfd943ccba311fc1c1de62c66604dfe0 \
     --hash=sha256:d1506dec6485fbaaaedf98b678f1228f639c8d50fbfa12ffc2594cfc495a2476
 jedi==0.18.1 \
@@ -1597,7 +1597,7 @@ werkzeug==2.0.2 \
     --hash=sha256:aa2bb6fc8dee8d6c504c0ac1e7f5f7dc5810a9903e793b6f715a9f015bdadb9a
 wrapt==1.12.1 \
     --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7
-zc.lockfile==2.0 \
+zc-lockfile==2.0 \
     --hash=sha256:307ad78227e48be260e64896ec8886edc7eae22d8ec53e4d528ab5537a83203b \
     --hash=sha256:cc33599b549f0c8a248cb72f3bf32d77712de1ff7ee8814312eb6456b42c015f
 zipp==3.7.0 \

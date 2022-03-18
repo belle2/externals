@@ -8,6 +8,7 @@ CommonMark
 cython
 # Cymove is needed for compiling HAMMER with python bindings
 cymove
+dgl
 flake8
 file-read-backwards
 docutils
@@ -32,6 +33,7 @@ scikit-learn
 scipy
 scons
 seaborn
+sly==0.4
 snakemake
 sphinx
 tables

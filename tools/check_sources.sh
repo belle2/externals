@@ -12,4 +12,6 @@ while read line; do
     UPLOAD="$UPLOAD $filename"
 done <<< "$SERVERCHECK"
 
-cd src && scp $UPLOAD b2-master:/var/www/html/download
+if [ -z "$UPLOAD" ]; then
+    cd src && scp $UPLOAD b2-master:/var/www/html/download
+fi

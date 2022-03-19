@@ -219,9 +219,9 @@ if __name__ == "__main__":
     # load exclusion file and add to exclusion arguments if given
     if args.exclusion_file is not None:
         try:
-            args.exclude += (e.strip() for e in open(args.exlusion_file).readlines())
+            args.exclude += (e.strip() for e in open(args.exclusion_file).readlines())
         except Exception as e:
-            logging.critical(f"problem with exclusion file {args.exclusion_files}: {e}")
+            logging.critical(f"problem with exclusion file {args.exclusion_file}: {e}")
             sys.exit(1)
 
     # check if target_dir is actually a directory

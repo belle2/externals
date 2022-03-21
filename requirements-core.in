@@ -27,7 +27,6 @@ nbsphinx
 pandas
 pycodestyle
 pylama
-pypmc
 pytest
 requests
 rise

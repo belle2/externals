@@ -191,6 +191,10 @@ if __name__ == "__main__":
                         help="Filename relative to TARGET_DIR which should not be stripped")
     parser.add_argument("--exclusion-file", help="A file containing one file per line "
                         "(relative to TARGET_DIR) that should not be stripped")
+    parser.add_argument("--exclude-dirs",
+                        help="Exclude binaries in directories (anywhere in the path) "
+                        "with one of these names from being stripped",
+                        nargs="*")
     parser.add_argument("-c", "--compress", default=False, action="store_true",
                         help="If true compress debug sections using zlib")
     parser.add_argument("--use-dwz", default=False, action="store_true",
@@ -219,9 +223,9 @@ if __name__ == "__main__":
     # load exclusion file and add to exclusion arguments if given
     if args.exclusion_file is not None:
         try:
-            args.exclude += (e.strip() for e in open(args.exlusion_file).readlines())
+            args.exclude += (e.strip() for e in open(args.exclusion_file).readlines())
         except Exception as e:
-            logging.critical(f"problem with exclusion file {args.exclusion_files}: {e}")
+            logging.critical(f"problem with exclusion file {args.exclusion_file}: {e}")
             sys.exit(1)
 
     # check if target_dir is actually a directory
@@ -258,7 +262,7 @@ if __name__ == "__main__":
     os.chdir(target_dir)
     # and create a list of all files excluding files in .debug directories and
     # __pycache__ dirs
-    all_files = [pathlib.Path(e.path) for e in scantree(".", [".debug", "__pycache__"])]
+    all_files = [pathlib.Path(e.path) for e in scantree(".", [".debug", "__pycache__"] + args.exclude_dirs)]
     # filter excluded
     all_files = [e for e in all_files if str(e) not in args.exclude]
 

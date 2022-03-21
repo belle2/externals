@@ -191,7 +191,11 @@ relocatable_fixes:
 # But only if python3 actually exists
 	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
 # And finally split and strip all binaries except bazel because stripping bazel removes all functionality :?
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py -j $(NPROCESSES) -e bin/bazel $(EXTDIR); fi
+# Also, exclude libraries in some python packages where stripping breaks them
+	@if which python3 > /dev/null; then \
+	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
+	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel $(EXTDIR); \
+	    fi
 
 # create directories
 $(DIRECTORIES):

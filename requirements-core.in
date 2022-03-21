@@ -9,6 +9,7 @@ cython
 # Cymove is needed for compiling HAMMER with python bindings
 cymove
 dgl
+eoshep
 flake8
 file-read-backwards
 docutils

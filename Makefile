@@ -33,7 +33,7 @@ COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 # do this anymore so keep an empty list of packages
 PACKAGES:=
 
-# check if any of the big "do all" targets is supplied on the commmand line
+# check if any of the big "do all" targets is supplied on the command line
 DIRTARGETS=$(strip $(filter opt debug intel,$(MAKECMDGOALS)))
 # if so, dirs will create the targets for all specified targets, otherwise just
 # for common and the current option
@@ -82,8 +82,8 @@ $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).touch): overr
 $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).src): override BELLE2_EXTERNALS_OPTION=common
 $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): override BELLE2_EXTERNALS_OPTION=common
 
-# all targets not otherwise defined re executed with the option they got by
-# calling make on the targets file.  Specifying the option here is not
+# all targets not otherwise defined are executed with the option they got by
+# calling make on the targets file. Specifying the option here is not
 # necessary but helps with debugging
 %:
 	@$(MAKE) -f Makefile.targets $@ relocatable_fixes BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)

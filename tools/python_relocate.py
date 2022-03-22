@@ -149,7 +149,7 @@ if __name__ == "__main__":
     basedir = os.path.abspath(sys.argv[1])
     # fix absolute links and references in the full sys.path that is inside the base dir
     fixup_pth_and_egg_link(basedir)
-    # amd also fixup scripts in bin dir
+    # and also fixup scripts in bin dir
     for path in sys.argv[2:]:
         path = os.path.normcase(os.path.abspath(path))
         if not path.startswith(basedir):

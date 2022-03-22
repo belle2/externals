@@ -77,9 +77,6 @@ def unsetup_externals(location, common=False):
         env_vars['EPICS_HOST_ARCH'] = ''
         remove_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
 
-        # and eos home dir
-        env_vars['EOS_HOME'] = ''
-
     # pythia
     env_vars['PYTHIA8DATA'] = ''
 
@@ -170,9 +167,6 @@ def setup_externals(location, common=False):
         env_vars['EPICS_BASE'] = os.path.join(location, subdir, 'epics')
         env_vars['EPICS_HOST_ARCH'] = 'linux-x86_64'
         add_path(lib_path_name, os.path.join(location, subdir, 'epics', 'lib', 'linux-x86_64'))
-
-        # set EOS home
-        env_vars['EOS_HOME'] = os.path.join(location, 'share', 'eos')
 
         # ok, the rest is stuff we don't need fallbacks so we can return
         return

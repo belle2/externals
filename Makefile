@@ -25,7 +25,7 @@ COMMON_PACKAGES:=pkg-config-wrapper ninja gcc binutils zlib bzip2 xz lz4 curl gi
     zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs \
     Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \
-    flc belle_legacy fann root-python-packages eos hammer pandoc fastjet
+    flc belle_legacy fann root-python-packages hammer pandoc fastjet
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 

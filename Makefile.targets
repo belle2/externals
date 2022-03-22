@@ -186,7 +186,7 @@ relocatable_fixes:
 	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/**/*.cmake 2>/dev/null
 # Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
+	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) $(ROOTSYS)/bin `python3-config --configdir`; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 # But only if python3 actually exists
 	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi

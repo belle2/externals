@@ -365,12 +365,13 @@ zlib.touch:
 	@rm -f $(EXTLIBDIR)/libz.so
 
 $(EXTSRCDIR)/zlib:
-	@$(DOWNLOAD) zlib zlib-1.2.11.tar.gz http://zlib.net/zlib-1.2.11.tar.gz
+	@$(DOWNLOAD) zlib zlib-1.2.12.tar.gz http://zlib.net/zlib-1.2.12.tar.gz
 
 # zlib: so basic that we only want it it common so we just do an in source build
 $(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib
+# Configuration fails for zlib-1.2.12 with CC=gcc but succeeds if CC is not set.
 	@cp -fa $(EXTSRCDIR)/zlib $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/zlib && ./configure --prefix=$(EXTDIR) && \
+	@cd $(EXTBUILDDIR)/zlib && CC= ./configure --prefix=$(EXTDIR) && \
 	    make -j $(NPROCESSES) install
 
 bzip2: $(EXTBINDIR)/bzip2

@@ -570,7 +570,7 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-10.1.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.xz
+	@$(DOWNLOAD) gdb gdb-10.2.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"

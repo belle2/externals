@@ -26,7 +26,7 @@ for argument in sys.argv[1:]:
             full_path = os.path.abspath(os.path.join(dirname, filename))
             try:
                 stat = os.stat(full_path, follow_symlinks=False)
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 print("Warning: cannot stat %s, broken link?" % full_path)
                 continue
             if stat.st_nlink > 1:
@@ -38,8 +38,10 @@ for argument in sys.argv[1:]:
 # now we now all hardlinks so convert them to softlinks
 for inode, files in links.items():
     if len(files) != counts[inode]:
-        print("ERROR: inode %d has link count %d but only %d links have been found" %
-              (inode, counts[inode], len(files)))
+        print(
+            "ERROR: inode %d has link count %d but only %d links have been found"
+            % (inode, counts[inode], len(files))
+        )
         for filename in files:
             print(filename)
         sys.exit(1)

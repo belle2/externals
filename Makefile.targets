@@ -111,7 +111,7 @@ ifeq ($(BELLE2_EXTERNALS_OPTION),intel)
   export BOOST_OPTION:=variant=release toolset=intel
   export GEANT4_OPTION:=-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
 else
-  $(error Unknown externals build option. Please source the setup_belle2 script.)
+  $(error Unknown externals build option. Please source the b2setup script.)
 endif
 endif
 endif

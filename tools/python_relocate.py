@@ -10,7 +10,6 @@ Mostly stolen from virtualenv but slightly adapted to our needs
 
 import sys
 import os
-import itertools
 import re
 
 
@@ -20,7 +19,11 @@ def fixup_scripts(path):
     the correct version
     """
     re_shebang = re.compile("^#!.*python.*")
-    new_shebang = "#!/usr/bin/env python%d.%d%s" % (sys.version_info.major, sys.version_info.minor, sys.abiflags)
+    new_shebang = "#!/usr/bin/env python%d.%d%s" % (
+        sys.version_info.major,
+        sys.version_info.minor,
+        sys.abiflags,
+    )
     for filename in os.listdir(path):
         filename = os.path.join(path, filename)
         if not os.path.isfile(filename):
@@ -31,9 +34,9 @@ def fixup_scripts(path):
         if os.path.basename(filename) == "mg5_aMC":
             continue
 
-        with open(filename, 'rb') as f:
+        with open(filename, "rb") as f:
             try:
-                lines = f.read().decode('utf-8').splitlines()
+                lines = f.read().decode("utf-8").splitlines()
             except UnicodeDecodeError:
                 # This is probably a binary program instead
                 # of a script, so just ignore it.
@@ -49,8 +52,8 @@ def fixup_scripts(path):
             # print("%s: changing shebang from '%s' to '%s'" % (filename, old_shebang, new_shebang))
             print("making %s relocatable" % filename)
             lines[0] = new_shebang
-            with open(filename, 'wb') as f:
-                f.write("\n".join(lines).encode('utf-8'))
+            with open(filename, "wb") as f:
+                f.write("\n".join(lines).encode("utf-8"))
 
 
 def fixup_pth_and_egg_link(basedir):
@@ -66,14 +69,14 @@ def fixup_pth_and_egg_link(basedir):
         fixup_scripts(path)
         for filename in os.listdir(path):
             filename = os.path.join(path, filename)
-            if filename.endswith('.pth'):
+            if filename.endswith(".pth"):
                 if not os.access(filename, os.W_OK):
-                    print('Cannot write .pth file %s, skipping' % filename)
+                    print("Cannot write .pth file %s, skipping" % filename)
                 else:
                     fixup_pth_file(filename)
-            if filename.endswith('.egg-link'):
+            if filename.endswith(".egg-link"):
                 if not os.access(filename, os.W_OK):
-                    print('Cannot write .egg-link file %s, skipping' % filename)
+                    print("Cannot write .egg-link file %s, skipping" % filename)
                 else:
                     fixup_egg_link(filename)
 
@@ -87,18 +90,23 @@ def fixup_pth_file(filename):
     f.close()
     for line in prev_lines:
         line = line.strip()
-        if (not line or line.startswith('#') or line.startswith('import ') or os.path.abspath(line) != line):
+        if (
+            not line
+            or line.startswith("#")
+            or line.startswith("import ")
+            or os.path.abspath(line) != line
+        ):
             lines.append(line + "\n")
         else:
             new_value = make_relative_path(filename, line)
             if line != new_value:
-                print('Rewriting path %s as %s (in %s)' % (line, new_value, filename))
+                print("Rewriting path %s as %s (in %s)" % (line, new_value, filename))
             lines.append(new_value + "\n")
     if lines == prev_lines:
         # print('No changes to .pth file %s' % filename)
         return
-    print('Making paths in .pth file %s relative' % filename)
-    f = open(filename, 'w')
+    print("Making paths in .pth file %s relative" % filename)
+    f = open(filename, "w")
     f.writelines(lines)
     f.close()
 
@@ -109,11 +117,11 @@ def fixup_egg_link(filename):
     link = f.readline().strip()
     f.close()
     if os.path.abspath(link) != link:
-        print('Link in %s already relative' % filename)
+        print("Link in %s already relative" % filename)
         return
     new_link = make_relative_path(filename, link)
-    print('Rewriting link %s in %s as %s' % (link, filename, new_link))
-    f = open(filename, 'w')
+    print("Rewriting link %s in %s as %s" % (link, filename, new_link))
+    f = open(filename, "w")
     f.write(new_link)
     f.close()
 
@@ -134,7 +142,6 @@ def make_relative_path(source, dest, dest_is_directory=True):
     """
     source = os.path.dirname(source)
     if not dest_is_directory:
-        dest_filename = os.path.basename(dest)
         dest = os.path.dirname(dest)
 
     dest = os.path.normpath(os.path.abspath(dest))

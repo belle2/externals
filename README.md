@@ -1,17 +1,18 @@
 basf2 Externals
 ===============
 
-This repository contains the code to download and build the external software used by the [Belle II Analysis Software Framework (basf2)](https://github.com/belle2/basf2).
+This repository contains the code to download and build the external software used by
+the [Belle II Analysis Software Framework (basf2)](https://github.com/belle2/basf2).
 
-Most users should be able to just install precompiled versions and
-should not need to recompile the externals by hand. Please check the
+Most users should be able to just install precompiled versions and should not need to
+recompile the externals by hand. Please check the
 [documentation](https://software.belle2.org/development/sphinx/build/tools_doc/installation-tools.html).
 
 Included Software Packages
 --------------------------
 
-This section lists all the software packages which are currently included in
-the externals.
+This section lists all the software packages which are currently included in the
+externals.
 
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
@@ -89,8 +90,8 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 Optional Package
 ----------------
 
-This section lists all optional packages. These are not compiled by default but
-included for simplified access.
+This section lists all optional packages. These are not compiled by default but included
+for simplified access.
 
 To compile any of these just go into the external directory and type
 
@@ -111,19 +112,20 @@ This section lists all the python packages which are currently included in the
 externals. Basically these are a result of running
 
     pip3 install -U pip setuptools wheel
-    pip3 install autopep8 CherryPy CommonMark h5py histbook ipython jupyter keras lxml matplotlib metakernel pandas \
-                 pep8 pylama requests scikit-learn scipy scons seaborn sphinx tables tensorflow Theano uncertainties \
-                 uproot widgetsnbextension
+    pip3 install autopep8 CherryPy CommonMark h5py histbook ipython jupyter keras lxml \
+                 matplotlib metakernel pandas pep8 pylama requests scikit-learn scipy \
+                 scons seaborn sphinx tables tensorflow Theano uncertainties uproot \
+                 widgetsnbextension
     pip3 install root-numpy root-pandas pyroofit
 
-All other packages are just dependencies of these and versions between them are
-fixed in the externals. The actual dependencies are determined using
-`pip-compile` from [pip-tools](https://github.com/jazzband/pip-tools/), see
+All other packages are just dependencies of these and versions between them are fixed in
+the externals. The actual dependencies are determined using `pip-compile` from
+[pip-tools](https://github.com/jazzband/pip-tools/), see
 `tools/create_python_requirements.py` for details.
 
-The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is
-included in a modified version containing some patches not yet included
-upstream (found in `src/sphinx-argparse`).
+The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is included in
+a modified version containing some patches not yet included upstream (found in
+`src/sphinx-argparse`).
 
 
 [//]: # (START PYTHON_PKG)

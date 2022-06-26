@@ -12,7 +12,6 @@ the .txt files and run without the upgrade option.
 """
 
 import subprocess
-import sys
 import re
 import os
 import requests
@@ -47,7 +46,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--upgrade", default=False, action="store_true", help="If present update all packages to the "
                         "latest possible version. Otherwise just determine missing dependencies when addding new packages")
-    parser.add_argument("--no-root", default=False, action="store_true", help="Ignore packages depending on ROOT if ROOT isn't compiled yet")
+    parser.add_argument("--no-root", default=False, action="store_true",
+                        help="Ignore packages depending on ROOT if ROOT isn't compiled yet")
     args, remaining = parser.parse_known_args()
     # make sure root is setup, otherwise root-numpy fails horribly
     subprocess.run("which root-config", shell=True)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
                 infos.append(info)
 
             # check pypi for https urls
-            m = re.match("http.*/(.*?)-(.*?)((\+|%2B).*)?-cp", line)
+            m = re.match("http.*/(.*?)-(.*?)((\\+|%2B).*)?-cp", line)
             if m:
                 name = m.group(1)
                 version = m.group(2)
@@ -153,8 +153,8 @@ if __name__ == "__main__":
     for i, filename in enumerate(files):
         content = open(filename).readlines()
         with open(os.path.splitext(filename)[0] + ".txt", "w") as out:
-            for l in content:
-                n = l.strip().lower()
+            for line in content:
+                n = line.strip().lower()
                 if n.find("==") >= 0:
                     n, v = n.split("==")
                 # did we find the package? if so delete from list
@@ -175,10 +175,20 @@ if __name__ == "__main__":
         widths["max_"+key] = max(minwidth, max(len(e[key]) for e in infos))
 
     table = ["\n"]
-    table.append("| {link:{max_link}} | {summary:{max_summary}} | {version:{max_version}} | {license:{max_license}} |\n".format(link="Name", summary="Summary", version="Version", license="License", **widths))
-    table.append("|-{link:-<{max_link}}-|-{summary:-<{max_summary}}-|-{version:-<{max_version}}-|-{license:-<{max_license}}-|\n".format(link="", summary="", version="", license="", **widths))
+    table.append("| {link:{max_link}} | {summary:{max_summary}} | {version:{max_version}} | {license:{max_license}} |\n".format(
+        link="Name", summary="Summary", version="Version", license="License", **widths))
+    table.append(
+        "|-{link:-<{max_link}}-|-{summary:-<{max_summary}}-|-{version:-<{max_version}}-|-{license:-<{max_license}}-|\n".format(
+            link="",
+            summary="",
+            version="",
+            license="",
+            **widths))
     for i in sorted(infos, key=lambda x: x['name'].lower()):
-        table.append("| {link:{max_link}} | {summary:{max_summary}} | {version:{max_version}} | {license:{max_license}} |\n".format(**i, **widths))
+        table.append(
+            "| {link:{max_link}} | {summary:{max_summary}} | {version:{max_version}} | {license:{max_license}} |\n".format(
+                **i,
+                **widths))
 
     table.append("\n")
 

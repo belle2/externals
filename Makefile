@@ -11,11 +11,11 @@ MAKEFLAGS+=-s
 
 # check if BELLE2_EXTERNALS_OPTION is what we expect it to be
 ifeq (,$(strip $(filter $(BELLE2_EXTERNALS_OPTION),opt debug intel)))
-    $(error Unknown externals build option. Please source the setup_belle2 script.)
+    $(error Unknown externals build option. Please source the b2setup script.)
 endif
 # and also BELLE2_ARCH is important
 ifeq (,$(BELLE2_ARCH))
-    $(error Architecture not defined. Please source the setup_belle2 script.)
+    $(error Architecture not defined. Please source the b2setup script.)
 endif
 
 # base packages we don't want to compile in debug mode anyway so we compile

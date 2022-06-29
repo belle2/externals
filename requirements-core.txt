@@ -512,12 +512,13 @@ tensorflow==2.4.1 \
 tensorflow-probability==0.15.0 \
     --hash=sha256:a5c6d1116fa619fa3fcfe076ff81adc276989fb58da179e464c1fd25d824530a \
     # CPU version of pytorch
-torch @ https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+# CPU version of pytorch
+https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:22997df8f3a3f9faed40ef9e7964d1869cafa0317cc4a5b115bfdf69323e8884
-torchaudio @ https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
-torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:f3e382460d0dc8752ab2b97f943da996f3254ee868bc9592259ab55d7e1a5852
+https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
 theano==1.0.5 \
     --hash=sha256:6e9439dd53ba995fcae27bf20626074bfc2fff446899dc5c53cb28c1f9202e89
 uncertainties==3.1.6 \

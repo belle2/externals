@@ -111,9 +111,11 @@ This section lists all the python packages which are currently included in the
 externals. Basically these are a result of running
 
     pip3 install -U pip setuptools wheel
-    pip3 install autopep8 CherryPy CommonMark h5py histbook ipython jupyter keras lxml matplotlib metakernel pandas \
-                 pep8 pylama requests scikit-learn scipy scons seaborn sphinx tables tensorflow Theano uncertainties \
-                 uproot widgetsnbextension
+    pip3 install autopep8 awkward boost-histogram CherryPy CommonMark cython cymove dgl eoshep flake8 file-read-backwards \
+                 docutils h5py ipython jira jupyter jupytext keras lightgbm lxml matplotlib metakernel mysql-connector-python \
+                 nbsphinx pandas pycodestyle pylama pytest requests rise scikit-learn scipy scons seaborn sly snakemake \
+                 sphinx tables tabulate tqdm tensorflow tensorflow-probability torch torchvision torchaudio Theano \
+                 uncertainties uproot uproot3 widgetsnbextension xgboost zstandard
     pip3 install root-numpy root-pandas pyroofit
 
 All other packages are just dependencies of these and versions between them are

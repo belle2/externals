@@ -1,7 +1,7 @@
 autopep8==1.6.0 \
     --hash=sha256:44f0932855039d2c15c4510d6df665e4730f2b8582704fa48f9c55bd3e17d979 \
     --hash=sha256:ed77137193bbac52d029a52c59bec1b0629b5a186c495f1eb21b126ac466083f \
-    # for uproot
+# for uproot
 awkward==1.7.0 \
     --hash=sha256:036ff59c0dd8caa1a95ab9c63c68c0884b28e71a8f2e324a2f5f838e291a428c \
     --hash=sha256:0bef337a0ea6b1ca2ae41bba14227eee58c191ff519470c175c11f0e7a8e4b85 \
@@ -98,7 +98,7 @@ cherrypy==18.6.1 \
 commonmark==0.9.1 \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
     --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9 \
-    # Cython is needed for compiling HAMMER with python bindings
+# Cython is needed for compiling HAMMER with python bindings
 cython==0.29.26 \
     --hash=sha256:0205b685802eb4c039b14f67b7ac3f00c55ff04b9e3871df2249576d3e59ba42 \
     --hash=sha256:0c3093bc99facfc97e5019f6c5bc39987663792265c1334d9fc9e37c3a3dcd6f \
@@ -146,7 +146,7 @@ cython==0.29.26 \
     --hash=sha256:ed76fb98979f02b5e89079906071983a36f3634d3028b86f935cf0196f24fcaa \
     --hash=sha256:f5e15ff892c8afad64931ee3dd723c4755c2c516606f9aae7613bebfac62b0f6 \
     --hash=sha256:fec66cd0a48697fab903854566235aecf1084f62e3163d6589ae7335a1b4d448 \
-    # Cymove is needed for compiling HAMMER with python bindings
+# Cymove is needed for compiling HAMMER with python bindings
 cymove==1.0.2 \
     --hash=sha256:79c1350db2f1f92a459b87ee9072ec0790faab233bfaeb73bf78a5caadd5aaa8 \
     --hash=sha256:fc4bd59e0e6f99eb2fb9e6b443c84148061de4841fb6026ac724c9b9944a3056
@@ -222,6 +222,12 @@ jupytext==1.13.6 \
     --hash=sha256:c6c25918ddb6403d0d8504e08d35f6efc447baf0dbeb6a28b73adf39e866a0c4
 keras==2.7.0 \
     --hash=sha256:0c33ae1f728064ca0d35dfba999e9c316f03623bf5688c82fb83cc74a80ea248
+lightgbm==3.3.2 \
+    --hash=sha256:2e94bd1b3ab29d173102c9c1d80db2e27ad7e43b8ff5a74c5cb7984b37d19f45 \
+    --hash=sha256:5d25d16e77c844c297ece2044df57651139bc3c8ad8c4108916374267ac68b64 \
+    --hash=sha256:8e788c56853316fc5d35db726d81bd002c721038c856853952287f68082e0158 \
+    --hash=sha256:e4f1529cad416066964f9af0efad208787861e9f2181b7f9ee7fc9bacc082d4f \
+    --hash=sha256:f4cba3b4f29336ad7e801cb32d9b948ea4cc5300dda650b78bcdfe36b3e2c4b2
 lxml==4.7.1 \
     --hash=sha256:0607ff0988ad7e173e5ddf7bf55ee65534bd18a5461183c33e8e41a59e89edf4 \
     --hash=sha256:09b738360af8cb2da275998a8bf79517a71225b0de41ab47339c2beebfff025f \
@@ -375,12 +381,6 @@ pycodestyle==2.8.0 \
 pylama==8.3.7 \
     --hash=sha256:ca47a1d341ede3aafbe117dc69f9e573cd1b749b2bacf5ac99d8daf6657001ec \
     --hash=sha256:d6b48087c810db3be5267d44ac0e1998a8c015c5d3eee0524fec90fbfaf8ad26
-pypmc==1.2 \
-    --hash=sha256:17909307639f8fabbb1248031befdeb34e5e87ba0a06ed1ebe1dd262b303e799 \
-    --hash=sha256:3e2d73b95a1a595cca66987562a28401dddd16fe4c3b08e646b563c37293a908 \
-    --hash=sha256:a0674fd136f626f157bd52b12b8421201668e7a145cbf7d22a7c7efc22d46189 \
-    --hash=sha256:ab18bc4dc41db6371a1aa3bb07e21b623bca29dc041579e0e1487f1ea8024bf9 \
-    --hash=sha256:ae8982d3af8bf356a0c6145f2c27e7b3b7c444026cf081f5911174d01ee3a215
 pytest==6.2.5 \
     --hash=sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89 \
     --hash=sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134
@@ -511,7 +511,6 @@ tensorflow==2.4.1 \
     --hash=sha256:efa9daa4b3701a4e439b24b74c1e4b66844aee8ae5263fb3cc12281ac9cc9f67
 tensorflow-probability==0.15.0 \
     --hash=sha256:a5c6d1116fa619fa3fcfe076ff81adc276989fb58da179e464c1fd25d824530a \
-    # CPU version of pytorch
 # CPU version of pytorch
 https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:22997df8f3a3f9faed40ef9e7964d1869cafa0317cc4a5b115bfdf69323e8884
@@ -533,7 +532,14 @@ uproot3==3.14.4 \
 widgetsnbextension==3.5.2 \
     --hash=sha256:763a9fdc836d141fa080005a886d63f66f73d56dba1fb5961afc239c77708569 \
     --hash=sha256:e0731a60ba540cd19bbbefe771a9076dcd2dde90713a8f87f27f53f2d1db7727 \
-    # to read zstd compressed files in uproot
+xgboost==1.6.1 \
+    --hash=sha256:24072028656f3428e7b8aabf77340ece057f273e41f7f85d67ccaefb7454bb18 \
+    --hash=sha256:2b3d4ee105f8434873b40edc511330b8276bf3a8d9d42fb0319973079df30b07 \
+    --hash=sha256:3adcb7e4ccf774d5e0128c01e5c381303c3799910ab0f2e996160fe3cd23b7fc \
+    --hash=sha256:6207c77f611b54d9f056edede819ead03f0235615675f88030ff9fe10d359551 \
+    --hash=sha256:bbf16af8bf72e8761fcf69fdb5798bd5add6ecb48049198551b13c1d7abeabb5 \
+    --hash=sha256:bd3e59a5490e010004106d8ea1d07aa8e048be51a0974fca6b4f00988f087ab8
+# to read zstd compressed files in uproot
 zstandard==0.16.0 \
     --hash=sha256:066488e721ec882485a500c216302b443f2eaef39356f7c65130e76c671e3ce2 \
     --hash=sha256:08a728715858f1477239887ba3c692bc462b2c86e7a8e467dc5affa7bba9093f \
@@ -1346,6 +1352,12 @@ pygments==2.11.2 \
 pyparsing==3.0.6 \
     --hash=sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4 \
     --hash=sha256:d9bdec0013ef1eb5a84ab39a3b3868911598afa494f5faa038647101504e2b81
+pypmc==1.2 \
+    --hash=sha256:17909307639f8fabbb1248031befdeb34e5e87ba0a06ed1ebe1dd262b303e799 \
+    --hash=sha256:3e2d73b95a1a595cca66987562a28401dddd16fe4c3b08e646b563c37293a908 \
+    --hash=sha256:a0674fd136f626f157bd52b12b8421201668e7a145cbf7d22a7c7efc22d46189 \
+    --hash=sha256:ab18bc4dc41db6371a1aa3bb07e21b623bca29dc041579e0e1487f1ea8024bf9 \
+    --hash=sha256:ae8982d3af8bf356a0c6145f2c27e7b3b7c444026cf081f5911174d01ee3a215
 pyrsistent==0.18.0 \
     --hash=sha256:097b96f129dd36a8c9e33594e7ebb151b1515eb52cceb08474c10a5479e799f2 \
     --hash=sha256:2aaf19dc8ce517a8653746d98e962ef480ff34b6bc563fc067be6401ffb457c7 \

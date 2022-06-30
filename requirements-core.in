@@ -19,6 +19,7 @@ jira
 jupyter
 jupytext
 keras
+lightgbm
 lxml
 matplotlib
 metakernel
@@ -54,5 +55,6 @@ uncertainties
 uproot
 uproot3
 widgetsnbextension
+xgboost
 # to read zstd compressed files in uproot
 zstandard

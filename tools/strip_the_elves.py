@@ -24,6 +24,7 @@ from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor as PoolExecutor
 from contextlib import contextmanager
 
+
 @contextmanager
 def make_writable(filename):
     """Make ELF files temporarily writable for stripping or debuglinking"""
@@ -36,13 +37,23 @@ def make_writable(filename):
     # and reset permissions
     filename.chmod(mode)
 
+
 class ElfStripper:
-    ELF_TYPE = re.compile(r'^\s+Type:\s*(\S*)', re.M)
-    ELF_SECTION = re.compile(r'^\s+\[\s*\d*\]\s+(\S*)', re.M)
+    ELF_TYPE = re.compile(r"^\s+Type:\s*(\S*)", re.M)
+    ELF_SECTION = re.compile(r"^\s+\[\s*\d*\]\s+(\S*)", re.M)
 
     def __init__(self, compress):
         #: arguments to strip. The -R are copied from https://github.com/gentoo/portage/blob/master/bin/estrip
-        self.__strip = ["objcopy", "--strip-unneeded", "-R", ".comment", "-R", ".GCC.command.line", "-R", ".note.gnu.gold-version"]
+        self.__strip = [
+            "objcopy",
+            "--strip-unneeded",
+            "-R",
+            ".comment",
+            "-R",
+            ".GCC.command.line",
+            "-R",
+            ".note.gnu.gold-version",
+        ]
         #: arguments when splitting debug output
         self.__split = ["objcopy", "--only-keep-debug"]
         if compress:
@@ -59,9 +70,15 @@ class ElfStripper:
         On error return None, {}
         """
         try:
-            output = subprocess.check_output(['readelf', '-hSW', filename], stderr=subprocess.DEVNULL, encoding="utf8")
+            output = subprocess.check_output(
+                ["readelf", "-hSW", filename],
+                stderr=subprocess.DEVNULL,
+                encoding="utf8",
+            )
             elftype = self.ELF_TYPE.search(output).group(1)
-            elfsections = {e[1] for e in self.ELF_SECTION.finditer(output) if e[1] != 'NULL'}
+            elfsections = {
+                e[1] for e in self.ELF_SECTION.finditer(output) if e[1] != "NULL"
+            }
             return elftype, elfsections
         except subprocess.CalledProcessError:
             # most likely not an elf file
@@ -92,7 +109,10 @@ class ElfStripper:
             debugfile = filename.parent / debugfilename
             subprocess.check_call(self.__split + [str(filename), str(debugfile)])
             with make_writable(filename):
-                subprocess.check_call(self.__add_debuglink + [debugfilename, str(filename.name)], cwd=filename.parent)
+                subprocess.check_call(
+                    self.__add_debuglink + [debugfilename, str(filename.name)],
+                    cwd=filename.parent,
+                )
 
             # move the debug file to its final location
             debugdir = filename.parent / ".debug"
@@ -118,11 +138,11 @@ class ElfStripper:
 
         # OK check if we have something which looks like debug info and if yes
         # split it
-        if '.debug_info' in sections or '.debug_line' in sections:
+        if ".debug_info" in sections or ".debug_line" in sections:
             return self.split_debuginfo(filename)
         # otherwise just strip ... unless it is already stripped, aka no symbol
         # table in the file
-        elif '.symtab' in sections:
+        elif ".symtab" in sections:
             return self.strip(filename)
         else:
             # nothing to do
@@ -146,7 +166,9 @@ class DWZRunner:
                 common = [files[0].parent / "common.dwz"]
                 extra = ["-rm"] + common
 
-            subprocess.check_call([self.__binary, "-qh"] + extra + [str(e) for e in files])
+            subprocess.check_call(
+                [self.__binary, "-qh"] + extra + [str(e) for e in files]
+            )
             # return the list of files plus the common file if any was created
             return common + files
         except Exception as e:
@@ -163,7 +185,9 @@ class DWZRunner:
             return
         try:
             logging.info(f"compress debug sections in {filename}")
-            subprocess.check_call(["objcopy", "--compress-debug-sections", str(filename)])
+            subprocess.check_call(
+                ["objcopy", "--compress-debug-sections", str(filename)]
+            )
         except Exception as e:
             logging.error(f"Problem compressing debug sections in {filename}: {e}")
 
@@ -182,38 +206,79 @@ def scantree(path, excluded):
 
 if __name__ == "__main__":
     # ok, overwrite locale to make sure parsing of output works
-    os.environ['LC_ALL'] = 'C'
+    os.environ["LC_ALL"] = "C"
 
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("target_dir", help="Target Directory to look for elf objects to strip")
-    parser.add_argument("-j", "--threads", type=int, default=1, help="Number of threads to use")
-    parser.add_argument("-e", "--exclude", default=[], action="append",
-                        help="Filename relative to TARGET_DIR which should not be stripped")
-    parser.add_argument("--exclusion-file", help="A file containing one file per line "
-                        "(relative to TARGET_DIR) that should not be stripped")
-    parser.add_argument("--exclude-dirs",
-                        help="Exclude binaries in directories (anywhere in the path) "
-                        "with one of these names from being stripped",
-                        nargs="*")
-    parser.add_argument("-c", "--compress", default=False, action="store_true",
-                        help="If true compress debug sections using zlib")
-    parser.add_argument("--use-dwz", default=False, action="store_true",
-                        help="If given use the dwz utility to compress the created "
-                        "debug information. Implies --compress. If dwz cannot be "
-                        "found it will fall back to just --compress")
-    parser.add_argument("--dwz-binary", help="Specify the location of the dwz binary. Implies --use-dwz")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "target_dir", help="Target Directory to look for elf objects to strip"
+    )
+    parser.add_argument(
+        "-j", "--threads", type=int, default=1, help="Number of threads to use"
+    )
+    parser.add_argument(
+        "-e",
+        "--exclude",
+        default=[],
+        action="append",
+        help="Filename relative to TARGET_DIR which should not be stripped",
+    )
+    parser.add_argument(
+        "--exclusion-file",
+        help="A file containing one file per line "
+        "(relative to TARGET_DIR) that should not be stripped",
+    )
+    parser.add_argument(
+        "--exclude-dirs",
+        help="Exclude binaries in directories (anywhere in the path) "
+        "with one of these names from being stripped",
+        nargs="*",
+    )
+    parser.add_argument(
+        "-c",
+        "--compress",
+        default=False,
+        action="store_true",
+        help="If true compress debug sections using zlib",
+    )
+    parser.add_argument(
+        "--use-dwz",
+        default=False,
+        action="store_true",
+        help="If given use the dwz utility to compress the created "
+        "debug information. Implies --compress. If dwz cannot be "
+        "found it will fall back to just --compress",
+    )
+    parser.add_argument(
+        "--dwz-binary", help="Specify the location of the dwz binary. Implies --use-dwz"
+    )
     # default log levels are evenly spaced so we just add/subtract them due to
     # laziness :D
-    parser.add_argument("-v", "--verbose", dest="log_level", default=[logging.INFO],
-                        action="append_const", const=-logging.DEBUG,
-                        help="Increase verbosity by one level, can be given multiple times")
-    parser.add_argument("-q", "--quiet", dest="log_level", action="append_const", const=logging.DEBUG,
-                        help="Decrease verbosity by one level, can be given multiple times")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="log_level",
+        default=[logging.INFO],
+        action="append_const",
+        const=-logging.DEBUG,
+        help="Increase verbosity by one level, can be given multiple times",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        dest="log_level",
+        action="append_const",
+        const=logging.DEBUG,
+        help="Decrease verbosity by one level, can be given multiple times",
+    )
 
     # parse arguments and setup logging
     args = parser.parse_args()
-    logging.basicConfig(level=max(logging.DEBUG, min(logging.ERROR, sum(args.log_level))),
-                        format="[%(levelname)s] %(message)s")
+    logging.basicConfig(
+        level=max(logging.DEBUG, min(logging.ERROR, sum(args.log_level))),
+        format="[%(levelname)s] %(message)s",
+    )
 
     # non negative number of threads please
     if args.threads < 1:
@@ -241,16 +306,21 @@ if __name__ == "__main__":
     elif args.use_dwz:
         # and find it if necessary
         import shutil
+
         args.dwz_binary = shutil.which("dwz")
         if args.dwz_binary is None:
-            logging.warn("couldn't find dwz executable, falling back to normal compression")
+            logging.warn(
+                "couldn't find dwz executable, falling back to normal compression"
+            )
             args.compress = True
             args.use_dwz = False
 
     # ok, final round: make sure we can call dwz
     if args.use_dwz:
         try:
-            subprocess.check_call([args.dwz_binary, '-v'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.check_call(
+                [args.dwz_binary, "-v"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
         except Exception as e:
             logging.critical(f"error executing dwz: {e}")
             sys.exit(1)
@@ -262,7 +332,10 @@ if __name__ == "__main__":
     os.chdir(target_dir)
     # and create a list of all files excluding files in .debug directories and
     # __pycache__ dirs
-    all_files = [pathlib.Path(e.path) for e in scantree(".", [".debug", "__pycache__"] + args.exclude_dirs)]
+    all_files = [
+        pathlib.Path(e.path)
+        for e in scantree(".", [".debug", "__pycache__"] + args.exclude_dirs)
+    ]
     # filter excluded
     all_files = [e for e in all_files if str(e) not in args.exclude]
 

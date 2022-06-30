@@ -6,4 +6,3 @@ By contributing to this repository you
   * grant the members of the Belle II collaboration the right to use and modify your contribution,
   * grant the Belle II collaboration the right to distribute your contribution under an open source license of its choice,
   * provide the contribution "as is" without warranty.
-

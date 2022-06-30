@@ -44,12 +44,12 @@ tqdm
 tensorflow==2.4.1
 tensorflow-probability
 # CPU version of pytorch
-https://download.pytorch.org/whl/cpu/torch-1.8.1%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:8e9b003a1e528f474cc1905a66364a1a59ee7ddf2997a3d83cf6ac8e2e252877
-https://download.pytorch.org/whl/cpu/torchvision-0.9.1%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:c3cc044b67f9c2c943bf31fe45ec6267fafff476f0517f381d5dc4e1bb77e5ae
-https://download.pytorch.org/whl/torchaudio-0.8.1-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:02d87b9cf8aaf687c0040b9789190c2102f801a25f74c2b092ffc5782478e4d5
+https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:22997df8f3a3f9faed40ef9e7964d1869cafa0317cc4a5b115bfdf69323e8884
+https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:f3e382460d0dc8752ab2b97f943da996f3254ee868bc9592259ab55d7e1a5852
+https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
 Theano
 uncertainties
 uproot

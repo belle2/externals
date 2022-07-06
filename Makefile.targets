@@ -1298,22 +1298,22 @@ evtgen.touch:
 madgraph: $(EXTBINDIR)/mg5_aMC
 madgraph.src: $(EXTSRCDIR)/madgraph/VERSION
 
+# MadGraph download
 $(EXTSRCDIR)/madgraph/VERSION:
-	@$(DOWNLOAD) madgraph MG5_aMC_v2.7.2.tar.gz https://launchpad.net/mg5amcnlo/2.0/2.7.x/+download/MG5_aMC_v2.7.2.tar.gz
-	@$(DOWNLOAD) madgraph/PLUGIN/MGISR MGISR-git-a48b612.tar.gz https://github.com/qliphy/MGISR/tarball/a48b612
+	@$(DOWNLOAD) madgraph MG5_aMC_v3.4.0.tar.gz https://launchpad.net/mg5amcnlo/3.0/3.4.x/+download/MG5_aMC_v3.4.0.tar.gz
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 	@cd src/madgraph && patch -p0 < $(PATCHDIR)/madgraph-gcc8.patch
-	@sed -i 's:^#!\s*/usr/bin/env\s*python$$:#!/usr/bin/env python2:g' $(EXTSRCDIR)/madgraph/bin/*
 
-# MadGraph developer's kit installation.
+# MadGraph build
 $(EXTBINDIR)/mg5_aMC: $(EXTSRCDIR)/madgraph/VERSION
 	@rm -fr $(EXTDIR)/madgraph
 	@cp -fa $(EXTSRCDIR)/madgraph $(EXTDIR)/madgraph
-	# add symlink in bin dir
+	# add a symlink in the bin directory
 	@cd $(EXTBINDIR) && ln -sf ../madgraph/bin/mg5_aMC
-# run madgraph once to create the config files it needs ... cvmfs is read only after all
+	# run madgraph once to create the config files it needs... cvmfs is read-only after all
 	$(EXTBINDIR)/mg5_aMC < /dev/null
 
+# MadGraph clean/touch
 madgraph.clean madgraph.touch:
 	@rm -fr $(EXTDIR)/madgraph $(EXTBINDIR)/mg5_aMC
 

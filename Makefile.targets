@@ -814,6 +814,8 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
 # apply some patches Doris wanted for BII-7710. Should not be necessary once we move to Geant4 10.7.1+
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-BII-7710.patch
+# fix compilation on ubuntu 22.04, see https://bugzilla-geant4.kek.jp/show_bug.cgi?id=2444
+	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-problem-2444.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4

@@ -114,7 +114,8 @@ externals. Basically these are a result of running
     pip3 install autopep8 awkward boost-histogram CherryPy CommonMark cython cymove dgl eoshep flake8 file-read-backwards \
                  docutils h5py ipython jira jupyter jupytext keras lightgbm lxml matplotlib metakernel mysql-connector-python \
                  nbsphinx pandas pycodestyle pylama pytest requests rise scikit-learn scipy scons seaborn sly snakemake \
-                 sphinx tables tabulate tqdm tensorflow tensorflow-probability Theano torch torchaudio torch-geometry torchvision \
+                 sphinx tables tabulate tqdm tensorflow tensorflow-probability Theano \
+                 torch torchaudio torch-geometric torchvision \
                  uncertainties uproot uproot3 widgetsnbextension xgboost zstandard
     pip3 install root-numpy root-pandas pyroofit
 

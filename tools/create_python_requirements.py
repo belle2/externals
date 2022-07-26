@@ -128,6 +128,12 @@ if __name__ == "__main__":
                 # and remember package information
                 info = json_data["info"]
                 info["link"] = f"[{info['name']}]({info['project_url']})"
+                if not info["license"]:
+                    for package in old:
+                        if info["name"] in package:
+                            fields = package.split("|")
+                            if len(fields) > 4:
+                                info["license"] = fields[4].strip()
                 if info["license"] is None:
                     info["license"] = ""
                 infos.append(info)
@@ -142,6 +148,12 @@ if __name__ == "__main__":
                     json_data = get_info(name, version)
                     info = json_data["info"]
                     info["link"] = f"[{info['name']}]({info['project_url']})"
+                    if not info["license"]:
+                        for package in old:
+                            if info["name"] in package:
+                                fields = package.split("|")
+                                if len(fields) > 4:
+                                    info["license"] = fields[4].strip()
                     if info["license"] is None:
                         info["license"] = ""
                     infos.append(info)

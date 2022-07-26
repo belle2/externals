@@ -174,7 +174,7 @@ if __name__ == "__main__":
                     out.write(found[n])
                     del found[n]
                 else:
-                    out.write(l)
+                    out.write(line)
 
             # last file, put in all the remaining packages
             if i == len(files)-1:

@@ -29,6 +29,7 @@ pandas
 pycodestyle
 pylama
 pytest
+pytorch-lightning==1.5.6
 requests
 rise
 scikit-learn

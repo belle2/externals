@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 infos.append(info)
 
             # check pypi for https urls
-            m = re.match("http.*/(.*?)-(.*?)((\\+|%2B).*)?-cp", line)
+            m = re.search("http.*/(.*?)-(.*?)((\\+|%2B).*)?-cp", line)
             if m:
                 name = m.group(1)
                 version = m.group(2)

@@ -128,12 +128,18 @@ if __name__ == "__main__":
                 # and remember package information
                 info = json_data["info"]
                 info["link"] = f"[{info['name']}]({info['project_url']})"
+                if not info["license"]:
+                    for package in old:
+                        if info["name"] in package:
+                            fields = package.split("|")
+                            if len(fields) > 4:
+                                info["license"] = fields[4].strip()
                 if info["license"] is None:
                     info["license"] = ""
                 infos.append(info)
 
             # check pypi for https urls
-            m = re.match("http.*/(.*?)-(.*?)((\\+|%2B).*)?-cp", line)
+            m = re.search("http.*/(.*?)-(.*?)((\\+|%2B).*)?-cp", line)
             if m:
                 name = m.group(1)
                 version = m.group(2)
@@ -142,6 +148,12 @@ if __name__ == "__main__":
                     json_data = get_info(name, version)
                     info = json_data["info"]
                     info["link"] = f"[{info['name']}]({info['project_url']})"
+                    if not info["license"]:
+                        for package in old:
+                            if info["name"] in package:
+                                fields = package.split("|")
+                                if len(fields) > 4:
+                                    info["license"] = fields[4].strip()
                     if info["license"] is None:
                         info["license"] = ""
                     infos.append(info)
@@ -162,7 +174,7 @@ if __name__ == "__main__":
                     out.write(found[n])
                     del found[n]
                 else:
-                    out.write(l)
+                    out.write(line)
 
             # last file, put in all the remaining packages
             if i == len(files)-1:

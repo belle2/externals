@@ -50,7 +50,12 @@ https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x8
     --hash=sha256:f3e382460d0dc8752ab2b97f943da996f3254ee868bc9592259ab55d7e1a5852
 https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
+https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_scatter-2.0.9-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:665c755a840f6890ddc967a79622aaeb2d598de7177e6feac2781a0488cd28c2
+https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_sparse-0.6.14-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:f6d66f3c3896f46bd4e169154046069db7d0e6e2996f34cf1793c86d9fc06b99
 Theano
+torch-geometric
 uncertainties
 uproot
 uproot3

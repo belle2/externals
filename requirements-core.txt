@@ -518,8 +518,14 @@ https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x8
     --hash=sha256:f3e382460d0dc8752ab2b97f943da996f3254ee868bc9592259ab55d7e1a5852
 https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
+https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_scatter-2.0.9-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:665c755a840f6890ddc967a79622aaeb2d598de7177e6feac2781a0488cd28c2
+https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_sparse-0.6.14-cp38-cp38-linux_x86_64.whl \
+    --hash=sha256:f6d66f3c3896f46bd4e169154046069db7d0e6e2996f34cf1793c86d9fc06b99
 theano==1.0.5 \
     --hash=sha256:6e9439dd53ba995fcae27bf20626074bfc2fff446899dc5c53cb28c1f9202e89
+torch-geometric==2.0.4 \
+    --hash=sha256:d64e4c7486fcf0c7fa82f0acbf5dd52035855469708bf89f8bc7fc607671c8b7
 uncertainties==3.1.6 \
     --hash=sha256:7c4db5aaafd227e95485b61fba5d235dc8133aeecd98f8fc1224c038ce063e2d \
     --hash=sha256:cb4a66d5ceda006475ec845bf43ee8956c26138b08f93c41851c25a4ffe19a33
@@ -531,7 +537,7 @@ uproot3==3.14.4 \
     --hash=sha256:d0b513aed4af17278d582a4879eff7037efe0752c7e2154683ac4c4f083c30c0
 widgetsnbextension==3.5.2 \
     --hash=sha256:763a9fdc836d141fa080005a886d63f66f73d56dba1fb5961afc239c77708569 \
-    --hash=sha256:e0731a60ba540cd19bbbefe771a9076dcd2dde90713a8f87f27f53f2d1db7727 \
+    --hash=sha256:e0731a60ba540cd19bbbefe771a9076dcd2dde90713a8f87f27f53f2d1db7727
 xgboost==1.6.1 \
     --hash=sha256:24072028656f3428e7b8aabf77340ece057f273e41f7f85d67ccaefb7454bb18 \
     --hash=sha256:2b3d4ee105f8434873b40edc511330b8276bf3a8d9d42fb0319973079df30b07 \

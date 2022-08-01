@@ -12,6 +12,10 @@ while read line; do
     UPLOAD="$UPLOAD $filename"
 done <<< "$SERVERCHECK"
 
-if [ -z "$UPLOAD" ]; then
+echo "will upload $UPLOAD"
+
+read -p "Are you sure? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]] && [[ -n "$UPLOAD" ]]; then
     cd src && scp $UPLOAD b2-master:/var/www/html/download
 fi

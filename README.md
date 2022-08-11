@@ -37,7 +37,7 @@ externals.
 | [FastJet](http://fastjet.fr/)                                                | 3.3.4           | GPLv2 (and others) |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 11.2            | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.1            | GPLv2      |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.2            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p03       | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |

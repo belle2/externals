@@ -43,7 +43,7 @@ externals.
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD        |
-| [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.1.0           | GPLv3      |
+| [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.3.0           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |

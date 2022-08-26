@@ -69,7 +69,7 @@ if __name__ == "__main__":
     if not args.no_root:
         files.insert(1, "requirements-root.in")
     # make sure pip-tools are installed
-    subprocess.run(["pip3", "install", "--user", "pip-tools"])
+    subprocess.run(["python3", "-m", "pip", "install", "--user", "pip-tools"])
     # if we run in non-upgrade mode we provide all existing versions which make
     # pip-compile loose the dependency annotation which we don't want. So save
     # those annotations and put them back in
@@ -79,10 +79,10 @@ if __name__ == "__main__":
         processed_files = [os.path.splitext(e)[0] + ".txt" for e in files]
         for f in processed_files:
             existing_dependencies.update(get_annotations(f))
-        subprocess.run(["pip-compile", '-v', "--no-header", "--annotate", "--allow-unsafe", "-o", "requirements.txt"] +
+        subprocess.run(["python3", "-m", "piptools", "compile", '-v', "--no-header", "--annotate", "--allow-unsafe", "-o", "requirements.txt"] +
                        processed_files + remaining)
     else:
-        subprocess.run(["pip-compile", '-v', "--no-header", "--annotate", "--upgrade", "--allow-unsafe", "-o", "requirements.txt"] +
+        subprocess.run(["python3", "-m", "piptools", "compile", '-v', "--no-header", "--annotate", "--upgrade", "--allow-unsafe", "-o", "requirements.txt"] +
                        files + remaining)
 
     found = {}

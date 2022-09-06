@@ -29,6 +29,7 @@ pandas
 pycodestyle
 pylama
 pytest
+python-gitlab
 pytorch-lightning==1.5.6
 requests
 rise

@@ -993,6 +993,20 @@ root.clean:
 root.touch:
 	@rm -f $(ROOTSYS)/bin/root
 
+# RooUnfold
+roounfold: $(EXTBINDIR)/RooUnfold
+roounfold.src: $(EXTSRCDIR)/RooUnfold
+roounfold.touch:
+	rm -rf $(EXTBINDIR)/RooUnfold
+
+$(EXTSRCDIR)/RooUnfold:
+	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.0/RooUnfold-3.0.0.zip
+
+$(EXTBINDIR)/RooUnfold: $(EXTSRCDIR)/RooUnfold
+	@echo "building RooUnfold"
+	@mkdir -p $(EXTBUILDDIR)/RooUnfold
+	@cd $(EXTBUILDDIR)/RooUnfold && $(CMAKE) $(EXTSRCDIR)/RooUnfold && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # dependencies for FastBDT TMVA plugin
 fastbdt: $(EXTLIBDIR)/libFastBDT_shared.so

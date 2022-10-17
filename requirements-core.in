@@ -41,10 +41,11 @@ seaborn
 sly==0.4
 snakemake
 sphinx
+sweights
 tables
 tabulate
 tqdm
-tensorflow==2.4.1
+tensorflow
 tensorflow-probability
 # CPU version of pytorch
 https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \

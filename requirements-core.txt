@@ -1,6 +1,6 @@
 autopep8==1.6.0 \
     --hash=sha256:44f0932855039d2c15c4510d6df665e4730f2b8582704fa48f9c55bd3e17d979 \
-    --hash=sha256:ed77137193bbac52d029a52c59bec1b0629b5a186c495f1eb21b126ac466083f \
+    --hash=sha256:ed77137193bbac52d029a52c59bec1b0629b5a186c495f1eb21b126ac466083f
 # for uproot
 awkward==1.7.0 \
     --hash=sha256:036ff59c0dd8caa1a95ab9c63c68c0884b28e71a8f2e324a2f5f838e291a428c \
@@ -97,7 +97,7 @@ cherrypy==18.6.1 \
     --hash=sha256:f33e87286e7b3e309e04e7225d8e49382d9d7773e6092241d7f613893c563495
 commonmark==0.9.1 \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
-    --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9 \
+    --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
 # Cython is needed for compiling HAMMER with python bindings
 cython==0.29.26 \
     --hash=sha256:0205b685802eb4c039b14f67b7ac3f00c55ff04b9e3871df2249576d3e59ba42 \
@@ -145,7 +145,7 @@ cython==0.29.26 \
     --hash=sha256:ebe32e002a9e6553de399033e259ece72aa17c77f740b265e66f122572a8a278 \
     --hash=sha256:ed76fb98979f02b5e89079906071983a36f3634d3028b86f935cf0196f24fcaa \
     --hash=sha256:f5e15ff892c8afad64931ee3dd723c4755c2c516606f9aae7613bebfac62b0f6 \
-    --hash=sha256:fec66cd0a48697fab903854566235aecf1084f62e3163d6589ae7335a1b4d448 \
+    --hash=sha256:fec66cd0a48697fab903854566235aecf1084f62e3163d6589ae7335a1b4d448
 # Cymove is needed for compiling HAMMER with python bindings
 cymove==1.0.2 \
     --hash=sha256:79c1350db2f1f92a459b87ee9072ec0790faab233bfaeb73bf78a5caadd5aaa8 \
@@ -519,7 +519,7 @@ tensorflow==2.4.1 \
     --hash=sha256:eedcf578afde5e6e69c75d796bed41093451cd1ab54afb438760e40fb74a09de \
     --hash=sha256:efa9daa4b3701a4e439b24b74c1e4b66844aee8ae5263fb3cc12281ac9cc9f67
 tensorflow-probability==0.15.0 \
-    --hash=sha256:a5c6d1116fa619fa3fcfe076ff81adc276989fb58da179e464c1fd25d824530a \
+    --hash=sha256:a5c6d1116fa619fa3fcfe076ff81adc276989fb58da179e464c1fd25d824530a
 # CPU version of pytorch
 https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
     --hash=sha256:22997df8f3a3f9faed40ef9e7964d1869cafa0317cc4a5b115bfdf69323e8884
@@ -553,7 +553,7 @@ xgboost==1.6.1 \
     --hash=sha256:3adcb7e4ccf774d5e0128c01e5c381303c3799910ab0f2e996160fe3cd23b7fc \
     --hash=sha256:6207c77f611b54d9f056edede819ead03f0235615675f88030ff9fe10d359551 \
     --hash=sha256:bbf16af8bf72e8761fcf69fdb5798bd5add6ecb48049198551b13c1d7abeabb5 \
-    --hash=sha256:bd3e59a5490e010004106d8ea1d07aa8e048be51a0974fca6b4f00988f087ab8 \
+    --hash=sha256:bd3e59a5490e010004106d8ea1d07aa8e048be51a0974fca6b4f00988f087ab8
 # to read zstd compressed files in uproot
 zstandard==0.16.0 \
     --hash=sha256:066488e721ec882485a500c216302b443f2eaef39356f7c65130e76c671e3ce2 \

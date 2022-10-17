@@ -120,9 +120,6 @@ if __name__ == "__main__":
                 # add dependency comment if present
                 if comment:
                     content.append(f"    {comment}")
-                # or take from previous run
-                elif name in existing_dependencies:
-                    content.append(f"    # {existing_dependencies[name]}")
                 # make it one string
                 found[name+extra] = " \\\n".join(content) + "\n"
                 # and remember package information

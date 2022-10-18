@@ -34,13 +34,14 @@ pytorch-lightning==1.5.6
 requests
 rise
 scikit-learn
-sphinxcontrib-programoutput
 scipy
 scons
 seaborn
 sly==0.4
 snakemake
 sphinx
+sphinx-book-theme
+sphinxcontrib-programoutput
 sweights
 tables
 tabulate

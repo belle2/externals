@@ -34,6 +34,7 @@ pytorch-lightning==1.5.6
 requests
 rise
 scikit-learn
+sphinxcontrib-programoutput
 scipy
 scons
 seaborn

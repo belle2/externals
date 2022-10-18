@@ -41,6 +41,7 @@ seaborn
 sly==0.4
 snakemake
 sphinx
+sphinx-book-theme
 tables
 tabulate
 tqdm

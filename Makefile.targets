@@ -145,11 +145,11 @@ endif
 CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -GNinja $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
-export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
+export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(EXTCOMDIR)/bin:$(PATH)
 ifeq ($(shell uname),Darwin)
-  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(DYLD_LIBRARY_PATH)
+  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(EXTCOMDIR)/lib:$(DYLD_LIBRARY_PATH)
 else
-  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(LD_LIBRARY_PATH)
+  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(EXTCOMDIR)/lib:$(LD_LIBRARY_PATH)
 endif
 
 # directory we want to create
@@ -1746,8 +1746,8 @@ $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	    -DWITH_ROOT=ON -DENABLE_TESTS=OFF -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
 		-DPython3_FIND_STRATEGY=LOCATION && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
-	@rm -r $(EXTDIR)/lib/Hammer
+	@mv $(EXTLIBDIR)/Hammer/* $(EXTLIBDIR)
+	@rm -r $(EXTLIBDIR)/Hammer
 
 pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
 pandoc: $(EXTBINDIR)/pandoc

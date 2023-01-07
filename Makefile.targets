@@ -1778,3 +1778,31 @@ $(EXTLIBDIR)/libfastjet.so: $(EXTSRCDIR)/fastjet/configure
 	@cd $(EXTBUILDDIR)/fastjet && $(EXTSRCDIR)/fastjet/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --enable-silent-rules && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
+functionalplus.src: $(EXTSRCDIR)/functionalplus
+functionalplus: $(EXTINCDIR)/fplus
+$(EXTSRCDIR)/functionalplus:
+	@$(DOWNLOAD) functionalplus functionalplus-0.2.18-p0.tar.gz https://github.com/Dobiasd/FunctionalPlus/archive/refs/tags/v0.2.18-p0.tar.gz
+
+$(EXTINCDIR)/fplus: $(EXTSRCDIR)/functionalplus
+	@echo "building functionalplus"
+	@mkdir -p $(EXTBUILDDIR)/fplus
+	@cd $(EXTBUILDDIR)/fplus && $(CMAKE) $(EXTSRCDIR)/functionalplus && \
+			ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+functionalplus.clean:
+	@rm -rf $(EXTBUILDDIR)/fplus $(EXTINCDIR)/fplus $(EXTLIBDIR)/cmake/FunctionalPlus
+
+frugally-deep.src: $(EXTSRCDIR)/frugally-deep
+frugally-deep: $(EXTINCDIR)/fdeep
+$(EXTSRCDIR)/frugally-deep:
+	@$(DOWNLOAD) frugally-deep frugally-deep-0.15.19-p0.tar.gz https://github.com/Dobiasd/frugally-deep/archive/refs/tags/v0.15.19-p0.tar.gz
+
+$(EXTINCDIR)/fdeep: $(EXTSRCDIR)/frugally-deep
+	@echo "building frugally-deep"
+	@mkdir -p $(EXTBUILDDIR)/fdeep
+	@cd $(EXTBUILDDIR)/fdeep && $(CMAKE) $(EXTSRCDIR)/frugally-deep && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+frugally-deep.clean:
+	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep

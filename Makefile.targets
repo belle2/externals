@@ -145,11 +145,11 @@ endif
 CMAKE=cmake -DCMAKE_INSTALL_PREFIX=$(EXTDIR) -GNinja $(CMAKE_COMMON_FLAGS)
 
 # now path for current option and common packages, could be two times the same
-export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/bin:$(PATH)
+export PATH := $(ROOTSYS)/bin:$(EXTBINDIR):$(EXTCOMDIR)/bin:$(PATH)
 ifeq ($(shell uname),Darwin)
-  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(DYLD_LIBRARY_PATH)
+  export DYLD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(EXTCOMDIR)/lib:$(DYLD_LIBRARY_PATH)
 else
-  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common/lib:$(LD_LIBRARY_PATH)
+  export LD_LIBRARY_PATH := $(ROOTSYS)/lib:$(EXTLIBDIR):$(EXTCOMDIR)/lib:$(LD_LIBRARY_PATH)
 endif
 
 # directory we want to create
@@ -298,6 +298,8 @@ clang.touch:
 
 $(EXTSRCDIR)/llvm:
 	@$(DOWNLOAD) llvm llvm-project-12.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz
+# remove cyclades header - see https://reviews.llvm.org/D102059
+	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-cyclades-removal.patch
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
@@ -1001,8 +1003,6 @@ root.touch:
 # RooUnfold
 roounfold: $(EXTBINDIR)/RooUnfold
 roounfold.src: $(EXTSRCDIR)/RooUnfold
-roounfold.touch:
-	rm -rf $(EXTBINDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:
 	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.0/RooUnfold-3.0.0.zip
@@ -1012,6 +1012,9 @@ $(EXTBINDIR)/RooUnfold: $(EXTSRCDIR)/RooUnfold
 	@mkdir -p $(EXTBUILDDIR)/RooUnfold
 	@cd $(EXTBUILDDIR)/RooUnfold && $(CMAKE) $(EXTSRCDIR)/RooUnfold && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+roounfold.clean:
+	@bash -c "rm -rf $(EXTBUILDDIR)/RooUnfold $(EXTINCDIR)/{Roo, RooFit, T}Unfold*.h $(EXTLIBDIR)/libRooUnfold*"
 
 # dependencies for FastBDT TMVA plugin
 fastbdt: $(EXTLIBDIR)/libFastBDT_shared.so
@@ -1751,8 +1754,8 @@ $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	    -DWITH_ROOT=ON -DENABLE_TESTS=OFF -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
 		-DPython3_FIND_STRATEGY=LOCATION && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-	@mv $(EXTDIR)/lib/Hammer/* $(EXTDIR)/lib/
-	@rm -r $(EXTDIR)/lib/Hammer
+	@mv $(EXTLIBDIR)/Hammer/* $(EXTLIBDIR)
+	@rm -r $(EXTLIBDIR)/Hammer
 
 pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
 pandoc: $(EXTBINDIR)/pandoc
@@ -1782,3 +1785,31 @@ $(EXTLIBDIR)/libfastjet.so: $(EXTSRCDIR)/fastjet/configure
 	@cd $(EXTBUILDDIR)/fastjet && $(EXTSRCDIR)/fastjet/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) --enable-silent-rules && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
+functionalplus.src: $(EXTSRCDIR)/functionalplus
+functionalplus: $(EXTINCDIR)/fplus
+$(EXTSRCDIR)/functionalplus:
+	@$(DOWNLOAD) functionalplus functionalplus-0.2.18-p0.tar.gz https://github.com/Dobiasd/FunctionalPlus/archive/refs/tags/v0.2.18-p0.tar.gz
+
+$(EXTINCDIR)/fplus: $(EXTSRCDIR)/functionalplus
+	@echo "building functionalplus"
+	@mkdir -p $(EXTBUILDDIR)/fplus
+	@cd $(EXTBUILDDIR)/fplus && $(CMAKE) $(EXTSRCDIR)/functionalplus && \
+			ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+functionalplus.clean:
+	@rm -rf $(EXTBUILDDIR)/fplus $(EXTINCDIR)/fplus $(EXTLIBDIR)/cmake/FunctionalPlus
+
+frugally-deep.src: $(EXTSRCDIR)/frugally-deep
+frugally-deep: $(EXTINCDIR)/fdeep
+$(EXTSRCDIR)/frugally-deep:
+	@$(DOWNLOAD) frugally-deep frugally-deep-0.15.19-p0.tar.gz https://github.com/Dobiasd/frugally-deep/archive/refs/tags/v0.15.19-p0.tar.gz
+
+$(EXTINCDIR)/fdeep: $(EXTSRCDIR)/frugally-deep
+	@echo "building frugally-deep"
+	@mkdir -p $(EXTBUILDDIR)/fdeep
+	@cd $(EXTBUILDDIR)/fdeep && $(CMAKE) $(EXTSRCDIR)/frugally-deep && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+frugally-deep.clean:
+	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep

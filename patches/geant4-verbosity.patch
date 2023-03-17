@@ -19,3 +19,16 @@ index d501c19..608b736 100644
    DumpTableInfo();
 +#endif
  }
+
+--- /source/processes/electromagnetic/utils/src/G4EmSaturation.cc
++++ /source/processes/electromagnetic/utils/src/G4EmSaturation.cc
+@@ -152,7 +152,9 @@
+   for(std::size_t i=0; i<nMaterials; ++i) {
+     InitialiseBirksCoefficient((*G4Material::GetMaterialTable())[i]);
+   }
++#ifdef G4VERBOSE
+   if(verbose > 0) { DumpBirksCoefficients(); }
++#endif
+ }
+ 
+ //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

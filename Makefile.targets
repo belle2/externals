@@ -996,7 +996,7 @@ root.touch:
 	@rm -f $(ROOTSYS)/bin/root
 
 # RooUnfold
-roounfold: $(EXTBINDIR)/RooUnfold
+roounfold: $(EXTLIBDIR)/libRooUnfold.so
 roounfold.src: $(EXTSRCDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:

@@ -819,8 +819,6 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
 # get rid of possible heap overflow
 #	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
-# fix compilation on ubuntu 22.04, see https://bugzilla-geant4.kek.jp/show_bug.cgi?id=2444
-#	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-problem-2444.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4

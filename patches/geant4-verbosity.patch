@@ -2,7 +2,7 @@ diff --git a/source/materials/src/G4SurfaceProperty.cc b/source/materials/src/G4
 index d501c19..608b736 100644
 --- a/source/materials/src/G4SurfaceProperty.cc
 +++ b/source/materials/src/G4SurfaceProperty.cc
-@@ -106,7 +106,9 @@ void G4SurfaceProperty::DumpTableInfo()
+@@ -89,7 +89,9 @@ void G4SurfaceProperty::DumpTableInfo()
  
  void G4SurfaceProperty::CleanSurfacePropertyTable()
  {
@@ -10,50 +10,25 @@ index d501c19..608b736 100644
    DumpTableInfo();
 +#endif
    G4SurfacePropertyTable::iterator pos;
-   for(pos=theSurfacePropertyTable.begin();
-       pos!=theSurfacePropertyTable.end(); pos++)
-@@ -114,5 +116,7 @@ void G4SurfaceProperty::CleanSurfacePropertyTable()
-     if (*pos) delete *pos;
+   for(pos = theSurfacePropertyTable.begin();
+       pos != theSurfacePropertyTable.end(); pos++)
+@@ -101,4 +103,6 @@ void G4SurfaceProperty::CleanSurfacePropertyTable()
    }
    theSurfacePropertyTable.clear();
 +#ifdef G4VERBOSE
    DumpTableInfo();
 +#endif
  }
-diff --git a/source/physics_lists/lists/src/FTFP_BERT.cc b/source/physics_lists/lists/src/FTFP_BERT.cc
-index 6fac67a..cd3b5de 100644
---- a/source/physics_lists/lists/src/FTFP_BERT.cc
-+++ b/source/physics_lists/lists/src/FTFP_BERT.cc
-@@ -70,8 +70,8 @@ FTFP_BERT::FTFP_BERT(G4int ver)
- {
-   // default cut value  (1.0mm)
-   // defaultCutValue = 1.0*CLHEP::mm;
--  G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT"<<G4endl;
--  G4cout <<G4endl;
-+  if(ver) G4cout << "<<< Geant4 Physics List simulation engine: FTFP_BERT"<<G4endl;
-+  if(ver) G4cout <<G4endl;
-   defaultCutValue = 0.7*CLHEP::mm;
-   SetVerboseLevel(ver);
-   
-diff --git a/source/physics_lists/lists/src/G4PhysListFactory.cc b/source/physics_lists/lists/src/G4PhysListFactory.cc
-index 3e0e2e7..47dff87 100644
---- a/source/physics_lists/lists/src/G4PhysListFactory.cc
-+++ b/source/physics_lists/lists/src/G4PhysListFactory.cc
-@@ -168,7 +168,7 @@ G4PhysListFactory::GetReferencePhysList(const G4String& name)
- 	   << G4endl;
+
+--- /source/processes/electromagnetic/utils/src/G4EmSaturation.cc
++++ /source/processes/electromagnetic/utils/src/G4EmSaturation.cc
+@@ -152,7 +152,9 @@
+   for(std::size_t i=0; i<nMaterials; ++i) {
+     InitialiseBirksCoefficient((*G4Material::GetMaterialTable())[i]);
    }
-   if(p) {
--    G4cout << "<<< Reference Physics List " << had_name
-+    if(verbose>0) G4cout << "<<< Reference Physics List " << had_name
- 	   << em_name << " is built" << G4endl;
-     G4int ver = p->GetVerboseLevel();
-     p->SetVerboseLevel(0);
-@@ -189,7 +189,7 @@ G4PhysListFactory::GetReferencePhysList(const G4String& name)
-     }
-     p->SetVerboseLevel(ver);
-   }
--  G4cout << G4endl;
-+  if(verbose>0) G4cout << G4endl;
-   return p;
++#ifdef G4VERBOSE
+   if(verbose > 0) { DumpBirksCoefficients(); }
++#endif
  }
-   
+ 
+ //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

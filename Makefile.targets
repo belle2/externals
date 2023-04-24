@@ -733,7 +733,7 @@ Vc.touch:
 	rm -fr $(EXTLIBDIR)/libVc.a
 
 $(EXTSRCDIR)/Vc/README.md:
-	@$(DOWNLOAD) Vc Vc-1.4.1.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.1/Vc-1.4.1.tar.gz
+	@$(DOWNLOAD) Vc Vc-1.4.3.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.3/Vc-1.4.3.tar.gz
 
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"
@@ -748,7 +748,7 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.6.0.tar.gz https://github.com/root-project/veccore/archive/v0.6.0.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.0.tar.gz https://github.com/root-project/veccore/archive/v0.8.0.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
@@ -764,7 +764,7 @@ VecGeom.touch:
 	rm -fr $(EXTLIBDIR)/libvecgeom.a
 
 $(EXTSRCDIR)/VecGeom/README.md:
-	@$(DOWNLOAD) VecGeom VecGeom-v1.1.5.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.1.5/VecGeom-v1.1.5.tar.gz
+	@$(DOWNLOAD) VecGeom VecGeom-v1.2.1.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.1/VecGeom-v1.2.1.tar.gz
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@echo "building VecGeom"
@@ -774,6 +774,10 @@ $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
+VecGeom.clean:
+	@echo "cleaning VecGeom"
+	@rm -rf $(EXTBUILDDIR)/VecGeom $(EXTINCDIR)/VecGeom $(EXTLIBDIR)/libvecgeom.a
+
 
 # dependencies for CLHEP
 clhep: $(EXTBINDIR)/clhep-config
@@ -781,7 +785,7 @@ clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
 $(EXTSRCDIR)/clhep/CLHEP/README.md:
-	@$(DOWNLOAD) clhep clhep-2.4.1.3.tgz http://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.1.3.tgz
+	@$(DOWNLOAD) clhep clhep-2.4.6.2.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.6.2.tgz
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
@@ -794,7 +798,8 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.6.2 \
+				  $(EXTLIBDIR)/pkgconfig/clhep*.pc
 
 # CLHEP touch
 clhep.touch:
@@ -807,38 +812,34 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.10.06.p03.tar.gz http://cern.ch/geant4-data/releases/geant4.10.06.p03.tar.gz
+	@$(DOWNLOAD) geant4 geant4.11.1.1.tar.gz https://github.com/Geant4/geant4/archive/refs/tags/v11.1.1.tar.gz
 # some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
 # get rid of possible heap overflow
-	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
-# apply some patches Doris wanted for BII-7710. Should not be necessary once we move to Geant4 10.7.1+
-	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-BII-7710.patch
-# fix compilation on ubuntu 22.04, see https://bugzilla-geant4.kek.jp/show_bug.cgi?id=2444
-	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-problem-2444.patch
+#	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	@echo "building geant4"
 	@mkdir -p $(EXTBUILDDIR)/geant4
 	@cd $(EXTBUILDDIR)/geant4 && $(CMAKE) $(GEANT4_OPTION) \
-	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) -DCLHEP_LIBRARY=$(EXTLIBDIR) \
+	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
 	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
-	    -DGEANT4_BUILD_CXXSTD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
+	    -DCMAKE_CXX_STANDARD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4-10.6.3/geant4make/geant4make.*
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4-10.6.3 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
@@ -1046,14 +1047,14 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.4.6.tar.gz  http://ivana.home.cern.ch/ivana/vgm.4.6.tar.gz
-	@cd $(EXTSRCDIR)/vgm && patch -l -Np0 < $(PATCHDIR)/vgm.patch
+	@$(DOWNLOAD) vgm vgm.5.0.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-0.tar.gz
+	@cd $(EXTSRCDIR)/vgm && patch -p0 < $(PATCHDIR)/vgm.patch
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR) -DWITH_EXAMPLES=OFF\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR)/lib64/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIR=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
@@ -1061,7 +1062,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 # vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf $(EXTBUILDDIR)/vgm $(EXTDIR)/vgm $(EXTINCDIR)/vgm $(EXTLIBDIR)/lib*VGM.so
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.0.0
 
 # vgm touch
 vgm.touch:

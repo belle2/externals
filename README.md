@@ -23,7 +23,7 @@ externals.
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.36.1          | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.78            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](https://www.sourceware.org/bzip2/)                                   | 1.08            | BSD-style  |
-| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.1.3         | LGPLv3     |
+| [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.6.2         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.22.2          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.7.1           | MIT-style  |
@@ -40,7 +40,7 @@ externals.
 | [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)                  | 0.2.18-p0       | [Boost Software License](http://www.boost.org/users/license.html) |
 | [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 11.2            | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.2            | GPLv2      |
-| [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 10.06.p03       | Geant4 License |
+| [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 11.1.1          | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
@@ -70,10 +70,10 @@ externals.
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
-| [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.1           | BSD        |
-| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.6.0          | Apache v2  |
-| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.1.5           | Apache v2  |
-| [Virtual Geometry Model (VGM)](http://ivana.home.cern.ch/ivana/VGM.html)     | 4.6             | GPLv2      |
+| [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.3           | BSD        |
+| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.0          | Apache v2  |
+| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.1           | Apache v2  |
+| [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.0     | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 5.4.3           | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |

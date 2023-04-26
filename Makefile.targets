@@ -496,7 +496,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 CREATE_PIP_CERTCHAIN := "cat $(BELLE2_TOOLS)/certchain.pem `python3 -c 'import site; print(site.getsitepackages()[0])'`/pip/_vendor/*/cacert.pem > .pip-certchain.pem"
 
 PIP3OPTIONS:=--disable-pip-version-check --require-hashes --cert=.pip-certchain.pem \
-	    --find-links=https://belle2:Aith4tee@b2-master.belle2.org/download/python-packages/
+	    --find-links=https://software.belle2.org/download/python-packages/
 # don't use index if we want to restrict to the belle2 download server
 ifneq ($(USE_BELLE2SERVER),)
     PIP3OPTIONS+=--no-index

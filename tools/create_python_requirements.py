@@ -119,6 +119,8 @@ if __name__ == "__main__":
                 # and remember package information
                 info = json_data["info"]
                 info["link"] = f"[{info['name']}]({info['project_url']})"
+                if len(info["license"]) > 30:
+                    info["license"] = None
                 if not info["license"]:
                     for package in old:
                         if info["name"] in package:
@@ -139,6 +141,8 @@ if __name__ == "__main__":
                     json_data = get_info(name, version)
                     info = json_data["info"]
                     info["link"] = f"[{info['name']}]({info['project_url']})"
+                    if len(info["license"]) > 30:
+                        info["license"] = None
                     if not info["license"]:
                         for package in old:
                             if info["name"] in package:

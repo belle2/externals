@@ -41,6 +41,7 @@ sly==0.4
 snakemake
 sphinx
 sphinx-book-theme
+sphinx-codeautolink
 sphinxcontrib-programoutput
 sweights
 tables

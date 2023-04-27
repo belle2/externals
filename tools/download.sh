@@ -108,7 +108,7 @@ fi
 
 # if none succeeded use the Belle II web server
 if [ "${RESULT}" -ne "0" ]; then
-  get_archive https://b2-master.belle2.org/download/${FILENAME} --ca-certificate=${BELLE2_TOOLS}/certchain.pem --user=belle2 --password=Aith4tee
+  get_archive ${BELLE2_DOWNLOAD}/${FILENAME}
   RESULT=$?
 fi
 

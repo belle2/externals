@@ -25,9 +25,9 @@ Creating new Externals
 To update the externals used by basf2 requires a few steps:
 
 1. Update this repository to contain the packages you want
-2. Make sure all source archives are uploaded to `b2-master`
+2. Make sure all source archives are uploaded to `software.belle2.org`
 3. Compile on all platforms
-4. Upload the compiled externals to `b2-master`
+4. Upload the compiled externals to `software.belle2.org`
 5. Tag the new version and wait for buildbot to install it on cvmfs
 
 ### Update the repository
@@ -44,7 +44,7 @@ than the package name one can specify the beginning of the archive name as secon
 argument. For example the package `tauola` is lower case but the archive starts with
 `TAUOLA` so one would run `tools/update_sha.sh tauola TAUOLA`.
 
-### Make sure all source archives are uploaded on `b2-master`
+### Make sure all source archives are uploaded on `software.belle2.org`
 
 We need to keep a mirror of all the software used in the externals to make sure we can
 compile it even if the upstream page has problems or disappears. So we need to make sure
@@ -52,11 +52,11 @@ all packages are uploaded.
 
 There's a script to do that: `tools/check_sources.sh`. It will check that all sources
 are present locally by just verifying all files in the `sha256sum.txt` are present and
-correct. In a second step it will do the same on `b2-master` and upload all missing
+correct. In a second step it will do the same on `software.belle2.org` and upload all missing
 files.
 
-This script requires to be able to login to `b2-master` with the software account
-(please contact Thomas Kuhr) and have a ssh config for `b2-master` which will use the
+This script requires to be able to login to `software.belle2.org` with the software account
+(please contact Thomas Kuhr) and have a ssh config for `software.belle2.org` which will use the
 correct account and jump setup to login. Password prompt will be shown if necessary but
 a multiplexing setup with a control master is recommended to not get asked multiple
 times.
@@ -78,12 +78,12 @@ can be found at https://stash.desy.de/projects/B2X/repos/externals_docker_build.
 contains scripts to create the necessary docker images and run compilation of a given
 git hash in all containers.
 
-### Upload the externals to `b2-master`
+### Upload the externals to `software.belle2.org`
 
-After compilation of all externals is complete they have to be uploaded to `b2-master`
+After compilation of all externals is complete they have to be uploaded to `software.belle2.org`
 **before** tagging the version. Otherwise buildbot will try to compile them and fail
 horribly. There's a script for this in the externals_docker_build repository (creatively
-called `upload.sh`) which will do this (same requirements for `b2-master` login as
+called `upload.sh`) which will do this (same requirements for `software.belle2.org` login as
 above).
 
 ### Tag the new version

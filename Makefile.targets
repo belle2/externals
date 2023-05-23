@@ -1870,3 +1870,4 @@ whizard.touch:
 # whizard clean
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
+	@rm -rf $(EXTBUILDDIR)/ocaml

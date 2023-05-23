@@ -1819,7 +1819,7 @@ ocaml.src: $(EXTSRCDIR)/ocaml/INSTALL.adoc
 
 # ocaml download
 $(EXTSRCDIR)/ocaml/INSTALL.adoc:
-	$(DOWNLOAD) ocaml 4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
+	$(DOWNLOAD) ocaml ocaml-4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
 
 # ocaml build
 $(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc

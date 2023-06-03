@@ -1809,3 +1809,65 @@ $(EXTINCDIR)/fdeep: $(EXTSRCDIR)/frugally-deep
 
 frugally-deep.clean:
 	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep
+
+
+### OCaml
+
+# dependencies for ocaml
+ocaml: $(EXTDIR)/ocaml/bin/ocaml
+ocaml.src: $(EXTSRCDIR)/ocaml/INSTALL.adoc
+
+# ocaml download
+$(EXTSRCDIR)/ocaml/INSTALL.adoc:
+	$(DOWNLOAD) ocaml ocaml-4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
+
+# ocaml build
+$(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc
+	@echo "building ocaml"
+	@cp -fa $(EXTSRCDIR)/ocaml $(EXTBUILDDIR)
+	@mkdir -p $(EXTDIR)/ocaml
+	@cd $(EXTBUILDDIR)/ocaml && ./configure --prefix=$(EXTDIR)/ocaml && \
+	    make -j $(NPROCESSES) && make install
+	@ln -s $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
+
+# ocaml touch
+ocaml.touch:
+	@rm -rf $(EXTDIR)/ocaml
+
+# ocaml clean
+ocaml.clean:
+	@echo "removing ocaml"
+	@rm -rf $(EXTBUILDDIR)/ocaml
+
+
+### WHIZARD
+
+# dependendencies for whizard
+whizard: $(EXTBINDIR)/whizard
+whizard.src: $(EXTSRCDIR)/whizard/INSTALL
+
+# whizard download
+$(EXTSRCDIR)/whizard/INSTALL:
+	$(DOWNLOAD) whizard whizard-3.1.2.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.2.tar.gz
+
+# whizard build
+$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
+	@echo "building whizard"
+	EXTBINDIR=$(EXTDIR)/ocaml/bin:$(EXTBINDIR)
+	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
+	@mkdir -p $(EXTDIR)/whizard
+	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
+	@ln -s $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
+	@echo "removing ocaml"
+	@rm -rf $(EXTBINDIR)/ocaml*
+	@rm -rf $(EXTDIR)/ocaml
+
+# whizard touch
+whizard.touch:
+	@rm -rf $(EXTDIR)/whizard
+
+# whizard clean
+whizard.clean:
+	@rm -rf $(EXTBUILDDIR)/whizard
+	@rm -rf $(EXTBUILDDIR)/ocaml

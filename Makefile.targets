@@ -1113,6 +1113,8 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch --binary -p0 -i $(PATCHDIR)/rave-silence-cout.patch
 	# add std:: to isnan
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
+	# replace deprecated auto_ptr with unique_ptr
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README

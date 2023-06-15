@@ -718,7 +718,7 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.9.1.src.tar.gz http://doxygen.nl/files/doxygen-1.9.1.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.9.6.src.tar.gz https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
@@ -817,8 +817,6 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
-# get rid of possible heap overflow
-#	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4

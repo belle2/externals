@@ -951,6 +951,30 @@ davix.clean:
 davix.touch:
 	@rm -f $(EXTLIBDIR)/libdavix.so
 
+# Intel oneAPI Threading Building Blocks (oneTBB)
+tbb: $(EXTLIBDIR)/libtbb.so
+tbb.src: $(EXTSRCDIR)/tbb/README.md
+
+# download tbb
+$(EXTSRCDIR)/tbb/README.md:
+	@$(DOWNLOAD) tbb tbb_v2021.9.0.tar.gz https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.9.0.tar.gz
+
+# build tbb
+$(EXTLIBDIR)/libtbb.so: $(EXTSRCDIR)/tbb/README.md
+	@echo "building tbb"
+	@mkdir -p $(EXTBUILDDIR)/tbb
+	@cd $(EXTBUILDDIR)/tbb && $(CMAKE) $(EXTSRCDIR)/tbb \
+			-DTBB_TEST=OFF && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+tbb.clean:
+	@echo "cleaning tbb"
+	@-cd $(EXTBUILDDIR)/tbb 2>/dev/null && make clean
+	@rm -rf $(EXTBUILDDIR)/tbb $(EXTINCDIR)/oneapi $(EXTINCDIR)/tbb $(EXTLIBDIR)/libtbb*
+
+tbb.touch:
+	@rm -f $(EXTLIBDIR)/libtbb.so
+
 # dependencies for root
 root: $(ROOTSYS)/bin/root
 root.src: $(EXTSRCDIR)/root/README

@@ -1002,7 +1002,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 		-DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 -Dpyroot_legacy=OFF \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
+	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dimt=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
 	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
 	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
 	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \

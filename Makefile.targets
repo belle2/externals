@@ -1854,7 +1854,7 @@ $(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc
 	@mkdir -p $(EXTDIR)/ocaml
 	@cd $(EXTBUILDDIR)/ocaml && ./configure --prefix=$(EXTDIR)/ocaml && \
 	    make -j $(NPROCESSES) && make install
-	@ln -s $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
+	@ln -sf $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
 
 # ocaml touch
 ocaml.touch:
@@ -1884,7 +1884,7 @@ $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@ln -s $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
+	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
 	@echo "removing ocaml"
 	@rm -rf $(EXTBINDIR)/ocaml*
 	@rm -rf $(EXTDIR)/ocaml

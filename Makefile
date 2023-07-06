@@ -23,7 +23,7 @@ endif
 COMMON_PACKAGES:=pkg-config-wrapper ninja gcc binutils zlib bzip2 xz lz4 curl git libxml2 libxslt \
     cmake sqlite hdf5 libffi python python-packages gdb boost gtest eigen astyle madgraph \
     zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs \
-    Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json root fastbdt vgm rave \
+    Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json tbb root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \
     flc belle_legacy fann root-python-packages hammer pandoc fastjet roounfold functionalplus frugally-deep \
     whizard

@@ -718,7 +718,7 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.9.1.src.tar.gz http://doxygen.nl/files/doxygen-1.9.1.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.9.6.src.tar.gz https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
@@ -817,8 +817,6 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
-# get rid of possible heap overflow
-#	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-streambuf-overflow.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -951,15 +949,41 @@ davix.clean:
 davix.touch:
 	@rm -f $(EXTLIBDIR)/libdavix.so
 
+# Intel oneAPI Threading Building Blocks (oneTBB)
+tbb: $(EXTLIBDIR)/libtbb.so
+tbb.src: $(EXTSRCDIR)/tbb/README.md
+
+# download tbb
+$(EXTSRCDIR)/tbb/README.md:
+	@$(DOWNLOAD) tbb tbb_v2021.9.0.tar.gz https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.9.0.tar.gz
+
+# build tbb
+$(EXTLIBDIR)/libtbb.so: $(EXTSRCDIR)/tbb/README.md
+	@echo "building tbb"
+	@mkdir -p $(EXTBUILDDIR)/tbb
+	@cd $(EXTBUILDDIR)/tbb && $(CMAKE) $(EXTSRCDIR)/tbb \
+			-DTBB_TEST=OFF && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+tbb.clean:
+	@echo "cleaning tbb"
+	@-cd $(EXTBUILDDIR)/tbb 2>/dev/null && make clean
+	@rm -rf $(EXTBUILDDIR)/tbb $(EXTINCDIR)/oneapi $(EXTINCDIR)/tbb $(EXTLIBDIR)/libtbb*
+
+tbb.touch:
+	@rm -f $(EXTLIBDIR)/libtbb.so
+
 # dependencies for root
 root: $(ROOTSYS)/bin/root
 root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-24-06.tar.gz https://github.com/root-project/root/archive/refs/tags/v6-24-06.tar.gz
+	@$(DOWNLOAD) root root_v6-26-10.tar.gz https://root.cern/download/root_v6.26.10.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
+	# progress bar crashes for low number of events (reported in ROOT github #13017)
+	@cd $(EXTSRCDIR)/root && patch -p0 < $(PATCHDIR)/root-13017-modulofix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -1100,7 +1124,7 @@ rave.src: $(EXTSRCDIR)/rave/README
 
 # rave download
 $(EXTSRCDIR)/rave/README:
-	@$(DOWNLOAD) rave rave-0.6.25.tar.gz http://www.hepforge.org/archive/rave/rave-0.6.25.tar.gz
+	@$(DOWNLOAD) rave rave-0.6.25.tar.gz https://rave.hepforge.org/downloads?f=rave-0.6.25.tar.gz
 	@rm -rf $(EXTSRCDIR)/rave/src/boost $(EXTSRCDIR)/rave/src/ROOT/*/Math $(EXTSRCDIR)/rave/src/ROOT/genvector
 	@cd $(EXTSRCDIR)/rave/src && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/boost)
 	@cd $(EXTSRCDIR)/rave/src/ROOT && ln -sf $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) genvector
@@ -1113,15 +1137,17 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch --binary -p0 -i $(PATCHDIR)/rave-silence-cout.patch
 	# add std:: to isnan
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
+	# replace deprecated auto_ptr with unique_ptr
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++11" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++14" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
-	    --with-clhep=$(EXTDIR) --with-clhep-libdir=$(EXTLIBDIR) --with-boost=$(EXTDIR) && \
+	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in .cmake file/RaveConfig.cmake:
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/rave/RaveConfig.cmake

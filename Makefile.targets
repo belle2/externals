@@ -231,8 +231,8 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.36.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.bz2
-	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-27482-parallelbuild-libctf.patch
+	@$(DOWNLOAD) binutils binutils-2.41.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.41.1.tar.bz2
+	@cd $(EXTSRCDIR)/binutils
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"

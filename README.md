@@ -89,7 +89,7 @@ GCC requires some additional libraries which are downloaded as part of the GCC c
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
 | [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
 | [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.2.1           | LGPLv3 + GPLv2 |
-| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.24            | MIT        |
+| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.26            | MIT        |
 
 Optional Package
 ----------------

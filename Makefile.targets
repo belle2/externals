@@ -248,6 +248,96 @@ binutils.clean:
 	@-cd $(EXTSRCDIR)/binutils/build && make distclean
 	@rm -rf $(EXTSRCDIR)/binutils
 
+gmp: $(EXTLIBDIR)/libgmp.so
+gmp.src: $(EXTSRCDIR)/gmp
+
+$(EXTSRCDIR)/gmp:
+	@$(DOWNLOAD) gmp gmp-6.2.1.tar.xz https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz
+
+$(EXTLIBDIR)/libgmp.so: $(EXTSRCDIR)/gmp
+	@echo "Building gmp..."
+	@mkdir -p $(EXTBUILDDIR)/gmp
+	@cd $(EXTBUILDDIR)/gmp && \
+	    $(EXTSRCDIR)/gmp/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+gmp.clean:
+	@rm -rf $(EXTSRCDIR)/gmp
+
+gmp.touch:
+	@rm $(EXTLIVDIR)/libgmp.so
+
+
+mpfr: $(EXTLIBDIR)/libmpfr.so
+mpfr.src: $(EXTSRCDIR)/mpfr
+
+$(EXTSRCDIR)/mpfr:
+	@$(DOWNLOAD) mpfr mpfr-4.1.0.tar.xz http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
+
+$(EXTLIBDIR)/libmpfr.so: $(EXTSRCDIR)/mpfr
+	@echo "Building mpfr..."
+	@mkdir -p $(EXTBUILDDIR)/mpfr
+	@cd $(EXTBUILDDIR)/mpfr && \
+	    $(EXTSRCDIR)/mpfr/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+mpfr.clean:
+	@rm -rf $(EXTSRCDIR)/mpfr
+
+mpfr.touch:
+	@rm $(EXTLIVDIR)/libmpfr.so
+
+
+mpc: $(EXTLIBDIR)/libmpc.so
+mpc.src: $(EXTSRCDIR)/mpc
+
+$(EXTSRCDIR)/mpc:
+	@$(DOWNLOAD) mpc mpc-1.2.1.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
+
+$(EXTLIBDIR)/libmpc.so: $(EXTSRCDIR)/mpc
+	@echo "Building mpc..."
+	@mkdir -p $(EXTBUILDDIR)/mpc
+	@cd $(EXTBUILDDIR)/mpc && \
+	    $(EXTSRCDIR)/mpc/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+mpc.clean:
+	@rm -rf $(EXTSRCDIR)/mpc
+
+mpc.touch:
+	@rm $(EXTLIVDIR)/libmpc.so
+
+
+isl: $(EXTLIBDIR)/libisl.so
+isl.src: $(EXTSRCDIR)/isl
+
+$(EXTSRCDIR)/isl:
+	@$(DOWNLOAD) isl isl-0.26.tar.xz https://libisl.sourceforge.io/isl-0.26.tar.xz
+
+$(EXTLIBDIR)/libisl.so: $(EXTSRCDIR)/isl
+	@echo "Building isl..."
+	@mkdir -p $(EXTBUILDDIR)/isl
+	@cd $(EXTBUILDDIR)/isl && \
+	    $(EXTSRCDIR)/isl/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+isl.clean:
+	@rm -rf $(EXTSRCDIR)/isl
+
+isl.touch:
+	@rm $(EXTLIVDIR)/libisl.so
+
+
 gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
@@ -277,8 +367,13 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 # no c++ std includes so we install the c++ includes in $(EXTINCDIR)/c++ but
 # skip the version: there's only one gcc version per external version.
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --disable-bootstrap \
-	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
-		--target=$(GCC_TARGET) --host=$(GCC_TARGET) --build=$(GCC_TARGET) \
+	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) \
+	    --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
+	    --target=$(GCC_TARGET) --host=$(GCC_TARGET) --build=$(GCC_TARGET) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) \
+	    --with-mpfr-include=$(EXTINCDIR) --with-mpfr-lib=$(EXTLIBDIR) \
+	    --with-mpc-include=$(EXTINCDIR) --with-mpc-lib=$(EXTLIBDIR) \
+	    --with-isl-include=$(EXTINCDIR) --with-isl-lib=$(EXTLIBDIR) \
 	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 # now remove the bloody empty directory gcc creates in prefix. but make sure

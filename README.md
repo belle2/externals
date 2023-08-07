@@ -38,8 +38,8 @@ externals.
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
 | [Frugally-deep](https://github.com/Dobiasd/frugally-deep)                    | 0.15.19-p0      | MIT        |
 | [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)                  | 0.2.18-p0       | [Boost Software License](http://www.boost.org/users/license.html) |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 11.2            | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 10.2            | GPLv2      |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 13.2.0          | GPLv2/GPLv3 + Runtime library Exception |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 13.2            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 11.1.1          | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |

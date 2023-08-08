@@ -76,7 +76,7 @@ externals.
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.1           | Apache v2  |
 | [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.0     | GPLv2      |
 | [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |
-| [XRootD](http://xrootd.org/)                                                 | 5.4.3           | LGPLv3     |
+| [XRootD](http://xrootd.org/)                                                 | 5.6.1           | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.3.4           | LGPLv3 + static link exception, intent to move to MPLv2  |

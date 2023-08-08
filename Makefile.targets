@@ -1668,6 +1668,7 @@ zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
 # zeromq download
 $(EXTSRCDIR)/zeromq/INSTALL:
 	@$(DOWNLOAD) zeromq zeromq-4.3.4.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz
+	@cd $(EXTSRCDIR)/zeromq && patch -p1 < $(PATCHDIR)/zeromq.patch
 
 # zeromq build
 $(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL

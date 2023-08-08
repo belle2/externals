@@ -1,0 +1,33 @@
+diff --git a/src/secure_allocator.hpp b/src/secure_allocator.hpp
+index 0d37e7e..5cf547d 100644
+--- a/src/secure_allocator.hpp
++++ b/src/secure_allocator.hpp
+@@ -95,6 +95,15 @@ bool operator!= (const secure_allocator_t<T> &, const secure_allocator_t<U> &)
+ #else
+ template <typename T> struct secure_allocator_t : std::allocator<T>
+ {
++    secure_allocator_t () ZMQ_DEFAULT;
++    template <class U>
++    secure_allocator_t (const secure_allocator_t<U>) ZMQ_NOEXCEPT
++    {
++    }
++    template <class U> struct rebind
++    {
++        typedef secure_allocator_t<U> other;
++    };
+ };
+ #endif
+ }
+diff --git a/tests/testutil_monitoring.cpp b/tests/testutil_monitoring.cpp
+index 0640627..93b90d4 100644
+--- a/tests/testutil_monitoring.cpp
++++ b/tests/testutil_monitoring.cpp
+@@ -249,7 +249,7 @@ static int64_t get_monitor_event_internal_v2 (void *monitor_,
+         TEST_ASSERT_TRUE (zmq_msg_more (&msg));
+         TEST_ASSERT_EQUAL_UINT (sizeof (uint64_t), zmq_msg_size (&msg));
+ 
+-        if (value_ && value_ + i)
++        if (value_ != nullptr)
+             memcpy (value_ + i, zmq_msg_data (&msg), sizeof (*value_));
+         zmq_msg_close (&msg);
+     }

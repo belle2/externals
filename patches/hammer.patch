@@ -1,0 +1,12 @@
+diff --git a/include/Hammer/Math/Utils.hh b/include/Hammer/Math/Utils.hh
+index 9094ff4..7bd851b 100644
+--- a/include/Hammer/Math/Utils.hh
++++ b/include/Hammer/Math/Utils.hh
+@@ -15,6 +15,7 @@
+ #include <complex>
+ #include <limits>
+ #include <climits>
++#include <cstdint>
+ #include <cstring>
+ 
+ namespace Hammer {

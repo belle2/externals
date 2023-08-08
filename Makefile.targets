@@ -1136,7 +1136,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
 	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p0 < $(PATCHDIR)/fastbdt-gcc11.patch
+	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt.patch
 
 # FastBDT TMVA plugin build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md

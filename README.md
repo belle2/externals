@@ -28,7 +28,7 @@ externals.
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.7.1           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.77.0          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
-| [davix](https://github.com/cern-fts/davix)                                   | 0.7.6           | LGPLv2     |
+| [davix](https://github.com/cern-fts/davix)                                   | 0.8.4           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.4.0           | MPLv2      |
 | [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.5           | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
 | [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-00       | GPLv3      |

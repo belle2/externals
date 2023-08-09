@@ -266,7 +266,7 @@ gmp.clean:
 	@rm -rf $(EXTSRCDIR)/gmp
 
 gmp.touch:
-	@rm $(EXTLIVDIR)/libgmp.so
+	@rm $(EXTLIBDIR)/libgmp.so
 
 
 mpfr: $(EXTLIBDIR)/libmpfr.so
@@ -289,7 +289,7 @@ mpfr.clean:
 	@rm -rf $(EXTSRCDIR)/mpfr
 
 mpfr.touch:
-	@rm $(EXTLIVDIR)/libmpfr.so
+	@rm $(EXTLIBDIR)/libmpfr.so
 
 
 mpc: $(EXTLIBDIR)/libmpc.so
@@ -312,7 +312,7 @@ mpc.clean:
 	@rm -rf $(EXTSRCDIR)/mpc
 
 mpc.touch:
-	@rm $(EXTLIVDIR)/libmpc.so
+	@rm $(EXTLIBDIR)/libmpc.so
 
 
 isl: $(EXTLIBDIR)/libisl.so
@@ -335,7 +335,7 @@ isl.clean:
 	@rm -rf $(EXTSRCDIR)/isl
 
 isl.touch:
-	@rm $(EXTLIVDIR)/libisl.so
+	@rm $(EXTLIBDIR)/libisl.so
 
 
 gcc: $(EXTBINDIR)/gcc

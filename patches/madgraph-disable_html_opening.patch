@@ -2,7 +2,7 @@ diff --git a/input/mg5_configuration.txt b/input/mg5_configuration.txt
 index c089808..6bb96a6 100644
 --- a/input/mg5_configuration.txt
 +++ b/input/mg5_configuration.txt
-@@ -82,7 +82,7 @@
+@@ -90,7 +90,7 @@
  #! Control when MG5 checks if he is up-to-date.
  #! Enter the number of day between two check (0 means never)
  #! A question is always asked before any update
@@ -11,7 +11,7 @@ index c089808..6bb96a6 100644
  
  ################################################################################
  #  INFO FOR MADEVENT / aMC@NLO 
-@@ -93,7 +93,7 @@
+@@ -101,7 +101,7 @@
  
  #! Allow/Forbid the automatic opening of the web browser  (on the status page)
  #!  when launching MadEvent [True/False]

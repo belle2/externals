@@ -3,6 +3,7 @@ autopep8
 awkward
 boost-histogram
 CherryPy
+click
 CommonMark
 # Cython is needed for compiling HAMMER with python bindings
 cython

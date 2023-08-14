@@ -765,13 +765,14 @@ VecGeom.touch:
 
 $(EXTSRCDIR)/VecGeom/README.md:
 	@$(DOWNLOAD) VecGeom VecGeom-v1.2.1.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.1/VecGeom-v1.2.1.tar.gz
+	@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@echo "building VecGeom"
 	@mkdir -p $(EXTBUILDDIR)/VecGeom
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
 	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
-	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 && \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 -DBUILD_DOC=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecGeom.clean:

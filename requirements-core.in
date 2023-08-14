@@ -30,6 +30,7 @@ pycodestyle
 pylama
 pytest
 python-gitlab
+pytorch-ignite
 pytorch-lightning==1.5.6
 requests
 rise

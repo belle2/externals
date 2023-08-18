@@ -28,6 +28,7 @@ mysql-connector-python
 nbsphinx
 pandas
 pycodestyle
+PyJWT
 pylama
 pytest
 python-gitlab

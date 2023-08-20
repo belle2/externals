@@ -43,11 +43,13 @@ externals.
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 11.1.1          | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
 | [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
+| [GMP, The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)    | 6.2.1           | LGPLv3 + GPLv2 |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD        |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.3.0           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
+| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.26            | MIT        |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.13          | MIT        |
@@ -55,6 +57,8 @@ externals.
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.4.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-10-00       | LGPLv2     |
+| [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.10.5          | MIT        |
@@ -81,15 +85,6 @@ externals.
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.3.4           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.2.12          | MIT        |
-
-GCC requires some additional libraries which are downloaded as part of the GCC compilation:
-
-| Software Package                                                             | Version         | License    |
-|------------------------------------------------------------------------------|-----------------|------------|
-| [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
-| [The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)         | 6.2.1           | LGPLv3 + GPLv2 |
-| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.26            | MIT        |
 
 Optional Package
 ----------------

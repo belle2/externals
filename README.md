@@ -119,7 +119,7 @@ externals. Basically these are a result of running
     pip3 install autopep8 awkward boost-histogram CherryPy CommonMark cython cymove dgl eoshep flake8 file-read-backwards \
                  docutils h5py ipython jira jupyter jupytext keras lightgbm lxml matplotlib metakernel mysql-connector-python \
                  nbsphinx pandas pycodestyle pylama pytest pytorch-lightning requests rise scikit-learn scipy scons seaborn sly snakemake \
-                 sphinx sphinx-book-theme sphinxcontrib-programoutput sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
+                 sphinx sphinx-book-theme sphinxcontrib-programoutput splinter sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
                  torch torch-geometric torch-scatter torch-sparse torchaudio torchvision \
                  uncertainties uproot uproot3 widgetsnbextension xgboost zstandard
     pip3 install pyroofit

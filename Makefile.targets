@@ -1975,9 +1975,6 @@ $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
 	    make && make install
 	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
-	@echo "removing ocaml"
-	@rm -rf $(EXTBINDIR)/ocaml*
-	@rm -rf $(EXTDIR)/ocaml
 
 # whizard touch
 whizard.touch:
@@ -1986,4 +1983,3 @@ whizard.touch:
 # whizard clean
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
-	@rm -rf $(EXTBUILDDIR)/ocaml

@@ -46,6 +46,7 @@ sphinx
 sphinx-book-theme
 sphinx-codeautolink
 sphinxcontrib-programoutput
+splinter
 sweights
 tables
 tabulate

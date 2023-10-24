@@ -3,6 +3,7 @@ autopep8
 awkward
 boost-histogram
 CherryPy
+click
 CommonMark
 # Cython is needed for compiling HAMMER with python bindings
 cython
@@ -30,6 +31,7 @@ pycodestyle
 pylama
 pytest
 python-gitlab
+pytorch-ignite
 pytorch-lightning==1.5.6
 requests
 rise

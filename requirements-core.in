@@ -3,6 +3,7 @@ autopep8
 awkward
 boost-histogram
 CherryPy
+click
 CommonMark
 # Cython is needed for compiling HAMMER with python bindings
 cython
@@ -27,9 +28,11 @@ mysql-connector-python
 nbsphinx
 pandas
 pycodestyle
+PyJWT
 pylama
 pytest
 python-gitlab
+pytorch-ignite
 pytorch-lightning==1.5.6
 requests
 rise
@@ -43,6 +46,7 @@ sphinx
 sphinx-book-theme
 sphinx-codeautolink
 sphinxcontrib-programoutput
+splinter
 sweights
 tables
 tabulate

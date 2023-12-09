@@ -343,6 +343,7 @@ gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
 	@$(DOWNLOAD) gcc gcc-13.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz
+	@cd $(EXTSRCDIR)/gcc && patch -p1 < $(PATCHDIR)/gcc.patch
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 

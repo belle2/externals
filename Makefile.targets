@@ -1956,6 +1956,12 @@ ocaml.clean:
 	@echo "removing ocaml"
 	@rm -rf $(EXTBUILDDIR)/ocaml
 
+# Remove ocaml.
+ocaml.remove:
+	@echo "removing ocaml"
+	@rm -rf $(EXTBINDIR)/ocaml*
+	@rm -rf $(EXTDIR)/ocaml
+
 
 ### WHIZARD
 

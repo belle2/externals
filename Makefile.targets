@@ -1891,7 +1891,7 @@ $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
 	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
-	    make && make install
+	    make -j $(NPROCESSES) && make install
 	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
 
 # whizard touch

@@ -1883,6 +1883,7 @@ whizard.src: $(EXTSRCDIR)/whizard/INSTALL
 # whizard download
 $(EXTSRCDIR)/whizard/INSTALL:
 	$(DOWNLOAD) whizard whizard-3.1.2.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.2.tar.gz
+	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard.patch
 
 # whizard build
 $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml

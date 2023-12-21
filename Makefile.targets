@@ -343,7 +343,7 @@ gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
 	@$(DOWNLOAD) gcc gcc-13.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz
-	@cd $(EXTSRCDIR)/gcc && patch -p1 < $(PATCHDIR)/gcc.patch
+	@cd $(EXTSRCDIR)/gcc && patch -p1 < $(PATCHDIR)/gcc-fortran-finalization.patch
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -1132,7 +1132,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
 	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt.patch
+	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-gcc13.patch
 
 # FastBDT TMVA plugin build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
@@ -1662,7 +1662,7 @@ zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
 # zeromq download
 $(EXTSRCDIR)/zeromq/INSTALL:
 	@$(DOWNLOAD) zeromq zeromq-4.3.4.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz
-	@cd $(EXTSRCDIR)/zeromq && patch -p1 < $(PATCHDIR)/zeromq.patch
+	@cd $(EXTSRCDIR)/zeromq && patch -p1 < $(PATCHDIR)/zeromq-gcc13.patch
 
 # zeromq build
 $(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL
@@ -1856,7 +1856,7 @@ hammer.clean:
 #Download the hammer software here...
 $(EXTSRCDIR)/hammer/CMakeLists.txt:
 	$(DOWNLOAD) hammer Hammer-1.3.0-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.3.0-Source.tar.gz
-	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer.patch
+	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer-gcc13.patch
 
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries
@@ -1972,7 +1972,7 @@ whizard.src: $(EXTSRCDIR)/whizard/INSTALL
 # whizard download
 $(EXTSRCDIR)/whizard/INSTALL:
 	$(DOWNLOAD) whizard whizard-3.1.2.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.2.tar.gz
-	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard.patch
+	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build
 $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml

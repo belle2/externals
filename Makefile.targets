@@ -367,7 +367,7 @@ zlib.touch:
 	@rm -f $(EXTLIBDIR)/libz.so
 
 $(EXTSRCDIR)/zlib:
-	@$(DOWNLOAD) zlib zlib-1.2.12.tar.gz http://zlib.net/zlib-1.2.12.tar.gz
+	@$(DOWNLOAD) zlib zlib-1.2.12.tar.gz http://zlib.net/fossils/zlib-1.2.12.tar.gz
 
 # zlib: so basic that we only want it it common so we just do an in source build
 $(EXTLIBDIR)/libz.so: $(EXTSRCDIR)/zlib
@@ -516,7 +516,7 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 
 # we need the matplotlib style files
 $(EXTSRCDIR)/belle2style/README.md:
-	@$(DOWNLOAD) belle2style belle2style@347fddbc7e8.zip https://stash.desy.de/rest/api/latest/projects/B2D/repos/belle2style/archive?at=347fddbc7e8&format=zip
+	@$(DOWNLOAD) belle2style belle2style-v1.0.zip git:tags/v1.0:git@gitlab.desy.de:belle2/software/belle2style.git
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
@@ -1455,7 +1455,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.10.tar.gz git:tags/v1.10:$(BELLE2_GIT_SERVER)/b2g/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.10.tar.gz git:tags/v1.10:git@gitlab.desy.de:belle2/software/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

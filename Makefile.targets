@@ -516,7 +516,7 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 
 # we need the matplotlib style files
 $(EXTSRCDIR)/belle2style/README.md:
-	@$(DOWNLOAD) belle2style belle2style-v1.0.zip git:tags/v1.0:git@gitlab.desy.de:belle2/software/belle2style.git
+	@$(DOWNLOAD) belle2style belle2style-v1.0.zip git:tags/v1.0:$(BELLE2_GIT_SERVER)belle2/software/belle2style.git
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed
@@ -1427,7 +1427,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.10.tar.gz git:tags/v1.10:git@gitlab.desy.de:belle2/software/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.10.tar.gz git:tags/v1.10:$(BELLE2_GIT_SERVER)belle2/software/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy

@@ -1,5 +1,5 @@
 cbcc4cf996294534bb56f025d6f199ebfde81aa4c271ccbd5ee1c1a3192745d7 *src/astyle_3.1_linux.tar.gz
-4b7fa5f8d067ec73a2564340ddc6a6baf2f79d6fe1ff32e192ce134b86cb0bb5 *src/belle2style-4d36a04e.zip
+e7cbcb2a02a11b31aab47f115bad93e9c7340c523977934fbcf9b6d3620e7224 *src/belle2style-v1.0.zip
 80ce2dfd20a73f34a3b233643ffdd7a8ca7b687ca128546167fd6bdbaf7597e0 *src/BELLE_FLC_1.1.tar.gz
 e49a3c3e5b589b2b9497229de2ca064113110410d73f30eadaa4caab29a09a16 *src/belle_legacy-v1.10.tar.gz
 5b4bd2e79e30ce8db0abd76dd2c2eae14a94ce212cfc59d3c37d23e24bc6d7a3 *src/binutils-2.36.1.tar.bz2

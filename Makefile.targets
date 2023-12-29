@@ -516,7 +516,7 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 
 # we need the matplotlib style files
 $(EXTSRCDIR)/belle2style/README.md:
-	@$(DOWNLOAD) belle2style belle2style-4d36a04e.zip https://gitlab.desy.de/belle2/software/belle2style/-/archive/4d36a04e/belle2style-4d36a04e.zip
+	@$(DOWNLOAD) belle2style belle2style-v1.0.zip git:tags/v1.0:git@gitlab.desy.de:belle2/software/belle2style.git
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed

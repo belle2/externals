@@ -689,7 +689,7 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@$(DOWNLOAD) cmake cmake-3.22.2.tar.gz http://www.cmake.org/files/v3.22/cmake-3.22.2.tar.gz
+	@$(DOWNLOAD) cmake cmake-3.28.3.tar.gz http://www.cmake.org/files/v3.28/cmake-3.28.3.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap

@@ -879,7 +879,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/CMakeLists.txt:
-	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-c7d36c5.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/c7d36c5.tar.gz
+	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-c7d36c5_update.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/c7d36c5.tar.gz
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
@@ -1225,7 +1225,7 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@$(DOWNLOAD) pythia pythia8215.tgz https://pythia.org/download/pythia82/pythia8215.tgz
+	@$(DOWNLOAD) pythia pythia8215_update.tgz https://pythia.org/download/pythia82/pythia8215.tgz
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure

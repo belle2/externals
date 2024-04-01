@@ -1855,6 +1855,7 @@ whizard.src: $(EXTSRCDIR)/whizard/INSTALL
 # whizard download
 $(EXTSRCDIR)/whizard/INSTALL:
 	$(DOWNLOAD) whizard whizard-3.1.2.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.2.tar.gz
+	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build
 $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
@@ -1863,11 +1864,8 @@ $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
 	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
-	    make && make install
+	    make -j $(NPROCESSES) && make install
 	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
-	@echo "removing ocaml"
-	@rm -rf $(EXTBINDIR)/ocaml*
-	@rm -rf $(EXTDIR)/ocaml
 
 # whizard touch
 whizard.touch:
@@ -1876,4 +1874,3 @@ whizard.touch:
 # whizard clean
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
-	@rm -rf $(EXTBUILDDIR)/ocaml

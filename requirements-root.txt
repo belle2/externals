@@ -1,3 +1,0 @@
-pyroofit==0.9.6 \
-    --hash=sha256:0af916b3c00cfc74eed9b29bb51f196dbcabf0c12af56091c7aaba827e26111c \
-    --hash=sha256:b81ba220c396c2b13cd2308768f3432bdc3ef5ba6dca4fbb4fa429dcad25b68b

@@ -547,25 +547,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 # install the belle2style files
 	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
 
-root-python-packages.src:
-	eval $(CREATE_PIP_CERTCHAIN)
-	cat requirements-root.txt | (while read line; do \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
-	done)
-
-root-python-packages: $(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py
-
-$(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py:
-	eval $(CREATE_PIP_CERTCHAIN)
-	pip3 install --prefix=$(EXTDIR) --find-links=src/python-packages $(PIP3OPTIONS) \
-	    --no-deps -r requirements-root.txt
-
-root-python-packages.clean:
-	@rm -fr $(EXTLIBDIR)/python3.8/site-packages/
-
-root-python-packages.touch: root-python-packages.clean
-
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
 gdb.touch:

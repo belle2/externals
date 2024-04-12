@@ -1870,8 +1870,8 @@ ocaml.clean:
 # Remove ocaml.
 ocaml.remove:
 	@echo "removing ocaml"
-	@rm -rf $(EXTBINDIR)/ocaml*
-	@rm -rf $(EXTDIR)/ocaml
+	@rm -rf $(EXTCOMDIR)/bin/ocaml*
+	@rm -rf $(EXTCOMDIR)/ocaml
 
 
 ### WHIZARD

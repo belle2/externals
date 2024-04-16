@@ -638,25 +638,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 # install the belle2style files
 	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
 
-root-python-packages.src:
-	eval $(CREATE_PIP_CERTCHAIN)
-	cat requirements-root.txt | (while read line; do \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
-	done)
-
-root-python-packages: $(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py
-
-$(EXTLIBDIR)/python3.8/site-packages/root_numpy/info.py:
-	eval $(CREATE_PIP_CERTCHAIN)
-	pip3 install --prefix=$(EXTDIR) --find-links=src/python-packages $(PIP3OPTIONS) \
-	    --no-deps -r requirements-root.txt
-
-root-python-packages.clean:
-	@rm -fr $(EXTLIBDIR)/python3.8/site-packages/
-
-root-python-packages.touch: root-python-packages.clean
-
 gdb: $(EXTBINDIR)/gdb
 gdb.src: $(EXTSRCDIR)/gdb
 gdb.touch:
@@ -970,7 +951,7 @@ neurobayes.src: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 
 # NeuroBayes download
 $(EXTSRCDIR)/neurobayes/CMakeLists.txt:
-	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-c7d36c5.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/c7d36c5.tar.gz
+	@$(DOWNLOAD) neurobayes NeurobayesCppInterface-c7d36c5_update.tar.gz https://github.com/thomaskeck/NeurobayesCppInterface/archive/c7d36c5.tar.gz
 
 # NeuroBayes build
 $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
@@ -1069,7 +1050,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-26-10.tar.gz https://root.cern/download/root_v6.26.10.source.tar.gz
+	@$(DOWNLOAD) root root_v6-26-14.tar.gz https://root.cern/download/root_v6.26.14.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 	# progress bar crashes for low number of events (reported in ROOT github #13017)
@@ -1314,7 +1295,7 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@$(DOWNLOAD) pythia pythia8215.tgz https://pythia.org/download/pythia82/pythia8215.tgz
+	@$(DOWNLOAD) pythia pythia8215_update.tgz https://pythia.org/download/pythia82/pythia8215.tgz
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
@@ -1961,8 +1942,8 @@ ocaml.clean:
 # Remove ocaml.
 ocaml.remove:
 	@echo "removing ocaml"
-	@rm -rf $(EXTBINDIR)/ocaml*
-	@rm -rf $(EXTDIR)/ocaml
+	@rm -rf $(EXTCOMDIR)/bin/ocaml*
+	@rm -rf $(EXTCOMDIR)/ocaml
 
 
 ### WHIZARD

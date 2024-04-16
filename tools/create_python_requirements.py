@@ -46,11 +46,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--upgrade", default=False, action="store_true", help="If present update all packages to the "
                         "latest possible version. Otherwise just determine missing dependencies when addding new packages")
-    parser.add_argument("--no-root", default=False, action="store_true",
-                        help="Ignore packages depending on ROOT if ROOT isn't compiled yet")
     args, remaining = parser.parse_known_args()
-    # make sure root is setup, otherwise root-numpy fails horribly
-    subprocess.run("which root-config", shell=True)
 
     # Read the existing README.md and split at python package list table
     old = open("README.md").readlines()
@@ -66,8 +62,6 @@ if __name__ == "__main__":
 
     # input files
     files = ["requirements-base.in", "requirements-core.in"]
-    if not args.no_root:
-        files.insert(1, "requirements-root.in")
     # make sure pip-tools are installed
     subprocess.run(["python3", "-m", "pip", "install", "--user", "pip-tools"])
     # and compile the requirements.txt

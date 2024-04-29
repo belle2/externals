@@ -467,7 +467,7 @@ $(EXTLIBDIR)/libffi.so: $(EXTSRCDIR)/libffi/README.md
 	@echo "building libffi"
 	@mkdir -p $(EXTBUILDDIR)/libffi
 	@cd $(EXTBUILDDIR)/libffi && $(EXTSRCDIR)/libffi/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
-	    --prefix=$(EXTDIR) && \
+	    --prefix=$(EXTDIR) --with-gcc-arch=x86-64 && \
 	    make -j $(NPROCESSES) && make install
 
 python: $(EXTBINDIR)/python3

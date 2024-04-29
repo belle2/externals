@@ -480,7 +480,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.8.8.xz https://www.python.org/ftp/python/3.8.8/Python-3.8.8.tar.xz
+	@$(DOWNLOAD) python Python-3.11.9.xz https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tar.xz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -489,7 +489,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	    --prefix=$(EXTDIR) --with-ensurepip=install && \
 	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
-	@cp sitecustomize.py $(EXTLIBDIR)/python3.8/site-packages
+	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
@@ -614,7 +614,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
 	    -DBUILD_SHARED_LIBS=ON \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # google test clean
@@ -633,7 +633,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_78_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_85_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -644,7 +644,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    -sLZMA_INCLUDE=$(EXTINCDIR) -sLZMA_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
-	@cd $(EXTLIBDIR) && ln -sfT libboost_python38.so libboost_python.so
+	@cd $(EXTLIBDIR) && ln -sfT libboost_python311.so libboost_python.so
 
 # boost clean
 boost.clean:
@@ -688,7 +688,7 @@ $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DMATCH_COMPILER=ON && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -705,7 +705,7 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen
 	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 Vc.src: $(EXTSRCDIR)/Vc/README.md
@@ -895,7 +895,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
 	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -918,7 +918,7 @@ $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"
 	@mkdir -p $(EXTBUILDDIR)/davix
 	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so \
 	    -DDAVIX_TESTS=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
@@ -979,7 +979,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 -Dpyroot_legacy=OFF \
+	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 -Dpyroot_legacy=OFF \
 	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
@@ -1528,7 +1528,7 @@ $(EXTSRCDIR)/fann/README.md:
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # astyle: C/C++ code beautifier
@@ -1738,29 +1738,6 @@ $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@mkdir -p $(EXTBUILDDIR)/nlohmann_json
 	@cd $(EXTBUILDDIR)/nlohmann_json && $(CMAKE) $(EXTSRCDIR)/nlohmann_json -DJSON_BuildTests=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-
-hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt
-hammer: $(EXTLIBDIR)/libHammerBase.so
-hammer.touch:
-	@rm -fr $(EXTLIBDIR)/libHammerBase.so
-hammer.clean:
-	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTLIBDIR)/libRates.* $(EXTLIBDIR)/libFormFactors.* $(EXTLIBDIR)/libAmplitudes.* $(EXTBUILDDIR)/hammer $(EXTINCDIR)/Hammer
-
-#Download the hammer software here...
-$(EXTSRCDIR)/hammer/CMakeLists.txt:
-	$(DOWNLOAD) hammer Hammer-1.3.0-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.3.0-Source.tar.gz
-
-#BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
-#WITH_PYTHON=ON for python bindings of the C++ libraries
-$(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
-	@echo "building Hammer"
-	@mkdir -p $(EXTBUILDDIR)/hammer
-	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON \
-	    -DWITH_ROOT=ON -DENABLE_TESTS=OFF -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
-	    -DPython3_FIND_STRATEGY=LOCATION && \
-	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-	@mv $(EXTLIBDIR)/Hammer/* $(EXTLIBDIR)
-	@rm -r $(EXTLIBDIR)/Hammer
 
 pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
 pandoc: $(EXTBINDIR)/pandoc

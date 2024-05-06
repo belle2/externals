@@ -1,4 +1,5 @@
 autopep8
+awkward-pandas
 # for uproot
 awkward
 boost-histogram
@@ -73,7 +74,7 @@ torch-geometric
 uncertainties
 uproot
 uproot3
-widgetsnbextension
+ipywidgets
 xgboost
 # to read zstd compressed files in uproot
 zstandard

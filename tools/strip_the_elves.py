@@ -41,6 +41,7 @@ def make_writable(filename):
 class ElfStripper:
     ELF_TYPE = re.compile(r"^\s+Type:\s*(\S*)", re.M)
     ELF_SECTION = re.compile(r"^\s+\[\s*\d*\]\s+(\S*)", re.M)
+    FILE_FORMAT = re.compile(r'file format\s+(.*)')
 
     def __init__(self, compress):
         #: arguments to strip. The -R are copied from https://github.com/gentoo/portage/blob/master/bin/estrip
@@ -62,12 +63,13 @@ class ElfStripper:
         self.__add_debuglink = ["objcopy", "--add-gnu-debuglink"]
 
     def get_fileinfo(self, filename):
-        """Return a tuple with parsed output from readelf
+        """
+        Return a tuple with parsed output from readelf:
 
         * the type of the binary from the ELF header (EXEC, DYN, REL, ...)
         * a set with all section names available in the file
 
-        On error return None, {}
+        On error return None, {}.
         """
         try:
             output = subprocess.check_output(
@@ -85,23 +87,46 @@ class ElfStripper:
             pass
         except Exception as e:
             logging.debug(f"Exception reading elf for '{filename}'", exc_info=e)
-            logging.warn(f"Problem reading elf information for '{filename}': {e}")
+            logging.warn(f"Problem with reading elf information for '{filename}': {e}")
         return None, {}
 
-    def strip(self, filename):
+    def get_file_format(self, filename):
+        """
+        Extract the file format using objdump.
+
+        On error, return None.
+        """
+        try:
+            output = subprocess.check_output(["objdump", "-f", filename],
+                                             stderr=subprocess.DEVNULL,
+                                             encoding="utf8",
+                                             )
+            match = self.FILE_FORMAT.search(output)
+            file_format = match.group(1).strip() if match else None
+            return file_format
+        except subprocess.CalledProcessError:
+            # something went wrong with objdump
+            # return none and hope for the best
+            logging.warn(f"Problem with getting the file format for '{filename}'")
+            pass
+        except Exception as e:
+            logging.warn(f"Problem with getting the file format for '{filename}': {e}")
+        return None
+
+    def strip(self, filename, extra_arguments=None):
         """Strip all unneeded symbols"""
-        logging.info(f"stripping {filename}")
+        logging.info(f"Stripping {filename}")
         try:
             with make_writable(filename):
-                subprocess.check_call(self.__strip + [str(filename)])
+                subprocess.check_call(self.__strip + [str(filename)] + (extra_arguments if extra_arguments else []))
         except Exception as e:
-            logging.error(f"Problem stripping {filename}: {e}")
+            logging.error(f"Problem with stripping {filename}: {e}")
             return None
         return filename
 
-    def split_debuginfo(self, filename):
+    def split_debuginfo(self, filename, extra_arguments=None):
         """Split the debuging information from the file and then strip the file itself"""
-        logging.info(f"splitting debug info for {filename}")
+        logging.info(f"Splitting debug info for {filename}")
         try:
             # Must split the file & add debuglink in the current directory
             # per https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html
@@ -126,7 +151,7 @@ class ElfStripper:
             logging.error(f"Problem splitting debug info for {filename}: {e}")
             return None
         # ok we split debug info, now let's definitely strip the original one
-        return self.strip(filename), debugfile
+        return self.strip(filename, extra_arguments), debugfile
 
     def __call__(self, filename):
         elftype, sections = self.get_fileinfo(filename)
@@ -136,14 +161,16 @@ class ElfStripper:
             logging.debug(f"{filename} not executable or shared library")
             return None
 
+        file_format = self.get_file_format(filename)
+        extra_arguments = ['-I', file_format] if file_format else None
         # OK check if we have something which looks like debug info and if yes
         # split it
         if ".debug_info" in sections or ".debug_line" in sections:
-            return self.split_debuginfo(filename)
-        # otherwise just strip ... unless it is already stripped, aka no symbol
+            return self.split_debuginfo(filename, extra_arguments)
+        # otherwise just strip... unless it is already stripped, aka no symbol
         # table in the file
         elif ".symtab" in sections:
-            return self.strip(filename)
+            return self.strip(filename, extra_arguments)
         else:
             # nothing to do
             logging.debug(f"{filename} already stripped")
@@ -184,12 +211,12 @@ class DWZRunner:
         if not filename.is_file():
             return
         try:
-            logging.info(f"compress debug sections in {filename}")
+            logging.info(f"Compress debug sections in {filename}")
             subprocess.check_call(
                 ["objcopy", "--compress-debug-sections", str(filename)]
             )
         except Exception as e:
-            logging.error(f"Problem compressing debug sections in {filename}: {e}")
+            logging.error(f"Problem with compressing debug sections in {filename}: {e}")
 
 
 def scantree(path, excluded):
@@ -290,7 +317,7 @@ if __name__ == "__main__":
         try:
             args.exclude += (e.strip() for e in open(args.exclusion_file).readlines())
         except Exception as e:
-            logging.critical(f"problem with exclusion file {args.exclusion_file}: {e}")
+            logging.critical(f"Problem with exclusion file {args.exclusion_file}: {e}")
             sys.exit(1)
 
     # check if target_dir is actually a directory
@@ -310,7 +337,7 @@ if __name__ == "__main__":
         args.dwz_binary = shutil.which("dwz")
         if args.dwz_binary is None:
             logging.warn(
-                "couldn't find dwz executable, falling back to normal compression"
+                "Couldn't find dwz executable, falling back to normal compression"
             )
             args.compress = True
             args.use_dwz = False
@@ -322,7 +349,7 @@ if __name__ == "__main__":
                 [args.dwz_binary, "-v"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
         except Exception as e:
-            logging.critical(f"error executing dwz: {e}")
+            logging.critical(f"Fatal error while executing dwz: {e}")
             sys.exit(1)
         # don't do both: only use dwz so no need to compress when stripping
         args.compress = False
@@ -360,7 +387,7 @@ if __name__ == "__main__":
         # if we created at least one debug dir try to run dwz
         if debug_dirs and args.use_dwz:
             # run dwz once for all files in each directory
-            result = pool.map(dwz, debug_dirs.values())
+            result = list(pool.map(dwz, debug_dirs.values()))
             # and create a flat list of all debug files
             all_debug_files = sum(result, [])
             # compress them all and consume iterator to fire any pending exception

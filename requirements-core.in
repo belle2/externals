@@ -74,6 +74,7 @@ uncertainties
 uproot
 uproot3
 widgetsnbextension
-xgboost
+# xgboost can be upgraded to 2.x as soon as we have a method for easily upgrading the xgboost-based weightfiles as well
+xgboost==1.7.6
 # to read zstd compressed files in uproot
 zstandard

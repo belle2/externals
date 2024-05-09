@@ -1,4 +1,4 @@
-This directory contains a few scripts which are useful for checking/updating the
+This directory contains a few scripts that are useful for checking/updating the
 externals and are not required for just installing/compiling and using them.
 
 ### Upgrading the python version
@@ -25,8 +25,8 @@ Either you directly write into the files that are present in `/home/belle2/exter
 Doing the latter way, keep in mind to change the paths accordingly. 
 General changes should occur in the `Makefile.targets` file where you specify the new python version in the python target, 
 adjust all compilation flags that specify a python version, e.g. `Python_ADDITIONAL_VERSIONS`, 
-and libraries that contain thepython version, e.g. `libboost_python.so`. 
-Additional changes  can occur in the `requirements-core.in` file, whenever the PyTorch version is changed, since the link to the CPU version and its hash will change.
+and libraries that contain the python version, e.g. `libboost_python.so`. 
+Additional changes can occur in the `requirements-core.in` file, whenever the PyTorch version is changed due to changes to the link to the CPU version and its hash.
 
 4. **Compile the new python version.**
 
@@ -45,17 +45,19 @@ Additional changes  can occur in the `requirements-core.in` file, whenever the P
     $ pip3 install -r tools/requirements-externals.txt
     $ python3 tools/create_python_requirements.py --python Linux_x86_64/common/bin/python3 --upgrade
     ```
-6. **Compile the externals.**
+6. **Clean the build files and compile the externals.**
 
     ```
+    $ rm -fr build include share Linux_x86_64
+    $ find src/* -maxdepth 0 -type d ! \( -name python-packages -o -name sphinx-argparse \) -exec rm -fr {} +
     $ make all
     ```
 
 
 If the externals compile successfully, the next step is to check if `basf2` compiles with the new externals version.
 
-7. **Setup the basf2 environment.**
-This step requires a few detours, since an update of the python version requires to run all test in `basf2`.
+7. **Set up** the basf2** environment.**
+This step requires a few detours since an update of the python version requires running all tests in `basf2``.
 
     ```
     $ export BELLE2_SOFTWARE_REPOSITORY=git@gitlab.desy.de:belle2/software/basf2.git
@@ -63,10 +65,11 @@ This step requires a few detours, since an update of the python version requires
     $ ssh-keygen -t rsa
     ```
     The created key needs to be deployed on the DESY GitLab.
-    For this, copy the output of the public key (e.g. `cat /root/.ssh/id_rsa` if you kept everything to default) and paste it in your ssh keys. 
-    You can access your keys via GitLab throug: `User Settings/ SSH Keys`.
+    For this, copy the output of the public key (e.g. `cat /root/.ssh/id_rsa` if you kept everything to default) and paste it into your ssh keys. 
+    You can access your keys via GitLab: `User Settings/ SSH Keys`.
+
 8. **Clone basf2 and adjust the externals version for basf2.** 
-This can be done by changing the first line of the `.externals` in your local `basf2` check out to the name of the externals top directory.
+This can be done by changing the first line of the `.externals` in your local `basf2` checkout to the name of the externals top directory.
 
     ``` 
     $ b2code-create MyBasf2
@@ -78,7 +81,10 @@ This can be done by changing the first line of the `.externals` in your local `b
 9. **Get the basf2 example data.**
 
     ```
-    $ b2install-data
+    $ b2install-data validation
+    $ b2install-data examples
+    $ export BELLE2_VALIDATION_DATA_DIR=/home/belle2/validation-data
+    $ export BELLE2_EXAMPLES_DATA_DIR=/home/belle2/examples-data
     ```
 
 10. **Compile basf2 and run tests.**

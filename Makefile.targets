@@ -536,8 +536,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	    -r requirements-base.txt -r requirements-core.txt
 # make pep8 compatibility link
 	cd $(EXTBINDIR) && ln -sf pycodestyle pep8
-# register widget extension in jupyter
-	jupyter nbextension enable --py --sys-prefix widgetsnbextension
 # make sure our own python3 kernel has precedence over /usr/share/jupyter/kernels/python3
 	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # but make the path relative so it can be found correctly if the externals are installed in a different directory.

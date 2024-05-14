@@ -186,15 +186,15 @@ relocatable_fixes:
 	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/**/*.cmake 2>/dev/null
 # Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
+	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
 # If we have root, also fix the root python scripts
-	@if which python3 > /dev/null && which root > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(ROOTSYS)/bin; fi
+	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ] && [ -n "$(which root | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(ROOTSYS)/bin; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
+	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
 # And finally split and strip all binaries except bazel because stripping bazel removes all functionality :?
 # Also, exclude libraries in some python packages where stripping breaks them
-	@if which python3 > /dev/null; then \
+	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
 	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel $(EXTDIR); \
 	    fi

@@ -56,7 +56,7 @@ Additional changes can occur in the `requirements-core.in` file, whenever the Py
 
 If the externals compile successfully, the next step is to check if `basf2` compiles with the new externals version.
 
-7. **Set up** the basf2** environment.**
+7. **Set up the basf2 environment.**
 This step requires a few detours since an update of the python version requires running all tests in `basf2``.
 
     ```

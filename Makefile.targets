@@ -342,8 +342,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-13.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz
-	@cd $(EXTSRCDIR)/gcc && patch -p1 < $(PATCHDIR)/gcc-fortran-finalization.patch
+	@$(DOWNLOAD) gcc gcc-14.1.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -643,7 +642,7 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-13.2.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-13.2.tar.xz
+	@$(DOWNLOAD) gdb gdb-14.2.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-14.2.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"

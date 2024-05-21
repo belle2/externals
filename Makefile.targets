@@ -651,7 +651,9 @@ $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 # also touch all .info files and their prerequisites to make sure they are up to
 # date, otherwise makeinfo might be called on "make install" and we don't want to require that
 	@cd $(EXTBUILDDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
-	    --prefix=$(EXTDIR) --with-python=python3 && \
+	    --prefix=$(EXTDIR) --with-python=python3 \
+	    --with-gmp=$(EXTDIR) --with-mpfr=$(EXTDIR) \
+	    --with-mpc=$(EXTDIR) --with-isl=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && \
 	    touch gdb/doc/version.subst gdb/doc/GDBvn.texi gdb/doc/*.info && \
 	    make install

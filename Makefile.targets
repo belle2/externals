@@ -1242,7 +1242,8 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@$(DOWNLOAD) MillepedeII MillepedeII_V04-10-00.tgz https://www.desy.de/~kleinwrt/MP2/tar/mp2-04-10-00.tgz
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-16-03.tgz https://www.desy.de/~kleinwrt/MP2/tar/mp2-04-16-03.tgz
+	@cd $(EXTSRCDIR)/MillepedeII && patch -p1 < $(PATCHDIR)/millepede-gcc14.patch
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI

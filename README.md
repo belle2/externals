@@ -56,7 +56,7 @@ externals.
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.35          | MIT        |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.4.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
-| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-10-00       | LGPLv2     |
+| [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-16-03       | LGPLv2     |
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
 | [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |

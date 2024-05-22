@@ -1002,7 +1002,8 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.8.4.tar.gz https://github.com/cern-fts/davix/releases/download/R_0_8_4/davix-0.8.4.tar.gz
+	@$(DOWNLOAD) davix davix-0.8.6.tar.gz https://github.com/cern-fts/davix/releases/download/R_0_8_6/davix-0.8.6.tar.gz
+	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-fix-compilation.patch
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"

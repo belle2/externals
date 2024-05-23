@@ -1,0 +1,25 @@
+diff --git a/CMakeModules/CompilerChecks.cmake b/CMakeModules/CompilerChecks.cmake
+index 80664d46..f0216f4c 100644
+--- a/CMakeModules/CompilerChecks.cmake
++++ b/CMakeModules/CompilerChecks.cmake
+@@ -59,7 +59,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
+     set(Hammer_SanitizeOptions "${Hammer_SanitizeOptions} -fsanitize=address -fsanitize=undefined -fno-sanitize=vptr")
+ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+ 	message(STATUS "Detected GNU compiler.")
+-	set(Hammer_CompileOptions "${Hammer_CompileOptions} -ansi -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas")
++	set(Hammer_CompileOptions "${Hammer_CompileOptions} -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas")
+     set(Hammer_VerboseOptions "${Hammer_VerboseOptions} -O0 -Wextra -fno-optimize-sibling-calls -fno-omit-frame-pointer")
+     set(Hammer_VerboseOptions "${Hammer_VerboseOptions} -fno-sanitize-recover -fstack-protector")
+     set(Hammer_VerboseOptions "${Hammer_VerboseOptions} -pedantic -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wlogical-op")
+diff --git a/include/Hammer/Math/Utils.hh b/include/Hammer/Math/Utils.hh
+index 28f7ef35..a55f3dc9 100644
+--- a/include/Hammer/Math/Utils.hh
++++ b/include/Hammer/Math/Utils.hh
+@@ -15,6 +15,7 @@
+ #include <complex>
+ #include <limits>
+ #include <climits>
++#include <cstdint>
+ #include <cstring>
+ #include <vector>
+ 

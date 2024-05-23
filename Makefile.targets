@@ -885,7 +885,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-5.4.3.tar.gz http://xrootd.org/download/v5.4.3/xrootd-5.4.3.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-5.6.1.tar.gz http://xrootd.org/download/v5.6.1/xrootd-5.6.1.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
@@ -893,7 +893,6 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
 	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
-	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    $(EXTSRCDIR)/xrootd && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1736,6 +1735,30 @@ $(EXTINCDIR)/nlohmann/json.hpp: $(EXTSRCDIR)/nlohmann_json/README.md
 	@mkdir -p $(EXTBUILDDIR)/nlohmann_json
 	@cd $(EXTBUILDDIR)/nlohmann_json && $(CMAKE) $(EXTSRCDIR)/nlohmann_json -DJSON_BuildTests=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+hammer.src: $(EXTSRCDIR)/hammer/CMakeLists.txt
+hammer: $(EXTLIBDIR)/libHammerBase.so
+hammer.touch:
+	@rm -fr $(EXTLIBDIR)/libHammerBase.so
+hammer.clean:
+	@rm -fr $(EXTLIBDIR)/libHammer* $(EXTLIBDIR)/libRates.* $(EXTLIBDIR)/libFormFactors.* $(EXTLIBDIR)/libAmplitudes.* $(EXTBUILDDIR)/hammer $(EXTINCDIR)/Hammer
+
+#Download the hammer software here...
+$(EXTSRCDIR)/hammer/CMakeLists.txt:
+	$(DOWNLOAD) hammer Hammer-1.4.1-test-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.4.1-Source.tar.gz
+
+#BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
+#WITH_PYTHON=ON for python bindings of the C++ libraries
+$(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
+	@echo "building Hammer"
+	@mkdir -p $(EXTBUILDDIR)/hammer
+	@cd $(EXTBUILDDIR)/hammer && $(CMAKE) $(EXTSRCDIR)/hammer -DBUILD_SHARED_LIBS=ON \
+	    -DWITH_ROOT=ON -DENABLE_TESTS=OFF -DWITH_PYTHON=ON -DWITH_EXAMPLES=OFF -DPython3_ROOT_DIR=$(EXTCOMDIR) \
+	    -DPython3_FIND_STRATEGY=LOCATION && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+	@mv $(EXTLIBDIR)/Hammer/* $(EXTLIBDIR)
+	@rm -r $(EXTLIBDIR)/Hammer
+
 
 pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
 pandoc: $(EXTBINDIR)/pandoc

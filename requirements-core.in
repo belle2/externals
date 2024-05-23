@@ -74,7 +74,6 @@ torch-geometric
 uncertainties
 uproot
 uproot3
-widgetsnbextension
 ipywidgets
 # xgboost can be upgraded to 2.x as soon as we have a method for easily upgrading the xgboost-based weightfiles as well
 xgboost==1.7.6

@@ -1841,7 +1841,7 @@ hammer.clean:
 #Download the hammer software here...
 $(EXTSRCDIR)/hammer/CMakeLists.txt:
 	$(DOWNLOAD) hammer Hammer-1.4.1-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.4.1-Source.tar.gz
-	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer-gcc13.patch
+	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer-gcc14.patch
 
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries

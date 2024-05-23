@@ -46,7 +46,7 @@ externals.
 | [GMP, The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)    | 6.2.1           | LGPLv3 + GPLv2 |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
 | [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD        |
-| [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.3.0           | GPLv3      |
+| [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.4.1           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.26            | MIT        |

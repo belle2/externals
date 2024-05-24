@@ -231,8 +231,8 @@ binutils.touch:
 	@rm -fr $(EXTBINDIR)/ld
 
 $(EXTSRCDIR)/binutils:
-	@$(DOWNLOAD) binutils binutils-2.36.1.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.bz2
-	@cd $(EXTSRCDIR)/binutils && patch -p1 < $(PATCHDIR)/binutils-27482-parallelbuild-libctf.patch
+	@$(DOWNLOAD) binutils binutils-2.41.tar.bz2 http://ftp.gnu.org/gnu/binutils/binutils-2.41.tar.bz2
+	@cd $(EXTSRCDIR)/binutils
 
 $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@echo "building binutils"
@@ -241,23 +241,108 @@ $(EXTBINDIR)/ld: $(EXTSRCDIR)/binutils
 	@cd $(EXTBUILDDIR)/binutils && unset CXXFLAGS && $(EXTSRCDIR)/binutils/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-werror --disable-multilib --enable-shared --enable-gold --prefix=$(EXTDIR) && \
 	    make tooldir=$(EXTDIR) -j $(NPROCESSES) && \
-	    make tooldir=$(EXTDIR) -j $(NPROCESSES) install$(INSTALL_TARGET_SUFFIX)
+	    make tooldir=$(EXTDIR) install$(INSTALL_TARGET_SUFFIX)
 
 binutils.clean:
 	@echo "cleaning binutils"
 	@-cd $(EXTSRCDIR)/binutils/build && make distclean
 	@rm -rf $(EXTSRCDIR)/binutils
 
+gmp: $(EXTLIBDIR)/libgmp.so
+gmp.src: $(EXTSRCDIR)/gmp
+
+$(EXTSRCDIR)/gmp:
+	@$(DOWNLOAD) gmp gmp-6.2.1.tar.xz https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz
+
+$(EXTLIBDIR)/libgmp.so: $(EXTSRCDIR)/gmp
+	@echo "Building gmp..."
+	@mkdir -p $(EXTBUILDDIR)/gmp
+	@cd $(EXTBUILDDIR)/gmp && \
+	    $(EXTSRCDIR)/gmp/configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+gmp.clean:
+	@rm -rf $(EXTSRCDIR)/gmp
+
+gmp.touch:
+	@rm $(EXTLIBDIR)/libgmp.so
+
+
+mpfr: $(EXTLIBDIR)/libmpfr.so
+mpfr.src: $(EXTSRCDIR)/mpfr
+
+$(EXTSRCDIR)/mpfr:
+	@$(DOWNLOAD) mpfr mpfr-4.1.0.tar.xz http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
+
+$(EXTLIBDIR)/libmpfr.so: $(EXTSRCDIR)/mpfr
+	@echo "Building mpfr..."
+	@mkdir -p $(EXTBUILDDIR)/mpfr
+	@cd $(EXTBUILDDIR)/mpfr && \
+	    $(EXTSRCDIR)/mpfr/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+mpfr.clean:
+	@rm -rf $(EXTSRCDIR)/mpfr
+
+mpfr.touch:
+	@rm $(EXTLIBDIR)/libmpfr.so
+
+
+mpc: $(EXTLIBDIR)/libmpc.so
+mpc.src: $(EXTSRCDIR)/mpc
+
+$(EXTSRCDIR)/mpc:
+	@$(DOWNLOAD) mpc mpc-1.2.1.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
+
+$(EXTLIBDIR)/libmpc.so: $(EXTSRCDIR)/mpc
+	@echo "Building mpc..."
+	@mkdir -p $(EXTBUILDDIR)/mpc
+	@cd $(EXTBUILDDIR)/mpc && \
+	    $(EXTSRCDIR)/mpc/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+mpc.clean:
+	@rm -rf $(EXTSRCDIR)/mpc
+
+mpc.touch:
+	@rm $(EXTLIBDIR)/libmpc.so
+
+
+isl: $(EXTLIBDIR)/libisl.so
+isl.src: $(EXTSRCDIR)/isl
+
+$(EXTSRCDIR)/isl:
+	@$(DOWNLOAD) isl isl-0.26.tar.xz https://libisl.sourceforge.io/isl-0.26.tar.xz
+
+$(EXTLIBDIR)/libisl.so: $(EXTSRCDIR)/isl
+	@echo "Building isl..."
+	@mkdir -p $(EXTBUILDDIR)/isl
+	@cd $(EXTBUILDDIR)/isl && \
+	    $(EXTSRCDIR)/isl/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) \
+	    --with-gmp-prefix=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install$(INSTALL_TARGET_SUFFIX)
+
+isl.clean:
+	@rm -rf $(EXTSRCDIR)/isl
+
+isl.touch:
+	@rm $(EXTLIBDIR)/libisl.so
+
+
 gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-11.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
-# and also download the prerequisites in their latest version
-	@$(DOWNLOAD) gcc/gmp gmp-6.2.1.tar.xz https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz
-	@$(DOWNLOAD) gcc/mpfr mpfr-4.1.0.tar.xz http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
-	@$(DOWNLOAD) gcc/mpc mpc-1.2.1.tar.gz http://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
-	@$(DOWNLOAD) gcc/isl isl-0.24.tar.xz https://libisl.sourceforge.io/isl-0.24.tar.xz
+	@$(DOWNLOAD) gcc gcc-14.1.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -277,8 +362,13 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 # no c++ std includes so we install the c++ includes in $(EXTINCDIR)/c++ but
 # skip the version: there's only one gcc version per external version.
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --disable-bootstrap \
-	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
+	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) \
+	    --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
 	    --target=$(GCC_TARGET) --host=$(GCC_TARGET) --build=$(GCC_TARGET) \
+	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) \
+	    --with-mpfr-include=$(EXTINCDIR) --with-mpfr-lib=$(EXTLIBDIR) \
+	    --with-mpc-include=$(EXTINCDIR) --with-mpc-lib=$(EXTLIBDIR) \
+	    --with-isl-include=$(EXTINCDIR) --with-isl-lib=$(EXTLIBDIR) \
 	    --with-gxx-include-dir=$(EXTINCDIR)/c++ --enable-languages=c,c++,fortran --without-system-libz && \
 	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 # now remove the bloody empty directory gcc creates in prefix. but make sure
@@ -297,16 +387,15 @@ clang.touch:
 	rm -fr $(EXTBINDIR)/clang++
 
 $(EXTSRCDIR)/llvm:
-	@$(DOWNLOAD) llvm llvm-project-12.0.0.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz
-# remove cyclades header - see https://reviews.llvm.org/D102059
-	@cd $(EXTSRCDIR)/llvm && patch -p1 < $(PATCHDIR)/llvm-cyclades-removal.patch
+	@$(DOWNLOAD) llvm llvm-project-18.1.6.src.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.6/llvm-project-18.1.6.src.tar.xz
 
 $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@echo "building llvm/clang"
 	@mkdir -p $(EXTBUILDDIR)/llvm
 	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -S $(EXTSRCDIR)/llvm/llvm \
 	    -DPython3_EXECUTABLE=`which python3` \
-	    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" && \
+	    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" \
+	    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 valgrind: $(EXTBINDIR)/valgrind
@@ -551,7 +640,7 @@ gdb.touch:
 	rm -fr $(EXTBINDIR)/gdb
 
 $(EXTSRCDIR)/gdb:
-	@$(DOWNLOAD) gdb gdb-10.2.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.xz
+	@$(DOWNLOAD) gdb gdb-14.2.tar.xz http://ftp.gnu.org/gnu/gdb/gdb-14.2.tar.xz
 
 $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 	@echo "building gdb"
@@ -560,7 +649,9 @@ $(EXTBINDIR)/gdb: $(EXTSRCDIR)/gdb
 # also touch all .info files and their prerequisites to make sure they are up to
 # date, otherwise makeinfo might be called on "make install" and we don't want to require that
 	@cd $(EXTBUILDDIR)/gdb && unset CXXFLAGS && $(EXTSRCDIR)/gdb/configure $(CONFIGURE_COMMON_FLAGS) \
-	    --prefix=$(EXTDIR) --with-python=python3 && \
+	    --prefix=$(EXTDIR) --with-python=python3 \
+	    --with-gmp=$(EXTDIR) --with-mpfr=$(EXTDIR) \
+	    --with-mpc=$(EXTDIR) --with-isl=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && \
 	    touch gdb/doc/version.subst gdb/doc/GDBvn.texi gdb/doc/*.info && \
 	    make install
@@ -577,7 +668,7 @@ cmake.src: $(EXTSRCDIR)/cmake/bootstrap
 
 # cmake download
 $(EXTSRCDIR)/cmake/bootstrap:
-	@$(DOWNLOAD) cmake cmake-3.22.2.tar.gz http://www.cmake.org/files/v3.22/cmake-3.22.2.tar.gz
+	@$(DOWNLOAD) cmake cmake-3.28.3.tar.gz http://www.cmake.org/files/v3.28/cmake-3.28.3.tar.gz
 
 # cmake build
 $(EXTBINDIR)/cmake: $(EXTSRCDIR)/cmake/bootstrap
@@ -909,15 +1000,15 @@ davix: $(EXTLIBDIR)/libdavix.so
 davix.src: $(EXTSRCDIR)/davix/README.md
 
 $(EXTSRCDIR)/davix/README.md:
-	@$(DOWNLOAD) davix davix-0.7.6.tar.gz https://github.com/cern-fts/davix/releases/download/R_0_7_6/davix-0.7.6.tar.gz
+	@$(DOWNLOAD) davix davix-0.8.6.tar.gz https://github.com/cern-fts/davix/releases/download/R_0_8_6/davix-0.8.6.tar.gz
+	@cd $(EXTSRCDIR)/davix && patch -p1 < $(PATCHDIR)/davix-fix-compilation.patch
 
 $(EXTLIBDIR)/libdavix.so: $(EXTSRCDIR)/davix/README.md
 	@echo "building davix"
 	@mkdir -p $(EXTBUILDDIR)/davix
 	@cd $(EXTBUILDDIR)/davix && $(CMAKE) $(EXTSRCDIR)/davix \
-	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DUUID_INCLUDE_DIR=$(EXTINCDIR) -DUUID_LIBRARY=$(EXTCOMDIR)/lib/libuuid.so \
-	    -DDAVIX_TESTS=OFF && \
+	    -DEMBEDDED_LIBCURL=OFF -DDAVIX_TESTS=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 davix.clean:
@@ -1023,7 +1114,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
 	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p0 < $(PATCHDIR)/fastbdt-gcc11.patch
+	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-gcc13.patch
 
 # FastBDT TMVA plugin build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
@@ -1149,7 +1240,8 @@ MillepedeII.src: $(EXTSRCDIR)/MillepedeII/WIKI
 
 # MillepedeII download
 $(EXTSRCDIR)/MillepedeII/WIKI:
-	@$(DOWNLOAD) MillepedeII MillepedeII_V04-10-00.tgz https://www.desy.de/~kleinwrt/MP2/tar/mp2-04-10-00.tgz
+	@$(DOWNLOAD) MillepedeII MillepedeII_V04-16-03.tgz https://www.desy.de/~kleinwrt/MP2/tar/mp2-04-16-03.tgz
+	@cd $(EXTSRCDIR)/MillepedeII && patch -p1 < $(PATCHDIR)/millepede-gcc14.patch
 
 # MillepedeII build
 $(EXTBINDIR)/pede: $(EXTSRCDIR)/MillepedeII/WIKI
@@ -1433,7 +1525,7 @@ belle_legacy.src: $(EXTSRCDIR)/belle_legacy
 
 # belle_legacy download
 $(EXTSRCDIR)/belle_legacy:
-	@$(DOWNLOAD) belle_legacy belle_legacy-v1.10.tar.gz git:tags/v1.10:$(BELLE2_GIT_SERVER)belle2/software/belle_legacy.git
+	@$(DOWNLOAD) belle_legacy belle_legacy-v1.11.tar.gz git:tags/v1.11:$(BELLE2_GIT_SERVER)belle2/software/belle_legacy.git
 
 # belle_legacy build
 $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
@@ -1553,6 +1645,7 @@ zeromq.src: $(EXTSRCDIR)/zeromq/INSTALL
 # zeromq download
 $(EXTSRCDIR)/zeromq/INSTALL:
 	@$(DOWNLOAD) zeromq zeromq-4.3.4.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz
+	@cd $(EXTSRCDIR)/zeromq && patch -p1 < $(PATCHDIR)/zeromq-gcc13.patch
 
 # zeromq build
 $(EXTLIBDIR)/libzmq.so: $(EXTSRCDIR)/zeromq/INSTALL
@@ -1745,7 +1838,8 @@ hammer.clean:
 
 #Download the hammer software here...
 $(EXTSRCDIR)/hammer/CMakeLists.txt:
-	$(DOWNLOAD) hammer Hammer-1.4.1-test-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.4.1-Source.tar.gz
+	$(DOWNLOAD) hammer Hammer-1.4.1-Source.tar.gz https://hammer.physics.lbl.gov/Hammer-1.4.1-Source.tar.gz
+	@cd $(EXTSRCDIR)/hammer && patch -p1 < $(PATCHDIR)/hammer-gcc14.patch
 
 #BUILD_SHARED_LIBS is necessary for linking the shared BOOST libraries correctly
 #WITH_PYTHON=ON for python bindings of the C++ libraries

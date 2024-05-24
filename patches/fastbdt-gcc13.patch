@@ -1,0 +1,13 @@
+diff --git a/include/FastBDT.h.in b/include/FastBDT.h.in
+index 575230e..c756760 100644
+--- a/include/FastBDT.h.in
++++ b/include/FastBDT.h.in
+@@ -16,6 +16,8 @@
+ #include <map>
+ #include <algorithm>
+ #include <cmath>
++#include <limits>
++#include <cstdint>
+ 
+ namespace FastBDT {
+ 

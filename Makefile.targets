@@ -1813,7 +1813,7 @@ $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
 # install the filters system wide but not in the current directory otherwise it adds hooks to .git
 	@mkdir -p $(EXTDIR)/etc
-	@cd /tmp && $(EXTBINDIR)/git lfs install --system
+	@cd $(TMPDIR) && $(EXTBINDIR)/git lfs install --system
 
 nlohmann_json.src: $(EXTSRCDIR)/nlohmann_json/README.md
 nlohmann_json: $(EXTINCDIR)/nlohmann/json.hpp

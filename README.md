@@ -248,7 +248,7 @@ a modified version containing some patches not yet included upstream (found in
 | [Markdown](https://pypi.org/project/Markdown/) | Python implementation of John Gruber's Markdown. | 3.6 | BSD  |
 | [markdown-it-py](https://pypi.org/project/markdown-it-py/) | Python port of markdown-it | 3.0.0 | MIT  |
 | [MarkupSafe](https://pypi.org/project/MarkupSafe/) | Safely add untrusted strings to HTML/XML markup. | 2.1.5 | BSD-3-Clause |
-| [matplotlib](https://pypi.org/project/matplotlib/) | Python plotting package | 3.9.0 | Python |
+| [matplotlib](https://pypi.org/project/matplotlib/) | Python plotting package | 3.9.0 | PSF |
 | [matplotlib-inline](https://pypi.org/project/matplotlib-inline/) | Inline Matplotlib backend for Jupyter | 0.1.7 | BSD  |
 | [mccabe](https://pypi.org/project/mccabe/) | McCabe checker, plugin for flake8 | 0.7.0 | Expat license |
 | [mdit-py-plugins](https://pypi.org/project/mdit-py-plugins/) | Collection of plugins for markdown-it-py | 0.4.1 | MIT  |
@@ -263,7 +263,7 @@ a modified version containing some patches not yet included upstream (found in
 | [mysql-connector-python](https://pypi.org/project/mysql-connector-python/) | MySQL driver written in Python | 8.4.0 | GNU General Public  |
 | [namex](https://pypi.org/project/namex/) | A simple utility to separate the implementation of your Python package and its public API surface. | 0.0.8 |  |
 | [nbclient](https://pypi.org/project/nbclient/) | A client library for executing notebooks | 0.10.0 | BSD  |
-| [nbconvert](https://pypi.org/project/nbconvert/) | Converting Jupyter Notebooks (.ipynb files) to other formats.  Output formats include asciidoc, html, latex, markdown, pdf, py, rst, script.  nbconvert can be used both as a Python library (`import nbconvert`) or as a command line tool (invoked as `jupyter nbconvert ...`). | 7.16.4 | BSD  |
+| [nbconvert](https://pypi.org/project/nbconvert/) | Converting Jupyter Notebooks (.ipynb files) to other formats. | 7.16.4 | BSD  |
 | [nbformat](https://pypi.org/project/nbformat/) | The Jupyter Notebook format | 5.10.4 | BSD  |
 | [nbsphinx](https://pypi.org/project/nbsphinx/) | Jupyter Notebook Tools for Sphinx | 0.9.4 | MIT |
 | [ndindex](https://pypi.org/project/ndindex/) | A Python library for manipulating indices of ndarrays. | 1.8 | MIT |
@@ -336,7 +336,7 @@ a modified version containing some patches not yet included upstream (found in
 | [smart-open](https://pypi.org/project/smart-open/) | Utils for streaming large files (S3, HDFS, GCS, Azure Blob Storage, gzip, bz2...) | 7.0.4 | MIT |
 | [smmap](https://pypi.org/project/smmap/) | A pure Python implementation of a sliding window memory map manager | 5.0.1 | BSD |
 | [snakemake](https://pypi.org/project/snakemake/) | Workflow management system to create reproducible and scalable data analyses | 8.12.0 | MIT |
-| [snakemake-interface-common](https://pypi.org/project/snakemake-interface-common/) | Common functions and classes for Snakemake and its plugins | 1.17.2 |  |
+| [snakemake-interface-common](https://pypi.org/project/snakemake-interface-common/) | Common functions and classes for Snakemake and its plugins | 1.17.2 | MIT |
 | [snakemake-interface-executor-plugins](https://pypi.org/project/snakemake-interface-executor-plugins/) | This package provides a stable interface for interactions between Snakemake and its executor plugins. | 9.1.1 | MIT |
 | [snakemake-interface-report-plugins](https://pypi.org/project/snakemake-interface-report-plugins/) | The interface for Snakemake report plugins. | 1.0.0 |  |
 | [snakemake-interface-storage-plugins](https://pypi.org/project/snakemake-interface-storage-plugins/) | This package provides a stable interface for interactions between Snakemake and its storage plugins. | 3.2.2 |  |

@@ -33,7 +33,7 @@ Additional changes can occur in the `requirements-core.in` file, whenever the Py
     ```
     $ source tools/b2setup
     $ cd externals/externals
-    $ export BELLE2_EXTERNALS_IGNORE_CHECKSUM=1
+    $ tools/update_sha.sh python Python
     $ make python
     ```
 

@@ -196,9 +196,19 @@ def get_package_information(name, version):
     # Some explicitly return None
     summary = summary if summary is not None else ""
 
+    # Get first sentence of summary 
+    idx = 0
+    split_string = re.split(f'({re.escape(". ")})', summary)
+    for i in range(len(split_string)-1):
+        if split_string[i].endswith(". ") and split_string[i+1][0].isupper():
+            idx = i
+            break
+
+    summary = "".join(split_string[:idx]) if idx > 0 else summary
+
     return {
         "Name": f"[{json_info.get('name', '')}]({json_info.get('project_url', '')})",
-        "Summary": summary.split(".")[0],
+        "Summary": summary,
         "Version": json_info.get("version", ""),
         "License": license,
     }

@@ -17,6 +17,7 @@ import argparse
 import logging
 from pathlib import Path
 
+used_packages = set()
 
 def get_info(name, version):
     """Get JSON information for a package from pypi"""
@@ -76,6 +77,8 @@ def compile_requirements(python_exec, inputfile, update=False, remaining=[]):
 
 
 def get_packages(lines, ignore_other_url=False):
+    global used_packages
+
     packages = []
     for line in lines:
         if re.search(r"@", line):
@@ -84,7 +87,10 @@ def get_packages(lines, ignore_other_url=False):
         elif re.search(r"==", line):
             packages.append(line.strip())
 
-    return packages
+    unique_packages = [package for package in packages if package not in used_packages]
+    used_packages.update(unique_packages)
+
+    return unique_packages
 
 
 def get_other_url_hashes(inputfile):

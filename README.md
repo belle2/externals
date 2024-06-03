@@ -171,7 +171,7 @@ a modified version containing some patches not yet included upstream (found in
 | [cloudpickle](https://pypi.org/project/cloudpickle/) | Pickler class to extend the standard pickle.Pickler functionality | 3.0.0 | BSD-3-Clause |
 | [comm](https://pypi.org/project/comm/) | Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc. | 0.2.2 | BSD  |
 | [commonmark](https://pypi.org/project/commonmark/) | Python parser for the CommonMark Markdown spec | 0.9.1 | BSD-3-Clause |
-| [conda-inject](https://pypi.org/project/conda-inject/) | Helper functions for injecting a conda environment into the current python environment (by modifying sys.path, without actually changing the current python environment). | 1.3.2 |  |
+| [conda-inject](https://pypi.org/project/conda-inject/) | Helper functions for injecting a conda environment into the current python environment (by modifying sys.path, without actually changing the current python environment). | 1.3.2 | MIT |
 | [ConfigArgParse](https://pypi.org/project/ConfigArgParse/) | A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables. | 1.7 | MIT |
 | [connection_pool](https://pypi.org/project/connection_pool/) | thread safe connection pool | 0.0.3 | MIT |
 | [contourpy](https://pypi.org/project/contourpy/) | Python library for calculating contours of 2D quadrilateral grids | 1.2.1 | BSD  |
@@ -261,7 +261,7 @@ a modified version containing some patches not yet included upstream (found in
 | [msgpack](https://pypi.org/project/msgpack/) | MessagePack serializer | 1.0.8 | Apache 2.0 |
 | [multidict](https://pypi.org/project/multidict/) | multidict implementation | 6.0.5 | Apache 2 |
 | [mysql-connector-python](https://pypi.org/project/mysql-connector-python/) | MySQL driver written in Python | 8.4.0 | GNU General Public  |
-| [namex](https://pypi.org/project/namex/) | A simple utility to separate the implementation of your Python package and its public API surface. | 0.0.8 |  |
+| [namex](https://pypi.org/project/namex/) | A simple utility to separate the implementation of your Python package and its public API surface. | 0.0.8 | Apache License 2.0 |
 | [nbclient](https://pypi.org/project/nbclient/) | A client library for executing notebooks | 0.10.0 | BSD  |
 | [nbconvert](https://pypi.org/project/nbconvert/) | Converting Jupyter Notebooks (.ipynb files) to other formats. | 7.16.4 | BSD  |
 | [nbformat](https://pypi.org/project/nbformat/) | The Jupyter Notebook format | 5.10.4 | BSD  |
@@ -276,7 +276,7 @@ a modified version containing some patches not yet included upstream (found in
 | [oauthlib](https://pypi.org/project/oauthlib/) | A generic, spec-compliant, thorough implementation of the OAuth request-signing logic | 3.2.2 | BSD |
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
-| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache |
+| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License, Version 2.0 |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.0 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
@@ -338,8 +338,8 @@ a modified version containing some patches not yet included upstream (found in
 | [snakemake](https://pypi.org/project/snakemake/) | Workflow management system to create reproducible and scalable data analyses | 8.12.0 | MIT |
 | [snakemake-interface-common](https://pypi.org/project/snakemake-interface-common/) | Common functions and classes for Snakemake and its plugins | 1.17.2 | MIT |
 | [snakemake-interface-executor-plugins](https://pypi.org/project/snakemake-interface-executor-plugins/) | This package provides a stable interface for interactions between Snakemake and its executor plugins. | 9.1.1 | MIT |
-| [snakemake-interface-report-plugins](https://pypi.org/project/snakemake-interface-report-plugins/) | The interface for Snakemake report plugins. | 1.0.0 |  |
-| [snakemake-interface-storage-plugins](https://pypi.org/project/snakemake-interface-storage-plugins/) | This package provides a stable interface for interactions between Snakemake and its storage plugins. | 3.2.2 |  |
+| [snakemake-interface-report-plugins](https://pypi.org/project/snakemake-interface-report-plugins/) | The interface for Snakemake report plugins. | 1.0.0 | MIT |
+| [snakemake-interface-storage-plugins](https://pypi.org/project/snakemake-interface-storage-plugins/) | This package provides a stable interface for interactions between Snakemake and its storage plugins. | 3.2.2 | MIT |
 | [sniffio](https://pypi.org/project/sniffio/) | Sniff out which async library your code is running under | 1.3.1 | MIT OR Apache-2.0 |
 | [snowballstemmer](https://pypi.org/project/snowballstemmer/) | This package provides 29 stemmers for 28 languages generated from Snowball algorithms. | 2.2.0 | BSD-3-Clause |
 | [soupsieve](https://pypi.org/project/soupsieve/) | A modern CSS selector implementation for Beautiful Soup. | 2.5 | MIT  |
@@ -381,7 +381,7 @@ a modified version containing some patches not yet included upstream (found in
 | [traitlets](https://pypi.org/project/traitlets/) | Traitlets Python configuration system | 5.14.3 | BSD  |
 | [typeguard](https://pypi.org/project/typeguard/) | Run-time type checker for Python | 4.3.0 | MIT |
 | [types-python-dateutil](https://pypi.org/project/types-python-dateutil/) | Typing stubs for python-dateutil | 2.9.0.20240316 | Apache-2.0 license |
-| [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.1 | Python |
+| [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.1 | PSF |
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | Transparent calculations with uncertainties on the quantities involved (aka error propagation); fast calculation of derivatives | 3.1.7 | Revised BSD License |
 | [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.3.7 | BSD  |

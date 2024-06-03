@@ -15,7 +15,7 @@ export EXTINCDIR := $(EXTDIR)/include
 export EXTLIBDIR := $(EXTDIR)/lib
 export EXTBINDIR := $(EXTDIR)/bin
 export EXTCOMDIR := $(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH)/common
-export EXTSHRDIR := $(BELLE2_EXTERNALS_DIR)/share
+export EXTSHRDIR := $(EXTDIR)/share
 export ROOTSYS := $(EXTCOMDIR)/root
 
 # download script to get and extract sources
@@ -155,7 +155,7 @@ endif
 # directory we want to create
 DIRECTORIES:=$(EXTSRCDIR) $(EXTBUILDDIR) $(EXTLIBDIR) $(EXTBINDIR)
 # directories we want to share between all options
-SHARED_DIRECTORIES:=$(EXTINCDIR) $(EXTDIR)/share
+SHARED_DIRECTORIES:=$(EXTINCDIR) $(EXTSHRDIR)
 
 # when called without targets, do nothing
 donothing: ;
@@ -191,7 +191,7 @@ relocatable_fixes:
 	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ] && [ -n "$(which root | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(ROOTSYS)/bin; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 # But only if python3 actually exists
-	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(EXTSHRDIR); fi
+	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(BELLE2_EXTERNALS_DIR)/share; fi
 # And finally split and strip all binaries except bazel because stripping bazel removes all functionality :?
 # Also, exclude libraries in some python packages where stripping breaks them
 	@if [ -n "$(which python3 | grep -o $BELLE2_EXTERNALS_DIR)" ]; then \
@@ -363,7 +363,7 @@ $(EXTBINDIR)/gcc: $(EXTSRCDIR)/gcc
 # skip the version: there's only one gcc version per external version.
 	@cd $(EXTBUILDDIR)/gcc/ && unset CXXFLAGS && $(EXTSRCDIR)/gcc/configure --disable-multilib --disable-bootstrap \
 	    --prefix=$(BELLE2_EXTERNALS_DIR)/$(BELLE2_ARCH) \
-	    --exec-prefix=$(EXTDIR) --datarootdir=$(EXTDIR)/share \
+	    --exec-prefix=$(EXTDIR) --datarootdir=$(EXTSHRDIR) \
 	    --target=$(GCC_TARGET) --host=$(GCC_TARGET) --build=$(GCC_TARGET) \
 	    --with-gmp-include=$(EXTINCDIR) --with-gmp-lib=$(EXTLIBDIR) \
 	    --with-mpfr-include=$(EXTINCDIR) --with-mpfr-lib=$(EXTLIBDIR) \
@@ -628,7 +628,7 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 # make sure our own python3 kernel has precedence over /usr/share/jupyter/kernels/python3
 	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # but make the path relative so it can be found correctly if the externals are installed in a different directory.
-	sed -i 's#$(EXTBINDIR)/*##g' $(EXTDIR)/share/jupyter/kernels/python3/kernel.json
+	sed -i 's#$(EXTBINDIR)/*##g' $(EXTSHRDIR)/jupyter/kernels/python3/kernel.json
 # install our own version of sphinx-argparse
 	pip3 install -U --no-deps src/sphinx-argparse
 # install the belle2style files
@@ -902,13 +902,13 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
 	# Also fix geant4make just to be safe
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/Geant4/geant4make/geant4make.*
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTSHRDIR)/Geant4/geant4make/geant4make.*
 
 # GEANT4 clean
 geant4.clean:
 	@echo "cleaning geant4"
 	@-cd $(EXTBUILDDIR)/geant4 && make clean
-	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTDIR)/share/Geant4 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
+	@rm -rf $(EXTBUILDDIR)/geant4 $(EXTDIR)/geant4 $(EXTSHRDIR)/Geant4 $(EXTINCDIR)/Geant4 $(EXTLIBDIR)/libG4*.so $(EXTBINDIR)/geant4*
 
 # GEANT4 touch command
 geant4.touch:
@@ -1078,13 +1078,13 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 #patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
-	@mkdir -p $(EXTDIR)/share/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTDIR)/share/root/tmva
+	@mkdir -p $(EXTSHRDIR)/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTSHRDIR)/root/tmva
 
 # root clean command
 root.clean:
 	@echo "cleaning root"
 	@-cd $(EXTBUILDDIR)/root 2>/dev/null && make clean
-	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS) $(EXTDIR)/share/root
+	@rm -rf $(EXTBUILDDIR)/root $(ROOTSYS) $(EXTSHRDIR)/root
 
 # root touch command
 root.touch:
@@ -1149,7 +1149,7 @@ $(EXTSRCDIR)/vgm:
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTDIR)/lib/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
@@ -1221,7 +1221,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in .cmake file/RaveConfig.cmake:
-	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTDIR)/share/rave/RaveConfig.cmake
+	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTSHRDIR)/rave/RaveConfig.cmake
 
 # rave clean
 rave.clean:
@@ -1315,7 +1315,7 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 pythia.clean:
 	@echo "cleaning Pythia"
 	@-cd $(EXTBUILDDIR)/pythia 2>/dev/null && make clean
-	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8* $(EXTDIR)/share/pythia
+	@rm -rf $(EXTDIR)/pythia $(EXTLIBDIR)/libpythia* $(EXTINCDIR)/Pythia8* $(EXTSHRDIR)/pythia
 
 # Pythia touch
 pythia.touch:
@@ -1405,7 +1405,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
 evtgen.clean:
 	@echo "cleaning EvtGen"
 	@-cd $(EXTBUILDDIR)/evtgen 2>/dev/null && make clean
-	@rm -rf $(EXTDIR)/evtgen $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen $(EXTDIR)/share/evtgen
+	@rm -rf $(EXTDIR)/evtgen $(EXTLIBDIR)/libEvtGen* $(EXTINCDIR)/evtgen $(EXTSHRDIR)/evtgen
 
 # EvtGen touch
 evtgen.touch:
@@ -1538,7 +1538,7 @@ $(EXTLIBDIR)/libbelle_legacy.so: $(EXTSRCDIR)/belle_legacy
 belle_legacy.clean:
 	@echo "cleaning belle_legacy"
 	@-cd $(EXTBUILDDIR)/belle_legacy 2>/dev/null && make clean
-	@rm -rf $(EXTINCDIR)/belle_legacy $(EXTDIR)/share/belle_legacy $(EXTLIBDIR)/libbelle_legacy.*
+	@rm -rf $(EXTINCDIR)/belle_legacy $(EXTSHRDIR)/belle_legacy $(EXTLIBDIR)/libbelle_legacy.*
 
 # belle_legacy touch
 belle_legacy.touch:
@@ -1559,7 +1559,7 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/curl && ./configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTDIR)/share/curl --with-openssl && \
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTSHRDIR)/curl --with-openssl && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config
@@ -1568,7 +1568,7 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 curl.clean:
 	@echo "cleaning curl"
 	@-cd $(EXTBUILDDIR)/curl 2>/dev/null && make uninstall && make clean
-	@rm -rf $(EXTINCDIR)/curl $(EXTDIR)/share/curl
+	@rm -rf $(EXTINCDIR)/curl $(EXTSHRDIR)/curl
 
 # curl touch
 curl.touch:
@@ -1786,7 +1786,7 @@ rclone: $(EXTBINDIR)/rclone
 rclone.touch:
 	@rm -fr $(EXTBINDIR)/rclone
 rclone.clean:
-	@rm -fr $(EXTBINDIR)/rclone $(EXTDIR)/share/man/man1/rclone.1
+	@rm -fr $(EXTBINDIR)/rclone $(EXTSHRDIR)/man/man1/rclone.1
 
 $(EXTSRCDIR)/rclone/README.txt:
 	$(DOWNLOAD) rclone rclone-v1.54.1-linux-amd64.zip https://downloads.rclone.org/v1.54.1/rclone-v1.54.1-linux-amd64.zip
@@ -1794,7 +1794,7 @@ $(EXTSRCDIR)/rclone/README.txt:
 $(EXTBINDIR)/rclone: $(EXTSRCDIR)/rclone/README.txt
 	@echo "installing rclone"
 	@install -s $(EXTSRCDIR)/rclone/rclone $(EXTBINDIR)
-	@install -m 644 $(EXTSRCDIR)/rclone/rclone.1 $(EXTDIR)/share/man/man1
+	@install -m 644 $(EXTSRCDIR)/rclone/rclone.1 $(EXTSHRDIR)/man/man1
 
 git-lfs.src: $(EXTSRCDIR)/git-lfs/README.md
 git-lfs: $(EXTBINDIR)/git-lfs
@@ -1811,7 +1811,7 @@ $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@install -s $(EXTSRCDIR)/git-lfs/git-lfs $(EXTBINDIR)
 # install the filters system wide but not in the current directory otherwise it adds hooks to .git
 	@mkdir -p $(EXTDIR)/etc
-	@cd /tmp && git lfs install --system
+	@cd $(TMPDIR) && $(EXTBINDIR)/git lfs install --system
 
 nlohmann_json.src: $(EXTSRCDIR)/nlohmann_json/README.md
 nlohmann_json: $(EXTINCDIR)/nlohmann/json.hpp

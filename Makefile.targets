@@ -836,7 +836,7 @@ VecGeom.touch:
 	rm -fr $(EXTLIBDIR)/libvecgeom.a
 
 $(EXTSRCDIR)/VecGeom/README.md:
-	@$(DOWNLOAD) VecGeom VecGeom-v1.2.1.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.1/VecGeom-v1.2.1.tar.gz
+	@$(DOWNLOAD) VecGeom VecGeom-v1.2.8.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.8/VecGeom-v1.2.8.tar.gz
 	@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md

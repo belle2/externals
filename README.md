@@ -77,7 +77,7 @@ externals.
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.3           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.0          | Apache v2  |
-| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.1           | Apache v2  |
+| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.8           | Apache v2  |
 | [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.0     | GPLv2      |
 | [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 5.6.1           | LGPLv3     |

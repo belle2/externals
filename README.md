@@ -70,7 +70,7 @@ externals.
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.32/00         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.0.0           | -          |
+| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.0.2           | -          |
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |

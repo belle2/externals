@@ -10,7 +10,7 @@
 
 --- CMakeLists.txt
 +++ CMakeLists.txt
-@@ -42,5 +42,8 @@
+@@ -39,5 +39,8 @@
    include(cmake/testing.cmake)
  endif()
  

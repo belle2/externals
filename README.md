@@ -54,6 +54,8 @@ externals.
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.13          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.35          | MIT        |
+| [Libmd](https://www.hadrons.org/software/libmd/)                             | 1.1.0           | BSD-3-Clause |
+| [Libbsd](https://libbsd.freedesktop.org/)                                    | 0.12.2          | BSD-3-Clause |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.4.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-16-03       | LGPLv2     |

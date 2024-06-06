@@ -120,7 +120,6 @@ export ROOT_OPTION:=
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so
 
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
@@ -1051,7 +1050,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-26-14.tar.gz https://root.cern/download/root_v6.26.14.source.tar.gz
+	@$(DOWNLOAD) root root_v6-32-00.tar.gz https://root.cern/download/root_v6.32.00.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 	# progress bar crashes for low number of events (reported in ROOT github #13017)
@@ -1069,14 +1068,36 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 -Dpyroot_legacy=OFF \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
-	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
-	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
-	    -Dfftw3=ON -Ddataframe=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 \
+	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
+	    -Dasimage=ON \
+	    -Dbuiltin_davix=OFF -Ddavix=ON \
+	    -Dbuiltin_fftw3=OFF -Dfftw3=ON -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
+	    -Dbuiltin_freetype=OFF \
+	    -Dbuiltin_ftgl=ON \
+	    -Dbuiltin_gl2ps=ON \
+	    -Dbuiltin_gsl=OFF -DGSL_DIR=$(EXTCOMDIR) \
+	    -Dbuiltin_lz4=OFF \
+	    -Dbuiltin_lzma=OFF -DLZMA_INCLUDE_DIR=$(EXTINCDIR) -DLZMA_LIBRARY=$(EXTCOMDIR)/lib/liblzma.so \
+	    -Dbuiltin_pcre=ON \
+	    -Dbuiltin_xxhash=ON \
+	    -Dbuiltin_zstd=ON  \
+	    -Ddataframe=ON \
+	    -Dexception=ON \
+	    -Dhttp=ON \
+	    -Dmathmore=ON \
+	    -Dmlp=ON \
+	    -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so \
+	    -Dpyroot=ON \
+	    -Droofit=ON \
+	    -Dshadowpw=ON \
+	    -Dshared=ON \
+	    -Dssl=ON \
+	    -Dtmva=ON \
+	    -Dvdt=OFF \
+	    -Dxml=ON \
+	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
+	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 #patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch

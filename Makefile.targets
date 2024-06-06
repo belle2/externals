@@ -1094,7 +1094,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sfT $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
+# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary options to the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DLIBBSDROOT=$(EXTDIR) \
@@ -1130,7 +1130,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-#patch include/root/Rtypes.h to emit a warning if ClassImp is used
+# patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
 	@mkdir -p $(EXTSHRDIR)/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTSHRDIR)/root/tmva
 

@@ -12,32 +12,32 @@ diff --git a/include/root/Rtypes.h b/include/root/Rtypes.h
 index 276ea6c..e8e97d2 100644
 --- a/include/root/Rtypes.h	2018-08-23 16:57:30.000000000 +0200
 +++ b/include/root/Rtypes.h	2018-09-18 16:08:23.218020606 +0200
-@@ -352,7 +352,7 @@
+@@ -363,7 +363,7 @@
+ #define R__UseDummy(name) \
     class _NAME2_(name,_c) { public: _NAME2_(name,_c)() { if (name) { } } }
  
+-#define ClassImpUnique(name,key)                                                                        \
++#define ClassImpUnique(name,key) _Pragma("GCC warning \"ClassImp is not needed, please remove it\"")    \
+    namespace ROOT {                                                                                     \
+       /** \cond HIDDEN_SYMBOLS */ TGenericClassInfo *GenerateInitInstance(const name*); /** \endcond */ \
+       namespace {                                                                                       \
+@@ -378,7 +378,7 @@
  
--#define ClassImpUnique(name,key) \
-+#define ClassImpUnique(name,key) _Pragma("GCC warning \"ClassImp is not needed, please remove it\"")  \
-    namespace ROOT { \
-       TGenericClassInfo *GenerateInitInstance(const name*); \
-       namespace { \
-@@ -365,7 +365,7 @@
- 
- // Macro for Namespace
- 
--#define NamespaceImpUnique(name,key) \
+ /// Macro for Namespace
+-#define NamespaceImpUnique(name,key)                                        \
 +#define NamespaceImpUnique(name,key) _Pragma("GCC warning \"NamespaceImp is not needed, please remove it\"") \
-    namespace name { \
-       namespace ROOTDict { \
-          ::ROOT::TGenericClassInfo *GenerateInitInstance(); \
-@@ -399,7 +399,7 @@
+    namespace name {                                                         \
+       namespace ROOTDict {                                                  \
+          /** \cond HIDDEN_SYMBOLS */                                        \
+          ::ROOT::TGenericClassInfo *GenerateInitInstance(); /** \endcond */ \
+@@ -412,7 +412,7 @@
  
  #define ClassDefT2(name,Tmpl)
  
 -#define templateClassImpUnique(name, key)                                                                           \
 +#define templateClassImpUnique(name, key) _Pragma("GCC warning \"templateClassImp is not needed, please remove it\"") \
     namespace ROOT {                                                                                                 \
-    static TNamed *                                                                                                  \
+    /** \cond HIDDEN_SYMBOLS */ static TNamed *                                                                      \
        _R__UNIQUE_(_NAME2_(R__dummyholder, key)) = ::ROOT::RegisterClassTemplate(_QUOTE_(name), __FILE__, __LINE__); \
 -- 
 1.9.1

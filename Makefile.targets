@@ -464,15 +464,15 @@ $(EXTINCDIR)/md5.h: $(EXTSRCDIR)/libmd
 libmd.clean:
 	@rm -fr $(EXTINCDIR)/md5.h
 
-libbsd: $(EXTINCDIR)/bsd.h
+libbsd: $(EXTLIBDIR)/libbsd.so
 libbsd.src: $(EXTSRCDIR)/libbsd
 libbsd.touch:
-	@rm -f $(EXTINCDIR)/bsd.h
+	@rm -f $(EXTLIBDIR)/libbsd.so
 
 $(EXTSRCDIR)/libbsd:
 	@$(DOWNLOAD) libbsd libbsd-0.12.2.tar.xz https://libbsd.freedesktop.org/releases/libbsd-0.12.2.tar.xz
 
-$(EXTINCDIR)/bsd.h: $(EXTSRCDIR)/libbsd
+$(EXTLIBDIR)/libbsd.so: $(EXTSRCDIR)/libbsd
 	@echo "building libbsd"
 	@cp -fa $(EXTSRCDIR)/libbsd $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/libbsd && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \

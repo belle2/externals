@@ -1264,13 +1264,15 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 	# replace deprecated auto_ptr with unique_ptr
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
+	# enable compilation with c++17 standard
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-cpp17.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++14" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++17" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install

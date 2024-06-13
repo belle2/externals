@@ -364,7 +364,7 @@ if __name__ == "__main__":
         for e in scantree(".", [".debug", "__pycache__"] + args.exclude_dirs)
     ]
     # filter excluded
-    all_files = [e for e in all_files if str(e) not in args.exclude]
+    all_files = [e for e in all_files if not any(excluded in str(e) for excluded in args.exclude)]
 
     # ok great, these are all candidates for stripping but only if they're elf
     # binaries and contain debug info. But this requires actually reading the

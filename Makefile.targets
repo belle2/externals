@@ -805,7 +805,7 @@ Vc.touch:
 	rm -fr $(EXTLIBDIR)/libVc.a
 
 $(EXTSRCDIR)/Vc/README.md:
-	@$(DOWNLOAD) Vc Vc-1.4.3.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.3/Vc-1.4.3.tar.gz
+	@$(DOWNLOAD) Vc Vc-1.4.5.tar.gz https://github.com/VcDevel/Vc/archive/refs/tags/1.4.5.tar.gz
 
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"

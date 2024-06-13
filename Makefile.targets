@@ -858,7 +858,7 @@ clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
 $(EXTSRCDIR)/clhep/CLHEP/README.md:
-	@$(DOWNLOAD) clhep clhep-2.4.6.2.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.6.2.tgz
+	@$(DOWNLOAD) clhep clhep-2.4.7.1.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.7.1.tgz
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
@@ -871,7 +871,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.6.2 \
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.7.1 \
 	        $(EXTLIBDIR)/pkgconfig/clhep*.pc
 
 # CLHEP touch
@@ -1151,7 +1151,7 @@ $(EXTSRCDIR)/vgm:
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.7.1 -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)

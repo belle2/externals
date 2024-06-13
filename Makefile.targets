@@ -820,7 +820,7 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.8.0.tar.gz https://github.com/root-project/veccore/archive/v0.8.0.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.1.tar.gz https://github.com/root-project/veccore/archive/v0.8.1.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"

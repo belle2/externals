@@ -2,13 +2,13 @@ diff --git a/source/geometry/volumes/src/G4AssemblyStore.cc b/source/geometry/vo
 index 814da1731..d0af241db 100644
 --- a/source/geometry/volumes/src/G4AssemblyStore.cc
 +++ b/source/geometry/volumes/src/G4AssemblyStore.cc
-@@ -90,7 +90,8 @@
-   for(auto pos=store->cbegin(); pos!=store->cend(); ++pos)
+@@ -87,7 +87,8 @@
+   for(const auto & pos : *store)
    {
      if (fgNotifier != nullptr) { fgNotifier->NotifyDeRegistration(); }
--    if (*pos) { delete *pos; }
+-    if (pos != nullptr) { delete pos; }
 +    // HACK: basf2 is not ready for this sudden change of ownership logic
-+    /* if (*pos) { delete *pos; } */
++    /* if (pos != nullptr) { delete pos; } */
    }
  
    locked = false;

@@ -197,7 +197,7 @@ relocatable_fixes:
 	@if which python3 > /dev/null; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
 	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel \
-	    -e bin/python $(EXTDIR); \
+	    -e cpython-38 -e libpython3.8.so.1.0 -e bin/python -e scons.1 $(EXTDIR); \
 	    fi
 
 # create directories

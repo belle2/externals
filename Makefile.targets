@@ -196,7 +196,8 @@ relocatable_fixes:
 # Also, exclude libraries in some python packages where stripping breaks them
 	@if which python3 > /dev/null; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
-	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel $(EXTDIR); \
+	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel \
+	    -e bin/python $(EXTDIR); \
 	    fi
 
 # create directories

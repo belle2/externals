@@ -1976,3 +1976,29 @@ whizard.touch:
 # whizard clean
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
+
+# dependencies for libtorch
+libtorch: $(EXTLIBDIR)/libtorch.so
+libtorch.src: $(EXTSRCDIR)/pytorch/README.md
+
+# libtorch download
+$(EXTSRCDIR)/pytorch/README.md:
+	@$(DOWNLOAD) pytorch pytorch-v2.2.2.tar.gz https://github.com/pytorch/pytorch/releases/download/v2.2.2/pytorch-v2.2.2.tar.gz
+
+# libtorch build
+$(EXTLIBDIR)/libtorch.so: $(EXTSRCDIR)/pytorch/README.md
+	@echo "building libtorch"
+	@mkdir -p $(EXTBUILDDIR)/pytorch-build
+	@cd $(EXTBUILDDIR)/pytorch-build && $(CMAKE) $(EXTSRCDIR)/pytorch \
+	    -DBUILD_SHARED_LIBS=ON -DPYTHON_EXECUTABLE=`which python3` \
+		-DCMAKE_CXX_FLAGS="-Wno-error=maybe-uninitialized -Wno-error=uninitialized -Wno-error=restrict" && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+# libtorch clean
+libtorch.clean:
+	@echo "cleaning libtorch"
+	@rm -rf $(EXTBUILDDIR)/pytorch-build $(EXTINCDIR)/pytorch $(EXTLIBDIR)/libtorch.a
+
+# libtorch touch
+libtorch.touch:
+	@rm -f $(EXTLIBDIR)/libtorch.a

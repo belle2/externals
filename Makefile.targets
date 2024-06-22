@@ -714,7 +714,7 @@ gtest.clean:
 
 # google test touch
 gtest.touch:
-	@rm -f $(EXTLIBDIR)/libgtest.a
+	@rm -f $(EXTLIBDIR)/libgtest.so
 
 
 # dependencies for boost

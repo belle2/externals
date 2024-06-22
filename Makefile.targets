@@ -2001,4 +2001,4 @@ libtorch.clean:
 
 # libtorch touch
 libtorch.touch:
-	@rm -f $(EXTLIBDIR)/libtorch.a
+	@rm -f $(EXTLIBDIR)/libtorch.so

@@ -11,10 +11,11 @@ cython
 # Cymove is needed for compiling HAMMER with python bindings
 cymove
 dgl
+docutils
 eoshep
 flake8
 file-read-backwards
-docutils
+gitpython
 h5py
 ipython
 jira
@@ -28,6 +29,7 @@ metakernel
 mysql-connector-python
 nbsphinx
 pandas
+pyarrow
 pycodestyle
 PyJWT
 pylama
@@ -42,7 +44,6 @@ scipy
 scons
 seaborn
 sly==0.4
-snakemake
 sphinx
 sphinx-book-theme
 sphinx-codeautolink

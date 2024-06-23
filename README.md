@@ -112,10 +112,12 @@ This section lists all the python packages which are currently included in the
 externals. Basically, these are a result of running
 
     pip3 install -U pip setuptools wheel
-    pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl eoshep flake8 file-read-backwards \
-                 docutils h5py ipython jira jupyter jupytext keras lightgbm lxml matplotlib metakernel mysql-connector-python \
-                 nbsphinx pandas pycodestyle PyJWT pylama pytest pytorch-ignite pytorch-lightning requests rise scikit-learn scipy scons seaborn sly snakemake \
-                 sphinx sphinx-book-theme sphinxcontrib-programoutput splinter sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
+    pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
+                 eoshep flake8 file-read-backwards gitpython h5py ipython ipywidgets jira jupyter jupytext keras \
+                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas pyarrow pycodestyle PyJWT \
+                 pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy \
+                 scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput splinter \
+                 sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
                  torch torch-cluster torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision \
                  uncertainties uproot uproot3 xgboost zstandard
 

@@ -51,6 +51,12 @@ ifeq ($(NPROCESSES),0)
   NPROCESSES:=1
 endif
 
+# check if we compile on EL7
+IS_EL7 := no
+ifeq ($(shell b2install-print-os),el 7)
+  IS_EL7 := yes
+endif
+
 # Default compiler: gcc/g++
 export CC:=gcc
 export CXX:=g++
@@ -526,6 +532,22 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl
+openssl.clean:
+	@rm -fr $(EXTBUILDDIR)/openssl
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.0.14.tar.gz https://www.openssl.org/source/openssl-3.0.14.tar.gz
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) --openssldir=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -575,9 +597,15 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@mkdir -p $(EXTBUILDDIR)/python
-	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
-	    --prefix=$(EXTDIR) --with-ensurepip=install && \
-	    make -j $(NPROCESSES) && make install
+	@if [ "$(IS_EL7)" = "yes" ]; then \
+	    OPENSSLFLAG="--with-openssl=$(EXTDIR)"; \
+	else \
+	    OPENSSLFLAG=""; \
+	fi; \
+	echo "compiling python3 with the OPENSSLFLAG: $$OPENSSLFLAG"; \
+	cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
+	    --prefix=$(EXTDIR) --with-ensurepip=install $$OPENSSLFLAG && \
+            make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
 	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
 

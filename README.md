@@ -67,6 +67,7 @@ externals.
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](https://pythia.org/)                                                | 8.215           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.8.8           | PSFL (BSD-style) |
+| [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.26/14         | LGPLv2.1 (GPLv3 for MathMore)  |
@@ -111,10 +112,12 @@ This section lists all the python packages which are currently included in the
 externals. Basically, these are a result of running
 
     pip3 install -U pip setuptools wheel
-    pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl eoshep flake8 file-read-backwards \
-                 docutils h5py ipython jira jupyter jupytext keras lightgbm lxml matplotlib metakernel mysql-connector-python \
-                 nbsphinx pandas pycodestyle PyJWT pylama pytest pytorch-ignite pytorch-lightning requests rise scikit-learn scipy scons seaborn sly snakemake \
-                 sphinx sphinx-book-theme sphinxcontrib-programoutput splinter sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
+    pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
+                 eoshep flake8 file-read-backwards gitpython h5py ipython ipywidgets jira jupyter jupytext keras \
+                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas pyarrow pycodestyle PyJWT \
+                 pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy \
+                 scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput splinter \
+                 sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
                  torch torch-cluster torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision \
                  uncertainties uproot uproot3 xgboost zstandard
 

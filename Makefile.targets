@@ -197,7 +197,7 @@ relocatable_fixes:
 	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
 	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel \
-		-e cpython-311 -e libpython3.11.so.1.0 -e bin/python -e libz -e libbz2 -e liblzma $(EXTDIR); \
+	    -e cpython-311 -e libpython3.11.so.1.0 -e bin/python -e libz -e libbz2 -e liblzma $(EXTDIR); \
 	    fi
 
 # create directories
@@ -804,7 +804,7 @@ Vc.touch:
 	rm -fr $(EXTLIBDIR)/libVc.a
 
 $(EXTSRCDIR)/Vc/README.md:
-	@$(DOWNLOAD) Vc Vc-1.4.3.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.3/Vc-1.4.3.tar.gz
+	@$(DOWNLOAD) Vc Vc-1.4.5.tar.gz https://github.com/VcDevel/Vc/archive/refs/tags/1.4.5.tar.gz
 
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"
@@ -819,7 +819,7 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.8.0.tar.gz https://github.com/root-project/veccore/archive/v0.8.0.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.1.tar.gz https://github.com/root-project/veccore/archive/v0.8.1.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
@@ -835,7 +835,7 @@ VecGeom.touch:
 	rm -fr $(EXTLIBDIR)/libvecgeom.a
 
 $(EXTSRCDIR)/VecGeom/README.md:
-	@$(DOWNLOAD) VecGeom VecGeom-v1.2.1.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.1/VecGeom-v1.2.1.tar.gz
+	@$(DOWNLOAD) VecGeom VecGeom-v1.2.8.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.8/VecGeom-v1.2.8.tar.gz
 	@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
@@ -857,7 +857,7 @@ clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
 $(EXTSRCDIR)/clhep/CLHEP/README.md:
-	@$(DOWNLOAD) clhep clhep-2.4.6.2.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.6.2.tgz
+	@$(DOWNLOAD) clhep clhep-2.4.7.1.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.7.1.tgz
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
@@ -870,7 +870,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.6.2 \
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.7.1 \
 	        $(EXTLIBDIR)/pkgconfig/clhep*.pc
 
 # CLHEP touch
@@ -884,7 +884,7 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.11.1.1.tar.gz https://github.com/Geant4/geant4/archive/refs/tags/v11.1.1.tar.gz
+	@$(DOWNLOAD) geant4 geant4.11.2.1.tar.gz https://github.com/Geant4/geant4/archive/refs/tags/v11.2.1.tar.gz
 # some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
@@ -1143,14 +1143,13 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.5.0.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-0.tar.gz
-	@cd $(EXTSRCDIR)/vgm && patch -p0 < $(PATCHDIR)/vgm.patch
+	@$(DOWNLOAD) vgm vgm.5.2.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-2.tar.gz
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.7.1 -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
@@ -1158,7 +1157,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 # vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.0.0
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.2.0
 
 # vgm touch
 vgm.touch:

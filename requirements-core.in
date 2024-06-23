@@ -1,4 +1,5 @@
 autopep8
+awkward-pandas
 # for uproot
 awkward
 boost-histogram
@@ -10,10 +11,11 @@ cython
 # Cymove is needed for compiling HAMMER with python bindings
 cymove
 dgl
+docutils
 eoshep
 flake8
 file-read-backwards
-docutils
+gitpython
 h5py
 ipython
 jira
@@ -27,13 +29,14 @@ metakernel
 mysql-connector-python
 nbsphinx
 pandas
+pyarrow
 pycodestyle
 PyJWT
 pylama
 pytest
 python-gitlab
 pytorch-ignite
-pytorch-lightning==1.5.6
+pytorch-lightning
 requests
 rise
 scikit-learn
@@ -41,7 +44,6 @@ scipy
 scons
 seaborn
 sly==0.4
-snakemake
 sphinx
 sphinx-book-theme
 sphinx-codeautolink
@@ -54,22 +56,27 @@ tqdm
 tensorflow
 tensorflow-probability
 # CPU version of pytorch
-https://download.pytorch.org/whl/cpu/torch-1.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:22997df8f3a3f9faed40ef9e7964d1869cafa0317cc4a5b115bfdf69323e8884
-https://download.pytorch.org/whl/cpu/torchvision-0.12.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:f3e382460d0dc8752ab2b97f943da996f3254ee868bc9592259ab55d7e1a5852
-https://download.pytorch.org/whl/cpu/torchaudio-0.11.0%2Bcpu-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:ac321c241de43bb258023b461d898c1828f3499ef8232134ef9e448fcf7d576c
-https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_scatter-2.0.9-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:665c755a840f6890ddc967a79622aaeb2d598de7177e6feac2781a0488cd28c2
-https://data.pyg.org/whl/torch-1.11.0%2Bcpu/torch_sparse-0.6.14-cp38-cp38-linux_x86_64.whl \
-    --hash=sha256:f6d66f3c3896f46bd4e169154046069db7d0e6e2996f34cf1793c86d9fc06b99
+https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:90089cae572672fb449c8ff1dc1b29daaffa117bf97ede7463dcd2fd1b991e4c
+https://download.pytorch.org/whl/cpu/torchvision-0.17.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:5f39e3bee1eba1b66e48753f85faa8d3698ec401ce90b09c7b36efd885129617
+https://download.pytorch.org/whl/cpu/torchaudio-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:144767aad7609ee7c0dfe9f163003db584aaab3bc69db388d56dad3772a267d4
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:656bca47f7e6b3ef9ad26234a401d764fa5aa03404f56941080f070ac4cd3bff
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_sparse-0.6.18%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:05944597acc9caf81f0f6b757e0033f6ed4aab198b00f581a615e47b2cd968a1
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:afc5ff837ae973914c09e60ae2a699b2f8a3af09427d069f74368aa8e572db2d
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_spline_conv-1.2.2%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
+    --hash=sha256:91ab296211559ab51c339df6fee1e291009750a73261826beef7705aca1400bb
 Theano
 torch-geometric
 uncertainties
 uproot
 uproot3
-widgetsnbextension
-xgboost
+ipywidgets
+# xgboost can be upgraded to 2.x as soon as we have a method for easily upgrading the xgboost-based weightfiles as well
+xgboost==1.7.6
 # to read zstd compressed files in uproot
 zstandard

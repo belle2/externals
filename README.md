@@ -114,12 +114,12 @@ externals. Basically, these are a result of running
     pip3 install -U pip setuptools wheel
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
                  eoshep flake8 file-read-backwards gitpython h5py ipython ipywidgets jira jupyter jupytext keras \
-                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas pyarrow pycodestyle PyJWT \
-                 pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy \
-                 scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput splinter \
-                 sweights tables tabulate tqdm tensorflow tensorflow-probability Theano \
-                 torch torch-cluster torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision \
-                 uncertainties uproot uproot3 xgboost zstandard
+                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas plothist pyarrow pycodestyle \
+		 pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
+		 scipy scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
+		 splinter sweights tables tabulate tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
+		 torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
+		 uproot3 xgboost zstandard
 
 All other packages are just dependencies of these and versions between them are fixed in
 the externals. The actual dependencies are determined using `pip-compile` from
@@ -152,7 +152,7 @@ a modified version containing some patches not yet included upstream (found in
 | [async-lru](https://pypi.org/project/async-lru/) | Simple LRU cache for asyncio | 2.0.4 | MIT License |
 | [attrs](https://pypi.org/project/attrs/) | Classes Without Boilerplate | 23.2.0 | MIT  |
 | [autocommand](https://pypi.org/project/autocommand/) | A library to create a command-line program from a function | 2.2.2 | LGPLv3 |
-| [autopep8](https://pypi.org/project/autopep8/) | A tool that automatically formats Python code to conform to the PEP 8 style guide | 2.3.0 | MIT  |
+| [autopep8](https://pypi.org/project/autopep8/) | A tool that automatically formats Python code to conform to the PEP 8 style guide | 2.3.1 | MIT  |
 | [awkward](https://pypi.org/project/awkward/) | Manipulate JSON-like data with NumPy-like idioms. | 2.6.5 | BSD-3-Clause |
 | [awkward-cpp](https://pypi.org/project/awkward-cpp/) | CPU kernels and compiled extensions for Awkward Array | 34 | BSD-3-Clause |
 | [awkward-pandas](https://pypi.org/project/awkward-pandas/) | Awkward Array Pandas Extension | 2023.8.0 | BSD  |
@@ -188,7 +188,7 @@ a modified version containing some patches not yet included upstream (found in
 | [executing](https://pypi.org/project/executing/) | Get the currently executing AST node of a frame, and other information | 2.0.1 | MIT |
 | [fastjsonschema](https://pypi.org/project/fastjsonschema/) | Fastest Python implementation of JSON schema | 2.20.0 | BSD |
 | [file-read-backwards](https://pypi.org/project/file-read-backwards/) | Memory efficient way of reading files line-by-line from the end of file | 3.1.0 | MIT license |
-| [filelock](https://pypi.org/project/filelock/) | A platform independent file lock. | 3.15.3 | The Unlicense |
+| [filelock](https://pypi.org/project/filelock/) | A platform independent file lock. | 3.15.4 | The Unlicense |
 | [flake8](https://pypi.org/project/flake8/) | the modular source code checker: pep8 pyflakes and co | 7.1.0 | MIT |
 | [flatbuffers](https://pypi.org/project/flatbuffers/) | The FlatBuffers serialization format for Python | 24.3.25 | Apache 2.0 |
 | [fonttools](https://pypi.org/project/fonttools/) | Tools to manipulate font files | 4.53.0 | MIT |
@@ -269,7 +269,7 @@ a modified version containing some patches not yet included upstream (found in
 | [oauthlib](https://pypi.org/project/oauthlib/) | A generic, spec-compliant, thorough implementation of the OAuth request-signing logic | 3.2.2 | BSD |
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
-| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License, Version 2.0 |
+| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
@@ -277,6 +277,7 @@ a modified version containing some patches not yet included upstream (found in
 | [pexpect](https://pypi.org/project/pexpect/) | Pexpect allows easy control of interactive console applications. | 4.9.0 | ISC license |
 | [pillow](https://pypi.org/project/pillow/) | Python Imaging Library (Fork) | 10.3.0 | HPND |
 | [platformdirs](https://pypi.org/project/platformdirs/) | A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`. | 4.2.2 | MIT  |
+| [plothist](https://pypi.org/project/plothist/) | Plot histograms in a scalable way and a beautiful style. | 1.2.4 | BSD  |
 | [pluggy](https://pypi.org/project/pluggy/) | plugin and hook calling mechanisms for python | 1.5.0 | MIT |
 | [portend](https://pypi.org/project/portend/) | TCP port monitoring and discovery | 3.2.0 | MIT  |
 | [prometheus-client](https://pypi.org/project/prometheus-client/) | Python client for the Prometheus monitoring system. | 0.20.0 | Apache Software  |
@@ -293,6 +294,7 @@ a modified version containing some patches not yet included upstream (found in
 | [pydocstyle](https://pypi.org/project/pydocstyle/) | Python docstring style checker | 6.3.0 | MIT |
 | [pyflakes](https://pypi.org/project/pyflakes/) | passive checker of Python programs | 3.2.0 | MIT |
 | [Pygments](https://pypi.org/project/Pygments/) | Pygments is a syntax highlighting package written in Python. | 2.18.0 | BSD-2-Clause |
+| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.13.4 | BSD 3-Clause License |
 | [PyJWT](https://pypi.org/project/PyJWT/) | JSON Web Token implementation in Python | 2.8.0 | MIT |
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |

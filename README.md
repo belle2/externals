@@ -116,7 +116,7 @@ externals. Basically, these are a result of running
 
     pip3 install -U pip setuptools wheel
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
-                 eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupytext keras \
+                 eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas plothist pyarrow pycodestyle \
                  pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
                  scipy scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
@@ -229,6 +229,7 @@ a modified version containing some patches not yet included upstream (found in
 | [jupyter-core](https://pypi.org/project/jupyter-core/) | Jupyter core package | 5.7.2 | BSD  |
 | [jupyter-events](https://pypi.org/project/jupyter-events/) | Jupyter Event System library | 0.10.0 | BSD  |
 | [jupyter-lsp](https://pypi.org/project/jupyter-lsp/) | Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server | 2.2.5 | BSD-3-Clause |
+| [jupyter-resource-usage](https://pypi.org/project/jupyter-resource-usage/) | Jupyter Extension to show resource usage | 1.0.2 | BSD  |
 | [jupyter-server](https://pypi.org/project/jupyter-server/) | The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications. | 2.14.1 | BSD  |
 | [jupyter-server-terminals](https://pypi.org/project/jupyter-server-terminals/) | A Jupyter Server Extension Providing Terminals. | 0.5.3 | BSD  |
 | [jupyterlab](https://pypi.org/project/jupyterlab/) | JupyterLab computational environment | 4.2.2 | BSD  |

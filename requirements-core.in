@@ -17,6 +17,7 @@ flake8
 file-read-backwards
 gitpython
 h5py
+iminuit
 ipython
 jira
 jupyter

@@ -120,7 +120,6 @@ export ROOT_OPTION:=
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so
 
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
@@ -450,6 +449,38 @@ $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	#Fix absolute path in xslt-config and lib/xsltConf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xsltConf.sh
+
+libmd: $(EXTINCDIR)/md5.h
+libmd.src: $(EXTSRCDIR)/libmd
+libmd.touch:
+	@rm -f $(EXTINCDIR)/md5.h
+
+$(EXTSRCDIR)/libmd:
+	@$(DOWNLOAD) libmd libmd-1.1.0.tar.xz https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz
+
+$(EXTINCDIR)/md5.h: $(EXTSRCDIR)/libmd
+	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
+            make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
+libmd.clean:
+	@rm -fr $(EXTINCDIR)/md5.h
+
+libbsd: $(EXTLIBDIR)/libbsd.so
+libbsd.src: $(EXTSRCDIR)/libbsd
+libbsd.touch:
+	@rm -f $(EXTLIBDIR)/libbsd.so
+
+$(EXTSRCDIR)/libbsd:
+	@$(DOWNLOAD) libbsd libbsd-0.12.2.tar.xz https://libbsd.freedesktop.org/releases/libbsd-0.12.2.tar.xz
+
+$(EXTLIBDIR)/libbsd.so: $(EXTSRCDIR)/libbsd
+	@echo "building libbsd"
+	@cp -fa $(EXTSRCDIR)/libbsd $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/libbsd && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
+	    make -j $(NPROCESSES) CPPFLAGS=-I$(EXTINCDIR) && make install$(INSTALL_TARGET_SUFFIX)
+
+libbsd.clean:
+	@rm -fr $(EXTINCDIR)/bsd.h $(EXTLIBDIR)/libbsd*
 
 zlib: $(EXTLIBDIR)/libz.so
 zlib.src: $(EXTSRCDIR)/zlib
@@ -1066,11 +1097,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-26-14.tar.gz https://root.cern/download/root_v6.26.14.source.tar.gz
+	@$(DOWNLOAD) root root_v6-32-00.tar.gz https://root.cern/download/root_v6.32.00.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
-	# progress bar crashes for low number of events (reported in ROOT github #13017)
-	@cd $(EXTSRCDIR)/root && patch -p0 < $(PATCHDIR)/root-13017-modulofix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -1080,20 +1109,44 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sfT $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
+# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary options to the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
+	    -DLIBBSDROOT=$(EXTDIR) \
 	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 -Dpyroot_legacy=OFF \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
-	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
-	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
-	    -Dfftw3=ON -Ddataframe=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
+	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
+	    -Dasimage=ON \
+	    -Dbuiltin_davix=OFF -Ddavix=ON \
+	    -Dbuiltin_fftw3=OFF -Dfftw3=ON -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
+	    -Dbuiltin_freetype=OFF \
+	    -Dbuiltin_ftgl=ON \
+	    -Dbuiltin_gl2ps=ON \
+	    -Dbuiltin_gsl=OFF -DGSL_DIR=$(EXTCOMDIR) \
+	    -Dbuiltin_lz4=OFF \
+	    -Dbuiltin_lzma=OFF -DLZMA_INCLUDE_DIR=$(EXTINCDIR) -DLZMA_LIBRARY=$(EXTCOMDIR)/lib/liblzma.so \
+	    -Dbuiltin_pcre=ON \
+	    -Dbuiltin_xxhash=ON \
+	    -Dbuiltin_zstd=ON  \
+	    -Ddataframe=ON \
+	    -Dexception=ON \
+	    -Dhttp=ON \
+	    -Dmathmore=ON \
+	    -Dmlp=ON \
+	    -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so \
+	    -Dpyroot=ON \
+	    -Droofit=ON \
+	    -Dshadowpw=ON \
+	    -Dshared=ON \
+	    -Dssl=ON \
+	    -Dtmva=ON \
+	    -Dtmva-sofie=ON \
+	    -Dvdt=OFF \
+	    -Dxml=ON \
+	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
+	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-#patch include/root/Rtypes.h to emit a warning if ClassImp is used
+# patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
 	@mkdir -p $(EXTSHRDIR)/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTSHRDIR)/root/tmva
 
@@ -1112,7 +1165,7 @@ roounfold: $(EXTLIBDIR)/libRooUnfold.so
 roounfold.src: $(EXTSRCDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:
-	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.0/RooUnfold-3.0.0.zip
+	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.2.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.2/RooUnfold-3.0.2.zip
 	@cd $(EXTSRCDIR)/RooUnfold && patch -p0 < $(PATCHDIR)/roounfold-doxygen.patch
 
 $(EXTLIBDIR)/libRooUnfold.so: $(EXTSRCDIR)/RooUnfold
@@ -1226,13 +1279,15 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 	# replace deprecated auto_ptr with unique_ptr
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
+	# enable compilation with c++17 standard
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-cpp17.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++14" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++17" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install

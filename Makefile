@@ -21,7 +21,7 @@ endif
 # in case we compile on EL7, we need additional packages
 EL7_PACKAGES :=
 ifeq ($(shell b2install-print-os),el 7)
-	EL7_PACKAGES := openssl
+	EL7_PACKAGES := openssl libmd libbsd
 endif
 
 # base packages we don't want to compile in debug mode anyway so we compile

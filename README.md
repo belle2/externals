@@ -54,6 +54,8 @@ externals.
 | [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.9.13          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.35          | MIT        |
+| [Libmd](https://www.hadrons.org/software/libmd/), included only for EL7      | 1.1.0           | BSD-3-Clause |
+| [Libbsd](https://libbsd.freedesktop.org/), included only for EL7             | 0.12.2          | BSD-3-Clause |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.4.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-16-03       | LGPLv2     |
@@ -71,8 +73,8 @@ externals.
 | [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
-| [ROOT](https://root.cern.ch/)                                                | 6.26/14         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.0.0           | -          |
+| [ROOT](https://root.cern.ch/)                                                | 6.32/00         | LGPLv2.1 (GPLv3 for MathMore)  |
+| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.0.2           | -          |
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |

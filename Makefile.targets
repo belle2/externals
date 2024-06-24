@@ -593,7 +593,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@mkdir -p $(EXTBUILDDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
 	    --prefix=$(EXTDIR) --with-ensurepip=install && \
-            make -j $(NPROCESSES) && make install
+	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
 	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
 

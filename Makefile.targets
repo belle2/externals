@@ -526,6 +526,22 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl
+openssl.clean:
+	@rm -fr $(EXTBUILDDIR)/openssl
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.0.14.tar.gz https://www.openssl.org/source/openssl-3.0.14.tar.gz
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) --openssldir=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:

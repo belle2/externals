@@ -62,6 +62,7 @@ externals.
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.10.5          | MIT        |
+| [OpenSSL](https://www.openssl.org/), included only for EL7                   | 3.0.14          | Apache v2  |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later |
 | [PHOTOS](https://gitlab.cern.ch/photospp/photospp/)                          | 3.64            | MIT        |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |

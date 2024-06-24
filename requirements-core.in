@@ -30,8 +30,10 @@ metakernel
 mysql-connector-python
 nbsphinx
 pandas
+plothist
 pyarrow
 pycodestyle
+pyhepmc
 PyJWT
 pylama
 pytest

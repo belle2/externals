@@ -2,7 +2,7 @@ diff --git a/source/materials/src/G4SurfaceProperty.cc b/source/materials/src/G4
 index d501c19..608b736 100644
 --- a/source/materials/src/G4SurfaceProperty.cc
 +++ b/source/materials/src/G4SurfaceProperty.cc
-@@ -89,7 +89,9 @@ void G4SurfaceProperty::DumpTableInfo()
+@@ -80,7 +80,9 @@ void G4SurfaceProperty::DumpTableInfo()
  
  void G4SurfaceProperty::CleanSurfacePropertyTable()
  {
@@ -10,9 +10,9 @@ index d501c19..608b736 100644
    DumpTableInfo();
 +#endif
    G4SurfacePropertyTable::iterator pos;
-   for(pos = theSurfacePropertyTable.begin();
-       pos != theSurfacePropertyTable.end(); pos++)
-@@ -101,4 +103,6 @@ void G4SurfaceProperty::CleanSurfacePropertyTable()
+   for (pos = theSurfacePropertyTable.begin(); pos != theSurfacePropertyTable.end(); pos++) {
+     if (*pos != nullptr) {
+@@ -89,4 +91,6 @@ void G4SurfaceProperty::CleanSurfacePropertyTable()
    }
    theSurfacePropertyTable.clear();
 +#ifdef G4VERBOSE

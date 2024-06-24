@@ -185,17 +185,18 @@ relocatable_fixes:
 	-@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$$ENV{BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/cmake/**/*.cmake 2>/dev/null
 # Fix absolute paths in pip packages and other python scripts id python is installed.
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
+	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(EXTBINDIR) `python3-config --configdir`; fi
 # If we have root, also fix the root python scripts
-	@if which python3 > /dev/null && which root > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(ROOTSYS)/bin; fi
+	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ] && [ -n "$$(which root | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then $(BELLE2_EXTERNALS_DIR)/tools/python_relocate.py $(EXTDIR) $(ROOTSYS)/bin; fi
 # Replace hardlinks by symlinks as cvmfs complains about hardlinks
 # But only if python3 actually exists
-	@if which python3 > /dev/null; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(BELLE2_EXTERNALS_DIR)/share; fi
+	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then $(BELLE2_EXTERNALS_DIR)/tools/convert_hardlinks.py $(EXTDIR) $(BELLE2_EXTERNALS_DIR)/share; fi
 # And finally split and strip all binaries except bazel because stripping bazel removes all functionality :?
 # Also, exclude libraries in some python packages where stripping breaks them
-	@if which python3 > /dev/null; then \
+	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
-	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel $(EXTDIR); \
+	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel \
+	    -e cpython-311 -e libpython3.11.so.1.0 -e bin/python -e libz -e libbz2 -e liblzma $(EXTDIR); \
 	    fi
 
 # create directories
@@ -556,6 +557,22 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl
+openssl.clean:
+	@rm -fr $(EXTBUILDDIR)/openssl
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.0.14.tar.gz https://www.openssl.org/source/openssl-3.0.14.tar.gz
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) --openssldir=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -600,7 +617,7 @@ python.touch:
 	@rm -fr $(EXTBINDIR)/python3
 
 $(EXTSRCDIR)/python:
-	@$(DOWNLOAD) python Python-3.8.8.xz https://www.python.org/ftp/python/3.8.8/Python-3.8.8.tar.xz
+	@$(DOWNLOAD) python Python-3.11.9.xz https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tar.xz
 
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
@@ -609,7 +626,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	    --prefix=$(EXTDIR) --with-ensurepip=install && \
 	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
-	@cp sitecustomize.py $(EXTLIBDIR)/python3.8/site-packages
+	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
 
 # not very nice but pip only can handle one pem file at a time, so concatenate
 # the tools pem file and the official one
@@ -656,8 +673,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	    -r requirements-base.txt -r requirements-core.txt
 # make pep8 compatibility link
 	cd $(EXTBINDIR) && ln -sf pycodestyle pep8
-# register widget extension in jupyter
-	jupyter nbextension enable --py --sys-prefix widgetsnbextension
 # make sure our own python3 kernel has precedence over /usr/share/jupyter/kernels/python3
 	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # but make the path relative so it can be found correctly if the externals are installed in a different directory.
@@ -736,7 +751,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
 	    -DBUILD_SHARED_LIBS=ON \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # google test clean
@@ -746,7 +761,7 @@ gtest.clean:
 
 # google test touch
 gtest.touch:
-	@rm -f $(EXTLIBDIR)/libgtest.a
+	@rm -f $(EXTLIBDIR)/libgtest.so
 
 
 # dependencies for boost
@@ -755,7 +770,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_78_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_85_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -766,7 +781,7 @@ $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
 	    -sBZIP2_INCLUDE=$(EXTINCDIR) -sBZIP2_LIBPATH=$(EXTLIBDIR) \
 	    -sLZMA_INCLUDE=$(EXTINCDIR) -sLZMA_LIBPATH=$(EXTLIBDIR) \
 	    --disable-icu --build-dir=$(EXTBUILDDIR) -j$(NPROCESSES) $(BOOST_OPTION)
-	@cd $(EXTLIBDIR) && ln -sfT libboost_python38.so libboost_python.so
+	@cd $(EXTLIBDIR) && ln -sfT libboost_python311.so libboost_python.so
 
 # boost clean
 boost.clean:
@@ -810,7 +825,7 @@ $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
 	    -DMATCH_COMPILER=ON && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -827,7 +842,7 @@ $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen
 	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 Vc.src: $(EXTSRCDIR)/Vc/README.md
@@ -836,7 +851,7 @@ Vc.touch:
 	rm -fr $(EXTLIBDIR)/libVc.a
 
 $(EXTSRCDIR)/Vc/README.md:
-	@$(DOWNLOAD) Vc Vc-1.4.3.tar.gz https://github.com/VcDevel/Vc/releases/download/1.4.3/Vc-1.4.3.tar.gz
+	@$(DOWNLOAD) Vc Vc-1.4.5.tar.gz https://github.com/VcDevel/Vc/archive/refs/tags/1.4.5.tar.gz
 
 $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"
@@ -851,7 +866,7 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.8.0.tar.gz https://github.com/root-project/veccore/archive/v0.8.0.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.1.tar.gz https://github.com/root-project/veccore/archive/v0.8.1.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
@@ -867,7 +882,7 @@ VecGeom.touch:
 	rm -fr $(EXTLIBDIR)/libvecgeom.a
 
 $(EXTSRCDIR)/VecGeom/README.md:
-	@$(DOWNLOAD) VecGeom VecGeom-v1.2.1.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.1/VecGeom-v1.2.1.tar.gz
+	@$(DOWNLOAD) VecGeom VecGeom-v1.2.8.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.8/VecGeom-v1.2.8.tar.gz
 	@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
@@ -889,7 +904,7 @@ clhep.src: $(EXTSRCDIR)/clhep/CLHEP/README.md
 
 # CLHEP download
 $(EXTSRCDIR)/clhep/CLHEP/README.md:
-	@$(DOWNLOAD) clhep clhep-2.4.6.2.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.6.2.tgz
+	@$(DOWNLOAD) clhep clhep-2.4.7.1.tgz https://proj-clhep.web.cern.ch/proj-clhep/dist1/clhep-2.4.7.1.tgz
 
 # CLHEP build
 $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
@@ -902,7 +917,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 # CLHEP clean
 clhep.clean:
 	@echo "cleaning CLHEP"
-	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.6.2 \
+	@rm -rf $(EXTBUILDDIR)/clhep $(EXTINCDIR)/CLHEP $(EXTLIBDIR)/libCLHEP* $(EXTBINDIR)/clhep-config $(EXTLIBDIR)/CLHEP-2.4.7.1 \
 	        $(EXTLIBDIR)/pkgconfig/clhep*.pc
 
 # CLHEP touch
@@ -916,7 +931,7 @@ geant4.src: $(EXTSRCDIR)/geant4
 
 # GEANT4 download
 $(EXTSRCDIR)/geant4:
-	@$(DOWNLOAD) geant4 geant4.11.1.1.tar.gz https://github.com/Geant4/geant4/archive/refs/tags/v11.1.1.tar.gz
+	@$(DOWNLOAD) geant4 geant4.11.2.1.tar.gz https://github.com/Geant4/geant4/archive/refs/tags/v11.2.1.tar.gz
 # some cosmetic verbosity fixes
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
@@ -1099,7 +1114,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DLIBBSDROOT=$(EXTDIR) \
 	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.8 \
+	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
 	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -Dasimage=ON \
 	    -Dbuiltin_davix=OFF -Ddavix=ON \
@@ -1196,14 +1211,13 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.5.0.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-0.tar.gz
-	@cd $(EXTSRCDIR)/vgm && patch -p0 < $(PATCHDIR)/vgm.patch
+	@$(DOWNLOAD) vgm vgm.5.2.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-2.tar.gz
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
-	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.6.2 -DWITH_EXAMPLES=OFF\
+	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.7.1 -DWITH_EXAMPLES=OFF\
 	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
@@ -1211,7 +1225,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 # vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.0.0
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.2.0
 
 # vgm touch
 vgm.touch:
@@ -1673,7 +1687,7 @@ $(EXTSRCDIR)/fann/README.md:
 $(EXTLIBDIR)/libfann.so: $(EXTSRCDIR)/fann/README.md
 	@mkdir -p $(EXTBUILDDIR)/fann
 	@cd $(EXTBUILDDIR)/fann && $(CMAKE) $(EXTSRCDIR)/fann \
-	    -DPython_ADDITIONAL_VERSIONS=3.8 -DPYTHON_EXECUTABLE=`which python3` && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # astyle: C/C++ code beautifier
@@ -1909,6 +1923,7 @@ $(EXTLIBDIR)/libHammerBase.so: $(EXTSRCDIR)/hammer/CMakeLists.txt
 	@mv $(EXTLIBDIR)/Hammer/* $(EXTLIBDIR)
 	@rm -r $(EXTLIBDIR)/Hammer
 
+
 pandoc.src: $(EXTSRCDIR)/pandoc/bin/pandoc
 pandoc: $(EXTBINDIR)/pandoc
 pandoc.touch:
@@ -2030,3 +2045,29 @@ whizard.touch:
 # whizard clean
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
+
+# dependencies for libtorch
+libtorch: $(EXTLIBDIR)/libtorch.so
+libtorch.src: $(EXTSRCDIR)/pytorch/README.md
+
+# libtorch download
+$(EXTSRCDIR)/pytorch/README.md:
+	@$(DOWNLOAD) pytorch pytorch-v2.2.2.tar.gz https://github.com/pytorch/pytorch/releases/download/v2.2.2/pytorch-v2.2.2.tar.gz
+
+# libtorch build
+$(EXTLIBDIR)/libtorch.so: $(EXTSRCDIR)/pytorch/README.md
+	@echo "building libtorch"
+	@mkdir -p $(EXTBUILDDIR)/pytorch-build
+	@cd $(EXTBUILDDIR)/pytorch-build && $(CMAKE) $(EXTSRCDIR)/pytorch \
+	    -DBUILD_SHARED_LIBS=ON -DPYTHON_EXECUTABLE=`which python3` \
+		-DCMAKE_CXX_FLAGS="-Wno-error=maybe-uninitialized -Wno-error=uninitialized -Wno-error=restrict" && \
+	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
+
+# libtorch clean
+libtorch.clean:
+	@echo "cleaning libtorch"
+	@rm -rf $(EXTBUILDDIR)/pytorch-build $(EXTINCDIR)/pytorch $(EXTLIBDIR)/libtorch.a
+
+# libtorch touch
+libtorch.touch:
+	@rm -f $(EXTLIBDIR)/libtorch.so

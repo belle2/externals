@@ -18,15 +18,21 @@ ifeq (,$(BELLE2_ARCH))
     $(error Architecture not defined. Please source the b2setup script.)
 endif
 
+# in case we compile on EL7, we need additional packages
+EL7_PACKAGES :=
+ifeq ($(shell b2install-print-os),el 7)
+	EL7_PACKAGES := openssl libmd libbsd
+endif
+
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=pkg-config-wrapper ninja gmp mpfr mpc isl gcc binutils zlib bzip2 xz lz4 curl git libxml2 libxslt libmd libbsd \
-    cmake sqlite hdf5 libffi python python-packages gdb boost gtest eigen astyle madgraph \
-    zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs \
+COMMON_PACKAGES:=pkg-config-wrapper ninja gmp mpfr mpc isl gcc binutils zlib bzip2 xz lz4 $(EL7_PACKAGES) \
+    curl git libxml2 libxslt cmake sqlite hdf5 libffi python python-packages gdb boost gtest eigen astyle \
+    madgraph zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs \
     Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json tbb root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \
     flc belle_legacy fann hammer pandoc fastjet roounfold functionalplus frugally-deep \
-    whizard
+    whizard libtorch
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 

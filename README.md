@@ -113,7 +113,7 @@ externals. Basically, these are a result of running
 
     pip3 install -U pip setuptools wheel
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
-                 eoshep flake8 file-read-backwards gitpython h5py ipython ipywidgets jira jupyter jupytext keras \
+                 eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas pyarrow pycodestyle PyJWT \
                  pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy \
                  scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput splinter \
@@ -205,6 +205,7 @@ a modified version containing some patches not yet included upstream (found in
 | [httpx](https://pypi.org/project/httpx/) | The next generation HTTP client. | 0.27.0 | BSD  |
 | [idna](https://pypi.org/project/idna/) | Internationalized Domain Names in Applications (IDNA) | 3.7 | BSD  |
 | [imagesize](https://pypi.org/project/imagesize/) | Getting image size from png/jpeg/jpeg2000/gif file | 1.4.1 | MIT |
+| [iminuit](https://pypi.org/project/iminuit/) | Jupyter-friendly Python frontend for MINUIT2 in C++ | 2.26.0 | MIT  |
 | [importlib-metadata](https://pypi.org/project/importlib-metadata/) | Read metadata from Python packages | 7.2.0 | Apache Software  |
 | [inflect](https://pypi.org/project/inflect/) | Correctly generate plurals, singular nouns, ordinals, indefinite articles | 7.3.0 | MIT  |
 | [iniconfig](https://pypi.org/project/iniconfig/) | brain-dead simple config-ini parsing | 2.0.0 | MIT  |

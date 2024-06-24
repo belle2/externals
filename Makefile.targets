@@ -1140,6 +1140,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dshared=ON \
 	    -Dssl=ON \
 	    -Dtmva=ON \
+	    -Dtmva-sofie=ON \
 	    -Dvdt=OFF \
 	    -Dxml=ON \
 	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \

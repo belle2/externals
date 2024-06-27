@@ -1117,6 +1117,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
 	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -Dasimage=ON \
+	    -Dbuiltin_afterimage=ON \
 	    -Dbuiltin_davix=OFF -Ddavix=ON \
 	    -Dbuiltin_fftw3=OFF -Dfftw3=ON -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dbuiltin_freetype=OFF \

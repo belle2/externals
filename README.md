@@ -113,7 +113,7 @@ externals. Basically, these are a result of running
 
     pip3 install -U pip setuptools wheel
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
-                 eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupytext keras \
+                 flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas plothist pyarrow pycodestyle \
                  pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
                  scipy scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
@@ -183,8 +183,6 @@ a modified version containing some patches not yet included upstream (found in
 | [dgl](https://pypi.org/project/dgl/) | Deep Graph Library | 2.1.0 | APACHE |
 | [dm-tree](https://pypi.org/project/dm-tree/) | Tree is a library for working with nested data structures. | 0.1.8 | Apache 2.0 |
 | [docutils](https://pypi.org/project/docutils/) | Docutils -- Python Documentation Utilities | 0.21.2 | Public Domain |
-| [dynesty](https://pypi.org/project/dynesty/) | A dynamic nested sampling package for computing Bayesian posteriors and evidences. | 2.1.3 | MIT |
-| [eoshep](https://pypi.org/project/eoshep/) | EOS -- A HEP program for Flavor Observables | 1.0.11 | GPLv2 |
 | [executing](https://pypi.org/project/executing/) | Get the currently executing AST node of a frame, and other information | 2.0.1 | MIT |
 | [fastjsonschema](https://pypi.org/project/fastjsonschema/) | Fastest Python implementation of JSON schema | 2.20.0 | BSD |
 | [file-read-backwards](https://pypi.org/project/file-read-backwards/) | Memory efficient way of reading files line-by-line from the end of file | 3.1.0 | MIT license |
@@ -299,7 +297,6 @@ a modified version containing some patches not yet included upstream (found in
 | [PyJWT](https://pypi.org/project/PyJWT/) | JSON Web Token implementation in Python | 2.8.0 | MIT |
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
-| [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
 | [pytest](https://pypi.org/project/pytest/) | pytest: simple powerful testing with Python | 8.2.2 | MIT |
 | [python-dateutil](https://pypi.org/project/python-dateutil/) | Extensions to the standard Python datetime module | 2.9.0.post0 | Dual License |
 | [python-gitlab](https://pypi.org/project/python-gitlab/) | A python wrapper for the GitLab API | 4.6.0 | LGPL-3.0-or-later |

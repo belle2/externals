@@ -12,7 +12,6 @@ cython
 cymove
 dgl
 docutils
-eoshep
 flake8
 file-read-backwards
 gitpython

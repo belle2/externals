@@ -68,7 +68,6 @@ externals.
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](https://pythia.org/)                                                | 8.215           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.11.9          | PSFL (BSD-style) |
-| [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
 | [ROOT](https://root.cern.ch/)                                                | 6.26/14         | LGPLv2.1 (GPLv3 for MathMore)  |

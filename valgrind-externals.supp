@@ -54936,3 +54936,18 @@
    ...
    fun:_ZN5cling13BackendPasses11runOnModuleERN4llvm6ModuleE
 }
+
+# Tensorflow suppressions
+{
+   TensorFlow
+   Memcheck:Leak
+   ...
+   obj:*tensorflow*
+}
+
+{
+   TensorFlow
+   Memcheck:Leak
+   ...
+   fun:*tensorflow*
+}

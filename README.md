@@ -82,7 +82,7 @@ externals.
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.1          | Apache v2  |
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.8           | Apache v2  |
-| [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.2     | GPLv2      |
+| [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.3     | GPLv2      |
 | [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |
 | [XRootD](http://xrootd.org/)                                                 | 5.6.1           | LGPLv3     |
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |

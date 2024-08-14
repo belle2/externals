@@ -1213,7 +1213,7 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.5.2.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-2.tar.gz
+	@$(DOWNLOAD) vgm vgm.5.3.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-3.tar.gz
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
@@ -1227,7 +1227,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 # vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.2.0
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.3.0
 
 # vgm touch
 vgm.touch:

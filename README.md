@@ -31,7 +31,7 @@ externals.
 | [davix](https://github.com/cern-fts/davix)                                   | 0.8.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.4.0           | MPLv2      |
 | [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.5           | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
-| [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-00       | GPLv3      |
+| [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-01       | GPLv3      |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
 | [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
 | [FastJet](http://fastjet.fr/)                                                | 3.3.4           | GPLv2 (and others) |

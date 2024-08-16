@@ -836,13 +836,12 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.9.6.src.tar.gz https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.12.0.src.tar.gz https://www.doxygen.nl/files/doxygen-1.12.0.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen
-	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
-	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
+	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 Vc.src: $(EXTSRCDIR)/Vc/README.md

@@ -1984,41 +1984,6 @@ frugally-deep.clean:
 	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep
 
 
-### OCaml
-
-# dependencies for ocaml
-ocaml: $(EXTDIR)/ocaml/bin/ocaml
-ocaml.src: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-
-# ocaml download
-$(EXTSRCDIR)/ocaml/INSTALL.adoc:
-	$(DOWNLOAD) ocaml ocaml-4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
-
-# ocaml build
-$(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-	@echo "building ocaml"
-	@cp -fa $(EXTSRCDIR)/ocaml $(EXTBUILDDIR)
-	@mkdir -p $(EXTDIR)/ocaml
-	@cd $(EXTBUILDDIR)/ocaml && ./configure --prefix=$(EXTDIR)/ocaml && \
-	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
-
-# ocaml touch
-ocaml.touch:
-	@rm -rf $(EXTDIR)/ocaml
-
-# ocaml clean
-ocaml.clean:
-	@echo "removing ocaml"
-	@rm -rf $(EXTBUILDDIR)/ocaml
-
-# Remove ocaml.
-ocaml.remove:
-	@echo "removing ocaml"
-	@rm -rf $(EXTCOMDIR)/bin/ocaml*
-	@rm -rf $(EXTCOMDIR)/ocaml
-
-
 ### WHIZARD
 
 # dependendencies for whizard
@@ -2031,9 +1996,8 @@ $(EXTSRCDIR)/whizard/INSTALL:
 	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build
-$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
+$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL
 	@echo "building whizard"
-	EXTBINDIR=$(EXTDIR)/ocaml/bin:$(EXTBINDIR)
 	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \

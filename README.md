@@ -229,7 +229,7 @@ a modified version containing some patches not yet included upstream (found in
 | [jupyter-core](https://pypi.org/project/jupyter-core/) | Jupyter core package | 5.7.2 | BSD  |
 | [jupyter-events](https://pypi.org/project/jupyter-events/) | Jupyter Event System library | 0.10.0 | BSD  |
 | [jupyter-lsp](https://pypi.org/project/jupyter-lsp/) | Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server | 2.2.5 | BSD-3-Clause |
-| [jupyter-resource-usage](https://pypi.org/project/jupyter-resource-usage/) | Jupyter Extension to show resource usage | 1.0.2 | BSD  |
+| [jupyter-resource-usage](https://pypi.org/project/jupyter-resource-usage/) | Jupyter Extension to show resource usage | 1.1.0 | BSD  |
 | [jupyter-server](https://pypi.org/project/jupyter-server/) | The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications. | 2.14.1 | BSD  |
 | [jupyter-server-terminals](https://pypi.org/project/jupyter-server-terminals/) | A Jupyter Server Extension Providing Terminals. | 0.5.3 | BSD  |
 | [jupyterlab](https://pypi.org/project/jupyterlab/) | JupyterLab computational environment | 4.2.2 | BSD  |
@@ -288,7 +288,7 @@ a modified version containing some patches not yet included upstream (found in
 | [prometheus-client](https://pypi.org/project/prometheus-client/) | Python client for the Prometheus monitoring system. | 0.20.0 | Apache Software  |
 | [prompt-toolkit](https://pypi.org/project/prompt-toolkit/) | Library for building powerful interactive command lines in Python | 3.0.47 | BSD  |
 | [protobuf](https://pypi.org/project/protobuf/) |  | 4.25.3 | 3-Clause BSD License |
-| [psutil](https://pypi.org/project/psutil/) | Cross-platform lib for process and system monitoring in Python. | 6.0.0 | BSD-3-Clause |
+| [psutil](https://pypi.org/project/psutil/) | Cross-platform lib for process and system monitoring in Python. | 5.9.8 | BSD-3-Clause |
 | [ptyprocess](https://pypi.org/project/ptyprocess/) | Run a subprocess in a pseudo terminal | 0.7.0 | ISC  |
 | [pure-eval](https://pypi.org/project/pure-eval/) | Safely evaluate AST nodes without side effects | 0.2.2 | MIT |
 | [py-cpuinfo](https://pypi.org/project/py-cpuinfo/) | Get CPU info with pure Python | 9.0.0 | MIT |

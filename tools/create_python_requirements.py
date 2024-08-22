@@ -47,9 +47,9 @@ def call_subprocess(commands, log_info="", shell=False):
         raise Exception(error_message)
 
 
-def compile_requirements(python_exec, inputfile, update=False, remaining=[]):
-    requirements_file = os.path.splitext(inputfile)[0] + ".txt"
-    outputfile = "tmp_" + requirements_file
+def compile_requirements(python_exec, inputfiles, update=False, remaining=[]):
+    requirements_files = [os.path.splitext(inputfile)[0] + ".txt" for inputfile in inputfiles]
+    outputfile = "tmp_" + requirements_files[0]
 
     pip_tools_args = [
         python_exec,
@@ -66,14 +66,15 @@ def compile_requirements(python_exec, inputfile, update=False, remaining=[]):
 
     if update:
         pip_tools_args += ["--upgrade"]
-
-    pip_tools_args += [inputfile]
+        pip_tools_args += [*inputfiles]
+    else:
+        pip_tools_args += [*requirements_files]
 
     if remaining:
         pip_tools_args += [f"--pip-args {' '.join(remaining)}"]
 
-    call_subprocess(commands=pip_tools_args, log_info=f"Compiling packges for {inputfile}")
-    return outputfile, requirements_file
+    call_subprocess(commands=pip_tools_args, log_info=f"Compiling packages for {inputfiles[0]}")
+    return outputfile, requirements_files[0]
 
 
 def get_packages(lines, ignore_other_url=False):
@@ -273,10 +274,10 @@ if __name__ == "__main__":
 
     # Compile the requirements
     base_outputfile, base_requirements = compile_requirements(
-        python_exec=python_exec, inputfile="requirements-base.in", update=args.upgrade, remaining=remaining
+        python_exec=python_exec, inputfiles=["requirements-base.in"], update=args.upgrade, remaining=remaining
     )
     core_outputfile, core_requirements = compile_requirements(
-        python_exec=python_exec, inputfile="requirements-core.in", update=args.upgrade, remaining=remaining
+        python_exec=python_exec, inputfiles=["requirements-core.in", "requirements-base.in"], update=args.upgrade, remaining=remaining
     )
 
     # Create requirements files

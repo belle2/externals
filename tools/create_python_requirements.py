@@ -132,7 +132,7 @@ def create_requirements(raw_file, requirements_file):
     with open(raw_file) as file:
         lines = file.readlines()
 
-    # Ignore costum urls
+    # Ignore custom urls
     packages = get_packages(lines, ignore_other_url=True)
 
     # Create .txt files
@@ -150,7 +150,7 @@ def create_requirements(raw_file, requirements_file):
         commands=["hashin", "-r", requirements_file] + packages, log_info=f"Preparing hashes in {requirements_file}"
     )
 
-    # Add costum url and hashes to the requirements file
+    # Add custom url and hashes to the requirements file
     input_file = os.path.splitext(requirements_file)[0] + ".in"
     other_url_lines = get_other_url_hashes(input_file)
 
@@ -180,9 +180,9 @@ def get_package_information(name, version):
     license = json_info.get("license", "")
 
     # Special cases:
-    # - No lisence key info given
-    # - Entire lisence text in info license
-    # => Check for license informartion in classifier
+    # - No license key info given
+    # - Entire license text in info license
+    # => Check for license information in classifier
     if not license or len(license) > 20:
         for classifier in json_info.get("classifiers", []):
             if classifier.startswith("License :: "):
@@ -194,7 +194,7 @@ def get_package_information(name, version):
                 f"{json_data['info'].get('name', '')} seems to have only a long license text. Setting license to first word in the license text to '{license}'. Please verify."
             )
 
-    # Last check fo None type license
+    # Last check of None type license
     if license is None:
         license = ""
 

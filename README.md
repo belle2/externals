@@ -160,7 +160,7 @@ a modified version containing some patches not yet included upstream (found in
 | [awkward-cpp](https://pypi.org/project/awkward-cpp/) | CPU kernels and compiled extensions for Awkward Array | 34 | BSD-3-Clause |
 | [awkward-pandas](https://pypi.org/project/awkward-pandas/) | Awkward Array Pandas Extension | 2023.8.0 | BSD  |
 | [awkward0](https://pypi.org/project/awkward0/) | Manipulate arrays of complex data structures as easily as Numpy. | 0.15.5 | BSD 3-clause |
-| [Babel](https://pypi.org/project/Babel/) | Internationalization utilities | 2.15.0 | BSD-3-Clause |
+| [babel](https://pypi.org/project/babel/) | Internationalization utilities | 2.15.0 | BSD-3-Clause |
 | [beautifulsoup4](https://pypi.org/project/beautifulsoup4/) | Screen-scraping library | 4.12.3 | MIT License |
 | [bleach](https://pypi.org/project/bleach/) | An easy safelist-based HTML-sanitizing tool. | 6.1.0 | Apache Software  |
 | [blosc2](https://pypi.org/project/blosc2/) | Python wrapper for the C-Blosc2 library | 2.7.0 | BSD-3-Clause |

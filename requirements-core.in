@@ -21,6 +21,7 @@ iminuit
 ipython
 jira
 jupyter
+jupyter-resource-usage
 jupytext
 keras
 lightgbm

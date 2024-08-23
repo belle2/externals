@@ -53,6 +53,9 @@ endif
 # are not passed to sub make with the catch all pattern rule below
 all: $(BELLE2_EXTERNALS_OPTION) ;
 
+# define target "optionals" for building all optional packages
+optionals: $(COMMON_OPTIONAL) ;
+
 # make the directories for all options we need
 dirs:
 	@$(foreach option,common $(DIRTARGETS),$(MAKE) -f Makefile.targets \

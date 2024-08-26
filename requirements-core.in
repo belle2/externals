@@ -29,6 +29,8 @@ matplotlib
 metakernel
 mysql-connector-python
 nbsphinx
+onnx
+onnxruntime
 pandas
 plothist
 pyarrow
@@ -42,10 +44,11 @@ pytorch-ignite
 pytorch-lightning
 requests
 rise
-scikit-learn
-scipy
+scikit-learn==1.5.0
+scipy==1.13.1
 scons
 seaborn
+skl2onnx
 sly==0.4
 sphinx
 sphinx-book-theme
@@ -55,6 +58,7 @@ splinter
 sweights
 tables
 tabulate
+tf2onnx
 tqdm
 tensorflow
 tensorflow-probability

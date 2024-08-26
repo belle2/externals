@@ -195,7 +195,7 @@ relocatable_fixes:
 # Also, exclude libraries in some python packages where stripping breaks them
 	@if [ -n "$$(which python3 | grep -o $(BELLE2_EXTERNALS_DIR))" ]; then \
 	    $(BELLE2_EXTERNALS_DIR)/tools/strip_the_elves.py \
-	    -j $(NPROCESSES) --exclude-dirs PIL scipy tables torchvision -e bin/bazel \
+	    -j $(NPROCESSES) --exclude-dirs PIL scipy scikit-learn torch_cluster torch_sparse tables torchvision -e bin/bazel \
 	    -e cpython-311 -e libpython3.11.so.1.0 -e bin/python -e libz -e libbz2 -e liblzma $(EXTDIR); \
 	    fi
 
@@ -2072,3 +2072,4 @@ libtorch.clean:
 # libtorch touch
 libtorch.touch:
 	@rm -f $(EXTLIBDIR)/libtorch.so
+

@@ -591,8 +591,11 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@mkdir -p $(EXTBUILDDIR)/python
-	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
-	    --prefix=$(EXTDIR) --with-ensurepip=install && \
+	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install \
+	    BZIP2_CFLAGS="-I$(EXTINCDIR)" BZIP2_LIBS="-L$(EXTLIBDIR) -lbz2" \
+	    LIBLZMA_CFLAGS="-I$(EXTINCDIR)" LIBLZMA_LIBS="-L$(EXTLIBDIR) -lzma" \
+	    ZLIB_CFLAGS="-I$(EXTINCDIR)" ZLIB_LIBS="-L$(EXTLIBDIR) -lz" && \
 	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
 	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages

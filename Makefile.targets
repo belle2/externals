@@ -122,6 +122,10 @@ ifdef ORACLE_HOME
 endif
 ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so
 
+# use built externals packages for building other external packages
+export CPPFLAGS=-isystem$(EXTINCDIR)
+export LDFLAGS=-L$(EXTLIBDIR)
+
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
 # disabled due to BII-5219: new xerces-c not compatible with our ancient Geant4

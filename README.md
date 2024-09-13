@@ -345,9 +345,9 @@ a modified version containing some patches not yet included upstream (found in
 | [tables](https://pypi.org/project/tables/) | Hierarchical datasets for Python | 3.9.2 | BSD 3-Clause License |
 | [tabulate](https://pypi.org/project/tabulate/) | Pretty-print tabular data | 0.9.0 | MIT |
 | [tempora](https://pypi.org/project/tempora/) | Objects and routines pertaining to date and time (tempora) | 5.6.0 | MIT  |
-| [tensorboard](https://pypi.org/project/tensorboard/) | TensorBoard lets you watch Tensors Flow | 2.16.2 | Apache 2.0 |
+| [tensorboard](https://pypi.org/project/tensorboard/) | TensorBoard lets you watch Tensors Flow | 2.17.1 | Apache 2.0 |
 | [tensorboard-data-server](https://pypi.org/project/tensorboard-data-server/) | Fast data loading for TensorBoard | 0.7.2 | Apache 2.0 |
-| [tensorflow](https://pypi.org/project/tensorflow/) | TensorFlow is an open source machine learning framework for everyone. | 2.16.1 | Apache 2.0 |
+| [tensorflow](https://pypi.org/project/tensorflow/) | TensorFlow is an open source machine learning framework for everyone. | 2.17.0 | Apache 2.0 |
 | [tensorflow-io-gcs-filesystem](https://pypi.org/project/tensorflow-io-gcs-filesystem/) | TensorFlow IO | 0.37.0 | Apache Software  |
 | [tensorflow-probability](https://pypi.org/project/tensorflow-probability/) | Probabilistic modeling and statistical inference in TensorFlow | 0.24.0 | Apache 2.0 |
 | [termcolor](https://pypi.org/project/termcolor/) | ANSI color formatting for output in terminal | 2.4.0 | MIT |

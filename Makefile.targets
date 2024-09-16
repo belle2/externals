@@ -121,6 +121,10 @@ ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
 
+# use built externals packages for building other external packages
+export CPPFLAGS=-isystem$(EXTINCDIR)
+export LDFLAGS=-L$(EXTLIBDIR)
+
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
 # disabled due to BII-5219: new xerces-c not compatible with our ancient Geant4

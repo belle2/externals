@@ -1150,6 +1150,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dvdt=OFF \
 	    -Dxml=ON \
 	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
+	    -DCMAKE_CXX_FLAGS=-D__ROOFIT_NOBANNER \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 # patch include/root/Rtypes.h to emit a warning if ClassImp is used

@@ -345,7 +345,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-14.1.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-14.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 

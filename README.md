@@ -80,7 +80,7 @@ externals.
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
-| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.1          | Apache v2  |
+| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.2          | Apache v2  |
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.8           | Apache v2  |
 | [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.3     | GPLv2      |
 | [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |

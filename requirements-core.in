@@ -44,8 +44,8 @@ pytorch-ignite
 pytorch-lightning
 requests
 rise
-scikit-learn==1.5.0
-scipy==1.13.1
+scikit-learn
+scipy
 scons
 seaborn
 skl2onnx

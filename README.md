@@ -173,6 +173,7 @@ a modified version containing some patches not yet included upstream (found in
 | [CherryPy](https://pypi.org/project/CherryPy/) | Object-Oriented HTTP framework | 18.10.0 | BSD  |
 | [click](https://pypi.org/project/click/) | Composable command line interface toolkit | 8.1.7 | BSD-3-Clause |
 | [cloudpickle](https://pypi.org/project/cloudpickle/) | Pickler class to extend the standard pickle.Pickler functionality | 3.0.0 | BSD-3-Clause |
+| [coloredlogs](https://pypi.org/project/coloredlogs/) | Colored terminal output for Python's logging module | 15.0.1 | MIT |
 | [comm](https://pypi.org/project/comm/) | Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc. | 0.2.2 | BSD  |
 | [commonmark](https://pypi.org/project/commonmark/) | Python parser for the CommonMark Markdown spec | 0.9.1 | BSD-3-Clause |
 | [contourpy](https://pypi.org/project/contourpy/) | Python library for calculating contours of 2D quadrilateral grids | 1.2.1 | BSD  |
@@ -206,6 +207,7 @@ a modified version containing some patches not yet included upstream (found in
 | [h5py](https://pypi.org/project/h5py/) | Read and write HDF5 files from Python | 3.11.0 | BSD-3-Clause |
 | [httpcore](https://pypi.org/project/httpcore/) | A minimal low-level HTTP client. | 1.0.5 | BSD  |
 | [httpx](https://pypi.org/project/httpx/) | The next generation HTTP client. | 0.27.0 | BSD  |
+| [humanfriendly](https://pypi.org/project/humanfriendly/) | Human friendly output for text interfaces using Python | 10.0 | MIT |
 | [idna](https://pypi.org/project/idna/) | Internationalized Domain Names in Applications (IDNA) | 3.7 | BSD  |
 | [imagesize](https://pypi.org/project/imagesize/) | Getting image size from png/jpeg/jpeg2000/gif file | 1.4.1 | MIT |
 | [iminuit](https://pypi.org/project/iminuit/) | Jupyter-friendly Python frontend for MINUIT2 in C++ | 2.26.0 | MIT  |
@@ -271,6 +273,9 @@ a modified version containing some patches not yet included upstream (found in
 | [numexpr](https://pypi.org/project/numexpr/) | Fast numerical expression evaluator for NumPy | 2.10.1 | MIT  |
 | [numpy](https://pypi.org/project/numpy/) | Fundamental package for array computing in Python | 1.26.4 | BSD  |
 | [oauthlib](https://pypi.org/project/oauthlib/) | A generic, spec-compliant, thorough implementation of the OAuth request-signing logic | 3.2.2 | BSD |
+| [onnx](https://pypi.org/project/onnx/) | Open Neural Network Exchange | 1.17.0 | Apache License v2.0 |
+| [onnxconverter-common](https://pypi.org/project/onnxconverter-common/) | ONNX Converter and Optimization Tools | 1.13.0 | MIT License |
+| [onnxruntime](https://pypi.org/project/onnxruntime/) | ONNX Runtime is a runtime accelerator for Machine Learning models | 1.21.0 | MIT License |
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
 | [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
@@ -329,6 +334,7 @@ a modified version containing some patches not yet included upstream (found in
 | [seaborn](https://pypi.org/project/seaborn/) | Statistical data visualization | 0.13.2 | BSD  |
 | [Send2Trash](https://pypi.org/project/Send2Trash/) | Send file to trash natively under Mac OS X, Windows and Linux | 1.8.3 | BSD License |
 | [six](https://pypi.org/project/six/) | Python 2 and 3 compatibility utilities | 1.16.0 | MIT |
+| [skl2onnx](https://pypi.org/project/skl2onnx/) | Convert scikit-learn models to ONNX | 1.18.0 | Apache License v2.0 |
 | [sly](https://pypi.org/project/sly/) | SLY - Sly Lex Yacc | 0.4 | BSD |
 | [smmap](https://pypi.org/project/smmap/) | A pure Python implementation of a sliding window memory map manager | 5.0.1 | BSD |
 | [sniffio](https://pypi.org/project/sniffio/) | Sniff out which async library your code is running under | 1.3.1 | MIT OR Apache-2.0 |
@@ -358,6 +364,7 @@ a modified version containing some patches not yet included upstream (found in
 | [tensorflow-probability](https://pypi.org/project/tensorflow-probability/) | Probabilistic modeling and statistical inference in TensorFlow | 0.24.0 | Apache 2.0 |
 | [termcolor](https://pypi.org/project/termcolor/) | ANSI color formatting for output in terminal | 2.4.0 | MIT |
 | [terminado](https://pypi.org/project/terminado/) | Tornado websocket backend for the Xterm.js Javascript terminal emulator library. | 0.18.1 | BSD  |
+| [tf2onnx](https://pypi.org/project/tf2onnx/) | Tensorflow to ONNX converter | 1.8.4 | Apache License v2.0 |
 | [Theano](https://pypi.org/project/Theano/) | Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs. | 1.0.5 | BSD |
 | [threadpoolctl](https://pypi.org/project/threadpoolctl/) | threadpoolctl | 3.5.0 | BSD-3-Clause |
 | [tinycss2](https://pypi.org/project/tinycss2/) | A tiny CSS parser | 1.3.0 | BSD  |

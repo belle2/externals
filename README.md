@@ -274,6 +274,7 @@ a modified version containing some patches not yet included upstream (found in
 | [oauthlib](https://pypi.org/project/oauthlib/) | A generic, spec-compliant, thorough implementation of the OAuth request-signing logic | 3.2.2 | BSD |
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
+| [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
 | [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
@@ -304,6 +305,7 @@ a modified version containing some patches not yet included upstream (found in
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
 | [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
+| [PySocks](https://pypi.org/project/PySocks/) | A Python SOCKS client module | 1.7.1 | BSD |
 | [pytest](https://pypi.org/project/pytest/) | pytest: simple powerful testing with Python | 8.2.2 | MIT |
 | [python-dateutil](https://pypi.org/project/python-dateutil/) | Extensions to the standard Python datetime module | 2.9.0.post0 | Dual License |
 | [python-gitlab](https://pypi.org/project/python-gitlab/) | A python wrapper for the GitLab API | 4.6.0 | LGPL-3.0-or-later |
@@ -328,12 +330,14 @@ a modified version containing some patches not yet included upstream (found in
 | [scipy](https://pypi.org/project/scipy/) | Fundamental algorithms for scientific computing in Python | 1.13.1 | BSD  |
 | [SCons](https://pypi.org/project/SCons/) | Open Source next-generation build tool. | 4.7.0 | MIT |
 | [seaborn](https://pypi.org/project/seaborn/) | Statistical data visualization | 0.13.2 | BSD  |
+| [selenium](https://pypi.org/project/selenium/) | Official Python bindings for Selenium WebDriver | 4.32.0 | Apache 2.0 |
 | [Send2Trash](https://pypi.org/project/Send2Trash/) | Send file to trash natively under Mac OS X, Windows and Linux | 1.8.3 | BSD License |
 | [six](https://pypi.org/project/six/) | Python 2 and 3 compatibility utilities | 1.16.0 | MIT |
 | [sly](https://pypi.org/project/sly/) | SLY - Sly Lex Yacc | 0.4 | BSD |
 | [smmap](https://pypi.org/project/smmap/) | A pure Python implementation of a sliding window memory map manager | 5.0.1 | BSD |
 | [sniffio](https://pypi.org/project/sniffio/) | Sniff out which async library your code is running under | 1.3.1 | MIT OR Apache-2.0 |
 | [snowballstemmer](https://pypi.org/project/snowballstemmer/) | This package provides 29 stemmers for 28 languages generated from Snowball algorithms. | 2.2.0 | BSD-3-Clause |
+| [sortedcontainers](https://pypi.org/project/sortedcontainers/) | Sorted Containers -- Sorted List, Sorted Dict, Sorted Set | 2.4.0 | Apache 2.0 |
 | [soupsieve](https://pypi.org/project/soupsieve/) | A modern CSS selector implementation for Beautiful Soup. | 2.5 | MIT  |
 | [Sphinx](https://pypi.org/project/Sphinx/) | Python documentation generator | 7.3.7 | BSD  |
 | [sphinx-book-theme](https://pypi.org/project/sphinx-book-theme/) | A clean book theme for scientific explanations and documentation with Sphinx | 1.1.3 | BSD  |
@@ -368,6 +372,8 @@ a modified version containing some patches not yet included upstream (found in
 | [tornado](https://pypi.org/project/tornado/) | Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed. | 6.4.1 | Apache-2.0 |
 | [tqdm](https://pypi.org/project/tqdm/) | Fast, Extensible Progress Meter | 4.66.4 | MPL-2.0 AND MIT |
 | [traitlets](https://pypi.org/project/traitlets/) | Traitlets Python configuration system | 5.14.3 | BSD  |
+| [trio](https://pypi.org/project/trio/) | A friendly Python library for async concurrency and I/O | 0.30.0 |  |
+| [trio-websocket](https://pypi.org/project/trio-websocket/) | WebSocket library for Trio | 0.12.2 | MIT  |
 | [typeguard](https://pypi.org/project/typeguard/) | Run-time type checker for Python | 4.3.0 | MIT |
 | [types-python-dateutil](https://pypi.org/project/types-python-dateutil/) | Typing stubs for python-dateutil | 2.9.0.20240316 | Apache-2.0 license |
 | [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.2 | PSF |
@@ -385,6 +391,7 @@ a modified version containing some patches not yet included upstream (found in
 | [Werkzeug](https://pypi.org/project/Werkzeug/) | The comprehensive WSGI web application library. | 3.0.3 | BSD  |
 | [widgetsnbextension](https://pypi.org/project/widgetsnbextension/) | Jupyter interactive widgets for Jupyter Notebook | 4.0.11 | BSD 3-Clause License |
 | [wrapt](https://pypi.org/project/wrapt/) | Module for decorators, wrappers and monkey patching. | 1.16.0 | BSD |
+| [wsproto](https://pypi.org/project/wsproto/) | WebSockets state-machine based protocol implementation | 1.2.0 | MIT License |
 | [xgboost](https://pypi.org/project/xgboost/) | XGBoost Python Package | 1.7.6 | Apache-2.0 |
 | [yarl](https://pypi.org/project/yarl/) | Yet another URL library | 1.9.4 | Apache-2.0 |
 | [zipp](https://pypi.org/project/zipp/) | Backport of pathlib-compatible object wrapper for zip files | 3.19.2 | MIT  |

@@ -369,7 +369,7 @@ a modified version containing some patches not yet included upstream (found in
 | [traitlets](https://pypi.org/project/traitlets/) | Traitlets Python configuration system | 5.14.3 | BSD  |
 | [typeguard](https://pypi.org/project/typeguard/) | Run-time type checker for Python | 4.3.0 | MIT |
 | [types-python-dateutil](https://pypi.org/project/types-python-dateutil/) | Typing stubs for python-dateutil | 2.9.0.20240316 | Apache-2.0 license |
-| [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.2 | Python |
+| [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.2 | PSF |
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | calculations with values with uncertainties, error propagation | 3.2.1 | Revised BSD License |
 | [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.6.1 | BSD  |

@@ -2008,7 +2008,7 @@ $(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
+	@cd $(EXTBINDIR) && ln -sf ../whizard/bin/whizard
 
 # whizard touch
 whizard.touch:

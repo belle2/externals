@@ -47,6 +47,7 @@ scikit-learn
 scipy
 scons
 seaborn
+selenium
 sly==0.4
 sphinx
 sphinx-book-theme

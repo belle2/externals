@@ -373,7 +373,7 @@ a modified version containing some patches not yet included upstream (found in
 | [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.2 | PSF |
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | calculations with values with uncertainties, error propagation | 3.2.1 | Revised BSD License |
-| [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.3.7 | BSD  |
+| [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.6.1 | BSD  |
 | [uproot3](https://pypi.org/project/uproot3/) | ROOT I/O in pure Python and Numpy. | 3.14.4 | BSD 3-clause |
 | [uproot3-methods](https://pypi.org/project/uproot3-methods/) | Pythonic mix-ins for ROOT classes. | 0.10.1 | BSD 3-clause |
 | [uri-template](https://pypi.org/project/uri-template/) | RFC 6570 URI Template Processor | 1.3.0 | MIT License |
@@ -386,6 +386,7 @@ a modified version containing some patches not yet included upstream (found in
 | [widgetsnbextension](https://pypi.org/project/widgetsnbextension/) | Jupyter interactive widgets for Jupyter Notebook | 4.0.11 | BSD 3-Clause License |
 | [wrapt](https://pypi.org/project/wrapt/) | Module for decorators, wrappers and monkey patching. | 1.16.0 | BSD |
 | [xgboost](https://pypi.org/project/xgboost/) | XGBoost Python Package | 1.7.6 | Apache-2.0 |
+| [xxhash](https://pypi.org/project/xxhash/) | Python binding for xxHash | 3.5.0 | BSD |
 | [yarl](https://pypi.org/project/yarl/) | Yet another URL library | 1.9.4 | Apache-2.0 |
 | [zipp](https://pypi.org/project/zipp/) | Backport of pathlib-compatible object wrapper for zip files | 3.19.2 | MIT  |
 | [zstandard](https://pypi.org/project/zstandard/) | Zstandard bindings for Python | 0.22.0 | BSD |

@@ -47,9 +47,9 @@ def call_subprocess(commands, log_info="", shell=False):
         raise Exception(error_message)
 
 
-def compile_requirements(python_exec, inputfile, update=False, remaining=[]):
-    requirements_file = os.path.splitext(inputfile)[0] + ".txt"
-    outputfile = "tmp_" + requirements_file
+def compile_requirements(python_exec, inputfiles, update=False, remaining=[]):
+    requirements_files = [os.path.splitext(inputfile)[0] + ".txt" for inputfile in inputfiles]
+    outputfile = "tmp_" + requirements_files[0]
 
     pip_tools_args = [
         python_exec,
@@ -66,14 +66,15 @@ def compile_requirements(python_exec, inputfile, update=False, remaining=[]):
 
     if update:
         pip_tools_args += ["--upgrade"]
-
-    pip_tools_args += [inputfile]
+        pip_tools_args += [*inputfiles]
+    else:
+        pip_tools_args += [*requirements_files]
 
     if remaining:
         pip_tools_args += [f"--pip-args {' '.join(remaining)}"]
 
-    call_subprocess(commands=pip_tools_args, log_info=f"Compiling packges for {inputfile}")
-    return outputfile, requirements_file
+    call_subprocess(commands=pip_tools_args, log_info=f"Compiling packages for {inputfiles[0]}")
+    return outputfile, requirements_files[0]
 
 
 def get_packages(lines, ignore_other_url=False):
@@ -132,7 +133,7 @@ def create_requirements(raw_file, requirements_file):
     with open(raw_file) as file:
         lines = file.readlines()
 
-    # Ignore costum urls
+    # Ignore custom urls
     packages = get_packages(lines, ignore_other_url=True)
 
     # Create .txt files
@@ -150,7 +151,7 @@ def create_requirements(raw_file, requirements_file):
         commands=["hashin", "-r", requirements_file] + packages, log_info=f"Preparing hashes in {requirements_file}"
     )
 
-    # Add costum url and hashes to the requirements file
+    # Add custom url and hashes to the requirements file
     input_file = os.path.splitext(requirements_file)[0] + ".in"
     other_url_lines = get_other_url_hashes(input_file)
 
@@ -180,9 +181,9 @@ def get_package_information(name, version):
     license = json_info.get("license", "")
 
     # Special cases:
-    # - No lisence key info given
-    # - Entire lisence text in info license
-    # => Check for license informartion in classifier
+    # - No license key info given
+    # - Entire license text in info license
+    # => Check for license information in classifier
     if not license or len(license) > 20:
         for classifier in json_info.get("classifiers", []):
             if classifier.startswith("License :: "):
@@ -194,7 +195,7 @@ def get_package_information(name, version):
                 f"{json_data['info'].get('name', '')} seems to have only a long license text. Setting license to first word in the license text to '{license}'. Please verify."
             )
 
-    # Last check fo None type license
+    # Last check of None type license
     if license is None:
         license = ""
 
@@ -273,10 +274,10 @@ if __name__ == "__main__":
 
     # Compile the requirements
     base_outputfile, base_requirements = compile_requirements(
-        python_exec=python_exec, inputfile="requirements-base.in", update=args.upgrade, remaining=remaining
+        python_exec=python_exec, inputfiles=["requirements-base.in"], update=args.upgrade, remaining=remaining
     )
     core_outputfile, core_requirements = compile_requirements(
-        python_exec=python_exec, inputfile="requirements-core.in", update=args.upgrade, remaining=remaining
+        python_exec=python_exec, inputfiles=["requirements-core.in", "requirements-base.in"], update=args.upgrade, remaining=remaining
     )
 
     # Create requirements files

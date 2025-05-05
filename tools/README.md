@@ -1,6 +1,11 @@
 This directory contains a few scripts that are useful for checking/updating the
 externals and are not required for just installing/compiling and using them.
 
+### Adding a new python package
+1. Add the python package's name to the requirements-XXX.in and requirements-XXX.txt files (in the latter either with or without a pinned version)
+2. Run the `create_python_requirements` tool without the update option.
+3. If conflicts are reported by the previous command one must manually release the version dependency of the conflicting packages in the .txt file.
+
 ### Upgrading the python version
 First of all, updating the python version requires great care of the environment in which it is performed. 
 One can get easily biased by local settings, such as links in `$PATH` and `$PYTHONPATH`, or local installations of python (the python compilation is also not protected from local installations). 

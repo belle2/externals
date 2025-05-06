@@ -21,6 +21,7 @@ iminuit
 ipython
 jira
 jupyter
+jupyter-resource-usage
 jupytext
 keras
 lightgbm
@@ -49,6 +50,7 @@ scipy
 scons
 seaborn
 skl2onnx
+selenium
 sly==0.4
 sphinx
 sphinx-book-theme

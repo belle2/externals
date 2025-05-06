@@ -121,12 +121,15 @@ ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
 
+# use built externals packages for building other external packages
+export CPPFLAGS=-isystem$(EXTINCDIR)
+export LDFLAGS=-L$(EXTLIBDIR)
+
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
-# disabled due to BII-5219: new xerces-c not compatible with our ancient Geant4
-#ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
-#  GEANT4_OPTION+= -DGEANT4_USE_GDML=ON
-#endif
+ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
+  GEANT4_OPTION+= -DGEANT4_USE_GDML=ON
+endif
 
 # check for graphics packages needed to built ROOT's OpenGL support
 GL_GLU_EXISTS:=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
@@ -342,7 +345,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-14.1.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-14.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -622,8 +625,11 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@mkdir -p $(EXTBUILDDIR)/python
-	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
-	    --prefix=$(EXTDIR) --with-ensurepip=install && \
+	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install \
+	    BZIP2_CFLAGS="-I$(EXTINCDIR)" BZIP2_LIBS="-L$(EXTLIBDIR) -lbz2" \
+	    LIBLZMA_CFLAGS="-I$(EXTINCDIR)" LIBLZMA_LIBS="-L$(EXTLIBDIR) -lzma" \
+	    ZLIB_CFLAGS="-I$(EXTINCDIR)" ZLIB_LIBS="-L$(EXTLIBDIR) -lz" && \
 	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
 	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
@@ -770,7 +776,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_85_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_85_0.tar.bz2 https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -836,7 +842,7 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.12.0.src.tar.gz https://www.doxygen.nl/files/doxygen-1.12.0.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.13.2.src.tar.gz https://www.doxygen.nl/files/doxygen-1.13.2.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
@@ -865,7 +871,7 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.8.1.tar.gz https://github.com/root-project/veccore/archive/v0.8.1.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.2.tar.gz https://github.com/root-project/veccore/archive/v0.8.2.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
@@ -1144,6 +1150,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dvdt=OFF \
 	    -Dxml=ON \
 	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
+	    -DCMAKE_CXX_FLAGS=-D__ROOFIT_NOBANNER \
 	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 # patch include/root/Rtypes.h to emit a warning if ClassImp is used
@@ -1983,41 +1990,6 @@ frugally-deep.clean:
 	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep
 
 
-### OCaml
-
-# dependencies for ocaml
-ocaml: $(EXTDIR)/ocaml/bin/ocaml
-ocaml.src: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-
-# ocaml download
-$(EXTSRCDIR)/ocaml/INSTALL.adoc:
-	$(DOWNLOAD) ocaml ocaml-4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
-
-# ocaml build
-$(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-	@echo "building ocaml"
-	@cp -fa $(EXTSRCDIR)/ocaml $(EXTBUILDDIR)
-	@mkdir -p $(EXTDIR)/ocaml
-	@cd $(EXTBUILDDIR)/ocaml && ./configure --prefix=$(EXTDIR)/ocaml && \
-	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
-
-# ocaml touch
-ocaml.touch:
-	@rm -rf $(EXTDIR)/ocaml
-
-# ocaml clean
-ocaml.clean:
-	@echo "removing ocaml"
-	@rm -rf $(EXTBUILDDIR)/ocaml
-
-# Remove ocaml.
-ocaml.remove:
-	@echo "removing ocaml"
-	@rm -rf $(EXTCOMDIR)/bin/ocaml*
-	@rm -rf $(EXTCOMDIR)/ocaml
-
-
 ### WHIZARD
 
 # dependendencies for whizard
@@ -2030,14 +2002,13 @@ $(EXTSRCDIR)/whizard/INSTALL:
 	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build
-$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
+$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL
 	@echo "building whizard"
-	EXTBINDIR=$(EXTDIR)/ocaml/bin:$(EXTBINDIR)
 	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
+	@cd $(EXTBINDIR) && ln -sf ../whizard/bin/whizard
 
 # whizard touch
 whizard.touch:

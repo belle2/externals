@@ -26,7 +26,7 @@ endif
 
 # base packages we don't want to compile in debug mode anyway so we compile
 # them with option common
-COMMON_PACKAGES:=pkg-config-wrapper ninja gmp mpfr mpc isl gcc binutils zlib bzip2 xz lz4 $(EL7_PACKAGES) \
+COMMON_PACKAGES:=pkg-config-wrapper ninja zlib bzip2 xz lz4 gmp mpfr mpc isl gcc binutils $(EL7_PACKAGES) \
     curl git libxml2 libxslt cmake sqlite hdf5 libffi python python-packages gdb boost gtest eigen astyle \
     madgraph zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs \
     Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json tbb root fastbdt vgm rave \
@@ -52,6 +52,9 @@ endif
 # The semi-colon is important to make sure that these empty requisite targets
 # are not passed to sub make with the catch all pattern rule below
 all: $(BELLE2_EXTERNALS_OPTION) ;
+
+# define target "optionals" for building all optional packages
+optionals: $(COMMON_OPTIONAL) ;
 
 # make the directories for all options we need
 dirs:

@@ -55,6 +55,10 @@ endif
 export CC:=gcc
 export CXX:=g++
 
+# Default C++ standard
+export CXX_STANDARD_FLAG := "-std=c++20"
+export CXX_STANDARD_CMAKE_FLAG := -DCMAKE_CXX_STANDARD=20
+
 # By default, we provide DWARF debug information even for optimized packages, as
 # it has uses for dynamic analysis like profiling. You can opt out of it for
 # selected packages using the following target file name prefix filter.
@@ -756,7 +760,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@echo "building gtest"
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
-	    -DBUILD_SHARED_LIBS=ON \
+	    -DBUILD_SHARED_LIBS=ON $(CXX_STANDARD_CMAKE_FLAG) \
 	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -862,7 +866,7 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"
 	@mkdir -p $(EXTBUILDDIR)/Vc
 	@cd $(EXTBUILDDIR)/Vc && $(CMAKE) $(EXTSRCDIR)/Vc \
-	    -DBUILD_TESTING=OFF && \
+	    -DBUILD_TESTING=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecCore.src: $(EXTSRCDIR)/VecCore/README.md
@@ -877,7 +881,8 @@ $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
 	@mkdir -p $(EXTBUILDDIR)/VecCore
 	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \
-	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF -DBUILD_UMESIMD=OFF && \
+	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF \
+	    -DBUILD_UMESIMD=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 
@@ -895,7 +900,7 @@ $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@mkdir -p $(EXTBUILDDIR)/VecGeom
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
 	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
-	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 -DBUILD_DOC=OFF && \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom $(CXX_STANDARD_CMAKE_FLAG) -DBUILD_DOC=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecGeom.clean:
@@ -916,7 +921,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/clhep
 	@cd $(EXTBUILDDIR)/clhep && $(CMAKE) $(EXTSRCDIR)/clhep/CLHEP \
-	    -DCLHEP_BUILD_CXXSTD="-std=c++17" -DCLHEP_SINGLE_THREAD=ON && \
+	    -DCLHEP_BUILD_CXXSTD=$(CXX_STANDARD_FLAG) -DCLHEP_SINGLE_THREAD=ON && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # CLHEP clean
@@ -950,7 +955,7 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
 	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
-	    -DCMAKE_CXX_STANDARD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
+	    $(CXX_STANDARD_CMAKE_FLAG) -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
@@ -1036,7 +1041,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
-	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
+	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    $(EXTSRCDIR)/xrootd && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1085,7 +1090,7 @@ $(EXTLIBDIR)/libtbb.so: $(EXTSRCDIR)/tbb/README.md
 	@echo "building tbb"
 	@mkdir -p $(EXTBUILDDIR)/tbb
 	@cd $(EXTBUILDDIR)/tbb && $(CMAKE) $(EXTSRCDIR)/tbb \
-	    -DTBB_TEST=OFF && \
+	    -DTBB_TEST=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 tbb.clean:
@@ -1118,7 +1123,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
 	    -DLIBBSDROOT=$(EXTDIR) \
-	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
+	    -Dgminimal=ON -Dfail-on-missing=ON $(CXX_STANDARD_CMAKE_FLAG) \
 	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
 	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -Dasimage=ON \
@@ -1226,7 +1231,7 @@ $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
 	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.7.1 -DWITH_EXAMPLES=OFF\
-	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
+	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include $(CXX_STANDARD_CMAKE_FLAG) \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1286,7 +1291,7 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 	# replace deprecated auto_ptr with unique_ptr
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
-	# enable compilation with c++17 standard
+	# enable compilation with c++17 and newer standard
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-cpp17.patch
 
 # rave build
@@ -1294,7 +1299,7 @@ $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++17" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS=$(CXX_STANDARD_FLAG) $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -1382,7 +1387,7 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 # Pythia disables optimizations when enabling debug symbols ... so let's just define the flags we want by running ./configure once,
 # looking at the default flags it uses anc copying them here with some adjustments
 	@cd $(EXTBUILDDIR)/pythia && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-shared \
-	    --with-hepmc2=$(EXTDIR) --cxx-common="-g -O3 -std=c++14 -pedantic -W -Wall -Wshadow -fPIC" && \
+	    --with-hepmc2=$(EXTDIR) --cxx-common="-g -O3 $(CXX_STANDARD_FLAG) -pedantic -W -Wall -Wshadow -fPIC" && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -1476,6 +1481,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
 	    -DEVTGEN_PYTHIA=ON \
 	    -DEVTGEN_PHOTOS=ON \
 	    -DEVTGEN_TAUOLA=ON \
+	    $(CXX_STANDARD_CMAKE_FLAG) \
 	    ${EXTSRCDIR}/evtgen && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1584,7 +1590,7 @@ $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@mkdir -p $(EXTBUILDDIR)/eigen
 	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=include \
 	    -DCMAKEPACKAGE_INSTALL_DIR=lib/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=lib/pkgconfig \
-	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON && \
+	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # eigen clean

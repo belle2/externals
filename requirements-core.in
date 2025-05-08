@@ -30,6 +30,8 @@ matplotlib
 metakernel
 mysql-connector-python
 nbsphinx
+onnx
+onnxruntime
 pandas
 plothist
 pyarrow
@@ -47,6 +49,7 @@ scikit-learn
 scipy
 scons
 seaborn
+skl2onnx
 selenium
 sly==0.4
 sphinx
@@ -57,6 +60,7 @@ splinter
 sweights
 tables
 tabulate
+tf2onnx
 tqdm
 tensorflow
 tensorflow-probability

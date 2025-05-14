@@ -2056,7 +2056,7 @@ libonnxruntime.src: $(EXTSRCDIR)/onnxruntime/README.md
 
 # libonnxruntime download
 $(EXTSRCDIR)/onnxruntime/README.md:
-	@$(DOWNLOAD) onnxruntime onnxruntime-v1.20.2.tar.gz https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.20.2.tar.gz
+	@$(DOWNLOAD) onnxruntime onnxruntime-v1.22.0.tar.gz https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.22.0.tar.gz
 
 # libonnxruntime build
 $(EXTLIBDIR)/libonnxruntime.so: $(EXTSRCDIR)/onnxruntime/README.md

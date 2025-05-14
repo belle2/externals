@@ -32,7 +32,7 @@ COMMON_PACKAGES:=pkg-config-wrapper ninja zlib bzip2 xz lz4 gmp mpfr mpc isl gcc
     Vc VecCore VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json tbb root fastbdt vgm rave \
     MillepedeII hepmc pythia photos tauola evtgen cry \
     flc belle_legacy fann hammer pandoc fastjet roounfold functionalplus frugally-deep \
-    whizard libtorch
+    whizard
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 

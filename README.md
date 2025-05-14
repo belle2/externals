@@ -38,7 +38,7 @@ externals.
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
 | [Frugally-deep](https://github.com/Dobiasd/frugally-deep)                    | 0.15.19-p0      | MIT        |
 | [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)                  | 0.2.18-p0       | [Boost Software License](http://www.boost.org/users/license.html) |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 14.1.0          | GPLv2/GPLv3 + Runtime library Exception |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 14.2.0          | GPLv2/GPLv3 + Runtime library Exception |
 | [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 14.2            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 11.2.1          | Geant4 License |
 | [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
@@ -80,7 +80,7 @@ externals.
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
-| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.1          | Apache v2  |
+| [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.2          | Apache v2  |
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.8           | Apache v2  |
 | [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.3     | GPLv2      |
 | [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |
@@ -103,7 +103,7 @@ To compile any of these just go into the external directory and type
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
 | [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 2.6             | GPLv3      |
-| [Doxygen](http://www.doxygen.org)                                            | 1.12.0          | GPL        |
+| [Doxygen](http://www.doxygen.org)                                            | 1.13.2          | GPL        |
 | [LLVM/Clang](http://llvm.org/), including libcxx and sanitizer tools         | 18.1.6          | [Apache 2 License with LLVM Exceptions](http://releases.llvm.org/18.1.6/LICENSE.TXT) |
 | [Valgrind](http://valgrind.org/)                                             | 3.17.0          | GPLv2      |
 
@@ -117,10 +117,10 @@ externals. Basically, these are a result of running
     pip3 install -U pip setuptools wheel
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
-                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx pandas plothist pyarrow pycodestyle \
+                 lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
                  pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
-                 scipy scons seaborn sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
-                 splinter sweights tables tabulate tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
+                 scipy scons seaborn selenium skl2onnx sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
+                 splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
                  torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
                  uproot3 xgboost zstandard
 
@@ -160,7 +160,7 @@ a modified version containing some patches not yet included upstream (found in
 | [awkward-cpp](https://pypi.org/project/awkward-cpp/) | CPU kernels and compiled extensions for Awkward Array | 34 | BSD-3-Clause |
 | [awkward-pandas](https://pypi.org/project/awkward-pandas/) | Awkward Array Pandas Extension | 2023.8.0 | BSD  |
 | [awkward0](https://pypi.org/project/awkward0/) | Manipulate arrays of complex data structures as easily as Numpy. | 0.15.5 | BSD 3-clause |
-| [Babel](https://pypi.org/project/Babel/) | Internationalization utilities | 2.15.0 | BSD-3-Clause |
+| [babel](https://pypi.org/project/babel/) | Internationalization utilities | 2.15.0 | BSD-3-Clause |
 | [beautifulsoup4](https://pypi.org/project/beautifulsoup4/) | Screen-scraping library | 4.12.3 | MIT License |
 | [bleach](https://pypi.org/project/bleach/) | An easy safelist-based HTML-sanitizing tool. | 6.1.0 | Apache Software  |
 | [blosc2](https://pypi.org/project/blosc2/) | Python wrapper for the C-Blosc2 library | 2.7.0 | BSD-3-Clause |
@@ -173,6 +173,7 @@ a modified version containing some patches not yet included upstream (found in
 | [CherryPy](https://pypi.org/project/CherryPy/) | Object-Oriented HTTP framework | 18.10.0 | BSD  |
 | [click](https://pypi.org/project/click/) | Composable command line interface toolkit | 8.1.7 | BSD-3-Clause |
 | [cloudpickle](https://pypi.org/project/cloudpickle/) | Pickler class to extend the standard pickle.Pickler functionality | 3.0.0 | BSD-3-Clause |
+| [coloredlogs](https://pypi.org/project/coloredlogs/) | Colored terminal output for Python's logging module | 15.0.1 | MIT |
 | [comm](https://pypi.org/project/comm/) | Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc. | 0.2.2 | BSD  |
 | [commonmark](https://pypi.org/project/commonmark/) | Python parser for the CommonMark Markdown spec | 0.9.1 | BSD-3-Clause |
 | [contourpy](https://pypi.org/project/contourpy/) | Python library for calculating contours of 2D quadrilateral grids | 1.2.1 | BSD  |
@@ -206,6 +207,7 @@ a modified version containing some patches not yet included upstream (found in
 | [h5py](https://pypi.org/project/h5py/) | Read and write HDF5 files from Python | 3.11.0 | BSD-3-Clause |
 | [httpcore](https://pypi.org/project/httpcore/) | A minimal low-level HTTP client. | 1.0.5 | BSD  |
 | [httpx](https://pypi.org/project/httpx/) | The next generation HTTP client. | 0.27.0 | BSD  |
+| [humanfriendly](https://pypi.org/project/humanfriendly/) | Human friendly output for text interfaces using Python | 10.0 | MIT |
 | [idna](https://pypi.org/project/idna/) | Internationalized Domain Names in Applications (IDNA) | 3.7 | BSD  |
 | [imagesize](https://pypi.org/project/imagesize/) | Getting image size from png/jpeg/jpeg2000/gif file | 1.4.1 | MIT |
 | [iminuit](https://pypi.org/project/iminuit/) | Jupyter-friendly Python frontend for MINUIT2 in C++ | 2.26.0 | MIT  |
@@ -272,8 +274,12 @@ a modified version containing some patches not yet included upstream (found in
 | [numexpr](https://pypi.org/project/numexpr/) | Fast numerical expression evaluator for NumPy | 2.10.1 | MIT  |
 | [numpy](https://pypi.org/project/numpy/) | Fundamental package for array computing in Python | 1.26.4 | BSD  |
 | [oauthlib](https://pypi.org/project/oauthlib/) | A generic, spec-compliant, thorough implementation of the OAuth request-signing logic | 3.2.2 | BSD |
+| [onnx](https://pypi.org/project/onnx/) | Open Neural Network Exchange | 1.17.0 | Apache License v2.0 |
+| [onnxconverter-common](https://pypi.org/project/onnxconverter-common/) | ONNX Converter and Optimization Tools | 1.13.0 | MIT License |
+| [onnxruntime](https://pypi.org/project/onnxruntime/) | ONNX Runtime is a runtime accelerator for Machine Learning models | 1.21.0 | MIT License |
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
+| [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
 | [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
@@ -304,6 +310,7 @@ a modified version containing some patches not yet included upstream (found in
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
 | [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
+| [PySocks](https://pypi.org/project/PySocks/) | A Python SOCKS client module | 1.7.1 | BSD |
 | [pytest](https://pypi.org/project/pytest/) | pytest: simple powerful testing with Python | 8.2.2 | MIT |
 | [python-dateutil](https://pypi.org/project/python-dateutil/) | Extensions to the standard Python datetime module | 2.9.0.post0 | Dual License |
 | [python-gitlab](https://pypi.org/project/python-gitlab/) | A python wrapper for the GitLab API | 4.6.0 | LGPL-3.0-or-later |
@@ -328,12 +335,15 @@ a modified version containing some patches not yet included upstream (found in
 | [scipy](https://pypi.org/project/scipy/) | Fundamental algorithms for scientific computing in Python | 1.13.1 | BSD  |
 | [SCons](https://pypi.org/project/SCons/) | Open Source next-generation build tool. | 4.7.0 | MIT |
 | [seaborn](https://pypi.org/project/seaborn/) | Statistical data visualization | 0.13.2 | BSD  |
+| [selenium](https://pypi.org/project/selenium/) | Official Python bindings for Selenium WebDriver | 4.32.0 | Apache 2.0 |
 | [Send2Trash](https://pypi.org/project/Send2Trash/) | Send file to trash natively under Mac OS X, Windows and Linux | 1.8.3 | BSD License |
 | [six](https://pypi.org/project/six/) | Python 2 and 3 compatibility utilities | 1.16.0 | MIT |
+| [skl2onnx](https://pypi.org/project/skl2onnx/) | Convert scikit-learn models to ONNX | 1.18.0 | Apache License v2.0 |
 | [sly](https://pypi.org/project/sly/) | SLY - Sly Lex Yacc | 0.4 | BSD |
 | [smmap](https://pypi.org/project/smmap/) | A pure Python implementation of a sliding window memory map manager | 5.0.1 | BSD |
 | [sniffio](https://pypi.org/project/sniffio/) | Sniff out which async library your code is running under | 1.3.1 | MIT OR Apache-2.0 |
 | [snowballstemmer](https://pypi.org/project/snowballstemmer/) | This package provides 29 stemmers for 28 languages generated from Snowball algorithms. | 2.2.0 | BSD-3-Clause |
+| [sortedcontainers](https://pypi.org/project/sortedcontainers/) | Sorted Containers -- Sorted List, Sorted Dict, Sorted Set | 2.4.0 | Apache 2.0 |
 | [soupsieve](https://pypi.org/project/soupsieve/) | A modern CSS selector implementation for Beautiful Soup. | 2.5 | MIT  |
 | [Sphinx](https://pypi.org/project/Sphinx/) | Python documentation generator | 7.3.7 | BSD  |
 | [sphinx-book-theme](https://pypi.org/project/sphinx-book-theme/) | A clean book theme for scientific explanations and documentation with Sphinx | 1.1.3 | BSD  |
@@ -359,6 +369,7 @@ a modified version containing some patches not yet included upstream (found in
 | [tensorflow-probability](https://pypi.org/project/tensorflow-probability/) | Probabilistic modeling and statistical inference in TensorFlow | 0.24.0 | Apache 2.0 |
 | [termcolor](https://pypi.org/project/termcolor/) | ANSI color formatting for output in terminal | 2.4.0 | MIT |
 | [terminado](https://pypi.org/project/terminado/) | Tornado websocket backend for the Xterm.js Javascript terminal emulator library. | 0.18.1 | BSD  |
+| [tf2onnx](https://pypi.org/project/tf2onnx/) | Tensorflow to ONNX converter | 1.8.4 | Apache License v2.0 |
 | [Theano](https://pypi.org/project/Theano/) | Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs. | 1.0.5 | BSD |
 | [threadpoolctl](https://pypi.org/project/threadpoolctl/) | threadpoolctl | 3.5.0 | BSD-3-Clause |
 | [tinycss2](https://pypi.org/project/tinycss2/) | A tiny CSS parser | 1.3.0 | BSD  |
@@ -368,12 +379,14 @@ a modified version containing some patches not yet included upstream (found in
 | [tornado](https://pypi.org/project/tornado/) | Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed. | 6.4.1 | Apache-2.0 |
 | [tqdm](https://pypi.org/project/tqdm/) | Fast, Extensible Progress Meter | 4.66.4 | MPL-2.0 AND MIT |
 | [traitlets](https://pypi.org/project/traitlets/) | Traitlets Python configuration system | 5.14.3 | BSD  |
+| [trio](https://pypi.org/project/trio/) | A friendly Python library for async concurrency and I/O | 0.30.0 |  |
+| [trio-websocket](https://pypi.org/project/trio-websocket/) | WebSocket library for Trio | 0.12.2 | MIT  |
 | [typeguard](https://pypi.org/project/typeguard/) | Run-time type checker for Python | 4.3.0 | MIT |
 | [types-python-dateutil](https://pypi.org/project/types-python-dateutil/) | Typing stubs for python-dateutil | 2.9.0.20240316 | Apache-2.0 license |
 | [typing-extensions](https://pypi.org/project/typing-extensions/) | Backported and Experimental Type Hints for Python 3.8+ | 4.12.2 | PSF |
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | calculations with values with uncertainties, error propagation | 3.2.1 | Revised BSD License |
-| [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.3.7 | BSD  |
+| [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.6.1 | BSD  |
 | [uproot3](https://pypi.org/project/uproot3/) | ROOT I/O in pure Python and Numpy. | 3.14.4 | BSD 3-clause |
 | [uproot3-methods](https://pypi.org/project/uproot3-methods/) | Pythonic mix-ins for ROOT classes. | 0.10.1 | BSD 3-clause |
 | [uri-template](https://pypi.org/project/uri-template/) | RFC 6570 URI Template Processor | 1.3.0 | MIT License |
@@ -385,7 +398,9 @@ a modified version containing some patches not yet included upstream (found in
 | [Werkzeug](https://pypi.org/project/Werkzeug/) | The comprehensive WSGI web application library. | 3.0.3 | BSD  |
 | [widgetsnbextension](https://pypi.org/project/widgetsnbextension/) | Jupyter interactive widgets for Jupyter Notebook | 4.0.11 | BSD 3-Clause License |
 | [wrapt](https://pypi.org/project/wrapt/) | Module for decorators, wrappers and monkey patching. | 1.16.0 | BSD |
+| [wsproto](https://pypi.org/project/wsproto/) | WebSockets state-machine based protocol implementation | 1.2.0 | MIT License |
 | [xgboost](https://pypi.org/project/xgboost/) | XGBoost Python Package | 1.7.6 | Apache-2.0 |
+| [xxhash](https://pypi.org/project/xxhash/) | Python binding for xxHash | 3.5.0 | BSD |
 | [yarl](https://pypi.org/project/yarl/) | Yet another URL library | 1.9.4 | Apache-2.0 |
 | [zipp](https://pypi.org/project/zipp/) | Backport of pathlib-compatible object wrapper for zip files | 3.19.2 | MIT  |
 | [zstandard](https://pypi.org/project/zstandard/) | Zstandard bindings for Python | 0.22.0 | BSD |

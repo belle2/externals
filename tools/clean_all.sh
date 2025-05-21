@@ -17,7 +17,7 @@ wait
 
 echo "Cleaning up src/ subdirectories..."
 find src/ -mindepth 1 -maxdepth 1 -type d \
-    ! -name "python-packages" ! -name "sphinx-argparse" \
+    ! -name "python-packages" \
     -print0 | xargs -0 -P4 -I{} bash -c 'echo "Deleting {}"; rm -rf "{}"'
 
 echo "Cleanup completed."

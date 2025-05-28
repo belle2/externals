@@ -53,6 +53,7 @@ skl2onnx
 selenium
 sly==0.4
 sphinx
+sphinx-argparse
 sphinx-book-theme
 sphinx-codeautolink
 sphinxcontrib-programoutput

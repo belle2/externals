@@ -687,8 +687,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # but make the path relative so it can be found correctly if the externals are installed in a different directory.
 	sed -i 's#$(EXTBINDIR)/*##g' $(EXTSHRDIR)/jupyter/kernels/python3/kernel.json
-# install our own version of sphinx-argparse
-	pip3 install -U --no-deps src/sphinx-argparse
 # install the belle2style files
 	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
 

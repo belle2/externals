@@ -119,7 +119,7 @@ externals. Basically, these are a result of running
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
                  pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
-                 scipy scons seaborn selenium skl2onnx sly sphinx sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
+                 scipy scons seaborn selenium skl2onnx sly sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
                  splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
                  torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
                  uproot3 xgboost zstandard
@@ -128,10 +128,6 @@ All other packages are just dependencies of these and versions between them are 
 the externals. The actual dependencies are determined using `pip-compile` from
 [pip-tools](https://github.com/jazzband/pip-tools/), see
 `tools/create_python_requirements.py` for details.
-
-The package [sphinx-argparse](https://github.com/ribozz/sphinx-argparse/) is included in
-a modified version containing some patches not yet included upstream (found in
-`src/sphinx-argparse`).
 
 
 [//]: # (START PYTHON_PKG)
@@ -346,6 +342,7 @@ a modified version containing some patches not yet included upstream (found in
 | [sortedcontainers](https://pypi.org/project/sortedcontainers/) | Sorted Containers -- Sorted List, Sorted Dict, Sorted Set | 2.4.0 | Apache 2.0 |
 | [soupsieve](https://pypi.org/project/soupsieve/) | A modern CSS selector implementation for Beautiful Soup. | 2.5 | MIT  |
 | [Sphinx](https://pypi.org/project/Sphinx/) | Python documentation generator | 7.3.7 | BSD  |
+| [sphinx-argparse](https://pypi.org/project/sphinx-argparse/) | A sphinx extension that automatically documents argparse commands and options | 0.5.2 | MIT  |
 | [sphinx-book-theme](https://pypi.org/project/sphinx-book-theme/) | A clean book theme for scientific explanations and documentation with Sphinx | 1.1.3 | BSD  |
 | [sphinx-codeautolink](https://pypi.org/project/sphinx-codeautolink/) | Automatic links from code examples to reference documentation. | 0.15.2 | MIT |
 | [sphinxcontrib-applehelp](https://pypi.org/project/sphinxcontrib-applehelp/) | sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books | 1.0.8 | BSD  |

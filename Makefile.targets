@@ -2057,6 +2057,7 @@ libonnxruntime.src: $(EXTSRCDIR)/onnxruntime/README.md
 # libonnxruntime download
 $(EXTSRCDIR)/onnxruntime/README.md:
 	@$(DOWNLOAD) onnxruntime onnxruntime-v1.22.0.tar.gz https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.22.0.tar.gz
+	cd $(EXTSRCDIR)/onnxruntime && patch -p1 < $(PATCHDIR)/onnxruntime122_eigen_url.patch
 
 # libonnxruntime build
 $(EXTLIBDIR)/libonnxruntime.so: $(EXTSRCDIR)/onnxruntime/README.md

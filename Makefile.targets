@@ -2048,3 +2048,32 @@ libtorch.clean:
 libtorch.touch:
 	@rm -f $(EXTLIBDIR)/libtorch.so
 
+# dependencies for libonnxruntime
+libonnxruntime: $(EXTLIBDIR)/libonnxruntime.so
+libonnxruntime.src: $(EXTSRCDIR)/onnxruntime/README.md
+
+# libonnxruntime download
+$(EXTSRCDIR)/onnxruntime/README.md:
+	@$(DOWNLOAD) onnxruntime onnxruntime-v1.22.0.tar.gz https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.22.0.tar.gz
+	cd $(EXTSRCDIR)/onnxruntime && patch -p1 < $(PATCHDIR)/onnxruntime122_eigen_url.patch
+
+# libonnxruntime build
+$(EXTLIBDIR)/libonnxruntime.so: $(EXTSRCDIR)/onnxruntime/README.md
+	@echo "building libonnxruntime"
+	@mkdir -p $(EXTBUILDDIR)/onnxruntime-build
+	@$(EXTSRCDIR)/onnxruntime/build.sh \
+	    --config Release --skip_submodule_sync --build_shared_lib --skip_tests --compile_no_warning_as_error --allow_running_as_root \
+	    --build_dir $(EXTBUILDDIR)/onnxruntime-build \
+	    --cmake_extra_defines CMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	    --cmake_generator Ninja \
+	    --parallel $(NPROCESSES)
+	@ninja -C $(EXTBUILDDIR)/onnxruntime-build/Release -j $(NPROCESSES) install
+
+# libonnxruntime clean
+libonnxruntime.clean:
+	@echo "cleaning libonnxruntime"
+	@rm -rf $(EXTBUILDDIR)/onnxruntime-build $(EXTINCDIR)/onnxruntime $(EXTLIBDIR)/libonnxruntime.so*
+
+# libonnxruntime touch
+libonnxruntime.touch:
+	@rm -f $(EXTLIBDIR)/libonnxruntime.so

@@ -1,0 +1,26 @@
+--- src/EvtGenModels/EvtBtoXsll.cpp.original	2025-06-03 12:13:58.194309942 -0400
++++ src/EvtGenModels/EvtBtoXsll.cpp	2025-06-03 12:14:56.617469087 -0400
+@@ -119,7 +119,7 @@
+     _mq = 0.;
+     _pf = 0.41;
+     _mxmin = 1.1;
+-    if ( getNArg() == 4 ) {
++    if ( getNArg() >= 4 ) {
+         // b-quark mass
+         _mb = getArg( 0 );
+         // s-quark mass
+@@ -128,9 +128,11 @@
+         _mq = getArg( 2 );
+         // Fermi motion parameter
+         _pf = getArg( 3 );
+-    }
+-    if ( getNArg() == 5 ) {
+-        _mxmin = getArg( 4 );
++
++        if ( getNArg() == 5 ) {
++            // Cutoff of Xs mass
++            _mxmin = getArg( 4 );
++        }
+     }
+ 
+     _calcprob = std::make_unique<EvtBtoXsllUtil>();

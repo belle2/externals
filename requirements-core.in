@@ -39,6 +39,7 @@ pycodestyle
 pyhepmc
 PyJWT
 pylama
+PySide6
 pytest
 python-gitlab
 pytorch-ignite

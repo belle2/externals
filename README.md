@@ -119,7 +119,7 @@ externals. Basically, these are a result of running
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
-                 pyhepmc PyJWT pylama pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
+                 pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
                  scipy scons seaborn selenium skl2onnx sly sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
                  splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
                  torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
@@ -307,6 +307,9 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
 | [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
+| [PySide6](https://pypi.org/project/PySide6/) | Python bindings for the Qt cross-platform application and UI framework | 6.9.1 | LGPL-3.0-only |
+| [PySide6-Addons](https://pypi.org/project/PySide6-Addons/) | Python bindings for the Qt cross-platform application and UI framework (Addons) | 6.9.1 | LGPL-3.0-only |
+| [PySide6-Essentials](https://pypi.org/project/PySide6-Essentials/) | Python bindings for the Qt cross-platform application and UI framework (Essentials) | 6.9.1 | LGPL-3.0-only |
 | [PySocks](https://pypi.org/project/PySocks/) | A Python SOCKS client module | 1.7.1 | BSD |
 | [pytest](https://pypi.org/project/pytest/) | pytest: simple powerful testing with Python | 8.2.2 | MIT |
 | [python-dateutil](https://pypi.org/project/python-dateutil/) | Extensions to the standard Python datetime module | 2.9.0.post0 | Dual License |
@@ -334,6 +337,7 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [seaborn](https://pypi.org/project/seaborn/) | Statistical data visualization | 0.13.2 | BSD  |
 | [selenium](https://pypi.org/project/selenium/) | Official Python bindings for Selenium WebDriver | 4.32.0 | Apache 2.0 |
 | [Send2Trash](https://pypi.org/project/Send2Trash/) | Send file to trash natively under Mac OS X, Windows and Linux | 1.8.3 | BSD License |
+| [shiboken6](https://pypi.org/project/shiboken6/) | Python/C++ bindings helper module | 6.9.1 | LGPL-3.0-only |
 | [six](https://pypi.org/project/six/) | Python 2 and 3 compatibility utilities | 1.16.0 | MIT |
 | [skl2onnx](https://pypi.org/project/skl2onnx/) | Convert scikit-learn models to ONNX | 1.18.0 | Apache License v2.0 |
 | [sly](https://pypi.org/project/sly/) | SLY - Sly Lex Yacc | 0.4 | BSD |

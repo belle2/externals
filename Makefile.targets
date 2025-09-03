@@ -1011,7 +1011,7 @@ $(EXTSRCDIR)/neurobayes/CMakeLists.txt:
 $(EXTLIBDIR)/libNeuroBayesCPPInterface_shared.so: $(EXTSRCDIR)/neurobayes/CMakeLists.txt
 	@echo "building NeuroBayes"
 	@mkdir -p $(EXTBUILDDIR)/neurobayes
-	@cd $(EXTBUILDDIR)/neurobayes && cmake $(EXTSRCDIR)/neurobayes/ -DCMAKE_INSTALL_PREFIX=$(EXTDIR) && make && make install
+	@cd $(EXTBUILDDIR)/neurobayes && $(CMAKE) $(EXTSRCDIR)/neurobayes/ && make && make install
 	# install also header files in the include directory, so ROOT's autoparser can find it
 	# this is necessary as long as ROOT is not able to put also the header information in PCMs (ETA ~ mid 2016)
 	#@mkdir -p $(EXTINCDIR)/inc/ && cp $(EXTINCDIR)/neurobayes/* $(EXTINCDIR)/inc/
@@ -1587,8 +1587,8 @@ $(EXTSRCDIR)/eigen/INSTALL:
 $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@echo "installing eigen"
 	@mkdir -p $(EXTBUILDDIR)/eigen
-	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=include \
-	    -DCMAKEPACKAGE_INSTALL_DIR=lib/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=lib/pkgconfig \
+	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen	-DINCLUDE_INSTALL_DIR=include \
+	    -DCMAKEPACKAGE_INSTALL_DIR=$(EXTLIBDIR)/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=$(EXTLIBDIR)/pkgconfig \
 	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 

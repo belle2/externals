@@ -1,3 +1,0 @@
-pytest
-sphinx
-CommonMark>=0.5.6

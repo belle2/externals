@@ -21,6 +21,7 @@ iminuit
 ipython
 jira
 jupyter
+jupyter-resource-usage
 jupytext
 keras
 lightgbm
@@ -29,6 +30,8 @@ matplotlib
 metakernel
 mysql-connector-python
 nbsphinx
+onnx
+onnxruntime
 pandas
 plothist
 pyarrow
@@ -36,6 +39,7 @@ pycodestyle
 pyhepmc
 PyJWT
 pylama
+PySide6
 pytest
 python-gitlab
 pytorch-ignite
@@ -46,8 +50,11 @@ scikit-learn
 scipy
 scons
 seaborn
+skl2onnx
+selenium
 sly==0.4
 sphinx
+sphinx-argparse
 sphinx-book-theme
 sphinx-codeautolink
 sphinxcontrib-programoutput
@@ -55,6 +62,7 @@ splinter
 sweights
 tables
 tabulate
+tf2onnx
 tqdm
 tensorflow
 tensorflow-probability

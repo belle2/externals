@@ -55,6 +55,10 @@ endif
 export CC:=gcc
 export CXX:=g++
 
+# Default C++ standard
+export CXX_STANDARD_FLAG := "-std=c++20"
+export CXX_STANDARD_CMAKE_FLAG := -DCMAKE_CXX_STANDARD=20
+
 # By default, we provide DWARF debug information even for optimized packages, as
 # it has uses for dynamic analysis like profiling. You can opt out of it for
 # selected packages using the following target file name prefix filter.
@@ -120,14 +124,16 @@ export ROOT_OPTION:=
 ifdef ORACLE_HOME
   ROOT_OPTION += -Doracle=ON -DORACLE_LIBRARY_OCCI=$(ORACLE_HOME) -DORACLE_INCLUDE_DIR=$(ORACLE_HOME)/sdk/include/
 endif
-ROOT_OPTION+= -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so
+
+# use built externals packages for building other external packages
+export CPPFLAGS=-isystem$(EXTINCDIR)
+export LDFLAGS=-L$(EXTLIBDIR)
 
 # check for xerces xml library to enable GDML persistency in geant4 which is a
 # useful but not necessary tool to track changes in the geometry
-# disabled due to BII-5219: new xerces-c not compatible with our ancient Geant4
-#ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
-#  GEANT4_OPTION+= -DGEANT4_USE_GDML=ON
-#endif
+ifeq ($(shell pkg-config --exists xerces-c 2> /dev/null; echo $$?),0)
+  GEANT4_OPTION+= -DGEANT4_USE_GDML=ON
+endif
 
 # check for graphics packages needed to built ROOT's OpenGL support
 GL_GLU_EXISTS:=$(shell pkg-config --exists gl glu 2> /dev/null; echo $$?)
@@ -343,7 +349,7 @@ gcc: $(EXTBINDIR)/gcc
 gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
-	@$(DOWNLOAD) gcc gcc-14.1.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.xz
+	@$(DOWNLOAD) gcc gcc-14.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 
@@ -451,6 +457,38 @@ $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xsltConf.sh
 
+libmd: $(EXTINCDIR)/md5.h
+libmd.src: $(EXTSRCDIR)/libmd
+libmd.touch:
+	@rm -f $(EXTINCDIR)/md5.h
+
+$(EXTSRCDIR)/libmd:
+	@$(DOWNLOAD) libmd libmd-1.1.0.tar.xz https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz
+
+$(EXTINCDIR)/md5.h: $(EXTSRCDIR)/libmd
+	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
+            make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
+libmd.clean:
+	@rm -fr $(EXTINCDIR)/md5.h
+
+libbsd: $(EXTLIBDIR)/libbsd.so
+libbsd.src: $(EXTSRCDIR)/libbsd
+libbsd.touch:
+	@rm -f $(EXTLIBDIR)/libbsd.so
+
+$(EXTSRCDIR)/libbsd:
+	@$(DOWNLOAD) libbsd libbsd-0.12.2.tar.xz https://libbsd.freedesktop.org/releases/libbsd-0.12.2.tar.xz
+
+$(EXTLIBDIR)/libbsd.so: $(EXTSRCDIR)/libbsd
+	@echo "building libbsd"
+	@cp -fa $(EXTSRCDIR)/libbsd $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/libbsd && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
+	    make -j $(NPROCESSES) CPPFLAGS=-I$(EXTINCDIR) && make install$(INSTALL_TARGET_SUFFIX)
+
+libbsd.clean:
+	@rm -fr $(EXTINCDIR)/bsd.h $(EXTLIBDIR)/libbsd*
+
 zlib: $(EXTLIBDIR)/libz.so
 zlib.src: $(EXTSRCDIR)/zlib
 zlib.touch:
@@ -525,6 +563,22 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl
+openssl.clean:
+	@rm -fr $(EXTBUILDDIR)/openssl
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.0.14.tar.gz https://www.openssl.org/source/openssl-3.0.14.tar.gz
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) --openssldir=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -574,8 +628,11 @@ $(EXTSRCDIR)/python:
 $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@echo "building python"
 	@mkdir -p $(EXTBUILDDIR)/python
-	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) --enable-shared \
-	    --prefix=$(EXTDIR) --with-ensurepip=install && \
+	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) \
+	    --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install \
+	    BZIP2_CFLAGS="-I$(EXTINCDIR)" BZIP2_LIBS="-L$(EXTLIBDIR) -lbz2" \
+	    LIBLZMA_CFLAGS="-I$(EXTINCDIR)" LIBLZMA_LIBS="-L$(EXTLIBDIR) -lzma" \
+	    ZLIB_CFLAGS="-I$(EXTINCDIR)" ZLIB_LIBS="-L$(EXTLIBDIR) -lz" && \
 	    make -j $(NPROCESSES) && make install
 # add customization to the site directories so that we can also install packages into the other lib directories
 	@cp sitecustomize.py $(EXTLIBDIR)/python3.11/site-packages
@@ -629,8 +686,6 @@ $(EXTBINDIR)/ipython: $(EXTSRCDIR)/belle2style/README.md
 	ipython kernel install --sys-prefix --display-name "Python 3 (Belle2)"
 # but make the path relative so it can be found correctly if the externals are installed in a different directory.
 	sed -i 's#$(EXTBINDIR)/*##g' $(EXTSHRDIR)/jupyter/kernels/python3/kernel.json
-# install our own version of sphinx-argparse
-	pip3 install -U --no-deps src/sphinx-argparse
 # install the belle2style files
 	cp -at `python3 -c 'import matplotlib;print(matplotlib.get_data_path())'`/stylelib $(EXTSRCDIR)/belle2style/matplotlib/*.mplstyle
 
@@ -702,7 +757,7 @@ $(EXTLIBDIR)/libgtest.so: $(EXTSRCDIR)/gtest/README.md
 	@echo "building gtest"
 	@mkdir -p $(EXTBUILDDIR)/gtest
 	@cd $(EXTBUILDDIR)/gtest && $(CMAKE) $(EXTSRCDIR)/gtest \
-	    -DBUILD_SHARED_LIBS=ON \
+	    -DBUILD_SHARED_LIBS=ON $(CXX_STANDARD_CMAKE_FLAG) \
 	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -722,7 +777,7 @@ boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_85_0.tar.bz2 https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_88_0.tar.bz2 https://archives.boost.io/release/1.88.0/source/boost_1_88_0.tar.bz2
 
 # boost build
 $(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
@@ -788,13 +843,12 @@ doxygen.touch:
 	@rm -fr $(EXTBINDIR)/doxygen
 
 $(EXTSRCDIR)/doxygen:
-	@$(DOWNLOAD) doxygen doxygen-1.9.6.src.tar.gz https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
+	@$(DOWNLOAD) doxygen doxygen-1.13.2.src.tar.gz https://www.doxygen.nl/files/doxygen-1.13.2.src.tar.gz
 
 $(EXTBINDIR)/doxygen: $(EXTSRCDIR)/doxygen
 	@echo "building doxygen"
 	@mkdir -p $(EXTBUILDDIR)/doxygen
-	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen \
-	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` && \
+	@cd $(EXTBUILDDIR)/doxygen && $(CMAKE) $(EXTSRCDIR)/doxygen && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 Vc.src: $(EXTSRCDIR)/Vc/README.md
@@ -809,7 +863,7 @@ $(EXTLIBDIR)/libVc.a: $(EXTSRCDIR)/Vc/README.md
 	@echo "building Vc"
 	@mkdir -p $(EXTBUILDDIR)/Vc
 	@cd $(EXTBUILDDIR)/Vc && $(CMAKE) $(EXTSRCDIR)/Vc \
-	    -DBUILD_TESTING=OFF && \
+	    -DBUILD_TESTING=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecCore.src: $(EXTSRCDIR)/VecCore/README.md
@@ -818,13 +872,14 @@ VecCore.touch:
 	rm -fr $(EXTINCDIR)/VecCore/Version.h
 
 $(EXTSRCDIR)/VecCore/README.md:
-	$(DOWNLOAD) VecCore VecCore-v0.8.1.tar.gz https://github.com/root-project/veccore/archive/v0.8.1.tar.gz
+	$(DOWNLOAD) VecCore VecCore-v0.8.2.tar.gz https://github.com/root-project/veccore/archive/v0.8.2.tar.gz
 
 $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 	@echo "building VecCore"
 	@mkdir -p $(EXTBUILDDIR)/VecCore
 	@cd $(EXTBUILDDIR)/VecCore && $(CMAKE) $(EXTSRCDIR)/VecCore \
-	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF -DBUILD_UMESIMD=OFF && \
+	    -DVC=ON -DUMESIMD=OFF -DCUDA=OFF -DBUILD_TESTING=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_VC=OFF \
+	    -DBUILD_UMESIMD=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 
@@ -842,7 +897,7 @@ $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@mkdir -p $(EXTBUILDDIR)/VecGeom
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
 	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
-	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom -DCMAKE_CXX_STANDARD=17 -DBUILD_DOC=OFF && \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom $(CXX_STANDARD_CMAKE_FLAG) -DBUILD_DOC=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecGeom.clean:
@@ -863,7 +918,7 @@ $(EXTBINDIR)/clhep-config: $(EXTSRCDIR)/clhep/CLHEP/README.md
 	@echo "building CLHEP"
 	@mkdir -p $(EXTBUILDDIR)/clhep
 	@cd $(EXTBUILDDIR)/clhep && $(CMAKE) $(EXTSRCDIR)/clhep/CLHEP \
-	    -DCLHEP_BUILD_CXXSTD="-std=c++17" -DCLHEP_SINGLE_THREAD=ON && \
+	    -DCLHEP_BUILD_CXXSTD=$(CXX_STANDARD_FLAG) -DCLHEP_SINGLE_THREAD=ON && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # CLHEP clean
@@ -897,7 +952,7 @@ $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
 	    -DCLHEP_ROOT_DIR=$(EXTDIR) -DCLHEP_INCLUDE_DIR=$(EXTINCDIR) \
 	    -DGEANT4_USE_G3TOG4=OFF -DGEANT4_USE_SYSTEM_EXPAT=OFF -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_DATA=ON \
 	    -DGEANT4_USE_USOLIDS=POLYCONE\;TESSELLATEDSOLID\;EXTRUDEDSOLID \
-	    -DCMAKE_CXX_STANDARD=17 -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
+	    $(CXX_STANDARD_CMAKE_FLAG) -DGEANT4_BUILD_MULTITHREADED=OFF $(EXTSRCDIR)/geant4 && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 	# Fix absolute path in geant4-config, geant4.sh and geant4.csh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/geant4*
@@ -983,7 +1038,7 @@ $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
 	@echo "building xrootd"
 	@mkdir -p $(EXTBUILDDIR)/xrootd
 	@cd $(EXTBUILDDIR)/xrootd && $(CMAKE) \
-	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR)\
+	    -DENABLE_PYTHON=ON -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    $(EXTSRCDIR)/xrootd && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1032,7 +1087,7 @@ $(EXTLIBDIR)/libtbb.so: $(EXTSRCDIR)/tbb/README.md
 	@echo "building tbb"
 	@mkdir -p $(EXTBUILDDIR)/tbb
 	@cd $(EXTBUILDDIR)/tbb && $(CMAKE) $(EXTSRCDIR)/tbb \
-	    -DTBB_TEST=OFF && \
+	    -DTBB_TEST=OFF $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 tbb.clean:
@@ -1049,11 +1104,9 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-26-14.tar.gz https://root.cern/download/root_v6.26.14.source.tar.gz
+	@$(DOWNLOAD) root root_v6-32-14.tar.gz https://root.cern/download/root_v6.32.14.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
-	# progress bar crashes for low number of events (reported in ROOT github #13017)
-	@cd $(EXTSRCDIR)/root && patch -p0 < $(PATCHDIR)/root-13017-modulofix.patch
 
 # root build
 $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
@@ -1063,20 +1116,46 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	@cd $(ROOTSYS) && ln -sfT $(call relpath,$(BELLE2_EXTERNALS_DIR)/include/root) include
 	# now compile root and install into ROOTSYS
 	@mkdir -p $(EXTBUILDDIR)/root
-# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary option so the ROOT
+# ROOTCONFIG_EXTRA is an optional variable which can be externally set to supply arbitrary options to the ROOT
 # build
 	@cd $(EXTBUILDDIR)/root && $(CMAKE) $(EXTSRCDIR)/root -DCMAKE_INSTALL_PREFIX=$(EXTDIR)/root \
-	    -Dgminimal=ON -Dfail-on-missing=ON -DCMAKE_CXX_STANDARD=17 \
-	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 -Dpyroot_legacy=OFF \
-	    -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
-	    -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
-	    -Dasimage=ON -Dastiff=ON -Dtmva=ON -Dmlp=ON -Dexception=ON -Dxrootd=ON -Droofit=ON -Dgsl_shared=ON -Dhttp=ON -Dfftw3=ON \
-	    -Dmathmore=ON -Dpch=ON -Dpyroot=ON -Dshadowpw=ON -Dshared=ON -Dvdt=OFF -Dminuit2=ON -Ddavix=ON -Dbuiltin_freetype=OFF \
-	    -Dssl=ON -Dthread=ON -Dxml=ON -Dgenvector=ON -Dbuiltin_davix=OFF -Dbuiltin_gsl=OFF -Dbuiltin_fftw3=OFF -Dbuiltin_lzma=OFF \
-	    -Dbuiltin_lz4=OFF -Dbuiltin_pcre=ON -Dbuiltin_zstd=ON  -Dbuiltin_xxhash=ON -Dbuiltin_ftgl=ON -Dbuiltin_afterimage=ON -Dbuiltin_gl2ps=ON \
-	    -Dfftw3=ON -Ddataframe=ON -DXROOTD_ROOT_DIR=$(EXTDIR) -DGSL_DIR=$(EXTCOMDIR) $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
+	    -DLIBBSDROOT=$(EXTDIR) \
+	    -Dgminimal=ON -Dfail-on-missing=ON $(CXX_STANDARD_CMAKE_FLAG) \
+	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
+	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
+	    -Dasimage=ON \
+	    -Dbuiltin_afterimage=ON \
+	    -Dbuiltin_davix=OFF -Ddavix=ON \
+	    -Dbuiltin_fftw3=OFF -Dfftw3=ON -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
+	    -Dbuiltin_freetype=OFF \
+	    -Dbuiltin_ftgl=ON \
+	    -Dbuiltin_gl2ps=ON \
+	    -Dbuiltin_gsl=OFF -DGSL_DIR=$(EXTCOMDIR) \
+	    -Dbuiltin_lz4=OFF \
+	    -Dbuiltin_lzma=OFF -DLZMA_INCLUDE_DIR=$(EXTINCDIR) -DLZMA_LIBRARY=$(EXTCOMDIR)/lib/liblzma.so \
+	    -Dbuiltin_pcre=ON \
+	    -Dbuiltin_xxhash=ON \
+	    -Dbuiltin_zstd=ON  \
+	    -Ddataframe=ON \
+	    -Dexception=ON \
+	    -Dhttp=ON \
+	    -Dmathmore=ON \
+	    -Dmlp=ON \
+	    -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so \
+	    -Dpyroot=ON \
+	    -Droofit=ON \
+	    -Dshadowpw=ON \
+	    -Dshared=ON \
+	    -Dssl=ON \
+	    -Dtmva=ON \
+	    -Dtmva-sofie=ON \
+	    -Dvdt=OFF \
+	    -Dxml=ON \
+	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
+	    -DCMAKE_CXX_FLAGS=-D__ROOFIT_NOBANNER \
+	    $(ROOT_OPTION) $(ROOTCONFIG_EXTRA) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-#patch include/root/Rtypes.h to emit a warning if ClassImp is used
+# patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
 	@mkdir -p $(EXTSHRDIR)/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTSHRDIR)/root/tmva
 
@@ -1095,7 +1174,7 @@ roounfold: $(EXTLIBDIR)/libRooUnfold.so
 roounfold.src: $(EXTSRCDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:
-	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.0/RooUnfold-3.0.0.zip
+	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.2.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.2/RooUnfold-3.0.2.zip
 	@cd $(EXTSRCDIR)/RooUnfold && patch -p0 < $(PATCHDIR)/roounfold-doxygen.patch
 
 $(EXTLIBDIR)/libRooUnfold.so: $(EXTSRCDIR)/RooUnfold
@@ -1142,21 +1221,21 @@ vgm.src: $(EXTSRCDIR)/vgm
 
 # vgm download
 $(EXTSRCDIR)/vgm:
-	@$(DOWNLOAD) vgm vgm.5.2.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-2.tar.gz
+	@$(DOWNLOAD) vgm vgm.5.3.tar.gz https://github.com/vmc-project/vgm/archive/refs/tags/v5-3.tar.gz
 
 # vgm build
 $(EXTLIBDIR)/libBaseVGM.so: $(EXTSRCDIR)/vgm
 	@echo "building VGM"
 	@mkdir -p $(EXTBUILDDIR)/vgm
 	@cd $(EXTBUILDDIR)/vgm && $(CMAKE) -DCLHEP_DIR=$(EXTLIBDIR)/CLHEP-2.4.7.1 -DWITH_EXAMPLES=OFF\
-	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include \
+	    -DROOT_DIR=$(ROOTSYS) -DROOT_INCLUDE_DIRS=$(ROOTSYS)/include $(CXX_STANDARD_CMAKE_FLAG) \
 	    -DROOT_LIBRARY_DIR=$(ROOTSYS)/lib -DWITH_TEST=OFF $(EXTSRCDIR)/vgm && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # vgm clean
 vgm.clean:
 	@echo "cleaning VGM"
-	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.2.0
+	@rm -rf $(EXTBUILDDIR)/vgm $(EXTINCDIR)/VGM $(EXTLIBDIR)/lib*VGM.so $(EXTLIBDIR)/VGM-5.3.0
 
 # vgm touch
 vgm.touch:
@@ -1209,13 +1288,15 @@ $(EXTSRCDIR)/rave/README:
 	@cd $(EXTSRCDIR)/rave/ && patch -p1 -i $(PATCHDIR)/rave-glibc2.3-isnan.patch
 	# replace deprecated auto_ptr with unique_ptr
 	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-uniqueptr.patch
+	# enable compilation with c++17 and newer standard
+	@cd $(EXTSRCDIR)/rave/ && patch -p0 -i $(PATCHDIR)/rave-cpp17.patch
 
 # rave build
 $(EXTLIBDIR)/libRaveBase.so: $(EXTSRCDIR)/rave/README
 	@echo "building rave"
 	@mkdir -p $(EXTBUILDDIR)/rave
 	@cd $(EXTBUILDDIR)/rave && export LDFLAGS="`root-config --libs`" && CLHEPPATH=$(EXTDIR) CLHEPLIBPATH=$(EXTLIBDIR) CLHEP_VECTORLIBPATH=$(EXTLIBDIR) \
-	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS="-std=c++14" $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
+	    CLHEP_MATRIXLIBPATH=$(EXTLIBDIR) CXXFLAGS=$(CXX_STANDARD_FLAG) $(EXTSRCDIR)/rave/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --disable-java --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) --bindir=$(EXTBINDIR) \
 	    --with-clhep=$(EXTDIR) --with-boost=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
@@ -1303,7 +1384,7 @@ $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
 # Pythia disables optimizations when enabling debug symbols ... so let's just define the flags we want by running ./configure once,
 # looking at the default flags it uses anc copying them here with some adjustments
 	@cd $(EXTBUILDDIR)/pythia && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-shared \
-	    --with-hepmc2=$(EXTDIR) --cxx-common="-g -O3 -std=c++14 -pedantic -W -Wall -Wshadow -fPIC" && \
+	    --with-hepmc2=$(EXTDIR) --cxx-common="-g -O3 $(CXX_STANDARD_FLAG) -pedantic -W -Wall -Wshadow -fPIC" && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in pythia8-config and make it executable
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/pythia8-config
@@ -1382,11 +1463,12 @@ evtgen.src: $(EXTSRCDIR)/evtgen
 
 # EvtGen download
 $(EXTSRCDIR)/evtgen:
-	@$(DOWNLOAD) EvtGen EvtGen.R02-00-00.tar.gz https://evtgen.hepforge.org/downloads?f=EvtGen-02.00.00.tar.gz
-	@mv $(EXTSRCDIR)/EvtGen/R02-00-00 $(EXTSRCDIR)/evtgen
+	@$(DOWNLOAD) EvtGen EvtGen.R02-00-01.tar.gz https://evtgen.hepforge.org/downloads?f=EvtGen-02.00.01.tar.gz
+	@mv $(EXTSRCDIR)/EvtGen/R02-00-01 $(EXTSRCDIR)/evtgen
 	@rmdir $(EXTSRCDIR)/EvtGen
-	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-avoid-double-counting.patch
-	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-00-remove-leak.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-01-avoid-double-counting.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-01-remove-leak.patch
+	@cd $(EXTSRCDIR)/evtgen && patch -Np0 < $(PATCHDIR)/evtgen-02-00-01-BtoXsll.patch
 
 # EvtGen build
 $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
@@ -1397,6 +1479,7 @@ $(EXTLIBDIR)/libEvtGen.so: $(EXTSRCDIR)/evtgen
 	    -DEVTGEN_PYTHIA=ON \
 	    -DEVTGEN_PHOTOS=ON \
 	    -DEVTGEN_TAUOLA=ON \
+	    $(CXX_STANDARD_CMAKE_FLAG) \
 	    ${EXTSRCDIR}/evtgen && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
@@ -1505,7 +1588,7 @@ $(EXTINCDIR)/Eigen/Eigen: $(EXTSRCDIR)/eigen/INSTALL
 	@mkdir -p $(EXTBUILDDIR)/eigen
 	@cd $(EXTBUILDDIR)/eigen && $(CMAKE) $(EXTSRCDIR)/eigen -DINCLUDE_INSTALL_DIR=include \
 	    -DCMAKEPACKAGE_INSTALL_DIR=lib/cmake/eigen3 -DPKGCONFIG_INSTALL_DIR=lib/pkgconfig \
-	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON && \
+	    -DBOOST_ROOT=$(EXTDIR) -DBoost_NO_SYSTEM_PATHS=ON $(CXX_STANDARD_CMAKE_FLAG) && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # eigen clean
@@ -1911,41 +1994,6 @@ frugally-deep.clean:
 	@rm -rf $(EXTBUILDDIR)/fdeep $(EXTINCDIR)/fdeep $(EXTLIBDIR)/cmake/frugally-deep
 
 
-### OCaml
-
-# dependencies for ocaml
-ocaml: $(EXTDIR)/ocaml/bin/ocaml
-ocaml.src: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-
-# ocaml download
-$(EXTSRCDIR)/ocaml/INSTALL.adoc:
-	$(DOWNLOAD) ocaml ocaml-4.14.0.tar.gz https://github.com/ocaml/ocaml/archive/refs/tags/4.14.0.tar.gz
-
-# ocaml build
-$(EXTDIR)/ocaml/bin/ocaml: $(EXTSRCDIR)/ocaml/INSTALL.adoc
-	@echo "building ocaml"
-	@cp -fa $(EXTSRCDIR)/ocaml $(EXTBUILDDIR)
-	@mkdir -p $(EXTDIR)/ocaml
-	@cd $(EXTBUILDDIR)/ocaml && ./configure --prefix=$(EXTDIR)/ocaml && \
-	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/ocaml/bin/ocaml* $(EXTBINDIR)/
-
-# ocaml touch
-ocaml.touch:
-	@rm -rf $(EXTDIR)/ocaml
-
-# ocaml clean
-ocaml.clean:
-	@echo "removing ocaml"
-	@rm -rf $(EXTBUILDDIR)/ocaml
-
-# Remove ocaml.
-ocaml.remove:
-	@echo "removing ocaml"
-	@rm -rf $(EXTCOMDIR)/bin/ocaml*
-	@rm -rf $(EXTCOMDIR)/ocaml
-
-
 ### WHIZARD
 
 # dependendencies for whizard
@@ -1958,14 +2006,13 @@ $(EXTSRCDIR)/whizard/INSTALL:
 	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build
-$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL $(EXTDIR)/ocaml/bin/ocaml
+$(EXTBINDIR)/whizard: $(EXTSRCDIR)/whizard/INSTALL
 	@echo "building whizard"
-	EXTBINDIR=$(EXTDIR)/ocaml/bin:$(EXTBINDIR)
 	@cp -fa $(EXTSRCDIR)/whizard $(EXTBUILDDIR)
 	@mkdir -p $(EXTDIR)/whizard
 	@cd $(EXTBUILDDIR)/whizard && ./configure --prefix=$(EXTDIR)/whizard --enable-pythia8 --with-pythia8=$(EXTDIR) && \
 	    make -j $(NPROCESSES) && make install
-	@ln -sf $(EXTDIR)/whizard/bin/whizard $(EXTBINDIR)
+	@cd $(EXTBINDIR) && ln -sf ../whizard/bin/whizard
 
 # whizard touch
 whizard.touch:
@@ -2000,3 +2047,33 @@ libtorch.clean:
 # libtorch touch
 libtorch.touch:
 	@rm -f $(EXTLIBDIR)/libtorch.so
+
+# dependencies for libonnxruntime
+libonnxruntime: $(EXTLIBDIR)/libonnxruntime.so
+libonnxruntime.src: $(EXTSRCDIR)/onnxruntime/README.md
+
+# libonnxruntime download
+$(EXTSRCDIR)/onnxruntime/README.md:
+	@$(DOWNLOAD) onnxruntime onnxruntime-v1.22.0.tar.gz https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.22.0.tar.gz
+	cd $(EXTSRCDIR)/onnxruntime && patch -p1 < $(PATCHDIR)/onnxruntime122_eigen_url.patch
+
+# libonnxruntime build
+$(EXTLIBDIR)/libonnxruntime.so: $(EXTSRCDIR)/onnxruntime/README.md
+	@echo "building libonnxruntime"
+	@mkdir -p $(EXTBUILDDIR)/onnxruntime-build
+	@$(EXTSRCDIR)/onnxruntime/build.sh \
+	    --config Release --skip_submodule_sync --build_shared_lib --skip_tests --compile_no_warning_as_error --allow_running_as_root \
+	    --build_dir $(EXTBUILDDIR)/onnxruntime-build \
+	    --cmake_extra_defines CMAKE_INSTALL_PREFIX=$(EXTDIR) \
+	    --cmake_generator Ninja \
+	    --parallel $(NPROCESSES)
+	@ninja -C $(EXTBUILDDIR)/onnxruntime-build/Release -j $(NPROCESSES) install
+
+# libonnxruntime clean
+libonnxruntime.clean:
+	@echo "cleaning libonnxruntime"
+	@rm -rf $(EXTBUILDDIR)/onnxruntime-build $(EXTINCDIR)/onnxruntime $(EXTLIBDIR)/libonnxruntime.so*
+
+# libonnxruntime touch
+libonnxruntime.touch:
+	@rm -f $(EXTLIBDIR)/libonnxruntime.so

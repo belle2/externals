@@ -1,4 +1,0 @@
-pytest
-sphinx_rtd_theme
-sphinx
-CommonMark>=0.5.6

@@ -120,7 +120,8 @@ externals. Basically, these are a result of running
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
                  pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
-                 scipy scons seaborn selenium skl2onnx sly sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinxcontrib-programoutput \
+                 scipy scons seaborn selenium skl2onnx sly \
+                 sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinx-togglebutton sphinxcontrib-programoutput \
                  splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
                  torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
                  uproot3 xgboost zstandard
@@ -350,6 +351,7 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [sphinx-argparse](https://pypi.org/project/sphinx-argparse/) | A sphinx extension that automatically documents argparse commands and options | 0.5.2 | MIT  |
 | [sphinx-book-theme](https://pypi.org/project/sphinx-book-theme/) | A clean book theme for scientific explanations and documentation with Sphinx | 1.1.3 | BSD  |
 | [sphinx-codeautolink](https://pypi.org/project/sphinx-codeautolink/) | Automatic links from code examples to reference documentation. | 0.15.2 | MIT |
+| [sphinx-togglebutton](https://pypi.org/project/sphinx-togglebutton/) | Toggle page content and collapse admonitions in Sphinx. | 0.3.2 | MIT License |
 | [sphinxcontrib-applehelp](https://pypi.org/project/sphinxcontrib-applehelp/) | sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books | 1.0.8 | BSD  |
 | [sphinxcontrib-devhelp](https://pypi.org/project/sphinxcontrib-devhelp/) | sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp documents | 1.0.6 | BSD  |
 | [sphinxcontrib-htmlhelp](https://pypi.org/project/sphinxcontrib-htmlhelp/) | sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files | 2.0.5 | BSD  |

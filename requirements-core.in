@@ -57,6 +57,7 @@ sphinx
 sphinx-argparse
 sphinx-book-theme
 sphinx-codeautolink
+sphinx-togglebutton
 sphinxcontrib-programoutput
 splinter
 sweights

@@ -51,10 +51,18 @@ endif
 # as default, compile the currently set option.
 # The semi-colon is important to make sure that these empty requisite targets
 # are not passed to sub make with the catch all pattern rule below
-all: $(BELLE2_EXTERNALS_OPTION) ;
+all: check_packages $(BELLE2_EXTERNALS_OPTION) ;
 
 # define target "optionals" for building all optional packages
-optionals: $(COMMON_OPTIONAL) ;
+optionals: check_packages_optional $(COMMON_OPTIONAL) ;
+
+# Check if all required packages are installed.
+check_packages:
+	b2install-prepare --check externals
+
+# Check if all required packages are installed for build of optional packages.
+check_packages_optional:
+	b2install-prepare --check all
 
 # make the directories for all options we need
 dirs:

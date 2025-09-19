@@ -33,7 +33,7 @@ externals.
 | [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.5           | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
 | [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-01       | GPLv3      |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
-| [FastBDT](https://github.com/thomaskeck/FastBDT)                             | 5.2             | GPLv3      |
+| [FastBDT](https://github.com/belle2/FastBDT)                                 | 5.3             | GPLv3      |
 | [FastJet](http://fastjet.fr/)                                                | 3.3.4           | GPLv2 (and others) |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
 | [Frugally-deep](https://github.com/Dobiasd/frugally-deep)                    | 0.15.19-p0      | MIT        |

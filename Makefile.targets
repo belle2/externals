@@ -1188,31 +1188,30 @@ $(EXTLIBDIR)/libRooUnfold.so: $(EXTSRCDIR)/RooUnfold
 roounfold.clean:
 	@bash -c "rm -rf $(EXTBUILDDIR)/RooUnfold $(EXTINCDIR)/{Roo, RooFit, T}Unfold*.h $(EXTLIBDIR)/libRooUnfold*"
 
-# dependencies for FastBDT TMVA plugin
+# dependencies for FastBDT
 fastbdt: $(EXTLIBDIR)/libFastBDT_shared.so
 fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
-	@$(DOWNLOAD) FastBDT FastBDT-5.2.tar.gz https://github.com/thomaskeck/FastBDT/archive/v5.2.tar.gz
-	@cd $(EXTSRCDIR)/FastBDT && patch -p1 < $(PATCHDIR)/fastbdt-gcc13.patch
+	@$(DOWNLOAD) FastBDT FastBDT-5.3.tar.gz https://github.com/belle2/FastBDT/archive/refs/tags/v5.3.tar.gz
 
-# FastBDT TMVA plugin build
+# FastBDT TMVA build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
-	@echo "building FastBDT TMVA plugin"
+	@echo "building FastBDT"
 	@mkdir -p $(EXTBUILDDIR)/FastBDT
 	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
-# FastBDT TMVA plugin clean command
+# FastBDT clean command
 fastbdt.clean:
-	@echo "cleaning FastBDT TMVA plugin"
+	@echo "cleaning FastBDT"
 	@-cd $(EXTBUILDDIR)/FastBDT 2>/dev/null && make clean
 	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
 	@rm -f $(ROOTSYS)/lib/TMVA_FastBDT_Dict_rdict.pcm
 	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT.h
 
-# FastBDT TMVA plugin touch command
+# FastBDT touch command
 fastbdt.touch:
 	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
 

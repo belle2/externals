@@ -1179,7 +1179,7 @@ roounfold.src: $(EXTSRCDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:
 	@$(DOWNLOAD) RooUnfold RooUnfold-3.1.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.1.0/RooUnfold-3.1.0.zip
-#	@cd $(EXTSRCDIR)/RooUnfold && patch -p0 < $(PATCHDIR)/roounfold-doxygen.patch
+	@cd $(EXTSRCDIR)/RooUnfold && patch -p0 < $(PATCHDIR)/roounfold-doxygen.patch
 
 $(EXTLIBDIR)/libRooUnfold.so: $(EXTSRCDIR)/RooUnfold
 	@echo "building RooUnfold"

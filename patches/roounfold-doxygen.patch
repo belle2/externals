@@ -7,15 +7,14 @@
  # check if Doxygen is installed
  find_package(Doxygen)
  if (DOXYGEN_FOUND)
-
 --- CMakeLists.txt
 +++ CMakeLists.txt
-@@ -39,5 +39,8 @@
+@@ -44,5 +44,9 @@
+ if(RooUnfoldTests)
    include(cmake/testing.cmake)
  endif()
- 
+
 -include(cmake/doxygen.cmake)
--
 +# we indicate the documentation build as an option and set it to ON by default
 +option(BUILD_DOC "Build documentation" ON)
 +if (BUILD_DOC)

@@ -89,7 +89,7 @@ externals.
 | [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.3.4           | LGPLv3 + static link exception, intent to move to MPLv2  |
-| [zlib](http://www.zlib.net/)                                                 | 1.2.12          | MIT        |
+| [zlib](http://www.zlib.net/)                                                 | 1.3.1           | MIT        |
 
 Optional Package
 ----------------

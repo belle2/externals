@@ -1105,7 +1105,7 @@ root.src: $(EXTSRCDIR)/root/README
 
 # root download
 $(EXTSRCDIR)/root/README:
-	@$(DOWNLOAD) root root_v6-32-14.tar.gz https://root.cern/download/root_v6.32.14.source.tar.gz
+	@$(DOWNLOAD) root root_v6-36-06.tar.gz https://root.cern/download/root_v6.36.06.source.tar.gz
 # some intel GPUs crash due to some problems with root and it's cache. This patch disables the DLCache for now
 	@cd $(EXTSRCDIR)/root && patch -p1 < $(PATCHDIR)/root-8098-disable-dlcache.patch
 
@@ -1125,7 +1125,6 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -DPython3_EXECUTABLE=$(EXTBINDIR)/python3.11 \
 	    -DZLIB_LIBRARY_DIR=$(EXTLIBDIR) -DZLIB_LIBRARY=$(EXTCOMDIR)/lib/libz.so -DZLIB_INCLUDE_DIR=$(EXTINCDIR) \
 	    -Dasimage=ON \
-	    -Dbuiltin_afterimage=ON \
 	    -Dbuiltin_davix=OFF -Ddavix=ON \
 	    -Dbuiltin_fftw3=OFF -Dfftw3=ON -DFFTW_INCLUDE_DIR=$(EXTINCDIR) -DFFTW_LIBRARY=$(EXTCOMDIR)/lib/libfftw3.so \
 	    -Dbuiltin_freetype=OFF \
@@ -1137,12 +1136,14 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dbuiltin_pcre=ON \
 	    -Dbuiltin_xxhash=ON \
 	    -Dbuiltin_zstd=ON  \
+	    -Dbuiltin_gif=ON \
+	    -Dbuiltin_jpeg=ON \
 	    -Ddataframe=ON \
 	    -Dexception=ON \
+	    -Dgeom=ON \
 	    -Dhttp=ON \
 	    -Dmathmore=ON \
 	    -Dmlp=ON \
-	    -Dpgsql=ON -DPOSTGRESQL_INCLUDE_DIR=$(EXTINCDIR)/pgsql/ -DPOSTGRESQL_LIBRARY=$(EXTLIBDIR)/libpq.so \
 	    -Dpyroot=ON \
 	    -Droofit=ON \
 	    -Dshadowpw=ON \
@@ -1150,6 +1151,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    -Dssl=ON \
 	    -Dtmva=ON \
 	    -Dtmva-sofie=ON \
+	    -Dtpython=ON \
 	    -Dvdt=OFF \
 	    -Dxml=ON \
 	    -Dxrootd=ON -DXROOTD_ROOT_DIR=$(EXTDIR) \
@@ -1158,7 +1160,7 @@ $(ROOTSYS)/bin/root: $(EXTSRCDIR)/root/README
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 # patch include/root/Rtypes.h to emit a warning if ClassImp is used
 	@patch -p1 < $(PATCHDIR)/root-ClassImp-warning.patch
-	@mkdir -p $(EXTSHRDIR)/root/tmva && cp -a $(EXTSRCDIR)/root/tutorials/tmva/* $(EXTSHRDIR)/root/tmva
+	@mkdir -p $(EXTSHRDIR)/root/ml && cp -a $(EXTSRCDIR)/root/tutorials/machine_learning/* $(EXTSHRDIR)/root/ml
 
 # root clean command
 root.clean:
@@ -1175,7 +1177,7 @@ roounfold: $(EXTLIBDIR)/libRooUnfold.so
 roounfold.src: $(EXTSRCDIR)/RooUnfold
 
 $(EXTSRCDIR)/RooUnfold:
-	@$(DOWNLOAD) RooUnfold RooUnfold-3.0.2.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.0.2/RooUnfold-3.0.2.zip
+	@$(DOWNLOAD) RooUnfold RooUnfold-3.1.0.zip https://gitlab.cern.ch/RooUnfold/RooUnfold/-/archive/3.1.0/RooUnfold-3.1.0.zip
 	@cd $(EXTSRCDIR)/RooUnfold && patch -p0 < $(PATCHDIR)/roounfold-doxygen.patch
 
 $(EXTLIBDIR)/libRooUnfold.so: $(EXTSRCDIR)/RooUnfold

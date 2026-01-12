@@ -74,8 +74,8 @@ externals.
 | [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
-| [ROOT](https://root.cern.ch/)                                                | 6.32/14         | LGPLv2.1 (GPLv3 for MathMore)  |
-| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.0.2           | -          |
+| [ROOT](https://root.cern.ch/)                                                | 6.36/06         | LGPLv2.1 (GPLv3 for MathMore)  |
+| [RooUnfold](https://gitlab.cern.ch/RooUnfold/RooUnfold)                      | 3.1.0           | BSD-3-Clause |
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |

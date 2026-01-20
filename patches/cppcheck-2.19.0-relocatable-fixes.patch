@@ -1,0 +1,78 @@
+diff --git a/cli/cmdlineparser.cpp b/cli/cmdlineparser.cpp
+index 38d0ce3e8..11d61693d 100644
+--- a/cli/cmdlineparser.cpp
++++ b/cli/cmdlineparser.cpp
+@@ -2150,16 +2150,9 @@ bool CmdLineParser::loadLibraries(Settings& settings)
+ {
+     if (!tryLoadLibrary(settings.library, settings.exename, "std.cfg", settings.debuglookup || settings.debuglookupLibrary)) {
+         const std::string msg("Failed to load std.cfg. Your Cppcheck installation is broken, please re-install.");
+-#ifdef FILESDIR
+-        const std::string details("The Cppcheck binary was compiled with FILESDIR set to \""
+-                                  FILESDIR "\" and will therefore search for "
+-                                  "std.cfg in " FILESDIR "/cfg.");
+-#else
+-        const std::string cfgfolder(Path::fromNativeSeparators(Path::getPathFromFilename(settings.exename)) + "cfg");
+-        const std::string details("The Cppcheck binary was compiled without FILESDIR set. Either the "
+-                                  "std.cfg should be available in " + cfgfolder + " or the FILESDIR "
+-                                  "should be configured.");
+-#endif
++        const std::string details("The Cppcheck binary was compiled for the basf2 externals, "
++                                  "please make sure the externals are setup using b2setup "
++                                  "or b2setup-externals and $BELLE2_EXTERNALS_DIR is set correctly.");
+         mLogger.printRaw(msg + " " + details); // TODO: do not print as raw?
+         return false;
+     }
+diff --git a/lib/addoninfo.cpp b/lib/addoninfo.cpp
+index a2426d919..c16458918 100644
+--- a/lib/addoninfo.cpp
++++ b/lib/addoninfo.cpp
+@@ -48,16 +48,15 @@ static std::string getFullPath(const std::string &fileName, const std::string &e
+     if (Path::isFile(exepath + "addons/" + fileName))
+         return exepath + "addons/" + fileName;
+
+-#ifdef FILESDIR
+-    if (debug)
+-        std::cout << "looking for addon '" << (FILESDIR + ("/" + fileName)) << "'" << std::endl;
+-    if (Path::isFile(FILESDIR + ("/" + fileName)))
+-        return FILESDIR + ("/" + fileName);
+-    if (debug)
+-        std::cout << "looking for addon '" << (FILESDIR + ("/addons/" + fileName)) << "'" << std::endl;
+-    if (Path::isFile(FILESDIR + ("/addons/" + fileName)))
+-        return FILESDIR + ("/addons/" + fileName);
+-#endif
++    char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
++    if (extDir) {
++      const std::string fname = std::string(extDir) + "/share/Cppcheck/addons/" + fileName;
++      if (debug)
++        std::cout << "looking for addon '" << fname << "'" << std::endl;
++      if (Path::isFile(fname))
++       return fname;
++    }
++
+     return "";
+ }
+
+diff --git a/lib/platform.cpp b/lib/platform.cpp
+index 6a0162545..cd6718106 100644
+--- a/lib/platform.cpp
++++ b/lib/platform.cpp
+@@ -196,15 +196,11 @@ bool Platform::loadFromFile(const std::vector<std::string>& paths, const std::st
+             filenames.push_back(ppath + fullfilename);
+             filenames.push_back(ppath + "platforms/" + fullfilename);
+         }
+-#ifdef FILESDIR
+-        std::string filesdir = FILESDIR;
+-        if (!filesdir.empty()) {
+-            if (filesdir.back() != '/')
+-                filesdir += '/';
+-            // TODO: look in filesdir?
+-            filenames.push_back(filesdir + "platforms/" + fullfilename);
++        char* extDir = std::getenv("BELLE2_EXTERNALS_DIR");
++        if (extDir) {
++            const std::string fname = std::string(extDir) + "/share/Cppcheck/platforms" + fullfilename;
++            filenames.push_back(fname);
+         }
+-#endif
+     }
+
+     // open file..

@@ -1502,7 +1502,7 @@ madgraph.src: $(EXTSRCDIR)/madgraph/VERSION
 
 # MadGraph download
 $(EXTSRCDIR)/madgraph/VERSION:
-	@$(DOWNLOAD) madgraph MG5_aMC_v3.4.0.tar.gz https://launchpad.net/mg5amcnlo/3.0/3.4.x/+download/MG5_aMC_v3.4.0.tar.gz
+	@$(DOWNLOAD) madgraph MG5_aMC_v3.7.0.tar.gz https://launchpad.net/mg5amcnlo/3.0/3.6.x/+download/MG5_aMC_v3.7.0.tar.gz
 	@cd src/madgraph && patch -p1 < $(PATCHDIR)/madgraph-disable_html_opening.patch
 
 # MadGraph build

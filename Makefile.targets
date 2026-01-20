@@ -824,15 +824,14 @@ cppcheck.touch:
 	@rm -fr $(EXTBINDIR)/cppcheck
 
 $(EXTSRCDIR)/cppcheck:
-	@$(DOWNLOAD) cppcheck cppcheck-2.6.tar.gz https://github.com/danmar/cppcheck/archive/2.6.tar.gz
-	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-Make-CppCheck-relocatable.patch
+	@$(DOWNLOAD) cppcheck cppcheck-2.19.0.tar.gz https://github.com/danmar/cppcheck/archive/2.19.0.tar.gz
+	@cd $(EXTSRCDIR)/cppcheck && patch -p1 < $(PATCHDIR)/cppcheck-2.19.0-relocatable-fixes.patch
 
 $(EXTBINDIR)/cppcheck: $(EXTSRCDIR)/cppcheck
 	@echo "building cppcheck"
 	@mkdir -p $(EXTBUILDDIR)/cppcheck
 	@cd $(EXTBUILDDIR)/cppcheck && $(CMAKE) $(EXTSRCDIR)/cppcheck \
-	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` \
-	    -DMATCH_COMPILER=ON && \
+	    -DPython_ADDITIONAL_VERSIONS=3.11 -DPYTHON_EXECUTABLE=`which python3` -DMATCH_COMPILER=ON && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # doxygen
@@ -888,15 +887,15 @@ VecGeom.touch:
 	rm -fr $(EXTLIBDIR)/libvecgeom.a
 
 $(EXTSRCDIR)/VecGeom/README.md:
-	@$(DOWNLOAD) VecGeom VecGeom-v1.2.8.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v1.2.8/VecGeom-v1.2.8.tar.gz
-	@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
+	@$(DOWNLOAD) VecGeom VecGeom-v2.0.0.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v2.0.0/VecGeom-v2.0.0.tar.gz
+	#@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
 $(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
 	@echo "building VecGeom"
 	@mkdir -p $(EXTBUILDDIR)/VecGeom
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \
 	    -DCUDA=OFF -DBACKEND=Vc -DBENCHMARK=OFF -DVECGEOM_VECTOR=sse2 -DBUILTIN_VECCORE=OFF -DCTEST=OFF \
-	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom $(CXX_STANDARD_CMAKE_FLAG) -DBUILD_DOC=OFF && \
+	    -DINSTALL_INCLUDE_DIR=$(EXTINCDIR)/VecGeom $(CXX_STANDARD_CMAKE_FLAG) -DBUILD_DOC=OFF -DVECGEOM_GDML=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 VecGeom.clean:
@@ -942,6 +941,8 @@ $(EXTSRCDIR)/geant4:
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-verbosity.patch
 # disable G4Assembly deletion as basf2 is not ready for this change of ownership logic
 	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-disable-assembly-deletion.patch
+# fix a typo that prevents the compilation with gcc 15.2
+	@cd $(EXTSRCDIR)/geant4 && patch -l -p1 < $(PATCHDIR)/geant4-11.2.1-typo.patch
 
 # GEANT4 build
 $(EXTBINDIR)/geant4.sh: $(EXTBINDIR)/clhep-config $(EXTSRCDIR)/geant4
@@ -974,7 +975,7 @@ postgresql.src: $(EXTSRCDIR)/postgresql/configure
 
 # PostgreSql download
 $(EXTSRCDIR)/postgresql/configure:
-	@$(DOWNLOAD) postgresql postgresql-13.2.tar.gz https://ftp.postgresql.org/pub/source/v13.2/postgresql-13.2.tar.gz
+	@$(DOWNLOAD) postgresql postgresql-13.23.tar.gz https://ftp.postgresql.org/pub/source/v13.23/postgresql-13.23.tar.gz
 
 # PostgreSql build
 $(EXTLIBDIR)/libpq.so: $(EXTSRCDIR)/postgresql/configure
@@ -1031,7 +1032,7 @@ xrootd.src: $(EXTSRCDIR)/xrootd
 
 # xrootd download
 $(EXTSRCDIR)/xrootd:
-	@$(DOWNLOAD) xrootd xrootd-5.6.1.tar.gz http://xrootd.org/download/v5.6.1/xrootd-5.6.1.tar.gz
+	@$(DOWNLOAD) xrootd xrootd-5.9.1.tar.gz https://xrootd.web.cern.ch/download/v5.9.1/xrootd-5.9.1.tar.gz
 
 # xrootd build
 $(EXTBINDIR)/xrootd: $(EXTSRCDIR)/xrootd
@@ -2003,7 +2004,7 @@ whizard.src: $(EXTSRCDIR)/whizard/INSTALL
 
 # whizard download
 $(EXTSRCDIR)/whizard/INSTALL:
-	$(DOWNLOAD) whizard whizard-3.1.2.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.2.tar.gz
+	$(DOWNLOAD) whizard whizard-3.1.7.tar.gz https://whizard.hepforge.org/downloads/?f=whizard-3.1.7.tar.gz
 	@cd $(EXTSRCDIR)/whizard && patch -p1 < $(PATCHDIR)/whizard-parallel-build.patch
 
 # whizard build

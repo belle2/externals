@@ -1195,13 +1195,13 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
-	@$(DOWNLOAD) FastBDT FastBDT-5.3.tar.gz https://github.com/belle2/FastBDT/archive/refs/tags/v5.3.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-5.4.tar.gz https://github.com/belle2/FastBDT/archive/refs/tags/v5.4.tar.gz
 
 # FastBDT TMVA build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
 	@echo "building FastBDT"
 	@mkdir -p $(EXTBUILDDIR)/FastBDT
-	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT && \
+	cd $(EXTBUILDDIR)/FastBDT && $(CMAKE) $(EXTSRCDIR)/FastBDT -DBUILD_TESTING=OFF && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 # FastBDT clean command

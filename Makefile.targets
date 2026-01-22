@@ -882,15 +882,15 @@ $(EXTINCDIR)/VecCore/Version.h: $(EXTSRCDIR)/VecCore/README.md
 
 
 VecGeom.src: $(EXTSRCDIR)/VecGeom/README.md
-VecGeom: $(EXTLIBDIR)/libvecgeom.a
+VecGeom: $(EXTLIBDIR)/libvecgeom.so
 VecGeom.touch:
-	rm -fr $(EXTLIBDIR)/libvecgeom.a
+	rm -fr $(EXTLIBDIR)/libvecgeom.so
 
 $(EXTSRCDIR)/VecGeom/README.md:
 	@$(DOWNLOAD) VecGeom VecGeom-v2.0.0.tar.gz https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v2.0.0/VecGeom-v2.0.0.tar.gz
 	#@cd $(EXTSRCDIR)/VecGeom && patch -p0 < $(PATCHDIR)/vecgeom-doxygen.patch
 
-$(EXTLIBDIR)/libvecgeom.a: $(EXTSRCDIR)/VecGeom/README.md
+$(EXTLIBDIR)/libvecgeom.so: $(EXTSRCDIR)/VecGeom/README.md
 	@echo "building VecGeom"
 	@mkdir -p $(EXTBUILDDIR)/VecGeom
 	@cd $(EXTBUILDDIR)/VecGeom && $(CMAKE) $(EXTSRCDIR)/VecGeom \

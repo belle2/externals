@@ -2079,3 +2079,129 @@ libonnxruntime.clean:
 # libonnxruntime touch
 libonnxruntime.touch:
 	@rm -f $(EXTLIBDIR)/libonnxruntime.so
+
+### Dependencies for Herwig (LHAPDF and ThePEG)
+
+# dependencies for lhapdf
+lhapdf: $(EXTLIBDIR)/libLHAPDF.so
+lhapdf.src: $(EXTSRCDIR)/lhapdf
+
+# lhapdf download
+$(EXTSRCDIR)/lhapdf:
+	$(DOWNLOAD) lhapdf LHAPDF-6.5.4.tar.gz https://lhapdf.hepforge.org/downloads/LHAPDF-6.5.4.tar.gz
+
+# lhapdf build
+$(EXTLIBDIR)/libLHAPDF.so: $(EXTSRCDIR)/lhapdf
+	@echo "building lhapdf"
+	@cp -fa $(EXTSRCDIR)/lhapdf $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/lhapdf && ./configure $(CONFIGURE_COMMON_FLAGS) \
+			--prefix=$(EXTDIR) --with-boost=$(EXTDIR) && \
+			make -j $(NPROCESSES) && make install
+
+# lhapdf clean
+lhapdf.clean:
+	@echo "cleaning lhapdf"
+	@rm -rf $(EXTBUILDDIR)/lhapdf $(EXTSRCDIR)/lhapdf
+
+# lhapdf touch
+lhapdf.touch:
+	@rm -f $(EXTLIBDIR)/libLHAPDF.so
+
+# lhapdf PDFs needed by Herwig
+.PHONY: lhapdf-pdfs
+lhapdf-pdfs: $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+$(EXTSHRDIR)/LHAPDF/CT14lo:
+	@echo "Installing LHAPDF PDF set CT14lo"
+	@mkdir -p $(EXTSHRDIR)/LHAPDF
+	@wget -q https://lhapdfsets.web.cern.ch/current/CT14lo.tar.gz -O /tmp/CT14lo.tar.gz
+	@tar -xzf /tmp/CT14lo.tar.gz -C $(EXTSHRDIR)/LHAPDF
+	@rm -f /tmp/CT14lo.tar.gz
+
+$(EXTSHRDIR)/LHAPDF/CT14nlo:
+	@echo "Installing LHAPDF PDF set CT14nlo"
+	@mkdir -p $(EXTSHRDIR)/LHAPDF
+	@wget -q https://lhapdfsets.web.cern.ch/current/CT14nlo.tar.gz -O /tmp/CT14nlo.tar.gz
+	@tar -xzf /tmp/CT14nlo.tar.gz -C $(EXTSHRDIR)/LHAPDF
+	@rm -f /tmp/CT14nlo.tar.gz
+
+lhapdf-pdfs.clean:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+lhapdf-pdfs.touch:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+# dependencies for ThePEG
+thepeg: $(EXTBINDIR)/thepeg-config
+thepeg.src: $(EXTSRCDIR)/ThePEG
+
+# ThePEG download
+$(EXTSRCDIR)/ThePEG:
+	@$(DOWNLOAD) ThePEG ThePEG-2.2.3.tar.bz2 https://thepeg.hepforge.org/downloads/ThePEG-2.2.3.tar.bz2
+
+# ThePEG build
+$(EXTBINDIR)/thepeg-config: $(EXTSRCDIR)/ThePEG
+	@echo "building ThePEG"
+	@cp -fa $< $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/ThePEG && \
+		./configure $(CONFIGURE_COMMON_FLAGS) \
+		--prefix=$(EXTDIR) \
+		--with-fastjet=$(EXTDIR) \
+		--with-gsl=$(EXTDIR) \
+		--with-hepmc=$(EXTDIR) \
+		--with-lhapdf=$(EXTDIR) \
+		--with-boost=$(EXTDIR) && \
+		make -j $(NPROCESSES) && \
+		make install
+
+# ThePEG clean
+thepeg.clean:
+	@echo "cleaning ThePEG"
+	@-cd $(EXTBUILDDIR)/ThePEG 2>/dev/null && make clean
+	@rm -rf $(EXTBUILDDIR)/ThePEG $(EXTSRCDIR)/ThePEG $(EXTLIBDIR)/ThePEG $(EXTBINDIR)/thepeg-config
+	
+# ThePEG touch
+thepeg.touch:
+	@rm -f $(EXTBINDIR)/thepeg-config
+
+# dependencies for Herwig
+herwig: $(EXTSHRDIR)/Herwig/HerwigDefaults.rpo
+herwig.src: $(EXTSRCDIR)/herwig
+
+# Herwig download
+$(EXTSRCDIR)/herwig:
+	@$(DOWNLOAD) herwig Herwig-7.2.0.tar.bz2 \
+	    https://herwig.hepforge.org/downloads/Herwig-7.2.0.tar.bz2
+
+# Herwig build
+$(EXTSHRDIR)/Herwig/HerwigDefaults.rpo: $(EXTSRCDIR)/herwig
+	@echo "building Herwig"
+	@cp -fa $< $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/herwig && \
+	    FCFLAGS="-fallow-argument-mismatch" \
+	    FFLAGS="-fallow-argument-mismatch" \
+	    ./configure \
+	        $(CONFIGURE_COMMON_FLAGS) \
+	        --prefix=$(EXTDIR) \
+	        --with-thepeg=$(EXTDIR) \
+	        --with-fastjet=$(EXTDIR) \
+	        --with-gsl=$(EXTDIR) \
+	        --with-boost=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install
+
+# Herwig clean
+herwig.clean:
+	@echo "cleaning Herwig"
+	@-cd $(EXTBUILDDIR)/herwig 2>/dev/null && make clean
+	@rm -rf \
+	    $(EXTBUILDDIR)/herwig \
+	    $(EXTSRCDIR)/herwig \
+	    $(EXTLIBDIR)/Herwig \
+	    $(EXTBINDIR)/Herwig-config \
+	    $(EXTSHRDIR)/Herwig
+
+# Herwig touch
+herwig.touch:
+	@rm -f $(EXTSHRDIR)/Herwig/HerwigDefaults.rpo
+

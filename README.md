@@ -20,57 +20,57 @@ externals.
 | [bazel](https://bazel.build/)                                                | 0.26.1          | Apache 2.0 |
 | `BELLE_FLC`                                                                  | ?               | -          |
 | [belle\_legacy](https://gitlab.desy.de/belle2/software/belle_legacy/)        | 1.11            | -          |
-| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.41            | GPLv2      |
-| [Boost C++ Libraries](http://www.boost.org/)                                 | 1.88            | [Boost License](http://www.boost.org/users/license.html) |
+| [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.45            | GPLv2      |
+| [Boost C++ Libraries](http://www.boost.org/)                                 | 1.90            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](https://www.sourceware.org/bzip2/)                                   | 1.08            | BSD-style  |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.7.1         | LGPLv3     |
-| [CMake](https://cmake.org/)                                                  | 3.28.3          | BSD-style  |
+| [CMake](https://cmake.org/)                                                  | 3.31.8          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
 | [cppzmq](https://github.com/zeromq/cppzmq)                                   | 4.7.1           | MIT-style  |
 | [curl](https://curl.haxx.se/)                                                | 7.77.0          | MIT-style (see also: [License Mixing](https://curl.haxx.se/legal/licmix.html)) |
 | [davix](https://github.com/cern-fts/davix)                                   | 0.8.6           | LGPLv2     |
 | [Eigen](http://eigen.tuxfamily.org/)                                         | 3.4.0           | MPLv2      |
-| [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.5           | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
+| [EPICS](https://epics.anl.gov/index.php)                                     | 7.0.10          | [EPICS License](https://epics.anl.gov/license/open.php?product=EPICS+Base) |
 | [EvtGen](https://evtgen.hepforge.org/)                                       | R02-00-01       | GPLv3      |
 | [FANN](http://leenissen.dk/fann/wp/)                                         | 2.2.0+git8ae6bb0| LGPL       |
-| [FastBDT](https://github.com/belle2/FastBDT)                                 | 5.3             | GPLv3      |
+| [FastBDT](https://github.com/belle2/FastBDT)                                 | 5.4             | GPLv3      |
 | [FastJet](http://fastjet.fr/)                                                | 3.3.4           | GPLv2 (and others) |
 | [FFTW3](http://fftw.org/)                                                    | 3.3.9           | GPL        |
 | [Frugally-deep](https://github.com/Dobiasd/frugally-deep)                    | 0.15.19-p0      | MIT        |
 | [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)                  | 0.2.18-p0       | [Boost Software License](http://www.boost.org/users/license.html) |
-| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 14.2.0          | GPLv2/GPLv3 + Runtime library Exception |
-| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 14.2            | GPLv2      |
+| [GCC, the GNU Compiler Collection](https://gcc.gnu.org/)                     | 15.2.0          | GPLv2/GPLv3 + Runtime library Exception |
+| [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)           | 17.1            | GPLv2      |
 | [Geant4](http://geant4.web.cern.ch/geant4/)                                  | 11.2.1          | Geant4 License |
-| [git](https://git-scm.com/)                                                  | 2.31.0          | GPLv2      |
-| [git-lfs](https://git-lfs.github.com/)                                       | 2.13.2          | MIT        |
-| [GMP, The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)    | 6.2.1           | LGPLv3 + GPLv2 |
+| [git](https://git-scm.com/)                                                  | 2.52.0          | GPLv2      |
+| [git-lfs](https://git-lfs.github.com/)                                       | 3.7.1           | MIT        |
+| [GMP, The GNU Multiple Precision Arithmetic Library](https://gmplib.org/)    | 6.3.0           | LGPLv3 + GPLv2 |
 | [GSL - GNU Scientific Library](https://www.gnu.org/software/gsl/)            | 2.6             | GPLv3      |
-| [Google Test](https://github.com/google/googletest)                          | 1.10.0          | BSD        |
+| [Google Test](https://github.com/google/googletest)                          | 1.17.0          | BSD        |
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.4.1           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
 | [Herwig](https://herwig.hepforge.org/) 				       | 7.2.0		 | GPLv3      |
-| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.26            | MIT        |
+| [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.27            | MIT        |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [LHAPDF](https://lhapdf.hepforge.org)                                        | 6.5.4           | GPLv2 or later |
-| [libffi](https://github.com/libffi/libffi)                                   | 3.3             | BSD-style  |
-| [Libxml2](http://www.xmlsoft.org)                                            | 2.9.13          | MIT        |
-| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.35          | MIT        |
+| [libffi](https://github.com/libffi/libffi)                                   | 3.5.2           | BSD-style  |
+| [Libxml2](http://www.xmlsoft.org)                                            | 2.15.1          | MIT        |
+| [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.45          | MIT        |
 | [Libmd](https://www.hadrons.org/software/libmd/), included only for EL7      | 1.1.0           | BSD-3-Clause |
 | [Libbsd](https://libbsd.freedesktop.org/), included only for EL7             | 0.12.2          | BSD-3-Clause |
-| [LZ4](https://lz4.github.io/lz4/)                                            | 1.9.3           | BSD + GPLv2 |
-| [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.4.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
+| [LZ4](https://lz4.github.io/lz4/)                                            | 1.10.0          | BSD + GPLv2 |
+| [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.7.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-16-03       | LGPLv2     |
 | [GNU MPC](http://www.multiprecision.org/)                                    | 1.2.1           | LGPLv3+    |
-| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.1.0           | LGPLv3+    |
+| [The GNU MPFR Library](http://www.mpfr.org/)                                 | 4.2.2           | LGPLv3+    |
 | [NeurobayesCppInterface](https://github.com/thomaskeck/NeurobayesCppInterface) | c7d36c5       | MIT        |
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.10.5          | MIT        |
-| [ONNX Runtime](https://github.com/microsoft/onnxruntime)                     | 1.22.0          | MIT        |
+| [ONNX Runtime](https://github.com/microsoft/onnxruntime)                     | 1.23.2          | MIT        |
 | [OpenSSL](https://www.openssl.org/), included only for EL7                   | 3.0.14          | Apache v2  |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later |
 | [PHOTOS](https://gitlab.cern.ch/photospp/photospp/)                          | 3.64            | MIT        |
-| [PostgreSQL](http://www.postgresql.org/) interface                           | 13.2            | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
+| [PostgreSQL](http://www.postgresql.org/) interface                           | 13.23           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](https://pythia.org/)                                                | 8.215           | GPLv2      |
 | [Python](https://www.python.org/)                                            | 3.11.9          | PSFL (BSD-style) |
 | [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
@@ -85,11 +85,11 @@ externals.
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.2          | Apache v2  |
-| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 1.2.8           | Apache v2  |
+| [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 2.0.0           | Apache v2  |
 | [Virtual Geometry Model (VGM)](https://vmc-project.github.io/vgm-documentation/)     | 5.3     | GPLv2      |
-| [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.2           | GPLv2      |
-| [XRootD](http://xrootd.org/)                                                 | 5.6.1           | LGPLv3     |
-| [xz](https://tukaani.org/xz/)                                                | 5.2.5           | Public Domain + GPLv2+ |
+| [WHIZARD](https://whizard.hepforge.org/)                                     | 3.1.7           | GPLv2      |
+| [XRootD](http://xrootd.org/)                                                 | 5.9.1           | LGPLv3     |
+| [xz](https://tukaani.org/xz/)                                                | 5.8.2           | Public Domain + GPLv2+ |
 | [yaml-cpp](https://github.com/jbeder/yaml-cpp)                               | 0.6.3           | MIT        |
 | [zeromq](http://www.zeromq.org/)                                             | 4.3.4           | LGPLv3 + static link exception, intent to move to MPLv2  |
 | [zlib](http://www.zlib.net/)                                                 | 1.3.1           | MIT        |
@@ -106,10 +106,10 @@ To compile any of these just go into the external directory and type
 
 | Software Package                                                             | Version         | License    |
 |------------------------------------------------------------------------------|-----------------|------------|
-| [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 2.6             | GPLv3      |
+| [Cppcheck](http://cppcheck.sourceforge.net/)                                 | 2.19.0          | GPLv3      |
 | [Doxygen](http://www.doxygen.org)                                            | 1.13.2          | GPL        |
-| [LLVM/Clang](http://llvm.org/), including libcxx and sanitizer tools         | 18.1.6          | [Apache 2 License with LLVM Exceptions](http://releases.llvm.org/18.1.6/LICENSE.TXT) |
-| [Valgrind](http://valgrind.org/)                                             | 3.17.0          | GPLv2      |
+| [LLVM/Clang](http://llvm.org/), including libcxx and sanitizer tools         | 21.1.8          | [Apache 2 License with LLVM Exceptions](http://releases.llvm.org/18.1.6/LICENSE.TXT) |
+| [Valgrind](http://valgrind.org/)                                             | 3.26.0          | GPLv2      |
 
 
 Python Packages

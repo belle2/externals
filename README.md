@@ -54,8 +54,6 @@ externals.
 | [libffi](https://github.com/libffi/libffi)                                   | 3.5.2           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.15.1          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.45          | MIT        |
-| [Libmd](https://www.hadrons.org/software/libmd/), included only for EL7      | 1.1.0           | BSD-3-Clause |
-| [Libbsd](https://libbsd.freedesktop.org/), included only for EL7             | 0.12.2          | BSD-3-Clause |
 | [LZ4](https://lz4.github.io/lz4/)                                            | 1.10.0          | BSD + GPLv2 |
 | [Madgraph MG5\_aMC](https://launchpad.net/mg5amcnlo)                         | 3.7.0           | [UoI-NCSA](https://opensource.org/licenses/UoI-NCSA.php) (according to launchpad.net) |
 | [Millepede-II](http://www.desy.de/~kleinwrt/MP2/doc/html/index.html)         | V04-16-03       | LGPLv2     |
@@ -65,7 +63,6 @@ externals.
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.10.5          | MIT        |
 | [ONNX Runtime](https://github.com/microsoft/onnxruntime)                     | 1.23.2          | MIT        |
-| [OpenSSL](https://www.openssl.org/), included only for EL7                   | 3.0.14          | Apache v2  |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later |
 | [PHOTOS](https://gitlab.cern.ch/photospp/photospp/)                          | 3.64            | MIT        |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.23           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |

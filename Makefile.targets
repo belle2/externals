@@ -2088,15 +2088,16 @@ lhapdf.src: $(EXTSRCDIR)/lhapdf
 
 # lhapdf download
 $(EXTSRCDIR)/lhapdf:
-	$(DOWNLOAD) lhapdf LHAPDF-6.5.4.tar.gz https://lhapdf.hepforge.org/downloads/LHAPDF-6.5.4.tar.gz
+	$(DOWNLOAD) lhapdf LHAPDF-6.5.5.tar.gz https://lhapdf.hepforge.org/downloads/LHAPDF-6.5.5.tar.gz
 
 # lhapdf build
 $(EXTLIBDIR)/libLHAPDF.so: $(EXTSRCDIR)/lhapdf
 	@echo "building lhapdf"
 	@cp -fa $(EXTSRCDIR)/lhapdf $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/lhapdf && ./configure $(CONFIGURE_COMMON_FLAGS) \
-			--prefix=$(EXTDIR) --with-boost=$(EXTDIR) && \
-			make -j $(NPROCESSES) && make install
+	@cd $(EXTBUILDDIR)/lhapdf && \
+	    PYTHON=`which python3` ./configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --with-boost=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
 
 # lhapdf clean
 lhapdf.clean:

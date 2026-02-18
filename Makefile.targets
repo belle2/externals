@@ -2109,28 +2109,54 @@ lhapdf.touch:
 	@rm -f $(EXTLIBDIR)/libLHAPDF.so
 
 # lhapdf PDFs needed by Herwig
-.PHONY: lhapdf-pdfs
-lhapdf-pdfs: $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+lhapdf-ct14lo: $(EXTSHRDIR)/LHAPDF/CT14lo
+lhapdf-ct14lo.src: $(EXTSRCDIR)/CT14lo
 
-$(EXTSHRDIR)/LHAPDF/CT14lo:
+# download
+$(EXTSRCDIR)/CT14lo:
+	$(DOWNLOAD) CT14lo LHAPDF_CT14lo-v1.tar.gz https://lhapdfsets.web.cern.ch/current/CT14lo.tar.gz
+
+# build
+$(EXTSHRDIR)/LHAPDF/CT14lo: $(EXTSRCDIR)/CT14lo
 	@echo "Installing LHAPDF PDF set CT14lo"
 	@mkdir -p $(EXTSHRDIR)/LHAPDF
-	@wget -q https://lhapdfsets.web.cern.ch/current/CT14lo.tar.gz -O /tmp/CT14lo.tar.gz
-	@tar -xzf /tmp/CT14lo.tar.gz -C $(EXTSHRDIR)/LHAPDF
-	@rm -f /tmp/CT14lo.tar.gz
+	@cp -fa $(EXTSRCDIR)/CT14lo $(EXTSHRDIR)/LHAPDF/
 
-$(EXTSHRDIR)/LHAPDF/CT14nlo:
+# clean
+lhapdf-ct14lo.clean:
+	@echo "cleaning CT14lo"
+	@rm -rf $(EXTSRCDIR)/CT14lo $(EXTSHRDIR)/LHAPDF/CT14lo
+
+# touch
+lhapdf-ct14lo.touch:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo
+
+lhapdf-ct14nlo: $(EXTSHRDIR)/LHAPDF/CT14nlo
+lhapdf-ct14nlo.src: $(EXTSRCDIR)/CT14nlo
+
+# download
+$(EXTSRCDIR)/CT14nlo:
+	$(DOWNLOAD) CT14nlo LHAPDF_CT14nlo-v1.tar.gz https://lhapdfsets.web.cern.ch/current/CT14nlo.tar.gz
+
+# build
+$(EXTSHRDIR)/LHAPDF/CT14nlo: $(EXTSRCDIR)/CT14nlo
 	@echo "Installing LHAPDF PDF set CT14nlo"
 	@mkdir -p $(EXTSHRDIR)/LHAPDF
-	@wget -q https://lhapdfsets.web.cern.ch/current/CT14nlo.tar.gz -O /tmp/CT14nlo.tar.gz
-	@tar -xzf /tmp/CT14nlo.tar.gz -C $(EXTSHRDIR)/LHAPDF
-	@rm -f /tmp/CT14nlo.tar.gz
+	@cp -fa $(EXTSRCDIR)/CT14nlo $(EXTSHRDIR)/LHAPDF/
 
-lhapdf-pdfs.clean:
-	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+# clean
+lhapdf-ct14nlo.clean:
+	@echo "cleaning CT14nlo"
+	@rm -rf $(EXTSRCDIR)/CT14nlo $(EXTSHRDIR)/LHAPDF/CT14nlo
 
-lhapdf-pdfs.touch:
-	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo $(EXTSHRDIR)/LHAPDF/CT14nlo
+# touch
+lhapdf-ct14nlo.touch:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+lhapdf-pdfs: lhapdf-ct14lo lhapdf-ct14nlo
+
+lhapdf-pdfs.clean: lhapdf-ct14lo.clean lhapdf-ct14nlo.clean
+lhapdf-pdfs.touch: lhapdf-ct14lo.touch lhapdf-ct14nlo.touch
 
 # dependencies for ThePEG
 thepeg: $(EXTBINDIR)/thepeg-config

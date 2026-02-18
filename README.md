@@ -53,6 +53,8 @@ externals.
 | [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.27            | MIT        |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
 | [LHAPDF](https://lhapdf.hepforge.org)                                        | 6.5.5           | GPLv2 or later |
+| [LHAPDF - CT14lo PDF set](https://lhapdfsets.web.cern.ch/current/)           | 1               | -          |
+| [LHAPDF - CT14nlo PDF set](https://lhapdfsets.web.cern.ch/current/)          | 1               | -          |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.5.2           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.15.1          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.45          | MIT        |

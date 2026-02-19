@@ -49,8 +49,12 @@ externals.
 | [Hammer](https://hammer.physics.lbl.gov/)                                    | 1.4.1           | GPLv3      |
 | [HDF5](https://www.hdfgroup.org/)                                            | 1.12.0          | BSD        |
 | [HepMC](https://ep-dep-sft.web.cern.ch/project/hepmc)                        | 2.06.11         | GPLv2      |
+| [Herwig](https://herwig.hepforge.org/) 				       | 7.2.0		 | GPLv3      |
 | [Integer Set Library](https://libisl.sourceforge.io/)                        | 0.27            | MIT        |
 | [jemalloc memory allocator](http://jemalloc.net/)                            | 5.2.1           | BSD-style  |
+| [LHAPDF](https://lhapdf.hepforge.org)                                        | 6.5.5           | GPLv2 or later |
+| [LHAPDF - CT14lo PDF set](https://lhapdfsets.web.cern.ch/current/)           | 1               | -          |
+| [LHAPDF - CT14nlo PDF set](https://lhapdfsets.web.cern.ch/current/)          | 1               | -          |
 | [libffi](https://github.com/libffi/libffi)                                   | 3.5.2           | BSD-style  |
 | [Libxml2](http://www.xmlsoft.org)                                            | 2.15.1          | MIT        |
 | [Libxslt](http://xmlsoft.org/libxslt/)                                       | 1.1.45          | MIT        |
@@ -76,6 +80,7 @@ externals.
 | [SQLite](https://www.sqlite.org/)                                            | 3.35.1          | Public Domain |
 | [Tauola](http://tauolapp.web.cern.ch/tauolapp/)                              | 1.1.8           | -          |
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |
+| [ThePEG](https://thepeg.hepforge.org)                                        | 2.2.3           | GPLv2      |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.2          | Apache v2  |

@@ -409,8 +409,8 @@ $(EXTBINDIR)/clang++: $(EXTSRCDIR)/llvm
 	@mkdir -p $(EXTBUILDDIR)/llvm
 	@cd $(EXTBUILDDIR)/llvm && $(CMAKE) -S $(EXTSRCDIR)/llvm/llvm \
 	    -DPython3_EXECUTABLE=`which python3` \
-	    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" \
-	    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" && \
+	    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;compiler-rt" \
+	    -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" && \
 	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
 
 valgrind: $(EXTBINDIR)/valgrind
@@ -463,38 +463,6 @@ $(EXTBINDIR)/xslt-config: $(EXTSRCDIR)/libxslt
 	#Fix absolute path in xslt-config and lib/xsltConf.sh
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $@
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTLIBDIR)/xsltConf.sh
-
-libmd: $(EXTINCDIR)/md5.h
-libmd.src: $(EXTSRCDIR)/libmd
-libmd.touch:
-	@rm -f $(EXTINCDIR)/md5.h
-
-$(EXTSRCDIR)/libmd:
-	@$(DOWNLOAD) libmd libmd-1.1.0.tar.xz https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz
-
-$(EXTINCDIR)/md5.h: $(EXTSRCDIR)/libmd
-	@cd $< && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
-            make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
-
-libmd.clean:
-	@rm -fr $(EXTINCDIR)/md5.h
-
-libbsd: $(EXTLIBDIR)/libbsd.so
-libbsd.src: $(EXTSRCDIR)/libbsd
-libbsd.touch:
-	@rm -f $(EXTLIBDIR)/libbsd.so
-
-$(EXTSRCDIR)/libbsd:
-	@$(DOWNLOAD) libbsd libbsd-0.12.2.tar.xz https://libbsd.freedesktop.org/releases/libbsd-0.12.2.tar.xz
-
-$(EXTLIBDIR)/libbsd.so: $(EXTSRCDIR)/libbsd
-	@echo "building libbsd"
-	@cp -fa $(EXTSRCDIR)/libbsd $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/libbsd && ./configure $(CONFIGURE_COMMON_FLAGS) --prefix=$(EXTDIR) --enable-silent-rules && \
-	    make -j $(NPROCESSES) CPPFLAGS=-I$(EXTINCDIR) && make install$(INSTALL_TARGET_SUFFIX)
-
-libbsd.clean:
-	@rm -fr $(EXTINCDIR)/bsd.h $(EXTLIBDIR)/libbsd*
 
 zlib: $(EXTLIBDIR)/libz.so
 zlib.src: $(EXTSRCDIR)/zlib
@@ -569,22 +537,6 @@ $(EXTBINDIR)/lz4: $(EXTSRCDIR)/lz4/INSTALL
 lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
-
-openssl: $(EXTBINDIR)/openssl
-openssl.src: $(EXTSRCDIR)/openssl
-openssl.clean:
-	@rm -fr $(EXTBUILDDIR)/openssl
-openssl.touch:
-	@rm -fr $(EXTBINDIR)/openssl
-
-$(EXTSRCDIR)/openssl:
-	$(DOWNLOAD) openssl openssl-3.0.14.tar.gz https://www.openssl.org/source/openssl-3.0.14.tar.gz
-
-$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
-	@echo "building openssl"
-	@mkdir -p $(EXTBUILDDIR)/openssl
-	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) --openssldir=$(EXTDIR) && \
-	    make -j $(NPROCESSES) && make install$(INSTALL_TARGET_SUFFIX)
 
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
@@ -779,15 +731,15 @@ gtest.touch:
 
 
 # dependencies for boost
-boost: $(EXTLIBDIR)/libboost_system.so
+boost: $(EXTLIBDIR)/libboost_python.so
 boost.src: $(EXTSRCDIR)/boost/INSTALL
 
 # boost download
 $(EXTSRCDIR)/boost/INSTALL:
-	@$(DOWNLOAD) boost boost_1_88_0.tar.bz2 https://archives.boost.io/release/1.88.0/source/boost_1_88_0.tar.bz2
+	@$(DOWNLOAD) boost boost_1_90_0.tar.bz2 https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2
 
 # boost build
-$(EXTLIBDIR)/libboost_system.so: $(EXTSRCDIR)/boost/INSTALL
+$(EXTLIBDIR)/libboost_python.so: $(EXTSRCDIR)/boost/INSTALL
 	@echo "building boost"
 	cd $(EXTSRCDIR)/boost && ./bootstrap.sh --prefix=$(EXTDIR) \
 	    --includedir=$(EXTINCDIR) --with-python=python3 --without-icu && \
@@ -805,7 +757,7 @@ boost.clean:
 
 # boost touch
 boost.touch:
-	@rm -f $(EXTLIBDIR)/libboost_system.so
+	@rm -f $(EXTLIBDIR)/libboost_python.so
 
 libuuid: $(EXTINCDIR)/uuid/uuid.h
 libuuid.src: $(EXTSRCDIR)/util-linux/README
@@ -2032,32 +1984,6 @@ whizard.touch:
 whizard.clean:
 	@rm -rf $(EXTBUILDDIR)/whizard
 
-# dependencies for libtorch
-libtorch: $(EXTLIBDIR)/libtorch.so
-libtorch.src: $(EXTSRCDIR)/pytorch/README.md
-
-# libtorch download
-$(EXTSRCDIR)/pytorch/README.md:
-	@$(DOWNLOAD) pytorch pytorch-v2.2.2.tar.gz https://github.com/pytorch/pytorch/releases/download/v2.2.2/pytorch-v2.2.2.tar.gz
-
-# libtorch build
-$(EXTLIBDIR)/libtorch.so: $(EXTSRCDIR)/pytorch/README.md
-	@echo "building libtorch"
-	@mkdir -p $(EXTBUILDDIR)/pytorch-build
-	@cd $(EXTBUILDDIR)/pytorch-build && $(CMAKE) $(EXTSRCDIR)/pytorch \
-	    -DBUILD_SHARED_LIBS=ON -DPYTHON_EXECUTABLE=`which python3` \
-		-DCMAKE_CXX_FLAGS="-Wno-error=maybe-uninitialized -Wno-error=uninitialized -Wno-error=restrict" && \
-	    ninja -j $(NPROCESSES) install$(CMAKE_TARGET_SUFFIX)
-
-# libtorch clean
-libtorch.clean:
-	@echo "cleaning libtorch"
-	@rm -rf $(EXTBUILDDIR)/pytorch-build $(EXTINCDIR)/pytorch $(EXTLIBDIR)/libtorch.a
-
-# libtorch touch
-libtorch.touch:
-	@rm -f $(EXTLIBDIR)/libtorch.so
-
 # dependencies for libonnxruntime
 libonnxruntime: $(EXTLIBDIR)/libonnxruntime.so
 libonnxruntime.src: $(EXTSRCDIR)/onnxruntime/README.md
@@ -2087,3 +2013,156 @@ libonnxruntime.clean:
 # libonnxruntime touch
 libonnxruntime.touch:
 	@rm -f $(EXTLIBDIR)/libonnxruntime.so
+
+### Dependencies for Herwig (LHAPDF and ThePEG)
+
+# dependencies for lhapdf
+lhapdf: $(EXTLIBDIR)/libLHAPDF.so
+lhapdf.src: $(EXTSRCDIR)/lhapdf
+
+# lhapdf download
+$(EXTSRCDIR)/lhapdf:
+	$(DOWNLOAD) lhapdf LHAPDF-6.5.5.tar.gz https://lhapdf.hepforge.org/downloads/LHAPDF-6.5.5.tar.gz
+
+# lhapdf build
+$(EXTLIBDIR)/libLHAPDF.so: $(EXTSRCDIR)/lhapdf
+	@echo "building lhapdf"
+	@cp -fa $(EXTSRCDIR)/lhapdf $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/lhapdf && \
+	    PYTHON=`which python3` ./configure $(CONFIGURE_COMMON_FLAGS) \
+	    --prefix=$(EXTDIR) --with-boost=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && make install
+
+# lhapdf clean
+lhapdf.clean:
+	@echo "cleaning lhapdf"
+	@rm -rf $(EXTBUILDDIR)/lhapdf $(EXTSRCDIR)/lhapdf
+
+# lhapdf touch
+lhapdf.touch:
+	@rm -f $(EXTLIBDIR)/libLHAPDF.so
+
+# lhapdf PDFs needed by Herwig
+lhapdf-ct14lo: $(EXTSHRDIR)/LHAPDF/CT14lo
+lhapdf-ct14lo.src: $(EXTSRCDIR)/CT14lo
+
+# download
+$(EXTSRCDIR)/CT14lo:
+	$(DOWNLOAD) CT14lo LHAPDF_CT14lo-v1.tar.gz https://lhapdfsets.web.cern.ch/current/CT14lo.tar.gz
+
+# build
+$(EXTSHRDIR)/LHAPDF/CT14lo: $(EXTSRCDIR)/CT14lo
+	@echo "Installing LHAPDF PDF set CT14lo"
+	@mkdir -p $(EXTSHRDIR)/LHAPDF
+	@cp -fa $(EXTSRCDIR)/CT14lo $(EXTSHRDIR)/LHAPDF/
+
+# clean
+lhapdf-ct14lo.clean:
+	@echo "cleaning CT14lo"
+	@rm -rf $(EXTSRCDIR)/CT14lo $(EXTSHRDIR)/LHAPDF/CT14lo
+
+# touch
+lhapdf-ct14lo.touch:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14lo
+
+lhapdf-ct14nlo: $(EXTSHRDIR)/LHAPDF/CT14nlo
+lhapdf-ct14nlo.src: $(EXTSRCDIR)/CT14nlo
+
+# download
+$(EXTSRCDIR)/CT14nlo:
+	$(DOWNLOAD) CT14nlo LHAPDF_CT14nlo-v1.tar.gz https://lhapdfsets.web.cern.ch/current/CT14nlo.tar.gz
+
+# build
+$(EXTSHRDIR)/LHAPDF/CT14nlo: $(EXTSRCDIR)/CT14nlo
+	@echo "Installing LHAPDF PDF set CT14nlo"
+	@mkdir -p $(EXTSHRDIR)/LHAPDF
+	@cp -fa $(EXTSRCDIR)/CT14nlo $(EXTSHRDIR)/LHAPDF/
+
+# clean
+lhapdf-ct14nlo.clean:
+	@echo "cleaning CT14nlo"
+	@rm -rf $(EXTSRCDIR)/CT14nlo $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+# touch
+lhapdf-ct14nlo.touch:
+	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14nlo
+
+lhapdf-pdfs: lhapdf-ct14lo lhapdf-ct14nlo
+
+lhapdf-pdfs.clean: lhapdf-ct14lo.clean lhapdf-ct14nlo.clean
+lhapdf-pdfs.touch: lhapdf-ct14lo.touch lhapdf-ct14nlo.touch
+
+# dependencies for ThePEG
+thepeg: $(EXTBINDIR)/thepeg-config
+thepeg.src: $(EXTSRCDIR)/ThePEG
+
+# ThePEG download
+$(EXTSRCDIR)/ThePEG:
+	@$(DOWNLOAD) ThePEG ThePEG-2.2.3.tar.bz2 https://thepeg.hepforge.org/downloads/ThePEG-2.2.3.tar.bz2
+
+# ThePEG build
+$(EXTBINDIR)/thepeg-config: $(EXTSRCDIR)/ThePEG
+	@echo "building ThePEG"
+	@cp -fa $< $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/ThePEG && \
+		./configure $(CONFIGURE_COMMON_FLAGS) \
+		--prefix=$(EXTDIR) \
+		--with-fastjet=$(EXTDIR) \
+		--with-gsl=$(EXTDIR) \
+		--with-hepmc=$(EXTDIR) \
+		--with-lhapdf=$(EXTDIR) \
+		--with-boost=$(EXTDIR) && \
+		make -j $(NPROCESSES) && \
+		make install
+
+# ThePEG clean
+thepeg.clean:
+	@echo "cleaning ThePEG"
+	@-cd $(EXTBUILDDIR)/ThePEG 2>/dev/null && make clean
+	@rm -rf $(EXTBUILDDIR)/ThePEG $(EXTSRCDIR)/ThePEG $(EXTLIBDIR)/ThePEG $(EXTBINDIR)/thepeg-config
+	
+# ThePEG touch
+thepeg.touch:
+	@rm -f $(EXTBINDIR)/thepeg-config
+
+# dependencies for Herwig
+herwig: $(EXTSHRDIR)/Herwig/HerwigDefaults.rpo
+herwig.src: $(EXTSRCDIR)/herwig
+
+# Herwig download
+$(EXTSRCDIR)/herwig:
+	@$(DOWNLOAD) herwig Herwig-7.2.0.tar.bz2 \
+	    https://herwig.hepforge.org/downloads/Herwig-7.2.0.tar.bz2
+
+# Herwig build
+$(EXTSHRDIR)/Herwig/HerwigDefaults.rpo: $(EXTSRCDIR)/herwig
+	@echo "building Herwig"
+	@cp -fa $< $(EXTBUILDDIR)
+	@cd $(EXTBUILDDIR)/herwig && \
+	    FCFLAGS="-fallow-argument-mismatch" \
+	    FFLAGS="-fallow-argument-mismatch" \
+	    ./configure \
+	        $(CONFIGURE_COMMON_FLAGS) \
+	        --prefix=$(EXTDIR) \
+	        --with-thepeg=$(EXTDIR) \
+	        --with-fastjet=$(EXTDIR) \
+	        --with-gsl=$(EXTDIR) \
+	        --with-boost=$(EXTDIR) && \
+	    make -j $(NPROCESSES) && \
+	    make install
+
+# Herwig clean
+herwig.clean:
+	@echo "cleaning Herwig"
+	@-cd $(EXTBUILDDIR)/herwig 2>/dev/null && make clean
+	@rm -rf \
+	    $(EXTBUILDDIR)/herwig \
+	    $(EXTSRCDIR)/herwig \
+	    $(EXTLIBDIR)/Herwig \
+	    $(EXTBINDIR)/Herwig-config \
+	    $(EXTSHRDIR)/Herwig
+
+# Herwig touch
+herwig.touch:
+	@rm -f $(EXTSHRDIR)/Herwig/HerwigDefaults.rpo
+

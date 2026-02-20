@@ -280,7 +280,7 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
 | [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
-| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
+| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
@@ -305,11 +305,11 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [pydocstyle](https://pypi.org/project/pydocstyle/) | Python docstring style checker | 6.3.0 | MIT |
 | [pyflakes](https://pypi.org/project/pyflakes/) | passive checker of Python programs | 3.2.0 | MIT |
 | [Pygments](https://pypi.org/project/Pygments/) | Pygments is a syntax highlighting package written in Python. | 2.18.0 | BSD-2-Clause |
-| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.13.4 | BSD 3-Clause License |
+| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.16.1 | BSD |
 | [PyJWT](https://pypi.org/project/PyJWT/) | JSON Web Token implementation in Python | 2.8.0 | MIT |
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
-| [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
+| [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.5 | GPLv2 |
 | [PySide6](https://pypi.org/project/PySide6/) | Python bindings for the Qt cross-platform application and UI framework | 6.9.1 | LGPL-3.0-only |
 | [PySide6-Addons](https://pypi.org/project/PySide6-Addons/) | Python bindings for the Qt cross-platform application and UI framework (Addons) | 6.9.1 | LGPL-3.0-only |
 | [PySide6-Essentials](https://pypi.org/project/PySide6-Essentials/) | Python bindings for the Qt cross-platform application and UI framework (Essentials) | 6.9.1 | LGPL-3.0-only |
@@ -371,12 +371,11 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [tensorboard](https://pypi.org/project/tensorboard/) | TensorBoard lets you watch Tensors Flow | 2.17.1 | Apache 2.0 |
 | [tensorboard-data-server](https://pypi.org/project/tensorboard-data-server/) | Fast data loading for TensorBoard | 0.7.2 | Apache 2.0 |
 | [tensorflow](https://pypi.org/project/tensorflow/) | TensorFlow is an open source machine learning framework for everyone. | 2.17.0 | Apache 2.0 |
-| [tensorflow-io-gcs-filesystem](https://pypi.org/project/tensorflow-io-gcs-filesystem/) | TensorFlow IO | 0.37.0 | Apache Software  |
+| [tensorflow-io-gcs-filesystem](https://pypi.org/project/tensorflow-io-gcs-filesystem/) | TensorFlow IO | 0.37.1 | Apache Software  |
 | [tensorflow-probability](https://pypi.org/project/tensorflow-probability/) | Probabilistic modeling and statistical inference in TensorFlow | 0.24.0 | Apache 2.0 |
 | [termcolor](https://pypi.org/project/termcolor/) | ANSI color formatting for output in terminal | 2.4.0 | MIT |
 | [terminado](https://pypi.org/project/terminado/) | Tornado websocket backend for the Xterm.js Javascript terminal emulator library. | 0.18.1 | BSD  |
 | [tf2onnx](https://pypi.org/project/tf2onnx/) | Tensorflow to ONNX converter | 1.8.4 | Apache License v2.0 |
-| [Theano](https://pypi.org/project/Theano/) | Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs. | 1.0.5 | BSD |
 | [threadpoolctl](https://pypi.org/project/threadpoolctl/) | threadpoolctl | 3.5.0 | BSD-3-Clause |
 | [tinycss2](https://pypi.org/project/tinycss2/) | A tiny CSS parser | 1.3.0 | BSD  |
 | [torch-geometric](https://pypi.org/project/torch-geometric/) | Graph Neural Network Library for PyTorch | 2.5.3 | MIT  |

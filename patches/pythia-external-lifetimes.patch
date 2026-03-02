@@ -1,0 +1,13 @@
+--- src/HadronLevel.cc.original  2026-02-24 01:25:45.246287589 +0000
++++ src/HadronLevel.cc  2026-02-24 01:25:45.246287589 +0000
+@@ -185,8 +185,8 @@
+   if (!decayOctetOnia(event)) return false;
+
+   // Set lifetimes for already existing hadrons, like onia.
+-  for (int i = 0; i < event.size(); ++i) if (event[i].isHadron())
+-    event[i].tau( event[i].tau0() * rndmPtr->exp() );
++  //for (int i = 0; i < event.size(); ++i) if (event[i].isHadron())
++  //  event[i].tau( event[i].tau0() * rndmPtr->exp() );
+
+   // Remove junction structures.
+   if (!junctionSplitting.checkColours(event)) {

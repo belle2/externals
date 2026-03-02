@@ -1337,7 +1337,8 @@ pythia.src: $(EXTSRCDIR)/pythia/configure
 
 # Pythia download
 $(EXTSRCDIR)/pythia/configure:
-	@$(DOWNLOAD) pythia pythia8215_update.tgz https://pythia.org/download/pythia82/pythia8215.tgz
+	@$(DOWNLOAD) pythia pythia8316.tgz https://pythia.org/download/pythia83/pythia8316.tgz
+	@cd $(EXTSRCDIR)/pythia && patch -Np0 < $(PATCHDIR)/pythia-external-lifetimes.patch
 
 # Pythia build
 $(EXTLIBDIR)/libpythia8.so: $(EXTSRCDIR)/pythia/configure
@@ -2088,7 +2089,7 @@ lhapdf-ct14nlo.touch:
 	@rm -rf $(EXTSHRDIR)/LHAPDF/CT14nlo
 
 lhapdf-pdfs: lhapdf-ct14lo lhapdf-ct14nlo
-
+lhapdf-pdfs.src: lhapdf-ct14lo.src lhapdf-ct14nlo.src
 lhapdf-pdfs.clean: lhapdf-ct14lo.clean lhapdf-ct14nlo.clean
 lhapdf-pdfs.touch: lhapdf-ct14lo.touch lhapdf-ct14nlo.touch
 

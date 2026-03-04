@@ -280,7 +280,7 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [opt-einsum](https://pypi.org/project/opt-einsum/) | Optimizing numpys einsum function | 3.3.0 | MIT |
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
 | [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
-| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache |
+| [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
 | [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
@@ -305,7 +305,7 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [pydocstyle](https://pypi.org/project/pydocstyle/) | Python docstring style checker | 6.3.0 | MIT |
 | [pyflakes](https://pypi.org/project/pyflakes/) | passive checker of Python programs | 3.2.0 | MIT |
 | [Pygments](https://pypi.org/project/Pygments/) | Pygments is a syntax highlighting package written in Python. | 2.18.0 | BSD-2-Clause |
-| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.16.1 | BSD |
+| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.16.1 | BSD 3-Clause |
 | [PyJWT](https://pypi.org/project/PyJWT/) | JSON Web Token implementation in Python | 2.8.0 | MIT |
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |

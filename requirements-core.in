@@ -85,7 +85,6 @@ https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_spline_conv-1.2.2%2Bpt22cpu-cp3
 torch-geometric
 uncertainties
 uproot
-uproot3
 ipywidgets
 # xgboost can be upgraded to 2.x as soon as we have a method for easily upgrading the xgboost-based weightfiles as well
 xgboost==1.7.6

@@ -121,12 +121,11 @@ externals. Basically, these are a result of running
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
-                 pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
-                 scipy scons seaborn selenium skl2onnx sly \
-                 sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinx-togglebutton sphinxcontrib-programoutput \
-                 splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
-                 torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
-                 uproot3 xgboost zstandard
+                 pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy scons \
+                 seaborn selenium skl2onnx sly sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinx-togglebutton \
+		 sphinxcontrib-programoutput splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch
+		 torch-cluster torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot xgboost \
+		 zstandard
 
 All other packages are just dependencies of these and versions between them are fixed in
 the externals. The actual dependencies are determined using `pip-compile` from
@@ -392,8 +391,6 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | calculations with values with uncertainties, error propagation | 3.2.1 | Revised BSD License |
 | [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.6.1 | BSD  |
-| [uproot3](https://pypi.org/project/uproot3/) | ROOT I/O in pure Python and Numpy. | 3.14.4 | BSD 3-clause |
-| [uproot3-methods](https://pypi.org/project/uproot3-methods/) | Pythonic mix-ins for ROOT classes. | 0.10.1 | BSD 3-clause |
 | [uri-template](https://pypi.org/project/uri-template/) | RFC 6570 URI Template Processor | 1.3.0 | MIT License |
 | [urllib3](https://pypi.org/project/urllib3/) | HTTP library with thread-safe connection pooling, file post, and more. | 2.2.2 | MIT  |
 | [wcwidth](https://pypi.org/project/wcwidth/) | Measures the displayed width of unicode strings in a terminal | 0.2.13 | MIT |

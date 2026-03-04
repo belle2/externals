@@ -69,11 +69,11 @@ tensorflow
 tensorflow-probability
 # CPU version of pytorch
 https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
-    --hash=sha256=431a747b5a880cf8e1fb6d58db6bfafa6768cbec76517d046854537c03323edf
+    --hash=sha256:431a747b5a880cf8e1fb6d58db6bfafa6768cbec76517d046854537c03323edf
 https://download.pytorch.org/whl/cpu/torchvision-0.17.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
-    --hash=sha256=7746e566d349c84dac35b5c4ec10ad10741b42d9590930a76a48d0107c1902fa
+    --hash=sha256:7746e566d349c84dac35b5c4ec10ad10741b42d9590930a76a48d0107c1902fa
 https://download.pytorch.org/whl/cpu/torchaudio-2.2.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
-    --hash=sha256=6adffc55d7a42e5dab86c23f1a2287529a073160e5cc241269e467561a7513ee
+    --hash=sha256:6adffc55d7a42e5dab86c23f1a2287529a073160e5cc241269e467561a7513ee
 https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \
     --hash=sha256:2963a27ad2ed5f295642d996c1f182c5582c44bae1177e1838446693883b54ac
 https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_sparse-0.6.18%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \

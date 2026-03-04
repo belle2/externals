@@ -138,9 +138,10 @@ the externals. The actual dependencies are determined using `pip-compile` from
 
 | Name | Summary | Version | License |
 | ---- | ------- | ------- | ------- |
-| [wheel](https://pypi.org/project/wheel/) | A built-package format for Python | 0.43.0 | MIT  |
-| [pip](https://pypi.org/project/pip/) | The PyPA recommended tool for installing Python packages. | 24.1 | MIT |
-| [setuptools](https://pypi.org/project/setuptools/) | Easily download, build, install, upgrade, and uninstall Python packages | 70.1.0 | MIT  |
+| [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 26.0 | BSD |
+| [pip](https://pypi.org/project/pip/) | The PyPA recommended tool for installing Python packages. | 26.0.1 | MIT |
+| [setuptools](https://pypi.org/project/setuptools/) | Easily download, build, install, upgrade, and uninstall Python packages | 82.0.0 | MIT |
+| [wheel](https://pypi.org/project/wheel/) | Command line tool for manipulating wheel files | 0.46.3 | MIT |
 | [absl-py](https://pypi.org/project/absl-py/) | Abseil Python Common Libraries, see https://github.com/abseil/abseil-py. | 2.1.0 | Apache 2.0 |
 | [accessible-pygments](https://pypi.org/project/accessible-pygments/) | A collection of accessible pygments styles | 0.0.5 | BSD-3-Clause |
 | [aiohttp](https://pypi.org/project/aiohttp/) | Async http client/server framework (asyncio) | 3.9.5 | Apache 2 |
@@ -281,7 +282,6 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
 | [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
 | [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
-| [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
 | [parso](https://pypi.org/project/parso/) | A Python Parser | 0.8.4 | MIT |

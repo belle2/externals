@@ -68,25 +68,23 @@ tqdm
 tensorflow
 tensorflow-probability
 # CPU version of pytorch
-https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:90089cae572672fb449c8ff1dc1b29daaffa117bf97ede7463dcd2fd1b991e4c
-https://download.pytorch.org/whl/cpu/torchvision-0.17.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:5f39e3bee1eba1b66e48753f85faa8d3698ec401ce90b09c7b36efd885129617
-https://download.pytorch.org/whl/cpu/torchaudio-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:144767aad7609ee7c0dfe9f163003db584aaab3bc69db388d56dad3772a267d4
-https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:656bca47f7e6b3ef9ad26234a401d764fa5aa03404f56941080f070ac4cd3bff
-https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_sparse-0.6.18%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:05944597acc9caf81f0f6b757e0033f6ed4aab198b00f581a615e47b2cd968a1
-https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:afc5ff837ae973914c09e60ae2a699b2f8a3af09427d069f74368aa8e572db2d
-https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_spline_conv-1.2.2%2Bpt22cpu-cp311-cp311-linux_x86_64.whl \
-    --hash=sha256:91ab296211559ab51c339df6fee1e291009750a73261826beef7705aca1400bb
-Theano
+https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:431a747b5a880cf8e1fb6d58db6bfafa6768cbec76517d046854537c03323edf
+https://download.pytorch.org/whl/cpu/torchvision-0.17.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:7746e566d349c84dac35b5c4ec10ad10741b42d9590930a76a48d0107c1902fa
+https://download.pytorch.org/whl/cpu/torchaudio-2.2.2%2Bcpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:6adffc55d7a42e5dab86c23f1a2287529a073160e5cc241269e467561a7513ee
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_scatter-2.1.2%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:2963a27ad2ed5f295642d996c1f182c5582c44bae1177e1838446693883b54ac
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_sparse-0.6.18%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:f5e8e521345786ed787099a4afaa91298e6c95432f2f4804811d370e1253fc84
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_cluster-1.6.3%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:0323b6ff2d36b5fa477c176f8fc724ce28b988f249752696d8b1707ed15963ba
+https://data.pyg.org/whl/torch-2.2.0%2Bcpu/torch_spline_conv-1.2.2%2Bpt22cpu-cp312-cp312-linux_x86_64.whl \
+    --hash=sha256:13dd1809080d9149bc063c05920418468cd93e00c21cb61201b1a5c53a38330d
 torch-geometric
 uncertainties
 uproot
-uproot3
 ipywidgets
 # xgboost can be upgraded to 2.x as soon as we have a method for easily upgrading the xgboost-based weightfiles as well
 xgboost==1.7.6

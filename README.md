@@ -71,7 +71,7 @@ externals.
 | [PHOTOS](https://gitlab.cern.ch/photospp/photospp/)                          | 3.64            | MIT        |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.23           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |
 | [PYTHIA](https://pythia.org/)                                                | 8.316           | GPLv2      |
-| [Python](https://www.python.org/)                                            | 3.11.9          | PSFL (BSD-style) |
+| [Python](https://www.python.org/)                                            | 3.12.13         | PSFL (BSD-style) |
 | [PyTorch](https://pytorch.org/)                                              | 2.2.2           | BSD        |
 | [rave](https://github.com/rave-package/rave)                                 | 0.6.25          | GPLv2      |
 | [rclone](https://rclone.org/)                                                | v1.54.1         | MIT        |
@@ -121,12 +121,11 @@ externals. Basically, these are a result of running
     pip3 install autopep8 awkward awkward-pandas boost-histogram CherryPy click CommonMark cython cymove dgl docutils \
                  eoshep flake8 file-read-backwards gitpython h5py iminuit ipython ipywidgets jira jupyter jupyter-resource-usage jupytext keras \
                  lightgbm lxml matplotlib metakernel mysql-connector-python nbsphinx onnx onnxruntime pandas plothist pyarrow pycodestyle \
-                 pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn \
-                 scipy scons seaborn selenium skl2onnx sly \
-                 sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinx-togglebutton sphinxcontrib-programoutput \
-                 splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch torch-cluster \
-                 torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot \
-                 uproot3 xgboost zstandard
+                 pyhepmc PyJWT pylama PySide6 pytest python-gitlab pytorch-ignite pytorch-lightning requests rise scikit-learn scipy scons \
+                 seaborn selenium skl2onnx sly sphinx sphinx-argparse sphinx-book-theme sphinx-codeautolink sphinx-togglebutton \
+		 sphinxcontrib-programoutput splinter sweights tables tabulate tf2onnx tqdm tensorflow tensorflow-probability Theano torch
+		 torch-cluster torch-geometric torch-scatter torch-sparse torch-spline-conv torchaudio torchvision uncertainties uproot xgboost \
+		 zstandard
 
 All other packages are just dependencies of these and versions between them are fixed in
 the externals. The actual dependencies are determined using `pip-compile` from
@@ -138,9 +137,10 @@ the externals. The actual dependencies are determined using `pip-compile` from
 
 | Name | Summary | Version | License |
 | ---- | ------- | ------- | ------- |
-| [wheel](https://pypi.org/project/wheel/) | A built-package format for Python | 0.43.0 | MIT  |
-| [pip](https://pypi.org/project/pip/) | The PyPA recommended tool for installing Python packages. | 24.1 | MIT |
-| [setuptools](https://pypi.org/project/setuptools/) | Easily download, build, install, upgrade, and uninstall Python packages | 70.1.0 | MIT  |
+| [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 26.0 | BSD |
+| [pip](https://pypi.org/project/pip/) | The PyPA recommended tool for installing Python packages. | 26.0.1 | MIT |
+| [setuptools](https://pypi.org/project/setuptools/) | Easily download, build, install, upgrade, and uninstall Python packages | 82.0.0 | MIT |
+| [wheel](https://pypi.org/project/wheel/) | Command line tool for manipulating wheel files | 0.46.3 | MIT |
 | [absl-py](https://pypi.org/project/absl-py/) | Abseil Python Common Libraries, see https://github.com/abseil/abseil-py. | 2.1.0 | Apache 2.0 |
 | [accessible-pygments](https://pypi.org/project/accessible-pygments/) | A collection of accessible pygments styles | 0.0.5 | BSD-3-Clause |
 | [aiohttp](https://pypi.org/project/aiohttp/) | Async http client/server framework (asyncio) | 3.9.5 | Apache 2 |
@@ -281,7 +281,6 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [optree](https://pypi.org/project/optree/) | Optimized PyTree Utilities. | 0.11.0 | Apache Software  |
 | [outcome](https://pypi.org/project/outcome/) | Capture the outcome of Python function calls. | 1.3.0.post0 | MIT OR Apache-2.0 |
 | [overrides](https://pypi.org/project/overrides/) | A decorator to automatically detect mismatch when overriding a method. | 7.7.0 | Apache License 2.0 |
-| [packaging](https://pypi.org/project/packaging/) | Core utilities for Python packages | 24.1 | BSD  |
 | [pandas](https://pypi.org/project/pandas/) | Powerful data structures for data analysis, time series, and statistics | 2.2.2 | BSD  |
 | [pandocfilters](https://pypi.org/project/pandocfilters/) | Utilities for writing pandoc filters in python | 1.5.1 | BSD-3-Clause |
 | [parso](https://pypi.org/project/parso/) | A Python Parser | 0.8.4 | MIT |
@@ -305,11 +304,11 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [pydocstyle](https://pypi.org/project/pydocstyle/) | Python docstring style checker | 6.3.0 | MIT |
 | [pyflakes](https://pypi.org/project/pyflakes/) | passive checker of Python programs | 3.2.0 | MIT |
 | [Pygments](https://pypi.org/project/Pygments/) | Pygments is a syntax highlighting package written in Python. | 2.18.0 | BSD-2-Clause |
-| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.13.4 | BSD 3-Clause License |
+| [pyhepmc](https://pypi.org/project/pyhepmc/) | Pythonic interface to the HepMC3 C++ library licensed under LGPL-v3. | 2.16.1 | BSD 3-Clause |
 | [PyJWT](https://pypi.org/project/PyJWT/) | JSON Web Token implementation in Python | 2.8.0 | MIT |
 | [pylama](https://pypi.org/project/pylama/) | Code audit tool for python | 8.4.1 | MIT |
 | [pyparsing](https://pypi.org/project/pyparsing/) | pyparsing module - Classes and methods to define and execute parsing grammars | 3.1.2 | MIT  |
-| [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.3 | GPLv2 |
+| [pypmc](https://pypi.org/project/pypmc/) | A toolkit for adaptive importance sampling featuring implementations of variational Bayes, population Monte Carlo, and Markov chains. | 1.2.5 | GPLv2 |
 | [PySide6](https://pypi.org/project/PySide6/) | Python bindings for the Qt cross-platform application and UI framework | 6.9.1 | LGPL-3.0-only |
 | [PySide6-Addons](https://pypi.org/project/PySide6-Addons/) | Python bindings for the Qt cross-platform application and UI framework (Addons) | 6.9.1 | LGPL-3.0-only |
 | [PySide6-Essentials](https://pypi.org/project/PySide6-Essentials/) | Python bindings for the Qt cross-platform application and UI framework (Essentials) | 6.9.1 | LGPL-3.0-only |
@@ -371,12 +370,11 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [tensorboard](https://pypi.org/project/tensorboard/) | TensorBoard lets you watch Tensors Flow | 2.17.1 | Apache 2.0 |
 | [tensorboard-data-server](https://pypi.org/project/tensorboard-data-server/) | Fast data loading for TensorBoard | 0.7.2 | Apache 2.0 |
 | [tensorflow](https://pypi.org/project/tensorflow/) | TensorFlow is an open source machine learning framework for everyone. | 2.17.0 | Apache 2.0 |
-| [tensorflow-io-gcs-filesystem](https://pypi.org/project/tensorflow-io-gcs-filesystem/) | TensorFlow IO | 0.37.0 | Apache Software  |
+| [tensorflow-io-gcs-filesystem](https://pypi.org/project/tensorflow-io-gcs-filesystem/) | TensorFlow IO | 0.37.1 | Apache Software  |
 | [tensorflow-probability](https://pypi.org/project/tensorflow-probability/) | Probabilistic modeling and statistical inference in TensorFlow | 0.24.0 | Apache 2.0 |
 | [termcolor](https://pypi.org/project/termcolor/) | ANSI color formatting for output in terminal | 2.4.0 | MIT |
 | [terminado](https://pypi.org/project/terminado/) | Tornado websocket backend for the Xterm.js Javascript terminal emulator library. | 0.18.1 | BSD  |
 | [tf2onnx](https://pypi.org/project/tf2onnx/) | Tensorflow to ONNX converter | 1.8.4 | Apache License v2.0 |
-| [Theano](https://pypi.org/project/Theano/) | Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs. | 1.0.5 | BSD |
 | [threadpoolctl](https://pypi.org/project/threadpoolctl/) | threadpoolctl | 3.5.0 | BSD-3-Clause |
 | [tinycss2](https://pypi.org/project/tinycss2/) | A tiny CSS parser | 1.3.0 | BSD  |
 | [torch-geometric](https://pypi.org/project/torch-geometric/) | Graph Neural Network Library for PyTorch | 2.5.3 | MIT  |
@@ -393,8 +391,6 @@ the externals. The actual dependencies are determined using `pip-compile` from
 | [tzdata](https://pypi.org/project/tzdata/) | Provider of IANA time zone data | 2024.1 | Apache-2.0 |
 | [uncertainties](https://pypi.org/project/uncertainties/) | calculations with values with uncertainties, error propagation | 3.2.1 | Revised BSD License |
 | [uproot](https://pypi.org/project/uproot/) | ROOT I/O in pure Python and NumPy. | 5.6.1 | BSD  |
-| [uproot3](https://pypi.org/project/uproot3/) | ROOT I/O in pure Python and Numpy. | 3.14.4 | BSD 3-clause |
-| [uproot3-methods](https://pypi.org/project/uproot3-methods/) | Pythonic mix-ins for ROOT classes. | 0.10.1 | BSD 3-clause |
 | [uri-template](https://pypi.org/project/uri-template/) | RFC 6570 URI Template Processor | 1.3.0 | MIT License |
 | [urllib3](https://pypi.org/project/urllib3/) | HTTP library with thread-safe connection pooling, file post, and more. | 2.2.2 | MIT  |
 | [wcwidth](https://pypi.org/project/wcwidth/) | Measures the displayed width of unicode strings in a terminal | 0.2.13 | MIT |

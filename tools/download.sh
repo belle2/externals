@@ -14,11 +14,11 @@ check_archive() {
   fi
 }
 
-tarJx () {
+tarJx() {
   xz --decompress --stdout $1 | tar x
 }
 
-get_archive () {
+get_archive() {
   URL=$1
   shift
   # only download if not present or wrong checksum
@@ -68,14 +68,45 @@ get_archive () {
   rm -fr ${TMPDIR}
 }
 
-get_git() {
+get_git () {
   URL=$1
   TREEISH=`echo ${URL} | awk -F: '{print $2}'`
   LINK=`echo ${URL} | sed 's;git:[^:]*:;;'`
-  git clone $LINK $DIRNAME || return 1
-  if [[ -n "${TREEISH}" ]]; then
-      cd $DIRNAME && git checkout -b BELL2_EXTERNALS_BUILD $TREEISH || return 1
+
+  # only download if not present or wrong checksum
+  check_archive
+  if [ $? -ne 0 ]; then
+      mkdir -p ${EXTSRCDIR} || return 1
+      git archive --remote=${LINK} --format=tar.gz --prefix=$(basename ${DIRNAME})/ ${TREEISH} \
+          > ${EXTSRCDIR}/${FILENAME} || { rm -fr ${EXTSRCDIR}/${FILENAME}; return 1; }
+      # check again
+      check_archive || return 1
   fi
+
+  # if we don't need to extract then all is done
+  if [ -n "$DOWNLOAD_ONLY" ]; then
+      return 0;
+  fi
+
+  # extract in temp dir and move to final destination name
+  TMPDIR=`mktemp -d belle2_tmp.XXXX`
+  # we always download as tar.gz using --format, so need for the whole if...else block
+  EXTRACT="tar zxf"
+
+  pushd ${TMPDIR} &> /dev/null
+  # extract file
+  ${EXTRACT} ${EXTSRCDIR}/${FILENAME}
+  # Remove old dir
+  rm -fr ${DIRNAME}
+  # Rename the directory in the tmpdir to what we want
+  if [ `ls | wc -l` == 1 ]; then
+    mv -T * ${DIRNAME}
+  else
+    mkdir -p ${DIRNAME}
+    mv -t ${DIRNAME} *
+  fi
+  popd &> /dev/null
+  rm -fr ${TMPDIR}
 }
 
 if [ $# -lt 2 ]; then

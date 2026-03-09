@@ -615,8 +615,8 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 	pip3 install --find-links=src/python-packages $(PIP3OPTIONS) \
 	    -r requirements-base.txt
 	cat requirements-base.txt requirements-core.txt | (while read line; do \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation --no-binary=:all: -r/dev/stdin; \
-	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-build-isolation -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps --no-binary=:all: -r/dev/stdin; \
+	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
 	done)
 
 # we need the matplotlib style files

@@ -619,9 +619,12 @@ python-packages.src: $(EXTSRCDIR)/belle2style/README.md
 	  echo $$line | pip3 download -d src/python-packages $(PIP3OPTIONS) --no-deps -r/dev/stdin; \
 	done)
 
+# needed to trigger the build of the sources
+belle2style.src: $(EXTSRCDIR)/belle2style/README.md
+
 # we need the matplotlib style files
 $(EXTSRCDIR)/belle2style/README.md:
-	@$(DOWNLOAD) belle2style belle2style-v1.0.zip git:tags/v1.0:$(BELLE2_GIT_SERVER)belle2/software/belle2style.git
+	@$(DOWNLOAD) belle2style belle2style-v1.0.tar.gz git:tags/v1.0:$(BELLE2_GIT_SERVER)belle2/software/belle2style.git
 
 # python packages will install ipython so use this as prerequisite and actual
 # target. needs to be updated if ipython is removed

@@ -1482,6 +1482,7 @@ $(EXTBINDIR)/mg5_aMC: $(EXTSRCDIR)/madgraph/VERSION
 madgraph.clean madgraph.touch:
 	@rm -fr $(EXTDIR)/madgraph $(EXTBINDIR)/mg5_aMC
 
+
 # dependencies for CRY
 cry: $(EXTLIBDIR)/libCRY.a
 cry.src: $(EXTSRCDIR)/cry/README
@@ -1508,35 +1509,6 @@ cry.clean:
 # CRY touch
 cry.touch:
 	@rm -f $(EXTLIBDIR)/libCRY.a
-
-
-# dependencies for FLC
-flc: $(EXTLIBDIR)/libComplexPDF.so
-flc.src: $(EXTSRCDIR)/FLC/README
-
-# FLC download
-$(EXTSRCDIR)/FLC/README:
-	@$(DOWNLOAD) FLC BELLE_FLC_1.1.tar.gz http://www-ekp.physik.uni-karlsruhe.de/~mprim/BELLE_FLC/BELLE_FLC_1.1.tar.gz
-	@cd $(EXTSRCDIR)/FLC && patch -Np0 < $(PATCHDIR)/FLC.patch
-
-# FLC build, FIXME: make clean? delete folder first?
-$(EXTLIBDIR)/libComplexPDF.so: $(EXTSRCDIR)/FLC/README
-	@echo "building FLC"
-	@cp -fa $(EXTSRCDIR)/FLC $(EXTBUILDDIR)
-	@cd $(EXTBUILDDIR)/FLC && ./make.sh -j $(NPROCESSES) CXX=$(CXX) OPT=$(CONFIGURE_CXXFLAGS) OPT+=-I$(ROOTSYS)/include BOOST_INC=-I$(EXTINCDIR) BOOST_LIB=-L$(EXTLIBDIR)
-	@cp $(EXTBUILDDIR)/FLC/lib/* $(EXTLIBDIR)/
-	@cp -a $(EXTBUILDDIR)/FLC/include $(EXTINCDIR)
-
-# flc clean
-flc.clean:
-	@echo "cleaning FLC"
-	@-cd $(EXTBUILDDIR)/FLC 2>/dev/null && ./make.sh clean
-	@rm -rf $(EXTLIBDIR)/lib*ComplexPDF.so $(EXTINCDIR)
-
-# flc touch command
-flc.touch:
-	@rm -rf $(EXTLIBDIR)/libComplexPDF.so
-
 
 
 # dependencies for eigen

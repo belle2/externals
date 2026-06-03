@@ -358,6 +358,7 @@ gcc.src: $(EXTSRCDIR)/gcc
 
 $(EXTSRCDIR)/gcc:
 	@$(DOWNLOAD) gcc gcc-15.2.0.tar.xz http://ftp.gnu.org/gnu/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz
+	@cd $(EXTSRCDIR)/gcc && patch -p1 < $(PATCHDIR)/gcc15-no-dl-find-object.patch
 
 GCC_TARGET=$(shell gcc -dumpmachine)
 

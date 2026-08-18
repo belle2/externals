@@ -36,4 +36,4 @@ about:
   homepage: https://github.com/libfann/fann
   summary: 'Fast Artificial Neural Network (FANN) Library'
   license: LGPL-2.1-or-later
-  license_file: COPYING.txt
+  license_file: LICENSE.md

@@ -1,0 +1,39 @@
+context:
+  version: "2015.11.29.8ae6bb0"
+  commit: ${{ (version | split('.'))[3] }}
+
+package:
+  name: fann2
+  version: ${{ version }}
+
+source:
+  url: https://github.com/libfann/fann/archive/${{ commit }}.tar.gz
+  sha256: c8e63e376a7fac861a67a276e3e3ee21e9ad02a7122e3c2edb6c0b2f72425a4f
+
+build:
+  script:
+    - cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS}
+    - cmake build -LH
+    - cmake --build build --parallel ${CPU_COUNT}
+    - cmake --install build
+  number: 0
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
+    - cmake
+    - ninja
+  host:
+    - clhep
+    - libboost-devel=1.90
+    - root_base=6.36.10
+    - postgresql=18.4
+    - zlib
+
+about:
+  homepage: https://github.com/libfann/fann
+  summary: 'Fast Artificial Neural Network (FANN) Library'
+  license: LGPL-2.1-or-later
+  license_file: COPYING.txt

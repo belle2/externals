@@ -1,0 +1,34 @@
+context:
+  version: "1.11"
+
+package:
+  name: belle_legacy
+  version: ${{ version }}
+
+source:
+  path: ../../belle_legacy
+
+build:
+  script:
+    - sed -i -e '/^CC = gcc$/d' -e '/^CXX = g++$/d' -e '/^LD = g++$/d' Makefile
+    - ln -sf . "${PREFIX}/include/pgsql"
+    - make -j${CPU_COUNT} CXX="${CXX}" LD="${CXX}" BELLE2_EXTERNALS_DIR="${PREFIX}"
+    - make install BELLE2_EXTERNALS_DIR="${PREFIX}"
+  number: 0
+  skip:
+    - win
+
+requirements:
+  build:
+    - ${{ compiler("cxx") }}
+    - ${{ stdlib("c") }}
+    - make
+  host:
+    - clhep
+    - libboost-devel=1.90
+    - neurobayescppinterface
+    - postgresql=18.4
+    - zlib
+
+about:
+  summary: 'belle_legacy'

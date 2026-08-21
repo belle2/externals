@@ -1,7 +1,7 @@
 *.pyc
 /build/
-/conda-externals/belle_legacy/
-/conda-externals/channels/
+/belle_legacy/
+/channels/
 /include/
 /share/
 /src/

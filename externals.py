@@ -225,6 +225,12 @@ def config_externals(conf):
     # CLHEP
     add_incdir(conf.env['EXTINCDIR'], 'CLHEP')
 
+    # eigen
+    add_incdir(conf.env['EXTINCDIR'], 'eigen3')
+
+    # onnxruntime
+    add_incdir(conf.env['EXTINCDIR'], 'onnxruntime', 'core', 'session')
+
     # Configure and setup Geant4
     geant4_env = Environment(ENV=os.environ)
     geant4_env.ParseConfig('geant4-config --cflags --libs')

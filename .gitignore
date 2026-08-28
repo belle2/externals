@@ -1,5 +1,7 @@
 *.pyc
 /build/
+/belle_legacy/
+/channels/
 /include/
 /share/
 /src/

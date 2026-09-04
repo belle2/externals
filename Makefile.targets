@@ -1159,7 +1159,7 @@ fastbdt.src: $(EXTSRCDIR)/FastBDT/README.md
 
 # FastBDT download
 $(EXTSRCDIR)/FastBDT/README.md:
-	@$(DOWNLOAD) FastBDT FastBDT-5.4.tar.gz https://github.com/belle2/FastBDT/archive/refs/tags/v5.4.tar.gz
+	@$(DOWNLOAD) FastBDT FastBDT-6.0.tar.gz https://github.com/belle2/FastBDT/archive/refs/tags/v6.0.tar.gz
 
 # FastBDT TMVA build
 $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
@@ -1171,14 +1171,12 @@ $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT clean command
 fastbdt.clean:
 	@echo "cleaning FastBDT"
-	@-cd $(EXTBUILDDIR)/FastBDT 2>/dev/null && make clean
-	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
-	@rm -f $(ROOTSYS)/lib/TMVA_FastBDT_Dict_rdict.pcm
-	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT.h
+	@rm -rf $(EXTBUILDDIR)/FastBDT
+	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT*
 
 # FastBDT touch command
 fastbdt.touch:
-	@rm -f $(ROOTSYS)/lib/libTMVAFastBDT.so
+	@rm -f $(EXTLIBDIR)/libFastBDT*
 
 
 # dependencies for vgm

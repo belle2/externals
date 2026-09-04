@@ -1171,8 +1171,8 @@ $(EXTLIBDIR)/libFastBDT_shared.so: $(EXTSRCDIR)/FastBDT/README.md
 # FastBDT clean command
 fastbdt.clean:
 	@echo "cleaning FastBDT"
-	@-cd $(EXTBUILDDIR)/FastBDT 2>/dev/null && make clean
-	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT.h
+	@rm -rf $(EXTBUILDDIR)/FastBDT
+	@rm -f $(EXTLIBDIR)/libFastBDT* $(EXTINCDIR)/FastBDT*
 
 # FastBDT touch command
 fastbdt.touch:

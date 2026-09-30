@@ -22,6 +22,7 @@ externals.
 | [GNU Binutils](https://www.gnu.org/software/binutils/)                       | 2.45            | GPLv2      |
 | [Boost C++ Libraries](http://www.boost.org/)                                 | 1.90            | [Boost License](http://www.boost.org/users/license.html) |
 | [bzip2](https://www.sourceware.org/bzip2/)                                   | 1.08            | BSD-style  |
+| [CA Certificates (Mozilla, via curl)](https://curl.se/docs/caextract.html)   | 2026-08-13      | MPL 2.0    |
 | [clhep](http://proj-clhep.web.cern.ch/proj-clhep/)                           | 2.4.7.1         | LGPLv3     |
 | [CMake](https://cmake.org/)                                                  | 3.31.8          | BSD-style  |
 | [Cosmic-ray Shower Library (CRY)](http://nuclear.llnl.gov/simulation/)       | 1.7             | -          |
@@ -66,6 +67,7 @@ externals.
 | [Ninja](https://github.com/ninja-build/ninja)                                | 1.10.2          | Apache v2  |
 | [nlohmann/json](https://github.com/nlohmann/json/): JSON for Modern C++      | 3.10.5          | MIT        |
 | [ONNX Runtime](https://github.com/microsoft/onnxruntime)                     | 1.23.2          | MIT        |
+| [OpenSSL](https://www.openssl.org/)                                          | 3.0.22          | Apache 2.0 |
 | [pandoc](https://pandoc.org)                                                 | 2.12            | GPLv2 or later |
 | [PHOTOS](https://gitlab.cern.ch/photospp/photospp/)                          | 3.64            | MIT        |
 | [PostgreSQL](http://www.postgresql.org/) interface                           | 13.23           | [PostgreSQL License](https://opensource.org/licenses/postgresql) (similar to BSD/MIT) |

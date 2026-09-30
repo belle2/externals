@@ -72,6 +72,10 @@ def unsetup_externals(location, common=False):
         # and remove python include path for all root classes which need python
         remove_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
 
+        # remove the openssl CA store vars
+        for var in ('SSL_CERT_FILE', 'SSL_CERT_DIR', 'OPENSSL_CONF'):
+            env_vars[var] = ''
+
         # remove epics vars
         env_vars['EPICS_BASE'] = ''
         env_vars['EPICS_HOST_ARCH'] = ''
@@ -162,6 +166,27 @@ def setup_externals(location, common=False):
 
         # and also add the python include path for all root classes which need python
         add_path('ROOT_INCLUDE_PATH', get_python_incdir(bin_dir, lib_dir))
+
+        # the OPENSSLDIR compiled into libcrypto is the build directory, which is
+        # gone once the externals are relocated, so resolve the CA store here
+        ssl_dir = os.path.join(location, subdir, 'ssl')
+        ca_files = [
+            '/etc/ssl/certs/ca-certificates.crt',  # Debian, Ubuntu, Alpine
+            '/etc/pki/tls/certs/ca-bundle.crt',    # RHEL, Fedora
+            '/etc/ssl/ca-bundle.pem',              # openSUSE
+            '/etc/ssl/cert.pem',                   # Arch, macOS
+        ]
+        ca_dirs = ['/etc/ssl/certs', '/etc/pki/tls/certs']
+
+        ca_file = next((f for f in ca_files if os.path.isfile(f)), os.path.join(ssl_dir, 'cert.pem'))
+        if os.path.isfile(ca_file):
+            env_vars['SSL_CERT_FILE'] = ca_file
+        ca_dir = next((d for d in ca_dirs if os.path.isdir(d)), os.path.join(ssl_dir, 'certs'))
+        if os.path.isdir(ca_dir):
+            env_vars['SSL_CERT_DIR'] = ca_dir
+        openssl_cnf = os.path.join(ssl_dir, 'openssl.cnf')
+        if os.path.isfile(openssl_cnf):
+            env_vars['OPENSSL_CONF'] = openssl_cnf
 
         # set epics vars
         env_vars['EPICS_BASE'] = os.path.join(location, subdir, 'epics')

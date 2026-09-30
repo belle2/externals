@@ -539,6 +539,36 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+# Mozilla CA bundle as published by the curl project. Used as fallback only:
+# externals.py prefers the host store when there is one.
+CACERT_VERSION := 2026-08-13
+
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+openssl.clean:
+	@rm -fr $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.0.22.tar.gz https://www.openssl.org/source/openssl-3.0.22.tar.gz
+
+# not an archive, so skip the extraction step
+$(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem:
+	@DOWNLOAD_ONLY=1 $(DOWNLOAD) openssl cacert-$(CACERT_VERSION).pem \
+	    https://curl.se/ca/cacert-$(CACERT_VERSION).pem
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+# openssldir keeps certs/, private/, misc/ and openssl.cnf out of the externals
+# root; --libdir=lib avoids installing into lib64. install_sw skips the docs.
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) \
+	    --openssldir=$(EXTDIR)/ssl --libdir=lib && \
+	    make -j $(NPROCESSES) && make install_sw install_ssldirs
+# cert.pem is the default SSL_CERT_FILE name inside openssldir
+	@install -m 644 $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem $(EXTDIR)/ssl/cert.pem
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -590,6 +620,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@mkdir -p $(EXTBUILDDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install \
+	    --with-openssl=$(EXTDIR) \
 	    BZIP2_CFLAGS="-I$(EXTINCDIR)" BZIP2_LIBS="-L$(EXTLIBDIR) -lbz2" \
 	    LIBLZMA_CFLAGS="-I$(EXTINCDIR)" LIBLZMA_LIBS="-L$(EXTLIBDIR) -llzma" \
 	    ZLIB_CFLAGS="-I$(EXTINCDIR)" ZLIB_LIBS="-L$(EXTLIBDIR) -lz" && \

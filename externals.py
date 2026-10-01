@@ -181,8 +181,13 @@ def setup_externals(location, common=False):
         ca_file = next((f for f in ca_files if os.path.isfile(f)), os.path.join(ssl_dir, 'cert.pem'))
         if os.path.isfile(ca_file):
             env_vars['SSL_CERT_FILE'] = ca_file
-        ca_dir = next((d for d in ca_dirs if os.path.isdir(d)), os.path.join(ssl_dir, 'certs'))
-        if os.path.isdir(ca_dir):
+        # only hashed directories (<hash>.0, as made by c_rehash) are usable as
+        # SSL_CERT_DIR: RHEL's /etc/ssl/certs only holds bundles, and curl ignores
+        # SSL_CERT_FILE whenever SSL_CERT_DIR is set
+        def is_hashed_dir(d):
+            return os.path.isdir(d) and any(f.endswith('.0') for f in os.listdir(d))
+        ca_dir = next((d for d in ca_dirs + [os.path.join(ssl_dir, 'certs')] if is_hashed_dir(d)), None)
+        if ca_dir:
             env_vars['SSL_CERT_DIR'] = ca_dir
         openssl_cnf = os.path.join(ssl_dir, 'openssl.cnf')
         if os.path.isfile(openssl_cnf):

@@ -546,7 +546,7 @@ CACERT_VERSION := 2026-09-25
 openssl: $(EXTBINDIR)/openssl
 openssl.src: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
 openssl.clean:
-	@rm -fr $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl
+	@rm -fr $(EXTSRCDIR)/openssl $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl
 openssl.touch:
 	@rm -fr $(EXTBINDIR)/openssl
 

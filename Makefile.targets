@@ -539,26 +539,19 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
-# Mozilla CA bundle as published by the curl project. Used as fallback only:
-# externals.py prefers the host store when there is one.
-CACERT_VERSION := 2026-09-25
-
 openssl: $(EXTBINDIR)/openssl
-openssl.src: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+openssl.src: $(EXTSRCDIR)/openssl
+# keep ssl/cert.pem, it belongs to cacert
 openssl.clean:
-	@rm -fr $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl
+	@rm -fr $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl/certs $(EXTDIR)/ssl/private $(EXTDIR)/ssl/misc \
+	    $(EXTDIR)/ssl/openssl.cnf* $(EXTDIR)/ssl/ct_log_list.cnf*
 openssl.touch:
 	@rm -fr $(EXTBINDIR)/openssl
 
 $(EXTSRCDIR)/openssl:
 	$(DOWNLOAD) openssl openssl-3.5.9.tar.gz https://www.openssl.org/source/openssl-3.5.9.tar.gz
 
-# not an archive, so skip the extraction step
-$(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem:
-	@DOWNLOAD_ONLY=1 $(DOWNLOAD) openssl cacert-$(CACERT_VERSION).pem \
-	    https://curl.se/ca/cacert-$(CACERT_VERSION).pem
-
-$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
 	@echo "building openssl"
 	@mkdir -p $(EXTBUILDDIR)/openssl
 # openssldir keeps certs/, private/, misc/ and openssl.cnf out of the externals
@@ -566,8 +559,28 @@ $(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl $(EXTSRCDIR)/cacert-$(CACERT_VERSION)
 	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) \
 	    --openssldir=$(EXTDIR)/ssl --libdir=lib && \
 	    make -j $(NPROCESSES) && make install_sw install_ssldirs
-# cert.pem is the default SSL_CERT_FILE name inside openssldir
-	@install -m 644 $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem $(EXTDIR)/ssl/cert.pem
+
+# Mozilla CA bundle as published by the curl project. Used as fallback only:
+# externals.py prefers the host store when there is one.
+CACERT_VERSION := 2026-09-25
+
+cacert: $(EXTDIR)/ssl/cert.pem
+cacert.src: $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+cacert.clean:
+	@rm -f $(EXTDIR)/ssl/cert.pem
+cacert.touch:
+	@rm -f $(EXTDIR)/ssl/cert.pem
+
+# not an archive, so skip the extraction step
+$(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem:
+	@DOWNLOAD_ONLY=1 $(DOWNLOAD) cacert cacert-$(CACERT_VERSION).pem \
+	    https://curl.se/ca/cacert-$(CACERT_VERSION).pem
+
+# cert.pem is the default SSL_CERT_FILE name inside openssldir. Depending on the
+# dated file reinstalls the bundle when CACERT_VERSION changes.
+$(EXTDIR)/ssl/cert.pem: $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+	@echo "installing cacert"
+	@install -D -m 644 $< $@
 
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite

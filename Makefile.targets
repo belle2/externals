@@ -539,6 +539,50 @@ lz4.clean:
 	@echo "cleaning lz4"
 	@rm -rf $(EXTSRCDIR)/lz4
 
+openssl: $(EXTBINDIR)/openssl
+openssl.src: $(EXTSRCDIR)/openssl
+
+# keep ssl/cert.pem, it belongs to cacert
+openssl.clean:
+	@rm -fr $(EXTSRCDIR)/openssl $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl/certs $(EXTDIR)/ssl/private \
+	    $(EXTDIR)/ssl/misc $(EXTDIR)/ssl/openssl.cnf* $(EXTDIR)/ssl/ct_log_list.cnf*
+openssl.touch:
+	@rm -fr $(EXTBINDIR)/openssl
+
+$(EXTSRCDIR)/openssl:
+	$(DOWNLOAD) openssl openssl-3.5.9.tar.gz https://github.com/openssl/openssl/releases/download/openssl-3.5.9/openssl-3.5.9.tar.gz
+
+$(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
+	@echo "building openssl"
+	@mkdir -p $(EXTBUILDDIR)/openssl
+# openssldir keeps certs/, private/, misc/ and openssl.cnf out of the externals
+# root; --libdir=lib avoids installing into lib64. install_sw skips the docs.
+	@cd $(EXTBUILDDIR)/openssl && $(EXTSRCDIR)/openssl/Configure --prefix=$(EXTDIR) \
+	    --openssldir=$(EXTDIR)/ssl --libdir=lib && \
+	    make -j $(NPROCESSES) && make install_sw install_ssldirs
+
+# Mozilla CA bundle as published by the curl project. Used as fallback only:
+# externals.py prefers the host store when there is one.
+CACERT_VERSION := 2026-09-25
+
+cacert: $(EXTDIR)/ssl/cert.pem
+cacert.src: $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+cacert.clean:
+	@rm -f $(EXTDIR)/ssl/cert.pem
+cacert.touch:
+	@rm -f $(EXTDIR)/ssl/cert.pem
+
+# not an archive, so skip the extraction step
+$(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem:
+	@DOWNLOAD_ONLY=1 $(DOWNLOAD) cacert cacert-$(CACERT_VERSION).pem \
+	    https://curl.se/ca/cacert-$(CACERT_VERSION).pem
+
+# cert.pem is the default SSL_CERT_FILE name inside openssldir. Depending on the
+# dated file reinstalls the bundle when CACERT_VERSION changes.
+$(EXTDIR)/ssl/cert.pem: $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem
+	@echo "installing cacert"
+	@install -D -m 644 $< $@
+
 sqlite: $(EXTBINDIR)/sqlite3
 sqlite.src: $(EXTSRCDIR)/sqlite
 sqlite.clean:
@@ -590,6 +634,7 @@ $(EXTBINDIR)/python3: $(EXTSRCDIR)/python
 	@mkdir -p $(EXTBUILDDIR)/python
 	@cd $(EXTBUILDDIR)/python && $(EXTSRCDIR)/python/configure $(CONFIGURE_COMMON_FLAGS) \
 	    --enable-shared --prefix=$(EXTDIR) --with-ensurepip=install \
+	    --with-openssl=$(EXTDIR) \
 	    BZIP2_CFLAGS="-I$(EXTINCDIR)" BZIP2_LIBS="-L$(EXTLIBDIR) -lbz2" \
 	    LIBLZMA_CFLAGS="-I$(EXTINCDIR)" LIBLZMA_LIBS="-L$(EXTLIBDIR) -llzma" \
 	    ZLIB_CFLAGS="-I$(EXTINCDIR)" ZLIB_LIBS="-L$(EXTLIBDIR) -lz" && \
@@ -1578,7 +1623,8 @@ $(EXTLIBDIR)/libcurl.so: $(EXTSRCDIR)/curl/README
 	@cp -fa $(EXTSRCDIR)/curl $(EXTBUILDDIR)
 	@cd $(EXTBUILDDIR)/curl && ./configure $(CONFIGURE_COMMON_FLAGS) \
 	    --prefix=$(EXTDIR) --includedir=$(EXTINCDIR) --libdir=$(EXTLIBDIR) \
-	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTSHRDIR)/curl --with-openssl && \
+	    --bindir=$(EXTBINDIR) --datarootdir=$(EXTSHRDIR)/curl --with-openssl=$(EXTDIR) \
+	    --without-ca-bundle --without-ca-path --with-ca-fallback && \
 	    make -j $(NPROCESSES) && make install
 	#Fix absolute path in curl-config
 	@sed -i "s:$(BELLE2_EXTERNALS_DIR):\$${BELLE2_EXTERNALS_DIR}:g" $(EXTBINDIR)/curl-config

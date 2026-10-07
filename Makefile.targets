@@ -541,10 +541,11 @@ lz4.clean:
 
 openssl: $(EXTBINDIR)/openssl
 openssl.src: $(EXTSRCDIR)/openssl
+
 # keep ssl/cert.pem, it belongs to cacert
 openssl.clean:
-	@rm -fr $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl/certs $(EXTDIR)/ssl/private $(EXTDIR)/ssl/misc \
-	    $(EXTDIR)/ssl/openssl.cnf* $(EXTDIR)/ssl/ct_log_list.cnf*
+	@rm -fr $(EXTSRCDIR)/openssl $(EXTBUILDDIR)/openssl $(EXTDIR)/ssl/certs $(EXTDIR)/ssl/private \
+	    $(EXTDIR)/ssl/misc $(EXTDIR)/ssl/openssl.cnf* $(EXTDIR)/ssl/ct_log_list.cnf*
 openssl.touch:
 	@rm -fr $(EXTBINDIR)/openssl
 

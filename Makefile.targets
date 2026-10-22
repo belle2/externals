@@ -563,7 +563,7 @@ $(EXTBINDIR)/openssl: $(EXTSRCDIR)/openssl
 
 # Mozilla CA bundle as published by the curl project. Used as fallback only:
 # externals.py prefers the host store when there is one.
-CACERT_VERSION := 2026-09-25
+CACERT_VERSION := 2026-10-20
 
 cacert: $(EXTDIR)/ssl/cert.pem
 cacert.src: $(EXTSRCDIR)/cacert-$(CACERT_VERSION).pem

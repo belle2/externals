@@ -8,3 +8,4 @@
 /Linux*/
 # ignore certificate file needed for downloading pip packages from b2-master
 /.pip-certchain.pem
+.opencode

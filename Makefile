@@ -24,8 +24,8 @@ COMMON_PACKAGES:=pkg-config-wrapper ninja zlib bzip2 xz lz4 gmp mpfr mpc isl gcc
     curl git libxml2 libxslt cmake sqlite hdf5 libffi python python-packages gdb boost gtest libonnxruntime \
     eigen astyle madgraph zeromq cppzmq jemalloc gsl libuuid fftw3 yaml-cpp epics rclone git-lfs Vc VecCore \
     VecGeom clhep geant4 postgresql neurobayes xrootd davix nlohmann_json tbb root fastbdt vgm rave \
-    MillepedeII hepmc pythia photos tauola evtgen cry belle_legacy fann hammer pandoc fastjet roounfold \
-    functionalplus frugally-deep whizard lhapdf lhapdf-pdfs thepeg herwig
+    mille MillepedeII hepmc pythia photos tauola evtgen cry belle_legacy fann hammer pandoc fastjet \
+    roounfold functionalplus frugally-deep whizard lhapdf lhapdf-pdfs thepeg herwig
 
 COMMON_OPTIONAL:=clang cppcheck valgrind doxygen
 
@@ -92,6 +92,10 @@ $(COMMON_PACKAGES) $(COMMON_OPTIONAL): override BELLE2_EXTERNALS_OPTION=common
 $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).touch): override BELLE2_EXTERNALS_OPTION=common
 $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).src): override BELLE2_EXTERNALS_OPTION=common
 $(foreach package,$(COMMON_PACKAGES) $(COMMON_OPTIONAL),$(package).clean): override BELLE2_EXTERNALS_OPTION=common
+
+# clean and touch targets don't install anything, so skip relocatable_fixes for them
+%.clean %.touch:
+	@$(MAKE) -f Makefile.targets $@ BELLE2_EXTERNALS_OPTION=$(BELLE2_EXTERNALS_OPTION)
 
 # all targets not otherwise defined are executed with the option they got by
 # calling make on the targets file. Specifying the option here is not

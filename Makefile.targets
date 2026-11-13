@@ -1914,6 +1914,24 @@ $(EXTBINDIR)/git-lfs: $(EXTSRCDIR)/git-lfs/README.md
 	@mkdir -p $(EXTDIR)/etc
 	@cd $(TMPDIR) && $(EXTBINDIR)/git lfs install --system
 
+# uv: fast Python package and project manager, shipped as a prebuilt binary
+UV_VERSION := 0.13.8
+
+uv.src: $(EXTSRCDIR)/uv/uv
+uv: $(EXTBINDIR)/uv
+uv.touch:
+	@rm -f $(EXTBINDIR)/uv $(EXTBINDIR)/uvx
+uv.clean:
+	@rm -f $(EXTBINDIR)/uv $(EXTBINDIR)/uvx
+
+$(EXTSRCDIR)/uv/uv:
+	$(DOWNLOAD) uv uv-x86_64-unknown-linux-gnu.tar.gz https://github.com/astral-sh/uv/releases/download/$(UV_VERSION)/uv-x86_64-unknown-linux-gnu.tar.gz
+
+$(EXTBINDIR)/uv: $(EXTSRCDIR)/uv/uv
+	@echo "installing uv"
+	@install -s $(EXTSRCDIR)/uv/uv $(EXTBINDIR)
+	@install -s $(EXTSRCDIR)/uv/uvx $(EXTBINDIR)
+
 nlohmann_json.src: $(EXTSRCDIR)/nlohmann_json/README.md
 nlohmann_json: $(EXTINCDIR)/nlohmann/json.hpp
 nlohmann_json.touch:

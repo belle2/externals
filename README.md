@@ -84,6 +84,7 @@ externals.
 | [TBB](https://oneapi-src.github.io/oneTBB/)                                  | 2021.9.0        | Apache 2.0 |
 | [ThePEG](https://thepeg.hepforge.org)                                        | 2.2.3           | GPLv2      |
 | libuuid, a part of [util-linux](https://www.kernel.org/pub/linux/utils/util-linux/) | 2.35.1   | BSD        |
+| [uv](https://github.com/astral-sh/uv)                                        | 0.13.8          | MIT or Apache-2.0 |
 | [Vc](https://github.com/VcDevel/Vc) SIMD Vector Classes for C++              | 1.4.5           | BSD        |
 | [VecCore](https://github.com/root-project/veccore) SIMD Vectorization Library | 0.8.2          | Apache v2  |
 | [VecGeom](https://gitlab.cern.ch/VecGeom/VecGeom) Vectorized Geometry        | 2.0.0           | Apache v2  |
